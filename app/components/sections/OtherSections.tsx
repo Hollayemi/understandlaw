@@ -13,8 +13,8 @@ const TOPICS = [
 
 export function TopicsSection() {
   return (
-    <section className="bg-white py-20 xl:py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+    <section className="bg-white !py-20 xl:py-28">
+      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Legal Topics</p>
@@ -30,13 +30,13 @@ export function TopicsSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {TOPICS.map((t) => (
             <Link key={t.title} href={`/learn/${t.title.toLowerCase().replace(/\s+&\s+/g,"-").replace(/\s+/g,"-")}`}
-              className="group rounded-2xl p-5 border border-gray-100 bg-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+              className="group rounded-2xl !p-5 border border-gray-100 bg-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
                   style={{ background: t.bg }}>
                   {t.icon}
                 </div>
-                <span className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+                <span className="text-[11px] font-medium !px-2.5 !py-1 rounded-full"
                   style={{ background: t.bg, color: t.color }}>
                   {t.count} articles
                 </span>
@@ -69,8 +69,8 @@ const LAWYERS = [
 
 export function MarketplaceSection() {
   return (
-    <section className="bg-[#F3F3F3] py-20 xl:py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+    <section className="bg-[#F3F3F3] !py-20 xl:py-28">
+      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Lawyer Marketplace</p>
@@ -84,7 +84,7 @@ export function MarketplaceSection() {
         </div>
 
         {/* Verification steps */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-8">
+        <div className="bg-white rounded-2xl border border-gray-100 !p-5 mb-8">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Verification Process</p>
           <div className="flex flex-wrap gap-3">
             {["Registration","Credential Check","Platform Training","Assessment","Badge Assigned"].map((step, i) => (
@@ -121,7 +121,7 @@ export function MarketplaceSection() {
                 {/* Badges */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {l.badges.map((b) => (
-                    <span key={b} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                    <span key={b} className="text-[11px] font-medium !px-2 !py-0.5 rounded-full"
                       style={{ background:`${l.color}15`, color:l.color }}>
                       {b === "Verified" ? "✓ " : b === "Top Rated" ? "★ " : "⚡ "}{b}
                     </span>
@@ -129,7 +129,7 @@ export function MarketplaceSection() {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-2 py-3 border-t border-gray-100">
+                <div className="grid grid-cols-3 gap-2 !py-3 border-t border-gray-100">
                   {[
                     { v:`★ ${l.rating}`, lbl:"Rating" },
                     { v:l.reviews.toString(), lbl:"Reviews" },
@@ -143,7 +143,7 @@ export function MarketplaceSection() {
                 </div>
               </div>
 
-              <div className="px-6 pb-6">
+              <div className="!px-6 pb-6">
                 <Link href={`/marketplace/${l.name.toLowerCase().replace(/\s+/g,"-")}`}
                   className="btn-pink w-full justify-center text-sm">
                   View Profile & Book
@@ -167,8 +167,8 @@ const TESTIMONIALS = [
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-white py-20 xl:py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+    <section className="bg-white !py-20 xl:py-28">
+      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Real Stories</p>
           <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"clamp(36px,5vw,56px)", lineHeight:1, color:"#111827", letterSpacing:"0.01em" }}>
@@ -178,8 +178,8 @@ export function TestimonialsSection() {
 
         <div className="grid sm:grid-cols-2 gap-5">
           {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all duration-300">
-              <span className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-4"
+            <div key={t.name} className="rounded-2xl border border-gray-100 !p-6 hover:shadow-md transition-all duration-300">
+              <span className="inline-block text-[11px] font-semibold !px-2.5 !py-1 rounded-full mb-4"
                 style={{ background:`${t.color}12`, color:t.color }}>
                 {t.topic}
               </span>
@@ -237,8 +237,8 @@ export function CTASection() {
   return (
     <>
       {/* Pricing */}
-      <section className="bg-[#F3F3F3] py-20 xl:py-28">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+      <section className="bg-[#F3F3F3] !py-20 xl:py-28">
+        <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Pricing</p>
             <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"clamp(36px,5vw,56px)", lineHeight:1, color:"#111827", letterSpacing:"0.01em" }}>
@@ -252,13 +252,13 @@ export function CTASection() {
           <div className="grid md:grid-cols-3 gap-5">
             {TIERS.map((t) => (
               <div key={t.name}
-                className={`relative rounded-2xl p-7 flex flex-col transition-all duration-300 ${
+                className={`relative rounded-2xl !p-7 flex flex-col transition-all duration-300 ${
                   t.highlight
                     ? "bg-[#111827] border-2 border-[#E8317A] shadow-xl scale-[1.02]"
                     : "bg-white border border-gray-100 hover:shadow-lg hover:-translate-y-0.5"
                 }`}>
                 {t.badge && (
-                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[11px] font-semibold ${
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 !px-3 !py-0.5 rounded-full text-[11px] font-semibold ${
                     t.highlight ? "bg-[#E8317A] text-white" : "bg-gray-200 text-gray-600"
                   }`}>{t.badge}</div>
                 )}
@@ -279,7 +279,7 @@ export function CTASection() {
                   ))}
                 </ul>
                 <Link href={t.href}
-                  className={`w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
+                  className={`w-full !py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
                     t.highlight ? "btn-pink" : "border border-gray-200 text-gray-700 hover:border-gray-400 bg-white"
                   }`}>
                   {t.cta}
@@ -290,7 +290,7 @@ export function CTASection() {
           </div>
 
           {/* For lawyers CTA */}
-          <div className="mt-8 bg-white rounded-2xl border border-gray-100 px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mt-8 bg-white rounded-2xl border border-gray-100 !px-6 !py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="font-semibold text-gray-900 text-sm">Are you a Nigerian lawyer?</p>
               <p className="text-xs text-gray-500 mt-0.5">Get verified, build your client base. Subscription plans from Phase 2.</p>
@@ -301,8 +301,8 @@ export function CTASection() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-[#111827] py-20 xl:py-24">
-        <div className="max-w-3xl mx-auto px-6 text-center">
+      <section className="bg-[#111827] !py-20 xl:py-24">
+        <div className="max-w-3xl mx-auto !px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-4">Get Started Today</p>
           <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"clamp(40px,6vw,72px)", lineHeight:0.95, color:"#fff", letterSpacing:"0.01em" }}
             className="mb-5">
@@ -318,7 +318,7 @@ export function CTASection() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </Link>
             <Link href="/marketplace"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-white/20 text-white text-[15px] font-semibold hover:bg-white/5 transition-colors">
+              className="inline-flex items-center justify-center gap-2 !px-6 !py-3.5 rounded-full border border-white/20 text-white text-[15px] font-semibold hover:bg-white/5 transition-colors">
               Talk to a Lawyer
             </Link>
           </div>

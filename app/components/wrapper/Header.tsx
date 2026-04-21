@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 const NAV = [
@@ -37,12 +36,11 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#F3F3F3] py-4 px-4 sm:px-6 lg:px-8">
-      {/* ── Pill navbar card ── */}
-      <div className="navbar-card max-w-6xl mx-auto px-6 h-[60px] flex items-center justify-between gap-6">
+      {/* Pill navbar */}
+      <div className="max-w-6xl mx-auto bg-white rounded-full shadow-[0_2px_16px_rgba(0,0,0,0.07)] h-[60px] flex items-center justify-between px-6 gap-6">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          {/* Scale of Justice icon */}
           <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
             style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}>
             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
@@ -55,31 +53,28 @@ export default function Header() {
               <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
             </svg>
           </div>
-          <span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:700, fontSize:17, color:"#111827", letterSpacing:"-0.01em" }}>
-            Understand<span style={{ color:"#E8317A" }}>Law</span>
+          <span className="font-bold text-[17px] text-gray-900 tracking-tight" style={{ fontFamily: "var(--font-dm-sans)" }}>
+            Understand<span className="text-[#E8317A]">Law</span>
           </span>
         </Link>
 
-        {/* Center nav — desktop */}
+        {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-1">
           {NAV.map((item) => (
-            <div
-              key={item.label}
-              className="relative"
+            <div key={item.label} className="relative"
               onMouseEnter={() => item.sub && setOpenMenu(item.label)}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
-              <Link href={item.href} className="nav-link px-3 py-2 rounded-full hover:bg-gray-100 transition-colors">
+              onMouseLeave={() => setOpenMenu(null)}>
+              <Link href={item.href}
+                className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium text-gray-700 hover:text-[#E8317A] hover:bg-gray-50 transition-colors whitespace-nowrap">
                 {item.label}
                 {item.sub && (
-                  <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${openMenu===item.label?"rotate-180":""}`}
+                  <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
                     fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                   </svg>
                 )}
               </Link>
 
-              {/* Dropdown */}
               {item.sub && openMenu === item.label && (
                 <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
                   <div className="p-2">
@@ -97,12 +92,13 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Right: Login + CTA */}
+        {/* Right CTAs */}
         <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-          <Link href="/login" className="nav-link px-3 py-2">
+          <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 px-3 py-2 transition-colors">
             Login
           </Link>
-          <Link href="/register" className="btn-cta">
+          <Link href="/register"
+            className="flex items-center gap-2 bg-white border-[1.5px] border-gray-200 text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all whitespace-nowrap">
             Get Started for Free
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -111,11 +107,8 @@ export default function Header() {
         </div>
 
         {/* Mobile hamburger */}
-        <button
-          className="lg:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
+        <button className="lg:hidden w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+          onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen
             ? <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             : <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -135,10 +128,12 @@ export default function Header() {
               </Link>
             ))}
             <div className="border-t border-gray-100 mt-2 pt-3 flex flex-col gap-2">
-              <Link href="/login" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors"
-                onClick={() => setMobileOpen(false)}>Login</Link>
-              <Link href="/register" className="btn-pink text-center justify-center"
-                onClick={() => setMobileOpen(false)}>Get Started for Free →</Link>
+              <Link href="/login" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Login</Link>
+              <Link href="/register"
+                className="flex items-center justify-center gap-2 bg-[#E8317A] text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-[#d01f68] transition-colors"
+                onClick={() => setMobileOpen(false)}>
+                Get Started for Free →
+              </Link>
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ const LINKS = {
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
 
         {/* ── Main grid ── */}
         <div className="py-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
@@ -98,7 +98,7 @@ export default function Footer() {
 
         {/* ── Newsletter banner ── */}
         <div className="py-8 border-t border-gray-100">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl px-6 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl !px-6 !py-6">
             <div>
               <p className="text-xs font-semibold text-[#E8317A] uppercase tracking-wider mb-1">Weekly Digest</p>
               <h3 className="text-base font-bold text-gray-900">Know Your Rights — Every Week</h3>

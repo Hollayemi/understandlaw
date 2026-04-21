@@ -34,7 +34,7 @@ export function BadgeChip({ icon, children, variant = "gold" }: BadgeChipProps) 
     red: "bg-red-500/10 border-red-500/20 text-red-400",
   };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${variants[variant]}`}>
+    <span className={`inline-flex items-center gap-1.5 !px-2.5 !py-1 rounded-full text-[11px] font-medium border ${variants[variant]}`}>
       {icon}
       {children}
     </span>
