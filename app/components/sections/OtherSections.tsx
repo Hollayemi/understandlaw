@@ -1,14 +1,97 @@
 import React from "react";
 import Link from "next/link";
+import {
+  Shield,
+  Home,
+  Briefcase,
+  FileText,
+  Building2,
+  Users,
+  MapPin,
+  Star,
+  Zap,
+  Check
+} from "lucide-react";
 
-// ── TOPICS ────────────────────────────────────────────────────────────────
 const TOPICS = [
-  { icon:"🚔", color:"#3B82F6", bg:"#EFF6FF", title:"Police & Law Enforcement",   count:8,  topics:["Rights during arrest","Unlawful detention","Lawful search & seizure","SARS interactions"] },
-  { icon:"🏠", color:"#10B981", bg:"#ECFDF5", title:"Landlord & Tenancy",          count:6,  topics:["Eviction rights","Rental agreements","Illegal lockouts","Deposit recovery"] },
-  { icon:"💼", color:"#8B5CF6", bg:"#F5F3FF", title:"Employment & Labour",         count:7,  topics:["Wrongful termination","Severance pay","Workplace harassment","NSITF rights"] },
-  { icon:"📝", color:"#F59E0B", bg:"#FFFBEB", title:"Contracts & Agreements",      count:5,  topics:["Valid contracts","Consumer rights","Breach of contract","Digital agreements"] },
-  { icon:"🏢", color:"#06B6D4", bg:"#ECFEFF", title:"Business & Commerce",         count:6,  topics:["Business registration","Tax obligations","CAC requirements","IP protection"] },
-  { icon:"👨‍👩‍👧", color:"#EF4444", bg:"#FEF2F2", title:"Family & Personal Rights",     count:6,  topics:["Domestic violence","Protection orders","Inheritance","Child custody"] },
+  {
+    icon: <Shield />,
+    color: "#3B82F6",
+    bg: "#EFF6FF",
+    title: "Police & Law Enforcement",
+    count: 8,
+    topics: [
+      "Rights during arrest",
+      "Unlawful detention",
+      "Lawful search & seizure",
+      "SARS interactions",
+    ],
+  },
+  {
+    icon: <Home />,
+    color: "#10B981",
+    bg: "#ECFDF5",
+    title: "Landlord & Tenancy",
+    count: 6,
+    topics: [
+      "Eviction rights",
+      "Rental agreements",
+      "Illegal lockouts",
+      "Deposit recovery",
+    ],
+  },
+  {
+    icon: <Briefcase />,
+    color: "#8B5CF6",
+    bg: "#F5F3FF",
+    title: "Employment & Labour",
+    count: 7,
+    topics: [
+      "Wrongful termination",
+      "Severance pay",
+      "Workplace harassment",
+      "NSITF rights",
+    ],
+  },
+  {
+    icon: <FileText />,
+    color: "#F59E0B",
+    bg: "#FFFBEB",
+    title: "Contracts & Agreements",
+    count: 5,
+    topics: [
+      "Valid contracts",
+      "Consumer rights",
+      "Breach of contract",
+      "Digital agreements",
+    ],
+  },
+  {
+    icon: <Building2 />,
+    color: "#06B6D4",
+    bg: "#ECFEFF",
+    title: "Business & Commerce",
+    count: 6,
+    topics: [
+      "Business registration",
+      "Tax obligations",
+      "CAC requirements",
+      "IP protection",
+    ],
+  },
+  {
+    icon: <Users />,
+    color: "#EF4444",
+    bg: "#FEF2F2",
+    title: "Family & Personal Rights",
+    count: 6,
+    topics: [
+      "Domestic violence",
+      "Protection orders",
+      "Inheritance",
+      "Child custody",
+    ],
+  },
 ];
 
 export function TopicsSection() {
@@ -114,16 +197,16 @@ export function MarketplaceSection() {
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-gray-900 text-sm truncate">{l.name}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{l.role}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">📍 {l.city}, Nigeria</p>
+                    <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><MapPin size={15} /> {l.city}, Nigeria</p>
                   </div>
                 </div>
 
                 {/* Badges */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {l.badges.map((b) => (
-                    <span key={b} className="text-[11px] font-medium !px-2 !py-0.5 rounded-full"
+                    <span key={b} className="text-[11px] flex items-center gap-1 font-medium !px-2 !py-0.5 rounded-full"
                       style={{ background:`${l.color}15`, color:l.color }}>
-                      {b === "Verified" ? "✓ " : b === "Top Rated" ? "★ " : "⚡ "}{b}
+                      {b === "Verified" ? <Check size={10} /> : b === "Top Rated" ? <Star size={10} /> : <Zap size={10} />}{b}
                     </span>
                   ))}
                 </div>

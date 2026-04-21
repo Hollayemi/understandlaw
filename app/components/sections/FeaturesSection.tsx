@@ -1,10 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import { File, BookSearchIcon, Scale  } from "lucide-react";
 
 const STEPS = [
   {
     num: "01",
-    icon: "📚",
+    icon: <BookSearchIcon />,
     tag: "Legal Learning Module",
     title: "Understand Before\nYou Act",
     desc: "Short scenario-driven videos and plain-English articles covering police encounters, tenancy rights, employment law, contracts, and more — built for everyday Nigerians.",
@@ -18,7 +19,7 @@ const STEPS = [
   },
   {
     num: "02",
-    icon: "📋",
+    icon: <File />,
     tag: "Legal Library",
     title: "The Law, In\nYour Language",
     desc: "A searchable repository of Nigerian Acts and subsidiary legislation — each presented with a plain-English summary alongside the authoritative statutory text.",
@@ -32,7 +33,7 @@ const STEPS = [
   },
   {
     num: "03",
-    icon: "⚖️",
+    icon: <Scale />,
     tag: "Lawyer Marketplace",
     title: "Expert Help,\nWhen You're Ready",
     desc: "Browse NBA-verified lawyers by speciality, rating, and availability. Book via secure messaging, scheduled call, or video — transparent pricing, no hidden charges.",
