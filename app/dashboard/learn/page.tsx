@@ -10,7 +10,7 @@ type TabKey = "all" | "active" | "complete" | "saved";
 const MODULES = [
   {
     slug:        "rights-during-arrest",
-    icon:        "🚔",
+    icon:        '/images/police_law.jpg',
     gradient:    "linear-gradient(135deg, #1E3A5F 0%, #2D5A8E 100%)",
     tag:         "Police Rights",
     tagColor:    "#3B82F6",
@@ -19,13 +19,13 @@ const MODULES = [
     rating:      4.3,
     weeks:       4,
     lessons:     10,
-    instructor:  { name: "Adaeze Okonkwo", email: "adaeze@understandlaw.ng", initials: "AO", color: "#3B82F6" },
+    instructor:  { name: "Adaeze Okonkwo", email: "adaeze@LawTicha.ng", initials: "AO", color: "#3B82F6" },
     price:       "Free",
     tab:         "active" as TabKey,
   },
   {
     slug:        "tenant-eviction-rights",
-    icon:        "🏠",
+    icon:        '/images/tenancy_law.jpg',
     gradient:    "linear-gradient(135deg, #1A3B2E 0%, #2D6A4F 100%)",
     tag:         "Tenancy Law",
     tagColor:    "#10B981",
@@ -34,13 +34,13 @@ const MODULES = [
     rating:      4.3,
     weeks:       6,
     lessons:     8,
-    instructor:  { name: "Emeka Nwosu", email: "emeka@understandlaw.ng", initials: "EN", color: "#10B981" },
+    instructor:  { name: "Emeka Nwosu", email: "emeka@LawTicha.ng", initials: "EN", color: "#10B981" },
     price:       "Free",
     tab:         "active" as TabKey,
   },
   {
     slug:        "employment-termination",
-    icon:        "💼",
+    icon:        '/images/employment_law.jpg',
     gradient:    "linear-gradient(135deg, #2D1A3B 0%, #5B3080 100%)",
     tag:         "Employment Law",
     tagColor:    "#8B5CF6",
@@ -49,13 +49,13 @@ const MODULES = [
     rating:      3.8,
     weeks:       5,
     lessons:     12,
-    instructor:  { name: "Fatimah Bello", email: "fatimah@understandlaw.ng", initials: "FB", color: "#8B5CF6" },
+    instructor:  { name: "Fatimah Bello", email: "fatimah@LawTicha.ng", initials: "FB", color: "#8B5CF6" },
     price:       "Free",
     tab:         "all" as TabKey,
   },
   {
     slug:        "valid-contracts",
-    icon:        "📝",
+    icon:        '/images/contract_law.jpg',
     gradient:    "linear-gradient(135deg, #2D2A1A 0%, #78570A 100%)",
     tag:         "Contracts",
     tagColor:    "#F59E0B",
@@ -64,7 +64,7 @@ const MODULES = [
     rating:      4.6,
     weeks:       3,
     lessons:     7,
-    instructor:  { name: "Chidi Okafor", email: "chidi@understandlaw.ng", initials: "CO", color: "#F59E0B" },
+    instructor:  { name: "Chidi Okafor", email: "chidi@LawTicha.ng", initials: "CO", color: "#F59E0B" },
     price:       "Free",
     tab:         "complete" as TabKey,
   },
@@ -79,7 +79,7 @@ const MODULES = [
     rating:      4.5,
     weeks:       4,
     lessons:     9,
-    instructor:  { name: "Amina Garba", email: "amina@understandlaw.ng", initials: "AG", color: "#06B6D4" },
+    instructor:  { name: "Amina Garba", email: "amina@LawTicha.ng", initials: "AG", color: "#06B6D4" },
     price:       "Free",
     tab:         "saved" as TabKey,
   },
@@ -94,16 +94,16 @@ const MODULES = [
     rating:      4.8,
     weeks:       4,
     lessons:     8,
-    instructor:  { name: "Ngozi Eze", email: "ngozi@understandlaw.ng", initials: "NE", color: "#EF4444" },
+    instructor:  { name: "Ngozi Eze", email: "ngozi@LawTicha.ng", initials: "NE", color: "#EF4444" },
     price:       "Free",
     tab:         "all" as TabKey,
   },
 ];
 
 const FEATURED = [
-  { slug: "search-and-seizure",      title: "Lawful Search & Seizure",          instructor: "Adaeze Okonkwo",  email: "adaeze@understandlaw.ng",  initials: "AO", color: "#3B82F6" },
-  { slug: "severance-pay",           title: "Severance Pay & Redundancy",        instructor: "Chidi Okafor",    email: "chidi@understandlaw.ng",    initials: "CO", color: "#F59E0B" },
-  { slug: "consumer-protection-act", title: "Consumer Protection Rights",        instructor: "Fatimah Bello",   email: "fatimah@understandlaw.ng",  initials: "FB", color: "#10B981" },
+  { slug: "search-and-seizure",      title: "Lawful Search & Seizure",          instructor: "Adaeze Okonkwo",  email: "adaeze@LawTicha.ng",  initials: "AO", color: "#3B82F6" },
+  { slug: "severance-pay",           title: "Severance Pay & Redundancy",        instructor: "Chidi Okafor",    email: "chidi@LawTicha.ng",    initials: "CO", color: "#F59E0B" },
+  { slug: "consumer-protection-act", title: "Consumer Protection Rights",        instructor: "Fatimah Bello",   email: "fatimah@LawTicha.ng",  initials: "FB", color: "#10B981" },
 ];
 
 const TABS: { key: TabKey; label: string; count: number }[] = [
@@ -161,7 +161,7 @@ export default function DashboardLearnPage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
+            className={`flex shrink-0 items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
               tab === t.key
                 ? "text-gray-900 border-gray-900"
                 : "text-gray-400 border-transparent hover:text-gray-600"
@@ -185,7 +185,8 @@ export default function DashboardLearnPage() {
             >
               {/* Thumbnail */}
               <div className="relative h-44 flex items-center justify-center" style={{ background: mod.gradient }}>
-                <span className="text-6xl opacity-80">{mod.icon}</span>
+                {/* <span className="text-6xl opacity-80">{mod.icon}</span> */}
+                <img src={mod.icon} alt={mod.title} className="w-full h-full object-cover" />
                 {/* Price badge */}
                 <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
                   {mod.price}

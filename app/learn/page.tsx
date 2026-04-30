@@ -1,75 +1,146 @@
 import React from "react";
 import Link from "next/link";
 import HomeWrapper from "@/app/components/wrapper";
+import {
+  Shield,
+  Home,
+  Briefcase,
+  FileText,
+  Building2,
+  Users,
+  Video,
+  BookOpen,
+  Theater,
+  Library
+} from "lucide-react";
 
 const CATEGORIES = [
   {
-    icon: "🚔",
+    icon: <Shield />,
     color: "#3B82F6",
     bg: "#EFF6FF",
     title: "Police & Law Enforcement",
     slug: "police-law-enforcement",
     count: 8,
-    featured: ["Rights during arrest", "Unlawful detention", "Lawful search & seizure", "SARS interactions", "Right to silence", "Police bail", "Resisting unlawful arrest"],
+    featured: [
+      "Rights during arrest",
+      "Unlawful detention",
+      "Lawful search & seizure",
+      "SARS interactions",
+      "Right to silence",
+      "Police bail",
+      "Resisting unlawful arrest",
+    ],
     desc: "Know exactly what police officers can and cannot do — and how to protect yourself in any encounter.",
   },
   {
-    icon: "🏠",
+    icon: <Home />,
     color: "#10B981",
     bg: "#ECFDF5",
     title: "Landlord & Tenancy",
     slug: "landlord-tenancy",
     count: 6,
-    featured: ["Eviction rights & procedures", "Rental agreement clauses", "Illegal lockouts", "Security deposit recovery", "Subletting rules", "Quiet enjoyment"],
+    featured: [
+      "Eviction rights & procedures",
+      "Rental agreement clauses",
+      "Illegal lockouts",
+      "Security deposit recovery",
+      "Subletting rules",
+      "Quiet enjoyment",
+    ],
     desc: "Understand your rights as a tenant in Nigeria — from signing a lease to defending against illegal eviction.",
   },
   {
-    icon: "💼",
+    icon: <Briefcase />,
     color: "#8B5CF6",
     bg: "#F5F3FF",
     title: "Employment & Labour",
     slug: "employment-labour",
     count: 7,
-    featured: ["Wrongful termination", "Severance & redundancy pay", "Workplace harassment", "NSITF & pension rights", "Employment contracts", "Maternity leave", "Minimum wage"],
+    featured: [
+      "Wrongful termination",
+      "Severance & redundancy pay",
+      "Workplace harassment",
+      "NSITF & pension rights",
+      "Employment contracts",
+      "Maternity leave",
+      "Minimum wage",
+    ],
     desc: "From your first employment contract to a dispute with your employer — know your labour rights.",
   },
   {
-    icon: "📝",
+    icon: <FileText />,
     color: "#F59E0B",
     bg: "#FFFBEB",
     title: "Contracts & Agreements",
     slug: "contracts-agreements",
     count: 5,
-    featured: ["What makes a contract valid", "Consumer protection rights", "Breach of contract", "Digital & online agreements", "Oral contracts in Nigeria"],
+    featured: [
+      "What makes a contract valid",
+      "Consumer protection rights",
+      "Breach of contract",
+      "Digital & online agreements",
+      "Oral contracts in Nigeria",
+    ],
     desc: "Understand what you're signing before you sign it — and what to do when agreements are broken.",
   },
   {
-    icon: "🏢",
+    icon: <Building2 />,
     color: "#06B6D4",
     bg: "#ECFEFF",
     title: "Business & Commerce",
     slug: "business-commerce",
     count: 6,
-    featured: ["Business registration (CAC)", "Tax obligations for SMEs", "Intellectual property basics", "Consumer protection act", "Partnership agreements", "E-commerce rules"],
+    featured: [
+      "Business registration (CAC)",
+      "Tax obligations for SMEs",
+      "Intellectual property basics",
+      "Consumer protection act",
+      "Partnership agreements",
+      "E-commerce rules",
+    ],
     desc: "Navigate Nigerian business regulations, taxes, and commercial law without needing a full-time lawyer.",
   },
   {
-    icon: "👨‍👩‍👧",
+    icon: <Users />,
     color: "#EF4444",
     bg: "#FEF2F2",
     title: "Family & Personal Rights",
     slug: "family-personal-rights",
     count: 6,
-    featured: ["Domestic violence & protection", "Protection orders", "Inheritance & succession", "Child custody rights", "Divorce proceedings", "Gender-based violence law"],
+    featured: [
+      "Domestic violence & protection",
+      "Protection orders",
+      "Inheritance & succession",
+      "Child custody rights",
+      "Divorce proceedings",
+      "Gender-based violence law",
+    ],
     desc: "Your personal and family rights under Nigerian law — including protection from abuse and custody guidance.",
   },
 ];
 
 const FORMATS = [
-  { icon: "🎥", label: "Short Videos", desc: "1–3 min plain-English explainers" },
-  { icon: "📖", label: "Text Summaries", desc: "Read offline on slow connections" },
-  { icon: "🎭", label: "Scenario Walkthroughs", desc: "See the law in real-life context" },
-  { icon: "📚", label: "Library Links", desc: "Jump to the actual statutory text" },
+  {
+    icon: <Video />,
+    label: "Short Videos",
+    desc: "1–3 min plain-English explainers",
+  },
+  {
+    icon: <BookOpen />,
+    label: "Text Summaries",
+    desc: "Read offline on slow connections",
+  },
+  {
+    icon: <Theater />, // optional fallback below
+    label: "Scenario Walkthroughs",
+    desc: "See the law in real-life context",
+  },
+  {
+    icon: <Library />,
+    label: "Library Links",
+    desc: "Jump to the actual statutory text",
+  },
 ];
 
 export default function LearnPage() {

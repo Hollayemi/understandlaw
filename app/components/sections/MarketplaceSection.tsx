@@ -68,8 +68,8 @@ export default function MarketplaceSection() {
               <em className="not-italic text-[#C9922A]">Real Expertise.</em>
             </h2>
             <p className="text-sm text-[#6B7A8D] leading-relaxed">
-              Every lawyer on UnderstandLaw has been verified against Nigerian Bar Association
-              records. Their credentials aren't optional — they're the minimum requirement.
+              Every lawyer on LawTicha has been verified against Nigerian Bar Association
+              records. Their credentials aren't optional, they're the minimum requirement.
             </p>
           </div>
           <Link href="/marketplace"

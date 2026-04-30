@@ -8,7 +8,7 @@ const STEPS = [
     icon: <BookSearchIcon />,
     tag: "Legal Learning Module",
     title: "Understand Before\nYou Act",
-    desc: "Short scenario-driven videos and plain-English articles covering police encounters, tenancy rights, employment law, contracts, and more — built for everyday Nigerians.",
+    desc: "Short scenario-driven videos and plain-English articles covering police encounters, tenancy rights, employment law, contracts, and more. Built for everyday Nigerians.",
     bullets: ["1–3 min video lessons", "Scenario walkthroughs", "Plain-text summaries", "Topic recommendations"],
     cta: "Browse Topics",
     href: "/learn",
@@ -22,7 +22,7 @@ const STEPS = [
     icon: <File />,
     tag: "Legal Library",
     title: "The Law, In\nYour Language",
-    desc: "A searchable repository of Nigerian Acts and subsidiary legislation — each presented with a plain-English summary alongside the authoritative statutory text.",
+    desc: "A searchable repository of Nigerian Acts and subsidiary legislation each presented with a plain-English summary alongside the authoritative statutory text.",
     bullets: ["Full-text search", "Plain + statutory text side-by-side", "Filter by topic & jurisdiction", "Bookmarking for registered users"],
     cta: "Explore Library",
     href: "/library",
@@ -36,7 +36,7 @@ const STEPS = [
     icon: <Scale />,
     tag: "Lawyer Marketplace",
     title: "Expert Help,\nWhen You're Ready",
-    desc: "Browse NBA-verified lawyers by speciality, rating, and availability. Book via secure messaging, scheduled call, or video — transparent pricing, no hidden charges.",
+    desc: "Browse NBA-verified lawyers by speciality, rating, and availability. Book via secure messaging, scheduled call, or video. transparent pricing, no hidden charges.",
     bullets: ["NBA-verified only", "Transparent fee schedule", "Messaging + video calls", "Verified reviews"],
     cta: "Find a Lawyer",
     href: "/marketplace",
@@ -64,8 +64,8 @@ export default function FeaturesSection() {
             </h2>
           </div>
           <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
-            UnderstandLaw guides you from knowing your rights, to reading the law,
-            to getting professional help — all in one platform.
+            LawTicha guides you from knowing your rights, to reading the law,
+            to getting professional help, all in one platform.
           </p>
         </div>
 

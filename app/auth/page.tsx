@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 type Tab = "login" | "register";
@@ -8,6 +9,25 @@ export default function AuthPage() {
   const [tab, setTab] = useState<Tab>("register");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash === "login" || hash === "register") {
+        setTab(hash as Tab);
+      }
+    };
+
+    // Set initial tab based on URL hash
+    handleHashChange();
+
+    // Listen for hash changes (when user clicks browser back/forward)
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,58 +38,45 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-[#F3F3F3] flex flex-col">
       {/* Header */}
-      <div className="px-6 py-5">
-        <Link href="/" className="inline-flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-              <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              <circle cx="5" cy="8" r="1" fill="white" />
-              <circle cx="19" cy="8" r="1" fill="white" />
-              <path d="M3 11 Q5 15 7 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </div>
-          <span
-            className="font-bold text-[17px] text-gray-900"
-            style={{ fontFamily: "var(--font-dm-sans)" }}
-          >
-            Understand<span style={{ color: "#E8317A" }}>Law</span>
-          </span>
-        </Link>
-      </div>
+      {/* <div className="px-6 py-5">
+        
+      </div> */}
 
       {/* Main */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
           {/* Left panel headline (visible on larger screens via layout trick) */}
           <div className="text-center mb-8">
-            <h1
-              className="text-[clamp(36px,8vw,52px)] leading-none tracking-[0.01em] text-gray-900 uppercase"
-              style={{ fontFamily: "var(--font-bebas)" }}
-            >
-              {tab === "register" ? (
-                <>
-                  JOIN THE<br />
-                  <span style={{ color: "#E8317A" }}>MOVEMENT</span>
-                </>
-              ) : (
-                <>
-                  WELCOME<br />
-                  <span style={{ color: "#E8317A" }}>BACK</span>
-                </>
-              )}
-            </h1>
+            <Link href="/" className="inline-flex items-center gap-2">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+                  <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+                  <circle cx="5" cy="8" r="1" fill="white" />
+                  <circle cx="19" cy="8" r="1" fill="white" />
+                  <path d="M3 11 Q5 15 7 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+                  <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+                  <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </div>
+              <span
+                className="font-bold text-[17px] text-gray-900"
+                style={{ fontFamily: "var(--font-dm-sans)" }}
+              >
+                Law<span style={{ color: "#E8317A" }}>Ticha</span>
+              </span>
+            </Link>
             <p className="text-sm text-gray-500 mt-2">
               {tab === "register"
                 ? "Free forever. No card required. Nigerian law, simplified."
                 : "Continue learning. Your rights don't take a break."}
             </p>
           </div>
+
+
 
           {/* Card */}
           <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden">
@@ -79,11 +86,10 @@ export default function AuthPage() {
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className={`flex-1 py-4 text-sm font-semibold transition-all ${
-                    tab === t
+                  className={`flex-1 py-4 text-sm font-semibold transition-all ${tab === t
                       ? "text-[#E8317A] border-b-2 border-[#E8317A] bg-pink-50/40"
                       : "text-gray-400 hover:text-gray-600"
-                  }`}
+                    }`}
                 >
                   {t === "register" ? "Create Account" : "Sign In"}
                 </button>
@@ -231,7 +237,7 @@ export default function AuthPage() {
                       </svg>
                     </>
                   ) : (
-                    "Sign In to UnderstandLaw"
+                    "Sign In to LawTicha"
                   )}
                 </button>
               </form>

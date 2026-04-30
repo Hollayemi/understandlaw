@@ -10,7 +10,7 @@ const MODULE = {
   tag:        "Police & Law Enforcement",
   tagColor:   "#3B82F6",
   gradient:   "linear-gradient(135deg, #1E3A5F 0%, #2D5A8E 100%)",
-  icon:       "🚔",
+  icon:       '/images/police_law.jpg',
   rating:     4.3,
   weeks:      4,
   lessons:    14,
@@ -56,7 +56,7 @@ export default function ModuleDetailPage() {
         <nav className="flex items-center gap-1.5 text-xs text-gray-500">
           <Link href="/dashboard/learn" className="hover:text-gray-900 transition-colors">Learn</Link>
           <ChevronRight size={12} className="text-gray-300" />
-          <Link href="/dashboard/learn" className="hover:text-gray-900 transition-colors">All Modules</Link>
+          <Link href="/dashboard/learn" className="hover:text-gray-900 transition-colors shrink-0">All Modules</Link>
           <ChevronRight size={12} className="text-gray-300" />
           <span className="text-gray-900 font-semibold truncate max-w-[160px]">{MODULE.title}</span>
         </nav>
@@ -80,7 +80,7 @@ export default function ModuleDetailPage() {
             >
               {/* Content preview */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                <span className="text-8xl opacity-30">{MODULE.icon}</span>
+                <img src={MODULE.icon} alt={MODULE.title} className="w-full h-full object-cover" />
               </div>
 
               {/* Play button */}
@@ -159,7 +159,7 @@ export default function ModuleDetailPage() {
               className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
             >
               <div>
-                <h2 className="font-bold text-gray-900 text-sm">{MODULE.title}</h2>
+                <h2 className="font-bold text-gray-900 text-sm truncate max-w-[120px]">{MODULE.title}</h2>
                 <span
                   className="text-[10px] font-semibold uppercase tracking-wide"
                   style={{ color: MODULE.tagColor }}

@@ -33,7 +33,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "UnderstandLaw — Nigerian Legal Knowledge, Simplified",
+  title: "LawTicha - Nigerian Legal Knowledge, Simplified",
   description:
     "Plain-English guides to Nigerian law, a searchable library of legislation, and instant access to verified lawyers. Know your rights. No jargon.",
   keywords: [
@@ -46,10 +46,10 @@ export const metadata: Metadata = {
     "legal help Nigeria",
   ],
   openGraph: {
-    title: "UnderstandLaw — The Law Was Written For Everyone. Now Understand It.",
+    title: "LawTicha. The Law Was Written For Everyone. Now Understand It.",
     description:
       "Making Nigerian law simple, accessible, and actionable for every citizen — regardless of education, income, or location.",
-    siteName: "UnderstandLaw",
+    siteName: "LawTicha",
     locale: "en_NG",
     type: "website",
   },

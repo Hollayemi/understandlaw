@@ -96,7 +96,7 @@ const FAQS = [
   },
   {
     q: "How does pay-per-use work for consultations?",
-    a: "When you book a consultation with a lawyer, you pay the lawyer's stated fee. UnderstandLaw deducts a platform commission (10–15%) before passing the remainder to the lawyer. All fees are displayed upfront before you confirm a booking.",
+    a: "When you book a consultation with a lawyer, you pay the lawyer's stated fee. LawTicha deducts a platform commission (10–15%) before passing the remainder to the lawyer. All fees are displayed upfront before you confirm a booking.",
   },
   {
     q: "When is the Premium plan launching?",

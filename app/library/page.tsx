@@ -94,7 +94,7 @@ export default function LibraryPage() {
             </div>
             <div>
               <p className="text-base text-gray-500 leading-relaxed">
-                Every Act in the UnderstandLaw library comes with a plain-English summary alongside the authoritative
+                Every Act in the LawTicha library comes with a plain-English summary alongside the authoritative
                 statutory text. Highlight key sections. Bookmark what matters. Search across the entire library in seconds.
               </p>
               <div className="flex items-center gap-6 mt-5">

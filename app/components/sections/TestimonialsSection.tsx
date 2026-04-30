@@ -2,7 +2,7 @@ import React from "react";
 
 const TESTIMONIALS = [
   {
-    quote: "My landlord tried to evict me without notice. I read the tenancy article on UnderstandLaw, understood my rights, and held my ground. The eviction attempt stopped completely.",
+    quote: "My landlord tried to evict me without notice. I read the tenancy article on LawTicha, understood my rights, and held my ground. The eviction attempt stopped completely.",
     name: "Chidinma Okafor",
     role: "Tenant, Enugu",
     initials: "CO",
@@ -26,7 +26,7 @@ const TESTIMONIALS = [
     topic: "Business Contracts",
   },
   {
-    quote: "I was detained at a checkpoint without cause. Knowing my rights — and quoting the law — led to my immediate release. UnderstandLaw gave me the confidence I needed.",
+    quote: "I was detained at a checkpoint without cause. Knowing my rights and quoting the law led to my immediate release. LawTicha gave me the confidence I needed.",
     name: "Ikechukwu Eze",
     role: "Graduate, Port Harcourt",
     initials: "IE",
@@ -62,7 +62,7 @@ export default function TestimonialsSection() {
             <em className="not-italic text-[#E8B04A]">Knowledge Did Too.</em>
           </h2>
           <p className="text-sm text-[#8B9BB4] max-w-xl mx-auto">
-            Ordinary Nigerians using UnderstandLaw to protect their rights, resolve disputes,
+            Ordinary Nigerians using LawTicha to protect their rights, resolve disputes,
             and navigate the legal system with confidence.
           </p>
         </div>

@@ -242,10 +242,10 @@ export function MarketplaceSection() {
 
 // ── TESTIMONIALS ──────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  { quote:"My landlord tried to evict me without notice. I read the tenancy guide on UnderstandLaw, understood my rights, and held my ground. The eviction attempt stopped completely.", name:"Chidinma Okafor", role:"Tenant, Enugu", topic:"Tenancy Rights", color:"#3B82F6", initials:"CO" },
+  { quote:"My landlord tried to evict me without notice. I read the tenancy guide on LawTicha, understood my rights, and held my ground. The eviction attempt stopped completely.", name:"Chidinma Okafor", role:"Tenant, Enugu", topic:"Tenancy Rights", color:"#3B82F6", initials:"CO" },
   { quote:"I was retrenched without severance. After using the employment law module, I knew exactly what I was owed. I hired a verified lawyer through the platform and got every kobo.", name:"Babatunde Lawal", role:"Former Staff, Lagos", topic:"Employment Law", color:"#10B981", initials:"BL" },
   { quote:"As a small business owner, understanding contracts was something I always feared. The plain-English guides changed that. I now read every agreement before signing.", name:"Amina Garba", role:"SME Owner, Kano", topic:"Business Law", color:"#8B5CF6", initials:"AG" },
-  { quote:"I was detained at a checkpoint without cause. Knowing my rights — and quoting the law — led to my immediate release. UnderstandLaw gave me the confidence I needed.", name:"Ikechukwu Eze", role:"Graduate, Port Harcourt", topic:"Police Rights", color:"#F59E0B", initials:"IE" },
+  { quote:"I was detained at a checkpoint without cause. Knowing my rights and quoting the law led to my immediate release. LawTicha gave me the confidence I needed.", name:"Ikechukwu Eze", role:"Graduate, Port Harcourt", topic:"Police Rights", color:"#F59E0B", initials:"IE" },
 ];
 
 export function TestimonialsSection() {
@@ -298,7 +298,7 @@ export function TestimonialsSection() {
 const TIERS = [
   {
     name:"Free", price:"₦0", period:"forever",
-    desc:"Full legal education — at no cost.",
+    desc:"Full legal education, at no cost.",
     features:["Full Legal Learning Module","Browse Legal Library","Full-text search","Topic recommendations"],
     cta:"Get Started Free", href:"/register", highlight:false,
   },
@@ -328,7 +328,7 @@ export function CTASection() {
               START FREE. SCALE WHEN READY.
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-md mx-auto">
-              Legal knowledge should be free. Start learning today — no card required.
+              Legal knowledge should be free. Start learning today, no card required.
             </p>
           </div>
 
@@ -397,7 +397,7 @@ export function CTASection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
             <Link href="/register" className="btn-pink text-[15px]">
-              Start Learning — It's Free
+              Start Learning. It's Free
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </Link>
             <Link href="/marketplace"

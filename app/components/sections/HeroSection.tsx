@@ -44,8 +44,8 @@ export default function HeroSection() {
           <div className="animate-fade-up delay-200 flex flex-col gap-6 lg:pt-3">
             <p className="text-[15px] leading-relaxed text-gray-500 max-w-md">
               From Plain-English Legal Guides To Verified Lawyer Consultations,
-              UnderstandLaw Gives Every Nigerian Everything They Need To Know Their
-              Rights, Navigate The Law, And Get Professional Help — All In One Place.
+              LawTicha Gives Every Nigerian Everything They Need To Know Their
+              Rights, Navigate The Law, And Get Professional Help. All In One Place.
             </p>
 
             {/* Email + CTA */}
@@ -53,9 +53,9 @@ export default function HeroSection() {
               <input
                 type="email"
                 placeholder="Email Address"
-                className="flex-1 min-w-0 h-[52px] px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
+                className="md:flex-1 min-w-0 h-[52px] !px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
               />
-              <Link href="/register"
+              <Link href="/dashboard"
                 className="flex-shrink-0 flex items-center justify-center gap-2 h-[52px] px-6 bg-[#E8317A] hover:bg-[#d01f68] text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 whitespace-nowrap">
                 Get Started for Free
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

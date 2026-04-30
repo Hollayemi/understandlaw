@@ -1,32 +1,43 @@
 import React from "react";
 import Link from "next/link";
 import HomeWrapper from "@/app/components/wrapper";
+import {
+  BookOpen,
+  Video,
+  ClipboardList,
+  Scale,
+  FileText,
+  Search,
+  GraduationCap,
+  BadgeCheck,
+  User
+} from "lucide-react";
 
 const CITIZEN_STEPS = [
   {
     num: "01",
-    icon: "📚",
+    icon: <BookOpen />,
     title: "Pick a Topic",
     desc: "Browse categories like Tenancy, Employment, Police Rights, or Contracts. Everything is organised by situation — not by statute.",
     color: "#E8317A",
   },
   {
     num: "02",
-    icon: "🎥",
+    icon: <Video />,
     title: "Watch & Read",
     desc: "Short 1–3 min videos and plain-English articles walk you through what the law actually says. No jargon. No guesswork.",
     color: "#3B82F6",
   },
   {
     num: "03",
-    icon: "📋",
+    icon: <ClipboardList />,
     title: "Read the Actual Law",
     desc: "Go deeper in the Legal Library — every Act has a plain-English summary sitting right next to the authoritative statutory text.",
     color: "#10B981",
   },
   {
     num: "04",
-    icon: "⚖️",
+    icon: <Scale />,
     title: "Get a Lawyer If Needed",
     desc: "When your situation needs professional advice, book a verified Nigerian lawyer directly on the platform. Transparent pricing. No surprises.",
     color: "#F59E0B",
@@ -36,28 +47,28 @@ const CITIZEN_STEPS = [
 const LAWYER_STEPS = [
   {
     num: "01",
-    icon: "📝",
+    icon: <FileText />,
     title: "Register & Submit Credentials",
     desc: "Fill out your profile with your NBA number, year of call, and practice areas. Upload supporting documents.",
     color: "#E8317A",
   },
   {
     num: "02",
-    icon: "🔍",
+    icon: <Search />,
     title: "Credential Verification",
     desc: "Our team verifies your Nigerian Bar Association membership and specialisations within 48–72 hours.",
     color: "#3B82F6",
   },
   {
     num: "03",
-    icon: "🎓",
+    icon: <GraduationCap />,
     title: "Platform Orientation",
     desc: "A short online orientation covers platform standards, client communication expectations, and ethical obligations.",
     color: "#10B981",
   },
   {
     num: "04",
-    icon: "🏅",
+    icon: <BadgeCheck />,
     title: "Badges & Go Live",
     desc: "Receive your verified badges, configure your availability and pricing, and start receiving consultation requests.",
     color: "#8B5CF6",
@@ -73,23 +84,23 @@ const STATS = [
 
 const FAQS = [
   {
-    q: "Is the content on UnderstandLaw actual legal advice?",
+    q: "Is the content on LawTicha actual legal advice?",
     a: "No. All content is educational and informational. It explains what the law says in plain English. For advice specific to your situation, use the Lawyer Marketplace to consult a verified professional.",
   },
   {
     q: "How do I know the lawyers are qualified?",
-    a: "Every lawyer on UnderstandLaw goes through a multi-step verification process: NBA membership check, credential review, platform orientation, and a competency assessment. Only approved lawyers receive a Verified Lawyer badge and can accept consultations.",
+    a: "Every lawyer on LawTicha goes through a multi-step verification process: NBA membership check, credential review, platform orientation, and a competency assessment. Only approved lawyers receive a Verified Lawyer badge and can accept consultations.",
   },
   {
     q: "Is the platform really free?",
     a: "Yes. The Legal Learning Module and Legal Library are completely free, forever. You only pay when you book a paid consultation with a lawyer. Pricing is displayed upfront — no hidden charges.",
   },
   {
-    q: "What laws does UnderstandLaw cover?",
-    a: "UnderstandLaw covers Nigerian federal and state legislation relevant to everyday life — tenancy, employment, police encounters, contracts, business registration, family law, and more. Content is updated as laws change.",
+    q: "What laws does LawTicha cover?",
+    a: "LawTicha covers Nigerian federal and state legislation relevant to everyday life — tenancy, employment, police encounters, contracts, business registration, family law, and more. Content is updated as laws change.",
   },
   {
-    q: "Can I use UnderstandLaw if I'm a lawyer?",
+    q: "Can I use LawTicha if I'm a lawyer?",
     a: "Yes. Lawyers join through the Lawyer Marketplace path — they create a verified profile, complete onboarding, and start receiving clients. We also offer subscription plans with analytics and priority placement (Phase 2).",
   },
 ];
@@ -109,8 +120,8 @@ export default function HowItWorksPage() {
             <span style={{ color: "#E8317A" }}>TO CLARITY</span>
           </h1>
           <p className="text-base text-gray-500 max-w-xl mx-auto leading-relaxed">
-            UnderstandLaw is designed around one idea: everyone deserves to understand the law that governs their life.
-            Here's exactly how the platform works — for citizens and for lawyers.
+            LawTicha is designed around one idea: everyone deserves to understand the law that governs their life.
+            Here's exactly how the platform works, for citizens and for lawyers.
           </p>
         </div>
       </section>
@@ -139,7 +150,7 @@ export default function HowItWorksPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="mb-12">
             <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-100 px-3 py-1.5 rounded-full mb-4">
-              <span className="text-sm">👤</span>
+              <span className="text-sm"><User /></span>
               <span className="text-xs font-semibold text-[#E8317A]">For Citizens</span>
             </div>
             <h2
@@ -150,7 +161,7 @@ export default function HowItWorksPage() {
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-lg">
               Whether you're facing an eviction notice, a wrongful termination, or a police encounter —
-              UnderstandLaw gives you the knowledge to respond correctly.
+              LawTicha gives you the knowledge to respond correctly.
             </p>
           </div>
 
@@ -207,7 +218,7 @@ export default function HowItWorksPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="mb-12">
             <div className="inline-flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-full mb-4">
-              <span className="text-sm">⚖️</span>
+              <span className="text-sm"><Scale /></span>
               <span className="text-xs font-semibold text-gray-700">For Nigerian Lawyers</span>
             </div>
             <h2
@@ -218,7 +229,7 @@ export default function HowItWorksPage() {
               <span style={{ color: "#E8317A" }}>CLIENT BASE</span>
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-lg">
-              UnderstandLaw connects you with Nigerians who are already educated on the law and ready to take action.
+              LawTicha connects you with Nigerians who are already educated on the law and ready to take action.
               These are informed clients — not cold calls.
             </p>
           </div>

@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </svg>
             </div>
             <span className="font-bold text-[17px] tracking-tight text-gray-900">
-              Understand<span style={{ color: "#E8317A" }}>Law</span>
+              Law<span style={{ color: "#E8317A" }}>Ticha</span>
             </span>
           </Link>
         </div>
@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu size={18} className="text-gray-600" />
           </button>
           <span className="font-bold text-[15px] text-gray-900">
-            Understand<span style={{ color: "#E8317A" }}>Law</span>
+            Law<span style={{ color: "#E8317A" }}>Ticha</span>
           </span>
           <div className="w-9" />
         </div>

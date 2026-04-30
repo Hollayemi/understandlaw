@@ -6,7 +6,7 @@ const TIERS = [
     name: "Free",
     price: "₦0",
     period: "forever",
-    desc: "Everything you need to understand Nigerian law — at no cost.",
+    desc: "Everything you need to understand Nigerian law, at no cost.",
     features: ["Full access to Legal Learning Module", "Browse Legal Library", "Full-text legislation search", "Topic recommendations", "Community forum access"],
     cta: "Get Started Free",
     href: "/register",
@@ -58,7 +58,7 @@ export default function CTASection() {
               <em className="not-italic text-[#C9922A]">Scale When Ready.</em>
             </h2>
             <p className="text-sm text-[#6B7A8D] max-w-lg mx-auto">
-              We believe legal knowledge should be free. Start learning today — no card required.
+              We believe legal knowledge should be free. Start learning today, no card required.
             </p>
           </div>
 
@@ -139,7 +139,7 @@ export default function CTASection() {
               </div>
               <div>
                 <p className="font-semibold text-white text-sm">Are you a Nigerian lawyer?</p>
-                <p className="text-xs text-[#8B9BB4]">Join UnderstandLaw, get verified, build your client base.</p>
+                <p className="text-xs text-[#8B9BB4]">Join LawTicha, get verified, build your client base.</p>
               </div>
             </div>
             <Link href="/lawyers/join"
@@ -190,7 +190,7 @@ export default function CTASection() {
           <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
             <Link href="/register"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#C9922A] to-[#E8B04A] text-[#0B1120] text-[15px] font-bold hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-900/30 transition-all">
-              Start Learning — It's Free
+              Start Learning, It's Free
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
               </svg>

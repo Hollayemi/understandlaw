@@ -7,23 +7,26 @@ const CARDS = [
     gradient: "linear-gradient(160deg, #2DD4BF 0%, #0D9488 40%, #065F46 100%)",
     label: "NIGERIANS WHO DON'T KNOW THEIR BASIC LEGAL RIGHTS",
     number: "70M+",
+    image: "/images/teacher1.jpg",
     id: "c1",
   },
   {
     type: "person" as const,
     bg: "linear-gradient(160deg,#EC4899 0%,#BE185D 100%)",
     publication: "The Punch",
-    category: "Criminal Law",
+    category: "Police Law",
     name: "Adaeze Okonkwo",
     initials: "AO",
+    image: "/images/police_law.jpg",
     id: "c2",
   },
   {
     type: "person" as const,
     bg: "linear-gradient(160deg,#14B8A6 0%,#0F766E 100%)",
     publication: "BusinessDay",
-    category: "Property Law",
+    category: "Contract Law",
     name: "Emeka Nwosu",
+    image: "/images/contract_law.jpg",
     initials: "EN",
     id: "c3",
   },
@@ -32,6 +35,7 @@ const CARDS = [
     gradient: "linear-gradient(160deg,#A3E635 0%,#65A30D 40%,#365314 100%)",
     label: "USERS HELPED UNDERSTAND THEIR RIGHTS",
     number: "100M+",
+    image: "/images/teacher2.jpg",
     id: "c4",
   },
   {
@@ -40,6 +44,7 @@ const CARDS = [
     publication: "Nairametrics",
     category: "Employment Law",
     name: "Fatimah Bello",
+    image: "/images/employment_law.jpg",
     initials: "FB",
     id: "c5",
   },
@@ -48,6 +53,7 @@ const CARDS = [
     gradient: "linear-gradient(160deg,#F472B6 0%,#DB2777 40%,#831843 100%)",
     label: "NBA-VERIFIED LAWYERS ON THE PLATFORM",
     number: "200+",
+    image: "/images/tenancy_law.jpg",
     id: "c6",
   },
   {
@@ -56,6 +62,7 @@ const CARDS = [
     publication: "TechCabal",
     category: "Business Law",
     name: "Chidi Okafor",
+    image: "/images/tenancy_law.jpg",
     initials: "CO",
     id: "c7",
   },
@@ -86,9 +93,10 @@ export default function CardStrip() {
             return (
               <div
                 key={card.id}
-                className="flex-shrink-0 rounded-[20px] overflow-hidden p-7 flex flex-col justify-between"
+                className="flex-shrink-0 rounded-[20px] overflow-hidden p-7 relative flex flex-col justify-between"
                 style={{ width: 280, height: 380, background: card.gradient }}
               >
+                <img src={card.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
                 <p className="text-white/90 text-sm font-semibold uppercase leading-snug tracking-wide max-w-[180px]">
                   {card.label}
                 </p>
@@ -108,6 +116,7 @@ export default function CardStrip() {
               className="flex-shrink-0 rounded-[20px] overflow-hidden relative"
               style={{ width: 280, height: 380, background: card.bg }}
             >
+               <img src={card.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
               {/* Initials watermark */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <span

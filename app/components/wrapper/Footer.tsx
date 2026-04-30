@@ -33,7 +33,7 @@ const LINKS = {
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100">
-      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
+      <div className="max-w-6xl mx-auto !px-3 md:!px-6 lg:!px-8">
 
         {/* ── Main grid ── */}
         <div className="py-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
@@ -54,13 +54,13 @@ export default function Footer() {
                 </svg>
               </div>
               <span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:700, fontSize:17, color:"#111827" }}>
-                Understand<span style={{ color:"#E8317A" }}>Law</span>
+                Law<span style={{ color:"#E8317A" }}>Ticha</span>
               </span>
             </Link>
 
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5">
-              Making Nigerian law simple, accessible, and actionable for every citizen — 
-              regardless of education, income, or location.
+              Making Nigerian law simple, accessible, and actionable for every citizen.
+              Regardless of education, income, or location.
             </p>
 
             {/* Social row */}
@@ -98,16 +98,16 @@ export default function Footer() {
 
         {/* ── Newsletter banner ── */}
         <div className="py-8 border-t border-gray-100">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl !px-6 !py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl px-4! md:px-6! !py-6">
             <div>
               <p className="text-xs font-semibold text-[#E8317A] uppercase tracking-wider mb-1">Weekly Digest</p>
-              <h3 className="text-base font-bold text-gray-900">Know Your Rights — Every Week</h3>
+              <h3 className="text-base font-bold text-gray-900">Know Your Rights, Every Week.</h3>
               <p className="text-sm text-gray-500 mt-0.5">Plain-English legal updates, no jargon.</p>
             </div>
             <form className="flex gap-2.5 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
               <input type="email" placeholder="Your email address"
-                className="email-input w-full md:w-60"/>
-              <button type="submit" className="btn-pink text-sm flex-shrink-0">Subscribe</button>
+                className="flex-1 min-w-0 h-[52px] !px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors" />
+              <button type="submit" className="bg-primary text-sm flex-shrink-0">Subscribe</button>
             </form>
           </div>
         </div>
@@ -115,12 +115,12 @@ export default function Footer() {
         {/* ── Bottom bar ── */}
         <div className="py-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span>© {new Date().getFullYear()} UnderstandLaw.</span>
+            <span>© {new Date().getFullYear()} LawTicha.</span>
             <span>Built for Nigeria 🇳🇬</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex justify-center flex-wrap items-center gap-1 md:gap-4">
             {["Privacy Policy","Terms of Use","Content Disclaimer","Cookies"].map((l, i, arr) => (
-              <span key={l} className="flex items-center gap-4">
+              <span key={l} className="flex items-center gap-1 md:gap-4">
                 <Link href="#" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">{l}</Link>
                 {i < arr.length - 1 && <span className="text-gray-200">·</span>}
               </span>
@@ -132,7 +132,7 @@ export default function Footer() {
         <div className="pb-6">
           <p className="text-[11px] text-gray-400 leading-relaxed max-w-3xl">
             <strong className="font-semibold text-gray-500">Disclaimer:</strong>{" "}
-            Content on UnderstandLaw is provided for general informational and educational purposes only.
+            Content on LawTicha is provided for general informational and educational purposes only.
             It does not constitute legal advice. Consult a qualified lawyer for advice specific to your situation.
           </p>
         </div>
