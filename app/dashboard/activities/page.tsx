@@ -11,7 +11,7 @@ import {
   Bell, ClipboardList, UserPlus, ChevronUp,
 } from "lucide-react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+//  Types 
 type RequestStatus = "pending" | "accepted" | "completed" | "declined" | "cancelled" | "matched";
 type RequestKind   = "consultation" | "lawyer_request";
 type ConsultMode   = "message" | "call" | "video";
@@ -64,7 +64,7 @@ interface LawyerRequest {
 
 type AnyRequest = ConsultRequest | LawyerRequest;
 
-// ── Mock data ──────────────────────────────────────────────────────────────
+//  Mock data 
 const REQUESTS: AnyRequest[] = [
   {
     id: "c001",
@@ -194,7 +194,7 @@ const REQUESTS: AnyRequest[] = [
   },
 ];
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+//  Helpers 
 const STATUS_META: Record<RequestStatus, { label: string; bg: string; text: string; border: string; icon: React.ElementType }> = {
   pending:   { label: "Pending",    bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: Clock       },
   accepted:  { label: "In Progress",bg: "#EFF6FF", text: "#1E3A8A", border: "#93C5FD", icon: RefreshCw   },
@@ -232,7 +232,7 @@ function StarRating({ n }: { n: number }) {
   );
 }
 
-// ── Timeline ───────────────────────────────────────────────────────────────
+//  Timeline 
 function Timeline({ events }: { events: TimelineEvent[] }) {
   return (
     <div className="flex flex-col gap-0">
@@ -255,7 +255,7 @@ function Timeline({ events }: { events: TimelineEvent[] }) {
   );
 }
 
-// ── Consult Card ───────────────────────────────────────────────────────────
+//  Consult Card 
 function ConsultCard({ req }: { req: ConsultRequest }) {
   const [expanded, setExpanded] = useState(false);
   const ModeIcon = MODE_META[req.mode].icon;
@@ -381,7 +381,7 @@ function ConsultCard({ req }: { req: ConsultRequest }) {
   );
 }
 
-// ── Lawyer Request Card ────────────────────────────────────────────────────
+//  Lawyer Request Card 
 function LawyerRequestCard({ req }: { req: LawyerRequest }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -477,7 +477,7 @@ function LawyerRequestCard({ req }: { req: LawyerRequest }) {
   );
 }
 
-// ── Main page ──────────────────────────────────────────────────────────────
+//  Main page 
 export default function RequestsPage() {
   const [tab, setTab] = useState<"all" | "consultation" | "lawyer_request">("all");
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "all">("all");

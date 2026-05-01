@@ -12,7 +12,7 @@ import {
   SlidersHorizontal, Volume2, VolumeX, Languages,
 } from "lucide-react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+//  Types 
 type SettingsTab = "profile" | "notifications" | "privacy" | "security" | "appearance" | "legal";
 
 interface Toggle {
@@ -22,7 +22,7 @@ interface Toggle {
   value: boolean;
 }
 
-// ── Section wrapper ────────────────────────────────────────────────────────
+//  Section wrapper 
 function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-5">
@@ -77,7 +77,7 @@ function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: string, v:
   );
 }
 
-// ── Profile tab ────────────────────────────────────────────────────────────
+//  Profile tab 
 function ProfileSettings() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -183,7 +183,7 @@ function ProfileSettings() {
   );
 }
 
-// ── Notifications tab ──────────────────────────────────────────────────────
+//  Notifications tab 
 function NotificationSettings() {
   const [items, setItems] = useState<Toggle[]>([
     { id: "n1",  label: "Lawyer response notifications",    desc: "Get notified when a lawyer accepts or declines your consultation request.", value: true  },
@@ -225,7 +225,7 @@ function NotificationSettings() {
   );
 }
 
-// ── Privacy tab ────────────────────────────────────────────────────────────
+//  Privacy tab 
 function PrivacySettings() {
   const [items, setItems] = useState<Toggle[]>([
     { id: "p1", label: "Show my reading activity to the community",  desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: false },
@@ -278,7 +278,7 @@ function PrivacySettings() {
   );
 }
 
-// ── Security tab ───────────────────────────────────────────────────────────
+//  Security tab 
 function SecuritySettings() {
   const [showCurrent, setShowCurrent]   = useState(false);
   const [showNew, setShowNew]           = useState(false);
@@ -400,7 +400,7 @@ function SecuritySettings() {
   );
 }
 
-// ── Appearance tab ─────────────────────────────────────────────────────────
+//  Appearance tab 
 function AppearanceSettings() {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [fontSize, setFontSize] = useState<"small" | "medium" | "large">("medium");
@@ -478,7 +478,7 @@ function AppearanceSettings() {
   );
 }
 
-// ── Legal Preferences tab ──────────────────────────────────────────────────
+//  Legal Preferences tab 
 function LegalSettings() {
   const [interests, setInterests] = useState<string[]>(["criminal", "employment", "tenancy"]);
   const [lang, setLang] = useState("en");
@@ -562,7 +562,7 @@ function LegalSettings() {
   );
 }
 
-// ── Main Settings Page ─────────────────────────────────────────────────────
+//  Main Settings Page 
 export default function SettingsPage() {
   const [tab, setTab] = useState<SettingsTab>("profile");
 
@@ -598,7 +598,7 @@ export default function SettingsPage() {
 
         <div className="grid xl:grid-cols-[220px_1fr] gap-6">
 
-          {/* ── Sidebar nav ── */}
+          {/*  Sidebar nav  */}
           <div className="hidden xl:flex flex-col gap-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-3 self-start sticky top-24">
             {tabs.map(t => {
               const Icon = t.icon;
@@ -635,7 +635,7 @@ export default function SettingsPage() {
             })}
           </div>
 
-          {/* ── Content ── */}
+          {/*  Content  */}
           <div>
             {tab === "profile"       && <ProfileSettings />}
             {tab === "notifications" && <NotificationSettings />}

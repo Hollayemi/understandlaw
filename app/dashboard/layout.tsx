@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen flex" style={{ background: "#F5F2EE", fontFamily: "var(--font-dm-sans)" }}>
 
-      {/* ── Mobile overlay ── */}
+      {/*  Mobile overlay  */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/30 z-30 lg:hidden"
@@ -41,7 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       )}
 
-      {/* ── Sidebar ── */}
+      {/*  Sidebar  */}
       <aside
         className={`
           fixed lg:sticky top-0 left-0 z-40 h-screen w-[240px] flex-shrink-0 flex flex-col
@@ -142,7 +142,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* ── Main ── */}
+      {/*  Main  */}
       <div className="flex-1 min-w-0 flex flex-col">
 
         {/* Mobile top bar */}

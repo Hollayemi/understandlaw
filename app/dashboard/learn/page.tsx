@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Search, Bell, Bookmark, ChevronLeft, ChevronRight, Clock, BookOpen, Star } from "lucide-react";
 
-// ── Types ─────────────────────────────────────────────────────────────────
+//  Types 
 type TabKey = "all" | "active" | "complete" | "saved";
 
-// ── Mock modules ──────────────────────────────────────────────────────────
+//  Mock modules 
 const MODULES = [
   {
     slug:        "rights-during-arrest",
@@ -113,7 +113,7 @@ const TABS: { key: TabKey; label: string; count: number }[] = [
   { key: "saved",    label: "Saved",        count: 1  },
 ];
 
-// ── Component ─────────────────────────────────────────────────────────────
+//  Component 
 export default function DashboardLearnPage() {
   const [tab, setTab] = useState<TabKey>("all");
   const [saved, setSaved] = useState<Set<string>>(new Set(["business-registration"]));

@@ -12,7 +12,7 @@ import {
   Bell, UserPlus, ClipboardList, Sparkles, Info,
 } from "lucide-react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+//  Types 
 type ConsultMode = "message" | "call" | "video";
 type ModalType = "consult" | "request" | "profile" | null;
 
@@ -39,7 +39,7 @@ interface Lawyer {
   nbaNumber: string;
 }
 
-// ── Data ───────────────────────────────────────────────────────────────────
+//  Data 
 const SPECIALISMS = [
   { id: "all",        label: "All Areas",        icon: Scale },
   { id: "criminal",   label: "Criminal Law",      icon: Shield },
@@ -204,7 +204,7 @@ const CONSULT_MODES: { id: ConsultMode; label: string; icon: React.ElementType; 
   { id: "video",   label: "Video Session",    icon: Video,         desc: "Face-to-face via secure video link" },
 ];
 
-// ── Sub-components ─────────────────────────────────────────────────────────
+//  Sub-components 
 
 function VerificationSteps() {
   const steps = [
@@ -356,7 +356,7 @@ function LawyerCard({
   );
 }
 
-// ── Consult Modal ──────────────────────────────────────────────────────────
+//  Consult Modal 
 function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [mode, setMode] = useState<ConsultMode>("message");
@@ -551,7 +551,7 @@ function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void
   );
 }
 
-// ── Request a Lawyer Modal ─────────────────────────────────────────────────
+//  Request a Lawyer Modal 
 function RequestLawyerModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [specialism, setSpecialism] = useState("");
@@ -717,7 +717,7 @@ function RequestLawyerModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ── Profile Modal ──────────────────────────────────────────────────────────
+//  Profile Modal 
 function ProfileModal({ lawyer, onConsult, onClose }: { lawyer: Lawyer; onConsult: () => void; onClose: () => void }) {
   const [tab, setTab] = useState<"about" | "reviews">("about");
 
@@ -899,7 +899,7 @@ function ProfileModal({ lawyer, onConsult, onClose }: { lawyer: Lawyer; onConsul
   );
 }
 
-// ── Main Marketplace Page ──────────────────────────────────────────────────
+//  Main Marketplace Page 
 export default function MarketplacePage() {
   const [modal, setModal] = useState<ModalType>(null);
   const [activeLawyer, setActiveLawyer] = useState<Lawyer | null>(null);
@@ -935,7 +935,7 @@ export default function MarketplacePage() {
 
   return (
     <>
-      {/* ── Modals ── */}
+      {/*  Modals  */}
       {modal === "consult" && activeLawyer && <ConsultModal lawyer={activeLawyer} onClose={closeModal} />}
       {modal === "request" && <RequestLawyerModal onClose={closeModal} />}
       {modal === "profile" && activeLawyer && (
@@ -944,7 +944,7 @@ export default function MarketplacePage() {
 
       <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
 
-        {/* ── Top bar ── */}
+        {/*  Top bar  */}
         <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
@@ -960,7 +960,7 @@ export default function MarketplacePage() {
 
         <div className="max-w-7xl mx-auto px-5 xl:px-8 py-7">
 
-          {/* ── Hero band ── */}
+          {/*  Hero band  */}
           <div className="rounded-2xl overflow-hidden mb-7 relative"
             style={{ background: "linear-gradient(135deg, #0B1120 0%, #1E3A5F 60%, #0B1120 100%)" }}>
             <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -1022,12 +1022,12 @@ export default function MarketplacePage() {
             </div>
           </div>
 
-          {/* ── Verification steps ── */}
+          {/*  Verification steps  */}
           <VerificationSteps />
 
           <div className="mt-7 grid xl:grid-cols-[260px_1fr] gap-6">
 
-            {/* ── LEFT: Filters ── */}
+            {/*  LEFT: Filters  */}
             <div className="hidden xl:flex flex-col gap-5">
 
               {/* Search */}
@@ -1098,7 +1098,7 @@ export default function MarketplacePage() {
               </div>
             </div>
 
-            {/* ── RIGHT: Lawyer grid ── */}
+            {/*  RIGHT: Lawyer grid  */}
             <div>
               {/* Sort + mobile filter bar */}
               <div className="flex items-center gap-3 mb-5">

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Bell, Search, BookOpen, Clock, Award, BarChart2 } from "lucide-react";
 
-// ── Mock data ─────────────────────────────────────────────────────────────
+//  Mock data 
 const USER = { name: "Stephen", initials: "SO" };
 
 const STATS = [
@@ -53,7 +53,7 @@ const ONGOING = [
   },
 ];
 
-// ── Chart bar component ────────────────────────────────────────────────────
+//  Chart bar component 
 function ChartBar({ val, max, color, tooltip, month }: {
   val: number; max: number; color: string; tooltip: string; month?: string;
 }) {
@@ -73,7 +73,7 @@ function ChartBar({ val, max, color, tooltip, month }: {
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────
+//  Main 
 export default function DashboardOverviewPage() {
   const [msgTab, setMsgTab] = useState<"project" | "direct">("project");
 

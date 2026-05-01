@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-// ── Section label with gold bar ────────────────────────────────────────────
+//  Section label with gold bar 
 interface SectionLabelProps {
   children: ReactNode;
   light?: boolean;
@@ -20,7 +20,7 @@ export function SectionLabel({ children, light = false }: SectionLabelProps) {
   );
 }
 
-// ── Verified Badge Chip ─────────────────────────────────────────────────────
+//  Verified Badge Chip 
 interface BadgeChipProps {
   icon?: ReactNode;
   children: ReactNode;
@@ -41,7 +41,7 @@ export function BadgeChip({ icon, children, variant = "gold" }: BadgeChipProps) 
   );
 }
 
-// ── Stat card ──────────────────────────────────────────────────────────────
+//  Stat card 
 interface StatCardProps {
   value: string;
   label: string;
@@ -70,7 +70,7 @@ export function StatCard({ value, label, suffix }: StatCardProps) {
   );
 }
 
-// ── Feature Icon Box ───────────────────────────────────────────────────────
+//  Feature Icon Box 
 interface FeatureIconProps {
   icon: ReactNode;
   size?: "sm" | "md" | "lg";
@@ -94,7 +94,7 @@ export function FeatureIcon({ icon, size = "md" }: FeatureIconProps) {
   );
 }
 
-// ── Card wrapper ───────────────────────────────────────────────────────────
+//  Card wrapper 
 interface CardProps {
   children: ReactNode;
   className?: string;
@@ -115,7 +115,7 @@ export function Card({ children, className = "", hover = true, dark = false }: C
   );
 }
 
-// ── Divider ────────────────────────────────────────────────────────────────
+//  Divider 
 export function GoldDivider({ className = "" }: { className?: string }) {
   return (
     <div className={`h-px bg-gradient-to-r from-transparent via-[#C9922A]/30 to-transparent ${className}`} />

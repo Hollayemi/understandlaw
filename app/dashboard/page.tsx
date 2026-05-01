@@ -12,7 +12,7 @@ import {
   File
 } from "lucide-react";
 
-// ── Mock user data ─────────────────────────────────────────────────────────
+//  Mock user data 
 const USER = {
   name: "Adaeze",
   streak: 7,
@@ -83,7 +83,7 @@ const COMMUNITY_HIGHLIGHTS = [
   { initials: "BL", color: "#10B981", name: "Babatunde L.", text: "The eviction law section saved me ₦200k in illegal fees.", time: "1d ago",  likes: 89 },
 ];
 
-// ── Quiz component ──────────────────────────────────────────────────────────
+//  Quiz component 
 function DailyQuiz() {
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -140,7 +140,7 @@ function DailyQuiz() {
   );
 }
 
-// ── XP Progress bar ─────────────────────────────────────────────────────────
+//  XP Progress bar 
 function XPBar() {
   const pct = (USER.xp / USER.nextLevelXp) * 100;
   return (
@@ -161,7 +161,7 @@ function XPBar() {
   );
 }
 
-// ── Main ────────────────────────────────────────────────────────────────────
+//  Main 
 export default function UserDashboardOverview() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [greeting, setGreeting] = useState("Good Morning");
@@ -175,7 +175,7 @@ export default function UserDashboardOverview() {
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
 
-      {/* ── Top bar ── */}
+      {/*  Top bar  */}
       <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-5 xl:px-8 h-16">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
@@ -197,7 +197,7 @@ export default function UserDashboardOverview() {
 
       <div className="p-5 xl:p-8 max-w-7xl mx-auto">
 
-        {/* ── Welcome + Video ── */}
+        {/*  Welcome + Video  */}
         <div className="grid xl:grid-cols-[1fr_420px] gap-5 mb-7">
 
           {/* Left: greeting */}
@@ -290,7 +290,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/* ── Continue Reading ── */}
+        {/*  Continue Reading  */}
         <section className="mb-7">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-900 text-base flex items-center gap-2">
@@ -350,7 +350,7 @@ export default function UserDashboardOverview() {
           </div>
         </section>
 
-        {/* ── Middle grid: Quiz + Trending + Bookmarks ── */}
+        {/*  Middle grid: Quiz + Trending + Bookmarks  */}
         <div className="grid xl:grid-cols-3 gap-5 mb-7">
 
           {/* Daily Quiz */}
@@ -409,7 +409,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/* ── Community + Achievement row ── */}
+        {/*  Community + Achievement row  */}
         <div className="grid xl:grid-cols-[1fr_300px] gap-5 mb-7">
 
           {/* Community */}
@@ -486,7 +486,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/* ── Explore Topics CTA ── */}
+        {/*  Explore Topics CTA  */}
         <div
           className="rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-5 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #E8317A 0%, #ff6fa8 50%, #E8317A 100%)" }}

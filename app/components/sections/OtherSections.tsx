@@ -143,7 +143,7 @@ export function TopicsSection() {
   );
 }
 
-// ── LAWYER CARDS ──────────────────────────────────────────────────────────
+//  LAWYER CARDS 
 const LAWYERS = [
   { name:"Adaeze Okonkwo",  role:"Employment & Labour Law", city:"Lagos",  rating:4.9, reviews:38,  response:"< 1hr",  consults:124, color:"#3B82F6", initials:"AO", badges:["Verified","Top Rated","Responsive"] },
   { name:"Emeka Nwosu",     role:"Property & Tenancy Law",  city:"Abuja",  rating:4.8, reviews:55,  response:"< 2hrs", consults:210, color:"#10B981", initials:"EN", badges:["Verified","Top Rated"] },
@@ -240,7 +240,7 @@ export function MarketplaceSection() {
   );
 }
 
-// ── TESTIMONIALS ──────────────────────────────────────────────────────────
+//  TESTIMONIALS 
 const TESTIMONIALS = [
   { quote:"My landlord tried to evict me without notice. I read the tenancy guide on LawTicha, understood my rights, and held my ground. The eviction attempt stopped completely.", name:"Chidinma Okafor", role:"Tenant, Enugu", topic:"Tenancy Rights", color:"#3B82F6", initials:"CO" },
   { quote:"I was retrenched without severance. After using the employment law module, I knew exactly what I was owed. I hired a verified lawyer through the platform and got every kobo.", name:"Babatunde Lawal", role:"Former Staff, Lagos", topic:"Employment Law", color:"#10B981", initials:"BL" },
@@ -294,7 +294,7 @@ export function TestimonialsSection() {
   );
 }
 
-// ── PRICING + FINAL CTA ───────────────────────────────────────────────────
+//  PRICING + FINAL CTA 
 const TIERS = [
   {
     name:"Free", price:"₦0", period:"forever",

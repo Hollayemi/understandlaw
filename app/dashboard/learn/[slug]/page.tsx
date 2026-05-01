@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Play, Pause, Volume2, Maximize2, Star, Clock, BookOpen, Search, ChevronRight, Check } from "lucide-react";
 
-// ── Mock module data ───────────────────────────────────────────────────────
+//  Mock module data 
 const MODULE = {
   slug:       "rights-during-arrest",
   title:      "Rights During Arrest & Detention",
@@ -42,7 +42,7 @@ const TOPICS = [
 
 const completedCount = TOPICS.filter((t) => t.done).length;
 
-// ── Component ─────────────────────────────────────────────────────────────
+//  Component 
 export default function ModuleDetailPage() {
   const [playing, setPlaying] = useState(false);
   const [descOpen, setDescOpen] = useState(true);

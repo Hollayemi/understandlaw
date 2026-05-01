@@ -35,7 +35,7 @@ export default function Footer() {
     <footer className="bg-white border-t border-gray-100">
       <div className="max-w-6xl mx-auto !px-3 md:!px-6 lg:!px-8">
 
-        {/* ── Main grid ── */}
+        {/*  Main grid  */}
         <div className="py-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {/* Brand col */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
@@ -96,7 +96,7 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* ── Newsletter banner ── */}
+        {/*  Newsletter banner  */}
         <div className="py-8 border-t border-gray-100">
           <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl px-4! md:px-6! !py-6">
             <div>
@@ -112,7 +112,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Bottom bar ── */}
+        {/*  Bottom bar  */}
         <div className="py-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <span>© {new Date().getFullYear()} LawTicha.</span>
@@ -128,7 +128,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Legal disclaimer ── */}
+        {/*  Legal disclaimer  */}
         <div className="pb-6">
           <p className="text-[11px] text-gray-400 leading-relaxed max-w-3xl">
             <strong className="font-semibold text-gray-500">Disclaimer:</strong>{" "}

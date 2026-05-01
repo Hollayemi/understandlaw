@@ -39,7 +39,7 @@ const TIERS = [
 export default function CTASection() {
   return (
     <>
-      {/* ── Pricing ── */}
+      {/*  Pricing  */}
       <section className="bg-[#FAF7F2] py-24 xl:py-32">
         <div className="max-w-7xl mx-auto px-5 xl:px-8">
 
@@ -150,7 +150,7 @@ export default function CTASection() {
         </div>
       </section>
 
-      {/* ── Final CTA Banner ── */}
+      {/*  Final CTA Banner  */}
       <section
         className="relative overflow-hidden py-20 xl:py-28"
         style={{ background: "linear-gradient(135deg, #0B1120 0%, #162543 60%, #0B1120 100%)" }}
