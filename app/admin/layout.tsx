@@ -235,7 +235,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const currentPage = (() => {
     for (const group of NAV_GROUPS) {
       for (const item of group.items) {
-        const match = item.exact
+        const match = "exact" in item && item.exact
           ? pathname === item.href
           : pathname.startsWith(item.href);
         if (match) return item.label;
