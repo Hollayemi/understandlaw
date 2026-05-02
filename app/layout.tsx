@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { Geist, Geist_Mono, Bebas_Neue, DM_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { store } from "@/redux/store";
-import { Provider } from "react-redux";
-
+import ProviderWrapper from "@/redux/provider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -68,9 +66,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <Provider store={store}>
+        <ProviderWrapper>
           {children}
-        </Provider>
+        </ProviderWrapper>
       </body>
     </html>
   );
