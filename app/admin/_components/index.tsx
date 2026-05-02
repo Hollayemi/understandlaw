@@ -32,7 +32,7 @@ interface StatCardProps {
 export function StatCard({ icon: Icon, label, value, trend, color = "#E8317A", bg = "#FFF0F5" }: StatCardProps) {
   const positive = trend ? trend.value >= 0 : null;
   return (
-    <div className="bg-white rounded-2xl border border-[#F3F4F6] p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+    <div className="bg-pink-600 rounded-2xl border border-[#F3F4F6] p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: bg }}
@@ -40,8 +40,8 @@ export function StatCard({ icon: Icon, label, value, trend, color = "#E8317A", b
         <Icon size={18} style={{ color }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-1">{label}</p>
-        <p className="text-2xl font-bold text-[#111827] leading-none">{value}</p>
+        <p className="text-[11px] text-white font-semibold text-[#9CA3AF] uppercase tracking-wider mb-1">{label}</p>
+        <p className="text-2xl font-bold text-white [#111827] leading-none">{value}</p>
         {trend && (
           <div className="flex items-center gap-1 mt-1.5">
             {positive ? (
