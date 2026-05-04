@@ -20,7 +20,7 @@ const FEATURED_ACTS = [
     category: "Tenancy",
     color: "#10B981",
     sections: 43,
-    summary: "Regulates landlord and tenant relationships in Lagos — including eviction procedures and notice periods.",
+    summary: "Regulates landlord and tenant relationships in Lagos,  including eviction procedures and notice periods.",
     tags: ["Eviction", "Rent", "Notice", "Repairs"],
   },
   {
@@ -50,7 +50,7 @@ const FEATURED_ACTS = [
     category: "Business",
     color: "#06B6D4",
     sections: 869,
-    summary: "The primary legislation governing companies in Nigeria — from registration to dissolution.",
+    summary: "The primary legislation governing companies in Nigeria,  from registration to dissolution.",
     tags: ["CAC", "Registration", "Directors", "Shares"],
   },
   {
@@ -126,7 +126,7 @@ export default function LibraryPage() {
               </svg>
               <input
                 type="text"
-                placeholder="Search legislation — e.g. 'Labour Act', 'Section 35 Constitution'..."
+                placeholder="Search legislation,  e.g. 'Labour Act', 'Section 35 Constitution'..."
                 className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               />
             </div>

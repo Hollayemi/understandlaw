@@ -9,7 +9,7 @@ const TIERS = [
     period: "forever",
     badge: null,
     highlight: false,
-    desc: "Everything you need to understand Nigerian law — at no cost. No card. No catch.",
+    desc: "Everything you need to understand Nigerian law,  at no cost. No card. No catch.",
     features: [
       { text: "Full Legal Learning Module", included: true },
       { text: "Browse all 40+ Legal Acts", included: true },
@@ -30,7 +30,7 @@ const TIERS = [
     period: "per consultation",
     badge: "Most Popular",
     highlight: true,
-    desc: "When you need more than education — book a verified Nigerian lawyer at transparent, upfront pricing.",
+    desc: "When you need more than education,  book a verified Nigerian lawyer at transparent, upfront pricing.",
     features: [
       { text: "Everything in Free", included: true },
       { text: "Browse all lawyer profiles & badges", included: true },
@@ -51,7 +51,7 @@ const TIERS = [
     period: "Phase 3",
     badge: "Coming Phase 3",
     highlight: false,
-    desc: "For power users — advanced guides, downloadable templates, AI legal query tool, and completion certificates.",
+    desc: "For power users,  advanced guides, downloadable templates, AI legal query tool, and completion certificates.",
     features: [
       { text: "Everything in Marketplace", included: true },
       { text: "Deep-dive advanced legal guides", included: true },
@@ -123,7 +123,7 @@ export default function PricingPage() {
             <span style={{ color: "#E8317A" }}>SCALE WHEN READY.</span>
           </h1>
           <p className="text-base text-gray-500 max-w-xl mx-auto leading-relaxed">
-            Legal knowledge is free — forever. Only pay when you need a professional lawyer.
+            Legal knowledge is free,  forever. Only pay when you need a professional lawyer.
             No subscriptions. No hidden charges. Nigerian law, simplified.
           </p>
         </div>

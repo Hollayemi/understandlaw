@@ -14,7 +14,7 @@ import {
   StatBar, FilterBar, Table, StatusBadge, Avatar, PageHeader,
 } from "../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type BookFormat = "pdf" | "physical" | "both";
 type BookStatus = "active" | "inactive" | "draft";
 type BookCategory =
@@ -67,7 +67,7 @@ interface BookOrder {
   notes: string;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const BOOKS: Book[] = [
   {
     id: "b001",
@@ -95,7 +95,7 @@ const BOOKS: Book[] = [
     id: "b002",
     title: "Tenant Rights Handbook: Nigeria Edition",
     author: "Emeka Nwosu",
-    description: "Everything a tenant needs to know — notice periods, illegal lockouts, deposit recovery.",
+    description: "Everything a tenant needs to know,  notice periods, illegal lockouts, deposit recovery.",
     category: "tenancy",
     coverUrl: "/images/tenancy_law.jpg",
     pdfUrl: "/books/tenant-rights.pdf",
@@ -117,7 +117,7 @@ const BOOKS: Book[] = [
     id: "b003",
     title: "Labour Law Guide for Nigerian Workers",
     author: "Fatimah Bello",
-    description: "Wrongful termination, severance pay, NSITF contributions — a guide to the Labour Act Cap. L1.",
+    description: "Wrongful termination, severance pay, NSITF contributions,  a guide to the Labour Act Cap. L1.",
     category: "employment",
     coverUrl: "/images/employment_law.jpg",
     pdfUrl: "/books/labour-law.pdf",
@@ -139,7 +139,7 @@ const BOOKS: Book[] = [
     id: "b004",
     title: "Nigerian Contract Law: A Citizen's Guide",
     author: "Chidi Okafor",
-    description: "Offer, acceptance, consideration, capacity, and remedies for breach — all explained plainly.",
+    description: "Offer, acceptance, consideration, capacity, and remedies for breach,  all explained plainly.",
     category: "contracts",
     coverUrl: "/images/contract_law.jpg",
     pdfUrl: null,
@@ -246,7 +246,7 @@ const ORDERS: BookOrder[] = [
   },
 ];
 
-// ─── Config ───────────────────────────────────────────────────────────────────
+//  Config 
 const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: string }> = {
   criminal:      { label: "Criminal",      color: "#3B82F6", bg: "#EFF6FF" },
   tenancy:       { label: "Tenancy",       color: "#10B981", bg: "#ECFDF5" },
@@ -279,7 +279,7 @@ const BOOK_STATUS_CFG: Record<BookStatus, { label: string; bg: string; text: str
   draft:    { label: "Draft",    bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
 };
 
-// ─── Upload Book Modal ─────────────────────────────────────────────────────────
+//  Upload Book Modal 
 function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (b: Book) => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [uploading, setUploading] = useState(false);
@@ -579,7 +579,7 @@ function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (b: B
   );
 }
 
-// ─── Order Detail Modal ────────────────────────────────────────────────────────
+//  Order Detail Modal 
 function OrderModal({ order, onClose, onUpdateStatus }: {
   order: BookOrder;
   onClose: () => void;
@@ -706,7 +706,7 @@ function OrderModal({ order, onClose, onUpdateStatus }: {
   );
 }
 
-// ─── Book Card ─────────────────────────────────────────────────────────────────
+//  Book Card 
 function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDelete }: {
   book: Book;
   onEdit: (b: Book) => void;
@@ -861,7 +861,7 @@ function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDelete }: 
   );
 }
 
-// ─── Main Admin Library Page ──────────────────────────────────────────────────
+//  Main Admin Library Page 
 export default function AdminLibraryPage() {
   const [activeTab, setActiveTab] = useState<"books" | "orders">("books");
   const [showUpload, setShowUpload] = useState(false);
@@ -1065,7 +1065,7 @@ export default function AdminLibraryPage() {
           })}
         </div>
 
-        {/* ─── BOOKS TAB ─────────────────────────────────────── */}
+        {/*  BOOKS TAB  */}
         {activeTab === "books" && (
           <>
             {/* Filters */}
@@ -1138,7 +1138,7 @@ export default function AdminLibraryPage() {
           </>
         )}
 
-        {/* ─── ORDERS TAB ────────────────────────────────────── */}
+        {/*  ORDERS TAB  */}
         {activeTab === "orders" && (
           <>
             <div className="flex flex-col sm:flex-row gap-3 mb-5">

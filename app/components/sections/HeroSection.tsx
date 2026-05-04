@@ -7,7 +7,7 @@ export default function HeroSection() {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-14 pb-20">
         <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
 
-          {/* LEFT — headline + social proof */}
+          {/* LEFT,  headline + social proof */}
           <div className="animate-fade-up">
             <h1
               className="text-[clamp(52px,6vw,40px)] md:text-[clamp(62px,8vw,76px)] leading-[0.93] tracking-[0.01em] uppercase text-gray-900 font-normal"
@@ -40,7 +40,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* RIGHT — description + form */}
+          {/* RIGHT,  description + form */}
           <div className="animate-fade-up delay-200 flex flex-col gap-6 lg:pt-3">
             <p className="text-[15px] leading-relaxed text-gray-500 max-w-md">
               From Plain-English Legal Guides To Verified Lawyer Consultations,

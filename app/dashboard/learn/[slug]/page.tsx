@@ -18,7 +18,7 @@ const MODULE = {
   duration:   "30:45",
   currentTime: "00:46",
   progress:   2.5, // percent of video played
-  description: `Understanding your rights during a police arrest is one of the most critical things every Nigerian should know. Section 35 of the 1999 Constitution guarantees your right to personal liberty — and limits exactly what officers can lawfully do.
+  description: `Understanding your rights during a police arrest is one of the most critical things every Nigerian should know. Section 35 of the 1999 Constitution guarantees your right to personal liberty,  and limits exactly what officers can lawfully do.
 
 This module walks through the precise steps of a lawful arrest, what the police must tell you, your right to silence, and when detention beyond 24 hours becomes unlawful. Armed with this knowledge, you can protect yourself calmly and legally.`,
 };
@@ -35,7 +35,7 @@ const TOPICS = [
   { title: "Police Caution & Its Meaning",                 done: false },
   { title: "SARS-Specific Encounter Rights",               done: false },
   { title: "Documenting an Encounter",                     done: false },
-  { title: "Section 35 — Full Text Explained",             done: false },
+  { title: "Section 35,  Full Text Explained",             done: false },
   { title: "Real-Life Scenario Walkthrough",               done: false },
   { title: "What to Do After an Unlawful Arrest",          done: false },
 ];
@@ -68,7 +68,7 @@ export default function ModuleDetailPage() {
       {/* Main two-column layout */}
       <div className="grid xl:grid-cols-[1fr_340px] gap-6 p-5 xl:p-6">
 
-        {/* LEFT — content */}
+        {/* LEFT,  content */}
         <div className="flex flex-col gap-5">
 
           {/* Video player */}
@@ -205,7 +205,7 @@ export default function ModuleDetailPage() {
           </div>
         </div>
 
-        {/* RIGHT — progress tracker */}
+        {/* RIGHT,  progress tracker */}
         <div className="flex flex-col gap-4">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">

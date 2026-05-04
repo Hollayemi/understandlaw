@@ -11,7 +11,7 @@ import {
   Building2, Car, Users,
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type BookFormat = "pdf" | "physical" | "both";
 type BookCategory =
   | "criminal" | "tenancy" | "employment" | "contracts"
@@ -39,13 +39,13 @@ interface Book {
   reviewCount: number;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const BOOKS: Book[] = [
   {
     id: "b001",
     title: "Know Your Rights: Arrest & Detention in Nigeria",
     author: "Adaeze Okonkwo",
-    description: "A plain-English guide to Section 35 of the 1999 Constitution. Covers every stage of a police encounter — from the moment of arrest to bail and court appearances. Know exactly what officers can and cannot do.",
+    description: "A plain-English guide to Section 35 of the 1999 Constitution. Covers every stage of a police encounter,  from the moment of arrest to bail and court appearances. Know exactly what officers can and cannot do.",
     category: "criminal",
     coverUrl: "/images/police_law.jpg",
     pdfUrl: "/books/arrest-rights.pdf",
@@ -66,7 +66,7 @@ const BOOKS: Book[] = [
     id: "b002",
     title: "Tenant Rights Handbook: Nigeria Edition",
     author: "Emeka Nwosu",
-    description: "Everything a tenant in Nigeria needs to know — notice periods, illegal lockouts, deposit recovery, and what to do when your landlord breaks the law. Covers Lagos Tenancy Law 2011.",
+    description: "Everything a tenant in Nigeria needs to know,  notice periods, illegal lockouts, deposit recovery, and what to do when your landlord breaks the law. Covers Lagos Tenancy Law 2011.",
     category: "tenancy",
     coverUrl: "/images/tenancy_law.jpg",
     pdfUrl: "/books/tenant-rights.pdf",
@@ -87,7 +87,7 @@ const BOOKS: Book[] = [
     id: "b003",
     title: "Labour Law Guide for Nigerian Workers",
     author: "Fatimah Bello",
-    description: "Wrongful termination, severance pay, NSITF contributions, workplace harassment — a comprehensive guide to the Labour Act Cap. L1 in plain English for every Nigerian worker.",
+    description: "Wrongful termination, severance pay, NSITF contributions, workplace harassment,  a comprehensive guide to the Labour Act Cap. L1 in plain English for every Nigerian worker.",
     category: "employment",
     coverUrl: "/images/employment_law.jpg",
     pdfUrl: "/books/labour-law.pdf",
@@ -129,7 +129,7 @@ const BOOKS: Book[] = [
     id: "b005",
     title: "CAMA 2020: Business Registration Simplified",
     author: "Amina Garba",
-    description: "Everything you need to register and manage a company or business name under CAMA 2020. CAC procedures, director duties, and common mistakes — all made simple.",
+    description: "Everything you need to register and manage a company or business name under CAMA 2020. CAC procedures, director duties, and common mistakes,  all made simple.",
     category: "business",
     coverUrl: null,
     pdfUrl: "/books/cama-2020.pdf",
@@ -148,7 +148,7 @@ const BOOKS: Book[] = [
   },
 ];
 
-// ─── Config ───────────────────────────────────────────────────────────────────
+//  Config 
 const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: string; icon: React.ElementType }> = {
   criminal:      { label: "Police & Criminal", color: "#3B82F6", bg: "#EFF6FF", icon: Shield },
   tenancy:       { label: "Tenancy",           color: "#10B981", bg: "#ECFDF5", icon: Home },
@@ -168,7 +168,7 @@ const NIGERIAN_STATES = [
   "Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"
 ];
 
-// ─── Download Modal ────────────────────────────────────────────────────────────
+//  Download Modal 
 function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const [downloading, setDownloading] = useState(false);
   const [done, setDone] = useState(false);
@@ -258,7 +258,7 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-// ─── Order Modal ───────────────────────────────────────────────────────────────
+//  Order Modal 
 function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submitting, setSubmitting] = useState(false);
@@ -462,7 +462,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-// ─── Book Card ─────────────────────────────────────────────────────────────────
+//  Book Card 
 function BookCard({
   book,
   onDownload,
@@ -583,7 +583,7 @@ function BookCard({
               className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
               <ShoppingCart size={12} />
-              {book.stockCount === 0 ? "Out of Stock" : `Order Physical — NGN ${(book.pricePhysical || 0).toLocaleString()}`}
+              {book.stockCount === 0 ? "Out of Stock" : `Order Physical,  NGN ${(book.pricePhysical || 0).toLocaleString()}`}
             </button>
           )}
           <button onClick={() => onPreview(book)}
@@ -596,7 +596,7 @@ function BookCard({
   );
 }
 
-// ─── Book Detail Drawer ────────────────────────────────────────────────────────
+//  Book Detail Drawer 
 function BookDrawer({ book, onClose, onDownload, onOrder }: {
   book: Book;
   onClose: () => void;
@@ -686,7 +686,7 @@ function BookDrawer({ book, onClose, onDownload, onOrder }: {
                 className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                 style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
                 <ShoppingCart size={14} />
-                Order Physical Copy — NGN {(book.pricePhysical || 0).toLocaleString()}
+                Order Physical Copy,  NGN {(book.pricePhysical || 0).toLocaleString()}
               </button>
             )}
           </div>
@@ -696,7 +696,7 @@ function BookDrawer({ book, onClose, onDownload, onOrder }: {
   );
 }
 
-// ─── Main User Library Page ───────────────────────────────────────────────────
+//  Main User Library Page 
 export default function UserLibraryPage() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -892,7 +892,7 @@ export default function UserLibraryPage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
             {[
               { icon: Shield,    t: "Written by verified Nigerian lawyers" },
-              { icon: Download,  t: "Free PDFs — no registration required" },
+              { icon: Download,  t: "Free PDFs,  no registration required" },
               { icon: Truck,     t: "Physical copies delivered nationwide" },
               { icon: BookOpen,  t: "Plain English, no legal jargon" },
             ].map(({ icon: Icon, t }) => (

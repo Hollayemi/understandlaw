@@ -18,7 +18,7 @@ const CITIZEN_STEPS = [
     num: "01",
     icon: <BookOpen />,
     title: "Pick a Topic",
-    desc: "Browse categories like Tenancy, Employment, Police Rights, or Contracts. Everything is organised by situation — not by statute.",
+    desc: "Browse categories like Tenancy, Employment, Police Rights, or Contracts. Everything is organised by situation,  not by statute.",
     color: "#E8317A",
   },
   {
@@ -32,7 +32,7 @@ const CITIZEN_STEPS = [
     num: "03",
     icon: <ClipboardList />,
     title: "Read the Actual Law",
-    desc: "Go deeper in the Legal Library — every Act has a plain-English summary sitting right next to the authoritative statutory text.",
+    desc: "Go deeper in the Legal Library,  every Act has a plain-English summary sitting right next to the authoritative statutory text.",
     color: "#10B981",
   },
   {
@@ -93,15 +93,15 @@ const FAQS = [
   },
   {
     q: "Is the platform really free?",
-    a: "Yes. The Legal Learning Module and Legal Library are completely free, forever. You only pay when you book a paid consultation with a lawyer. Pricing is displayed upfront — no hidden charges.",
+    a: "Yes. The Legal Learning Module and Legal Library are completely free, forever. You only pay when you book a paid consultation with a lawyer. Pricing is displayed upfront,  no hidden charges.",
   },
   {
     q: "What laws does LawTicha cover?",
-    a: "LawTicha covers Nigerian federal and state legislation relevant to everyday life — tenancy, employment, police encounters, contracts, business registration, family law, and more. Content is updated as laws change.",
+    a: "LawTicha covers Nigerian federal and state legislation relevant to everyday life,  tenancy, employment, police encounters, contracts, business registration, family law, and more. Content is updated as laws change.",
   },
   {
     q: "Can I use LawTicha if I'm a lawyer?",
-    a: "Yes. Lawyers join through the Lawyer Marketplace path — they create a verified profile, complete onboarding, and start receiving clients. We also offer subscription plans with analytics and priority placement (Phase 2).",
+    a: "Yes. Lawyers join through the Lawyer Marketplace path,  they create a verified profile, complete onboarding, and start receiving clients. We also offer subscription plans with analytics and priority placement (Phase 2).",
   },
 ];
 
@@ -160,7 +160,7 @@ export default function HowItWorksPage() {
               UNDERSTAND. LEARN. ACT.
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-lg">
-              Whether you're facing an eviction notice, a wrongful termination, or a police encounter —
+              Whether you're facing an eviction notice, a wrongful termination, or a police encounter, 
               LawTicha gives you the knowledge to respond correctly.
             </p>
           </div>
@@ -230,7 +230,7 @@ export default function HowItWorksPage() {
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-lg">
               LawTicha connects you with Nigerians who are already educated on the law and ready to take action.
-              These are informed clients — not cold calls.
+              These are informed clients,  not cold calls.
             </p>
           </div>
 

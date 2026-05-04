@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { StatBar, FilterBar, Avatar, PageHeader, StatusBadge } from "../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type ModuleCategory =
   | "criminal" | "tenancy" | "employment" | "contracts"
   | "business" | "family" | "consumer" | "road";
@@ -40,7 +40,7 @@ interface Module {
   trending: boolean;
 }
 
-// ─── Category Config ──────────────────────────────────────────────────────────
+//  Category Config 
 const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: React.ElementType; color: string; bg: string }> = {
   criminal:    { label: "Police & Criminal",    icon: Shield,    color: "#3B82F6", bg: "#EFF6FF" },
   tenancy:     { label: "Landlord & Tenancy",   icon: Home,      color: "#10B981", bg: "#ECFDF5" },
@@ -52,12 +52,12 @@ const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: React.Eleme
   road:        { label: "Road Traffic",         icon: Car,       color: "#F97316", bg: "#FFF7ED" },
 };
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const MODULES: Module[] = [
   {
     id: "m001", title: "Rights During Arrest & Detention",
     category: "criminal", status: "active", thumbnail: "/images/police_law.jpg",
-    description: "Know exactly what police can and cannot do — Section 35 explained in full.",
+    description: "Know exactly what police can and cannot do,  Section 35 explained in full.",
     topicCount: 14, enrolledCount: 3842, completionRate: 62, avgRating: 4.3, reviewCount: 284,
     totalWatchTime: "2.1k hrs", createdAt: "Jan 12, 2025", updatedAt: "Apr 20, 2025",
     instructor: "Adaeze Okonkwo", instructorInitials: "AO", instructorColor: "#3B82F6",
@@ -84,7 +84,7 @@ const MODULES: Module[] = [
   {
     id: "m004", title: "What Makes a Contract Valid?",
     category: "contracts", status: "active", thumbnail: "/images/contract_law.jpg",
-    description: "Offer, acceptance, consideration, capacity — all elements explained plainly.",
+    description: "Offer, acceptance, consideration, capacity,  all elements explained plainly.",
     topicCount: 7, enrolledCount: 1644, completionRate: 71, avgRating: 4.6, reviewCount: 209,
     totalWatchTime: "740 hrs", createdAt: "Mar 1, 2025", updatedAt: "Apr 22, 2025",
     instructor: "Chidi Okafor", instructorInitials: "CO", instructorColor: "#F59E0B",
@@ -119,7 +119,7 @@ const MODULES: Module[] = [
   },
 ];
 
-// ─── Create Module Modal ───────────────────────────────────────────────────────
+//  Create Module Modal 
 function CreateModuleModal({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({
     title: "", category: "criminal" as ModuleCategory,
@@ -248,7 +248,7 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── Module Card ──────────────────────────────────────────────────────────────
+//  Module Card 
 function ModuleCard({ mod }: { mod: Module }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const cat = CATEGORY_CONFIG[mod.category];
@@ -359,7 +359,7 @@ function ModuleCard({ mod }: { mod: Module }) {
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function AdminModulesPage() {
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");

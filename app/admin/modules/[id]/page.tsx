@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Avatar, StatusBadge, PageHeader } from "../../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type TopicStatus = "published" | "draft" | "pending";
 
 interface SubTopic {
@@ -44,7 +44,7 @@ interface Topic {
   subtopics: SubTopic[];
 }
 
-// ─── Mock Module Data ─────────────────────────────────────────────────────────
+//  Mock Module Data 
 const MODULE = {
   id: "m001",
   title: "Rights During Arrest & Detention",
@@ -54,7 +54,7 @@ const MODULE = {
   categoryBg: "#EFF6FF",
   status: "active",
   thumbnail: "/images/police_law.jpg",
-  description: "Know exactly what police officers can and cannot do — and how to protect yourself in any encounter. This module covers Section 35 of the 1999 Constitution in full, alongside practical guidance for every Nigerian.",
+  description: "Know exactly what police officers can and cannot do,  and how to protect yourself in any encounter. This module covers Section 35 of the 1999 Constitution in full, alongside practical guidance for every Nigerian.",
   instructor: "Adaeze Okonkwo",
   instructorInitials: "AO",
   instructorColor: "#3B82F6",
@@ -84,7 +84,7 @@ const TOPICS_DATA: Topic[] = [
   {
     id: "t002", title: "What Police Must Tell You",
     classification: "Rights", order: 2,
-    overview: "The mandatory disclosures officers must make at the point of arrest — and what your silence means legally.",
+    overview: "The mandatory disclosures officers must make at the point of arrest,  and what your silence means legally.",
     status: "published", videoType: "upload", videoUrl: "",
     thumbnailUrl: "", duration: "3:15", watchCount: 3189, completionRate: 82, likes: 198, comments: 21,
     subtopics: [
@@ -100,7 +100,7 @@ const TOPICS_DATA: Topic[] = [
     status: "published", videoType: "youtube", videoUrl: "https://youtube.com/watch?v=example3",
     thumbnailUrl: "", duration: "5:01", watchCount: 2876, completionRate: 74, likes: 312, comments: 48,
     subtopics: [
-      { id: "st007", title: "What the Right Covers", notes: "The right to silence is not absolute — explain exceptions under Nigerian law. Cover self-incrimination protections.", duration: "1:30", order: 1, completedBy: 2500 },
+      { id: "st007", title: "What the Right Covers", notes: "The right to silence is not absolute,  explain exceptions under Nigerian law. Cover self-incrimination protections.", duration: "1:30", order: 1, completedBy: 2500 },
       { id: "st008", title: "Invoking the Right", notes: "Practical script: exactly what to say and how to say it. Tone, body language, and the importance of not being aggressive.", duration: "2:00", order: 2, completedBy: 2300 },
       { id: "st009", title: "Silence in Court", notes: "Explain that silence cannot be used as evidence of guilt in Nigeria. Contrast with UK law. Address common misconceptions citizens have.", duration: "1:31", order: 3, completedBy: 2100 },
     ],
@@ -112,14 +112,14 @@ const TOPICS_DATA: Topic[] = [
     status: "draft", videoType: null, videoUrl: "",
     thumbnailUrl: "", duration: "—", watchCount: 0, completionRate: 0, likes: 0, comments: 0,
     subtopics: [
-      { id: "st010", title: "The 24/48-Hour Rule Explained", notes: "Section 35(4) and (5) — different rules for ordinary offences vs capital offences. Map out the timeline clearly.", duration: "—", order: 1, completedBy: 0 },
+      { id: "st010", title: "The 24/48-Hour Rule Explained", notes: "Section 35(4) and (5),  different rules for ordinary offences vs capital offences. Map out the timeline clearly.", duration: "—", order: 1, completedBy: 0 },
       { id: "st011", title: "What to Do After 24 Hours", notes: "Habeas corpus application process. Who can file it (detainee, family member, lawyer). Which court to approach.", duration: "—", order: 2, completedBy: 0 },
     ],
   },
   {
     id: "t005", title: "Lawful vs Unlawful Arrest",
     classification: "Foundational", order: 5,
-    overview: "How to tell the difference between a lawful and unlawful arrest — and your immediate options when arrested unlawfully.",
+    overview: "How to tell the difference between a lawful and unlawful arrest,  and your immediate options when arrested unlawfully.",
     status: "pending", videoType: null, videoUrl: "",
     thumbnailUrl: "", duration: "—", watchCount: 0, completionRate: 0, likes: 0, comments: 0,
     subtopics: [],
@@ -142,14 +142,14 @@ const TOP_LEARNERS = [
   { name: "Halima Y.", initials: "HY", color: "#EC4899", progress: 64, topics: 9 },
 ];
 
-// ─── Topic Status Config ──────────────────────────────────────────────────────
+//  Topic Status Config 
 const TOPIC_STATUS_CFG: Record<TopicStatus, { bg: string; text: string; dot: string }> = {
   published: { bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   draft:     { bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
   pending:   { bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
 };
 
-// ─── Sub Topic Editor ─────────────────────────────────────────────────────────
+//  Sub Topic Editor 
 function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [notes, setNotes] = useState(st.notes);
@@ -222,7 +222,7 @@ function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }
   );
 }
 
-// ─── Topic Card (expanded editor) ─────────────────────────────────────────────
+//  Topic Card (expanded editor) 
 function TopicCard({ topic, index }: { topic: Topic; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const [subtopics, setSubtopics] = useState(topic.subtopics);
@@ -340,7 +340,7 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                   <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-6 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
                     <Upload size={20} className="text-[#D1D5DB] mx-auto mb-2" />
                     <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload video</p>
-                    <p className="text-[10px] text-[#D1D5DB] mt-0.5">MP4, MOV or WebM — max 500MB</p>
+                    <p className="text-[10px] text-[#D1D5DB] mt-0.5">MP4, MOV or WebM,  max 500MB</p>
                   </div>
                 )}
 
@@ -487,7 +487,7 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function ModuleDetailPage({ params }: { params: { id: string } }) {
   const [topics, setTopics] = useState(TOPICS_DATA);
   const [activeSection, setActiveSection] = useState<"topics" | "activity" | "settings">("topics");

@@ -73,9 +73,9 @@ const TRENDING_TOPICS = [
 ];
 
 const BOOKMARKS = [
-  { title: "Section 35 — Right to Personal Liberty", law: "1999 Constitution",    color: "#E8317A" },
-  { title: "Tenancy Law — Notice to Quit Periods",   law: "Lagos Tenancy Law",    color: "#10B981" },
-  { title: "Labour Act S.11 — Severance Pay",        law: "Labour Act Cap. L1",   color: "#8B5CF6" },
+  { title: "Section 35,  Right to Personal Liberty", law: "1999 Constitution",    color: "#E8317A" },
+  { title: "Tenancy Law,  Notice to Quit Periods",   law: "Lagos Tenancy Law",    color: "#10B981" },
+  { title: "Labour Act S.11,  Severance Pay",        law: "Labour Act Cap. L1",   color: "#8B5CF6" },
 ];
 
 const COMMUNITY_HIGHLIGHTS = [
@@ -144,7 +144,7 @@ function DailyQuiz() {
 function XPBar() {
   const pct = (USER.xp / USER.nextLevelXp) * 100;
   return (
-    <div className="hidden md:block flex items-center gap-3">
+    <div className="hidden md:flex items-center gap-3">
       <div className="w-8 h-8 rounded-lg bg-[#E8317A]/15 border border-[#E8317A]/20 flex items-center justify-center flex-shrink-0">
         <span className="text-sm font-bold text-[#E8317A]">{USER.level}</span>
       </div>
@@ -211,7 +211,7 @@ export default function UserDashboardOverview() {
                 <span style={{ color: "#E8317A" }}>knowing.</span>
               </h1>
               <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
-                You've been learning for {USER.joinedDays} days. Keep going — knowledge is the
+                You've been learning for {USER.joinedDays} days. Keep going,  knowledge is the
                 most powerful legal tool you have.
               </p>
             </div>

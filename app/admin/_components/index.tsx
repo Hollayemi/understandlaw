@@ -2,7 +2,7 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
-// ─── Section Title ────────────────────────────────────────────────────────────
+//  Section Title 
 interface SectionTitleProps {
   title: string;
   subtitle?: string;
@@ -20,7 +20,7 @@ export function SectionTitle({ title, subtitle, action }: SectionTitleProps) {
   );
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+//  Stat Card 
 interface StatCardProps {
   icon: React.ElementType;
   label: string;
@@ -60,7 +60,7 @@ export function StatCard({ icon: Icon, label, value, trend, color = "#E8317A", b
   );
 }
 
-// ─── Stat Bar (compact row version) ──────────────────────────────────────────
+//  Stat Bar (compact row version) 
 interface StatBarItem {
   label: string;
   value: string | number;
@@ -88,7 +88,7 @@ export function StatBar({ items }: StatBarProps) {
   );
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
+//  Status Badge 
 type StatusVariant = "active" | "inactive" | "pending" | "approved" | "rejected" | "warning";
 
 const STATUS_CONFIG: Record<StatusVariant, { label: string; bg: string; text: string; dot: string }> = {
@@ -117,7 +117,7 @@ export function StatusBadge({ status, label }: StatusBadgeProps) {
   );
 }
 
-// ─── Table ────────────────────────────────────────────────────────────────────
+//  Table 
 interface Column<T> {
   key: string;
   header: string;
@@ -177,7 +177,7 @@ export function Table<T>({ columns, data, keyField, emptyMessage = "No data foun
   );
 }
 
-// ─── Avatar Initials ──────────────────────────────────────────────────────────
+//  Avatar Initials 
 interface AvatarProps {
   initials: string;
   color?: string;
@@ -196,7 +196,7 @@ export function Avatar({ initials, color = "#E8317A", size = "md" }: AvatarProps
   );
 }
 
-// ─── Filter Bar ───────────────────────────────────────────────────────────────
+//  Filter Bar 
 interface FilterOption {
   value: string;
   label: string;
@@ -260,7 +260,7 @@ export function FilterBar({
   );
 }
 
-// ─── Page Header ──────────────────────────────────────────────────────────────
+//  Page Header 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;

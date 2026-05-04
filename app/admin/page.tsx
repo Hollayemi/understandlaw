@@ -1,6 +1,6 @@
 "use client";
 // app/admin/page.tsx
-// ─── Placeholder page — replace with real dashboard content ──────────────────
+//  Placeholder page,  replace with real dashboard content 
 // This file only exists to confirm the layout wrapper renders correctly.
 // Delete or replace once you build the real admin overview page.
 

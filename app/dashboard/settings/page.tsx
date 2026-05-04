@@ -162,7 +162,7 @@ function ProfileSettings() {
             {STATES.map(s => <option key={s}>{s}</option>)}
           </select>
         </Field>
-        <Field label="Bio" desc="Optional — appears on community posts if you make them public">
+        <Field label="Bio" desc="Optional,  appears on community posts if you make them public">
           <textarea value={form.bio} onChange={set("bio")} placeholder="A brief note about yourself..."
             className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
           />

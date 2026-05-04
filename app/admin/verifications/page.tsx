@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { StatBar, FilterBar, Avatar, PageHeader, StatusBadge } from "../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type VerificationStatus = "pending" | "approved" | "rejected" | "info_requested";
 
 interface Document {
@@ -40,7 +40,7 @@ interface VerificationRequest {
   reviewedAt?: string;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const REQUESTS: VerificationRequest[] = [
   {
     id: "v001",
@@ -123,7 +123,7 @@ const REQUESTS: VerificationRequest[] = [
   },
 ];
 
-// ─── Status Config ────────────────────────────────────────────────────────────
+//  Status Config 
 const STATUS_CFG = {
   pending:        { label: "Pending Review", bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: Clock },
   approved:       { label: "Approved",       bg: "#ECFDF5", text: "#065F46", border: "#6EE7B7", dot: "#10B981", icon: CheckCircle },
@@ -142,7 +142,7 @@ function StatusChip({ status }: { status: VerificationStatus }) {
   );
 }
 
-// ─── Document Row ─────────────────────────────────────────────────────────────
+//  Document Row 
 function DocRow({ doc }: { doc: Document }) {
   return (
     <div className="flex items-center gap-3 p-3.5 rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] hover:bg-white transition-colors">
@@ -175,7 +175,7 @@ function DocRow({ doc }: { doc: Document }) {
   );
 }
 
-// ─── Review Modal ─────────────────────────────────────────────────────────────
+//  Review Modal 
 function ReviewModal({
   request,
   action,
@@ -276,7 +276,7 @@ function ReviewModal({
   );
 }
 
-// ─── Request Card ─────────────────────────────────────────────────────────────
+//  Request Card 
 function RequestCard({
   req,
   onAction,
@@ -432,7 +432,7 @@ function RequestCard({
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function VerificationsPage() {
   const [tab, setTab]           = useState("pending");
   const [search, setSearch]     = useState("");

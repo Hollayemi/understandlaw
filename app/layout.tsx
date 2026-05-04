@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LawTicha. The Law Was Written For Everyone. Now Understand It.",
     description:
-      "Making Nigerian law simple, accessible, and actionable for every citizen — regardless of education, income, or location.",
+      "Making Nigerian law simple, accessible, and actionable for every citizen,  regardless of education, income, or location.",
     siteName: "LawTicha",
     locale: "en_NG",
     type: "website",

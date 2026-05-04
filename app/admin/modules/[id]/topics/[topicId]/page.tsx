@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Avatar, StatusBadge } from "../../../../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 interface SubTopic {
   id: string;
   title: string;
@@ -36,7 +36,7 @@ interface Comment {
   resolved: boolean;
 }
 
-// ─── Mock Data ─────────────────────────────────────────────────────────────────
+//  Mock Data 
 const TOPIC = {
   id: "t003",
   moduleId: "m001",
@@ -61,7 +61,7 @@ const TOPIC = {
 const SUBTOPICS: SubTopic[] = [
   {
     id: "st007", title: "What the Right Covers", order: 1, duration: "1:30", completedBy: 2500, viewCount: 2700,
-    notes: `The right to silence is not absolute — explain exceptions under Nigerian law.
+    notes: `The right to silence is not absolute,  explain exceptions under Nigerian law.
 
 Key points to cover:
 1. Section 35(5) of the 1999 Constitution
@@ -70,13 +70,13 @@ Key points to cover:
 4. Situations where silence CAN be commented on by courts
 
 Common misconceptions to address:
-- "Saying nothing means you're guilty" — FALSE under Nigerian law
+- "Saying nothing means you're guilty",  FALSE under Nigerian law
 - The right applies to EVERYONE regardless of actual guilt
 
 Use a real SARS encounter scenario as a case study.`,
   },
   {
-    id: "st008", title: "How to Invoke the Right — The Exact Script", order: 2, duration: "2:00", completedBy: 2300, viewCount: 2500,
+    id: "st008", title: "How to Invoke the Right,  The Exact Script", order: 2, duration: "2:00", completedBy: 2300, viewCount: 2500,
     notes: `Practical, word-for-word guidance. This sub-topic is the most practically valuable.
 
 SCRIPT FOR LEARNERS (to be displayed on screen):
@@ -87,17 +87,17 @@ Delivery guidance:
 - Say it calmly, once
 - Do not repeat it aggressively
 - Make eye contact but do not be confrontational
-- Do not add "I didn't do anything" — this opens a door
+- Do not add "I didn't do anything",  this opens a door
 
 Instructor note: Role-play this with a colleague in the video. Show both a nervous and a calm delivery. Reinforce that tone matters as much as the words.`,
   },
   {
-    id: "st009", title: "Silence in Court — What Nigerian Law Says", order: 3, duration: "1:31", completedBy: 2100, viewCount: 2300,
-    notes: `Address what happens AFTER the arrest — does your silence at the time of arrest affect your trial?
+    id: "st009", title: "Silence in Court,  What Nigerian Law Says", order: 3, duration: "1:31", completedBy: 2100, viewCount: 2300,
+    notes: `Address what happens AFTER the arrest,  does your silence at the time of arrest affect your trial?
 
 Nigerian law position:
 - Pre-trial silence generally cannot be used as evidence of guilt
-- Contrast: UK Criminal Justice and Public Order Act 1994 allows adverse inference — Nigeria does NOT have equivalent legislation
+- Contrast: UK Criminal Justice and Public Order Act 1994 allows adverse inference,  Nigeria does NOT have equivalent legislation
 - Evidence Act 2011 position on confessional statements
 
 Section references to cite:
@@ -122,7 +122,7 @@ const WEEKLY_VIEWS = [
 ];
 const MAX_VIEWS = Math.max(...WEEKLY_VIEWS.map(w => w.views));
 
-// ─── Notes Editor ─────────────────────────────────────────────────────────────
+//  Notes Editor 
 function NotesEditor({ st, onSave }: { st: SubTopic; onSave: (notes: string) => void }) {
   const [notes, setNotes] = useState(st.notes);
   const [title, setTitle] = useState(st.title);
@@ -190,7 +190,7 @@ function NotesEditor({ st, onSave }: { st: SubTopic; onSave: (notes: string) => 
             <div className="flex items-center justify-between mt-2.5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#E8317A]" />
-                <span className="text-[10px] text-[#9CA3AF]">Notes are private — visible only to the admin and instructor</span>
+                <span className="text-[10px] text-[#9CA3AF]">Notes are private,  visible only to the admin and instructor</span>
               </div>
               <button onClick={handleSave} disabled={saving}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-60 transition-colors">
@@ -206,7 +206,7 @@ function NotesEditor({ st, onSave }: { st: SubTopic; onSave: (notes: string) => 
   );
 }
 
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function TopicDetailPage({ params }: { params: { id: string; topicId: string } }) {
   const [subtopics, setSubtopics] = useState(SUBTOPICS);
   const [comments, setComments] = useState(COMMENTS);
@@ -344,7 +344,7 @@ export default function TopicDetailPage({ params }: { params: { id: string; topi
         })}
       </div>
 
-      {/* ─── CONTENT TAB ─────────────────────────────────────────────────── */}
+      {/*  CONTENT TAB  */}
       {activeTab === "content" && (
         <div className="grid lg:grid-cols-[1fr_300px] gap-5">
           {/* Main content editor */}
@@ -398,7 +398,7 @@ export default function TopicDetailPage({ params }: { params: { id: string; topi
                     </button>
                   </div>
                   <p className="text-[10px] text-[#9CA3AF] mt-1.5">
-                    Supports standard YouTube links, shorts, and embeds. Videos are embedded — learners stay on LawTicha.
+                    Supports standard YouTube links, shorts, and embeds. Videos are embedded,  learners stay on LawTicha.
                   </p>
                 </div>
               )}
@@ -558,7 +558,7 @@ export default function TopicDetailPage({ params }: { params: { id: string; topi
         </div>
       )}
 
-      {/* ─── ANALYTICS TAB ───────────────────────────────────────────────── */}
+      {/*  ANALYTICS TAB  */}
       {activeTab === "analytics" && (
         <div className="grid lg:grid-cols-[1fr_280px] gap-5">
           <div className="flex flex-col gap-5">
@@ -567,7 +567,7 @@ export default function TopicDetailPage({ params }: { params: { id: string; topi
             <div className="bg-white rounded-2xl border border-[#F3F4F6] p-5">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="text-[14px] font-bold text-[#111827]">Daily Views — Last 7 Days</h3>
+                  <h3 className="text-[14px] font-bold text-[#111827]">Daily Views,  Last 7 Days</h3>
                   <p className="text-[11px] text-[#9CA3AF] mt-0.5">Total: {WEEKLY_VIEWS.reduce((s, w) => s + w.views, 0).toLocaleString()} views</p>
                 </div>
                 <select className="h-8 px-2 rounded-lg border border-[#E5E7EB] text-[11px] text-[#6B7280] bg-white outline-none">
@@ -677,7 +677,7 @@ export default function TopicDetailPage({ params }: { params: { id: string; topi
         </div>
       )}
 
-      {/* ─── COMMENTS TAB ─────────────────────────────────────────────────── */}
+      {/*  COMMENTS TAB  */}
       {activeTab === "comments" && (
         <div className="max-w-3xl flex flex-col gap-4">
           <div className="flex items-center gap-3 text-[12px] text-[#9CA3AF]">

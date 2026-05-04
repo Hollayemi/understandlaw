@@ -31,7 +31,7 @@ const CATEGORIES = [
       "Police bail",
       "Resisting unlawful arrest",
     ],
-    desc: "Know exactly what police officers can and cannot do — and how to protect yourself in any encounter.",
+    desc: "Know exactly what police officers can and cannot do,  and how to protect yourself in any encounter.",
   },
   {
     icon: <Home />,
@@ -48,7 +48,7 @@ const CATEGORIES = [
       "Subletting rules",
       "Quiet enjoyment",
     ],
-    desc: "Understand your rights as a tenant in Nigeria — from signing a lease to defending against illegal eviction.",
+    desc: "Understand your rights as a tenant in Nigeria,  from signing a lease to defending against illegal eviction.",
   },
   {
     icon: <Briefcase />,
@@ -66,7 +66,7 @@ const CATEGORIES = [
       "Maternity leave",
       "Minimum wage",
     ],
-    desc: "From your first employment contract to a dispute with your employer — know your labour rights.",
+    desc: "From your first employment contract to a dispute with your employer,  know your labour rights.",
   },
   {
     icon: <FileText />,
@@ -82,7 +82,7 @@ const CATEGORIES = [
       "Digital & online agreements",
       "Oral contracts in Nigeria",
     ],
-    desc: "Understand what you're signing before you sign it — and what to do when agreements are broken.",
+    desc: "Understand what you're signing before you sign it,  and what to do when agreements are broken.",
   },
   {
     icon: <Building2 />,
@@ -116,7 +116,7 @@ const CATEGORIES = [
       "Divorce proceedings",
       "Gender-based violence law",
     ],
-    desc: "Your personal and family rights under Nigerian law — including protection from abuse and custody guidance.",
+    desc: "Your personal and family rights under Nigerian law,  including protection from abuse and custody guidance.",
   },
 ];
 
@@ -191,7 +191,7 @@ export default function LearnPage() {
               </svg>
               <input
                 type="text"
-                placeholder="Search topics — e.g. 'eviction notice', 'wrongful termination'..."
+                placeholder="Search topics,  e.g. 'eviction notice', 'wrongful termination'..."
                 className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               />
             </div>

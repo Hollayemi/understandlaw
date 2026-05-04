@@ -18,7 +18,7 @@ import {
   type Post, type PostType, type PostStatus, type Comment,
 } from "@/redux/slices/community.slice";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+//  Helpers 
 
 function formatRelative(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -66,7 +66,7 @@ function PostStatusChip({ status }: { status: PostStatus }) {
   );
 }
 
-// ─── Create Post Modal ────────────────────────────────────────────────────────
+//  Create Post Modal 
 
 function CreatePostModal({ onClose, onSubmit }: {
   onClose: () => void;
@@ -119,7 +119,7 @@ function CreatePostModal({ onClose, onSubmit }: {
         <div className="px-6 py-5 border-b border-[#F3F4F6] flex items-center justify-between flex-shrink-0">
           <div>
             <h3 className="text-sm font-bold text-[#111827]">Create Community Post</h3>
-            <p className="text-[11px] text-[#9CA3AF] mt-0.5">Step {step} of 2 · Admin post — published immediately</p>
+            <p className="text-[11px] text-[#9CA3AF] mt-0.5">Step {step} of 2 · Admin post,  published immediately</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex gap-1.5">
@@ -191,7 +191,7 @@ function CreatePostModal({ onClose, onSubmit }: {
                   <textarea
                     value={content}
                     onChange={e => setContent(e.target.value)}
-                    placeholder="Write the post body — use plain, accessible language. Reference specific laws and sections where relevant."
+                    placeholder="Write the post body,  use plain, accessible language. Reference specific laws and sections where relevant."
                     className="w-full h-36 px-4 py-3.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors leading-relaxed"
                   />
                   <p className="text-[10px] text-[#9CA3AF] mt-1">{content.length} characters</p>
@@ -325,7 +325,7 @@ function CreatePostModal({ onClose, onSubmit }: {
   );
 }
 
-// ─── Remove / Moderate Modal ──────────────────────────────────────────────────
+//  Remove / Moderate Modal 
 
 function ModerateModal({
   post,
@@ -403,7 +403,7 @@ function ModerateModal({
   );
 }
 
-// ─── Post Card ────────────────────────────────────────────────────────────────
+//  Post Card 
 
 function PostCard({
   post,
@@ -685,7 +685,7 @@ function PostCard({
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 
 export default function AdminCommunityPage() {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
@@ -718,7 +718,7 @@ export default function AdminCommunityPage() {
     return true;
   }), [posts, tab, typeFilter, search]);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+  //  Handlers 
   const handlePromote = (post: Post) => {
     setPosts(prev => prev.map(p => p.id === post.id ? { ...p, promoted: true, status: "promoted", promotedAt: new Date().toISOString(), promotedBy: "Super Admin" } : p));
     showFeedback("Post promoted ✓");

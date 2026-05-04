@@ -9,7 +9,7 @@ import {
   StatBar, FilterBar, Table, StatusBadge, Avatar, PageHeader,
 } from "../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type LawyerStatus = "active" | "inactive" | "pending";
 
 interface Lawyer {
@@ -34,7 +34,7 @@ interface Lawyer {
   available: boolean;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const LAWYERS: Lawyer[] = [
   {
     id: "l001", name: "Adaeze Okonkwo",  initials: "AO", color: "#1E3A5F",
@@ -107,7 +107,7 @@ const BADGE_COLORS: Record<string, { bg: string; text: string }> = {
   "Responsive": { bg: "#EFF6FF", text: "#1E3A8A" },
 };
 
-// ─── Lawyer Detail Drawer ─────────────────────────────────────────────────────
+//  Lawyer Detail Drawer 
 function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -183,7 +183,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void
   );
 }
 
-// ─── Row Actions ──────────────────────────────────────────────────────────────
+//  Row Actions 
 function ActionsMenu({ lawyer, onView }: { lawyer: Lawyer; onView: () => void }) {
   const [open, setOpen] = useState(false);
   return (
@@ -214,7 +214,7 @@ function ActionsMenu({ lawyer, onView }: { lawyer: Lawyer; onView: () => void })
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function LawyersPage() {
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");

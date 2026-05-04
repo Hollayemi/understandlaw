@@ -199,7 +199,7 @@ const BADGE_ICON: Record<string, React.ElementType> = {
 };
 
 const CONSULT_MODES: { id: ConsultMode; label: string; icon: React.ElementType; desc: string }[] = [
-  { id: "message", label: "Written Message",  icon: MessageSquare, desc: "Async — reply within response time" },
+  { id: "message", label: "Written Message",  icon: MessageSquare, desc: "Async,  reply within response time" },
   { id: "call",    label: "Scheduled Call",   icon: Phone,         desc: "Audio call, you pick the time slot" },
   { id: "video",   label: "Video Session",    icon: Video,         desc: "Face-to-face via secure video link" },
 ];

@@ -21,7 +21,7 @@ export interface ApiError {
   };
 }
 
-// ─── Enum / Union Types ───────────────────────────────────────────────────────
+//  Enum / Union Types 
 
 export type ModuleCategory =
   | "criminal"
@@ -47,7 +47,7 @@ export type TargetType = "topic" | "module" | "subtopic";
 export type ModuleDetailSection = "topics" | "activity" | "settings";
 export type TopicDetailTab = "content" | "analytics" | "comments";
 
-// ─── Module Types ─────────────────────────────────────────────────────────────
+//  Module Types 
 
 export interface Module {
   id: string;
@@ -105,7 +105,7 @@ export interface ModuleFilters {
   sortOrder?: "asc" | "desc";
 }
 
-// ─── Module Stats Types ───────────────────────────────────────────────────────
+//  Module Stats Types 
 
 export interface ModuleOverviewStats {
   totalModules: number;
@@ -125,7 +125,7 @@ export interface DailyActivityStats {
   avgSessionDurationChange: number;
 }
 
-// ─── Topic Types ──────────────────────────────────────────────────────────────
+//  Topic Types 
 
 export interface Topic {
   id: string;
@@ -150,7 +150,7 @@ export interface Topic {
   updatedAt: string;
 }
 
-/** Full topic including embedded subtopics — returned on single-topic fetch */
+/** Full topic including embedded subtopics,  returned on single-topic fetch */
 export interface TopicWithSubTopics extends Topic {
   subtopics: SubTopic[];
 }
@@ -188,7 +188,7 @@ export interface ReorderTopicsPayload {
   orderedIds: string[];
 }
 
-// ─── SubTopic Types ───────────────────────────────────────────────────────────
+//  SubTopic Types 
 
 export interface SubTopic {
   id: string;
@@ -232,7 +232,7 @@ export interface ReorderSubTopicsPayload {
   orderedIds: string[];
 }
 
-// ─── Activity Types ───────────────────────────────────────────────────────────
+//  Activity Types 
 
 export interface ActivityItem {
   id: string;
@@ -254,7 +254,7 @@ export interface ModuleActivityParams {
   before?: string; // ISO timestamp cursor for pagination
 }
 
-// ─── Analytics Types ──────────────────────────────────────────────────────────
+//  Analytics Types 
 
 export interface ProgressDistributionItem {
   label: string;
@@ -331,7 +331,7 @@ export interface TopicAnalytics {
   updatedAt: string;
 }
 
-// ─── Learner Types ────────────────────────────────────────────────────────────
+//  Learner Types 
 
 export interface Learner {
   id: string;
@@ -366,7 +366,7 @@ export interface LearnersParams {
   sortOrder?: "asc" | "desc";
 }
 
-// ─── Comment Types ────────────────────────────────────────────────────────────
+//  Comment Types 
 
 export interface Comment {
   id: string;
@@ -407,7 +407,7 @@ export interface DeleteCommentPayload {
   commentId: string;
 }
 
-// ─── Upload Types ─────────────────────────────────────────────────────────────
+//  Upload Types 
 
 export interface UploadResponse {
   url: string;

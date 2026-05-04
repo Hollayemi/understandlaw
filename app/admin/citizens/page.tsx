@@ -11,7 +11,7 @@ import {
   StatBar, FilterBar, Table, StatusBadge, Avatar, PageHeader,
 } from "../_components";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 type CitizenStatus = "active" | "inactive" | "warning";
 
 interface Citizen {
@@ -30,7 +30,7 @@ interface Citizen {
   reportCount: number;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+//  Mock Data 
 const CITIZENS: Citizen[] = [
   { id: "u001", name: "Chidinma Okafor",  initials: "CO", color: "#3B82F6", email: "chidinma@gmail.com",  phone: "08012345678", state: "Enugu",         joinedAt: "Jan 12, 2025",  status: "active",   topicsRead: 14, consultations: 2, lastActive: "2 hours ago",   reportCount: 0 },
   { id: "u002", name: "Babatunde Lawal",  initials: "BL", color: "#10B981", email: "babatunde@yahoo.com", phone: "08098765432", state: "Lagos",         joinedAt: "Feb 3, 2025",   status: "active",   topicsRead: 22, consultations: 1, lastActive: "1 day ago",     reportCount: 0 },
@@ -44,7 +44,7 @@ const CITIZENS: Citizen[] = [
   { id: "u010", name: "Mustapha Ibrahim", initials: "MI", color: "#14B8A6", email: "mustapha.i@gmail.com",phone: "08055443322", state: "Sokoto",        joinedAt: "Apr 20, 2025",  status: "active",   topicsRead:  5, consultations: 0, lastActive: "4 days ago",    reportCount: 0 },
 ];
 
-// ─── Row Actions Menu ─────────────────────────────────────────────────────────
+//  Row Actions Menu 
 function ActionsMenu({ citizen }: { citizen: Citizen }) {
   const [open, setOpen] = useState(false);
 
@@ -83,7 +83,7 @@ function ActionsMenu({ citizen }: { citizen: Citizen }) {
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+//  Main Page 
 export default function CitizensPage() {
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");

@@ -56,17 +56,11 @@ const baseQuery = fetchBaseQuery({
     },
 }) as BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>;
 
-// ─── RTK Query API Slice ──────────────────────────────────────────────────────
+//  RTK Query API Slice 
 
 export const modulesApi = createApi({
     reducerPath: "modulesApi",
-
     baseQuery,
-
-    /**
-     * Cache tag types used across all endpoints.
-     * Mutations selectively invalidate these so UI refetches automatically.
-     */
     tagTypes: [
         "Module",
         "ModuleList",
@@ -597,7 +591,7 @@ export const modulesApi = createApi({
     }),
 });
 
-// ─── Export RTK Query Hooks ────────────────────────────────────────────────────
+//  Export RTK Query Hooks 
 // Modules
 export const {
     useGetModulesQuery,
@@ -652,10 +646,10 @@ export const {
     useGetPresignedUploadUrlMutation,
 } = modulesApi;
 
-// ─── Local UI Slice (non-server state) ────────────────────────────────────────
+//  Local UI Slice (non-server state) 
 
 interface ModulesUiState {
-    // ── Modules list page ──────────────────────────────────────────
+    //  Modules list page 
     showCreateModal: boolean;
     createModalStep: 1 | 2;
     selectedModuleId: string | null;
@@ -664,12 +658,12 @@ interface ModulesUiState {
     modulesCategoryFilter: string; // 'all' | ModuleCategory
     modulesPage: number;
 
-    // ── Module detail page ─────────────────────────────────────────
+    //  Module detail page 
     moduleDetailSection: ModuleDetailSection;
     expandedTopicIds: string[];
     topicVideoEditorId: string | null; // which topic has video editor open
 
-    // ── Topic detail page ──────────────────────────────────────────
+    //  Topic detail page 
     topicDetailTab: TopicDetailTab;
     expandedSubTopicIds: string[];
 }
@@ -773,7 +767,7 @@ export const modulesUiSlice = createSlice({
 
 export const modulesUiActions = modulesUiSlice.actions;
 
-// ─── Selectors ────────────────────────────────────────────────────────────────
+//  Selectors 
 
 export const selectModulesUi = (state: RootState) => state.modulesUi;
 export const selectShowCreateModal = (state: RootState) =>

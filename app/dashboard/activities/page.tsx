@@ -145,7 +145,7 @@ const REQUESTS: AnyRequest[] = [
     lawyerColorB: "#7B2828",
     lawyerTitle: "Employment & Labour Lawyer",
     mode: "message",
-    topic: "Workplace harassment — NSITF contribution dispute",
+    topic: "Workplace harassment,  NSITF contribution dispute",
     detail: "",
     status: "declined",
     fee: 4500,

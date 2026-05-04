@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 export type BookFormat = "pdf" | "physical" | "both";
 export type BookStatus = "active" | "inactive" | "draft";
 export type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
@@ -90,13 +90,13 @@ interface LibraryState {
   uploadProgress: number;
 }
 
-// ─── Mock initial data ────────────────────────────────────────────────────────
+//  Mock initial data 
 const MOCK_BOOKS: Book[] = [
   {
     id: "b001",
     title: "Know Your Rights: Arrest & Detention in Nigeria",
     author: "Adaeze Okonkwo",
-    description: "A plain-English guide to Section 35 of the 1999 Constitution. Covers every stage of a police encounter — from the moment of arrest to bail and court appearances.",
+    description: "A plain-English guide to Section 35 of the 1999 Constitution. Covers every stage of a police encounter,  from the moment of arrest to bail and court appearances.",
     category: "criminal",
     coverUrl: "/images/police_law.jpg",
     pdfUrl: "/books/arrest-rights.pdf",
@@ -118,7 +118,7 @@ const MOCK_BOOKS: Book[] = [
     id: "b002",
     title: "Tenant Rights Handbook: Nigeria Edition",
     author: "Emeka Nwosu",
-    description: "Everything a tenant in Nigeria needs to know — notice periods, illegal lockouts, deposit recovery, and what to do when your landlord breaks the law.",
+    description: "Everything a tenant in Nigeria needs to know,  notice periods, illegal lockouts, deposit recovery, and what to do when your landlord breaks the law.",
     category: "tenancy",
     coverUrl: "/images/tenancy_law.jpg",
     pdfUrl: "/books/tenant-rights.pdf",
@@ -140,7 +140,7 @@ const MOCK_BOOKS: Book[] = [
     id: "b003",
     title: "Labour Law Guide for Nigerian Workers",
     author: "Fatimah Bello",
-    description: "Wrongful termination, severance pay, NSITF contributions, workplace harassment — a comprehensive guide to the Labour Act Cap. L1.",
+    description: "Wrongful termination, severance pay, NSITF contributions, workplace harassment,  a comprehensive guide to the Labour Act Cap. L1.",
     category: "employment",
     coverUrl: "/images/employment_law.jpg",
     pdfUrl: "/books/labour-law.pdf",
@@ -334,7 +334,7 @@ const MOCK_ORDERS: BookOrder[] = [
   },
 ];
 
-// ─── Async Thunks ─────────────────────────────────────────────────────────────
+//  Async Thunks 
 export const fetchBooks = createAsyncThunk(
   "library/fetchBooks",
   async (_, { rejectWithValue }) => {
@@ -440,7 +440,7 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
-// ─── Slice ────────────────────────────────────────────────────────────────────
+//  Slice 
 const initialState: LibraryState = {
   books: MOCK_BOOKS,
   orders: MOCK_ORDERS,
@@ -631,7 +631,7 @@ export const {
   recomputeStats,
 } = librarySlice.actions;
 
-// ─── Selectors ────────────────────────────────────────────────────────────────
+//  Selectors 
 export const selectAllBooks = (state: { library: LibraryState }) => state.library.books;
 export const selectAllOrders = (state: { library: LibraryState }) => state.library.orders;
 export const selectLibraryStats = (state: { library: LibraryState }) => state.library.stats;

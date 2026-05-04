@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+//  Types 
 
 export type PostType = "discussion" | "argument" | "poll" | "announcement" | "case_study";
 export type PostStatus = "active" | "promoted" | "pending" | "removed";
@@ -139,7 +139,7 @@ export interface CommunityState {
   createPostStep: 1 | 2;
 }
 
-// ─── Mock Initial Data ────────────────────────────────────────────────────────
+//  Mock Initial Data 
 
 const MOCK_AUTHORS: Author[] = [
   { id: "u001", name: "Chidinma Okafor",    initials: "CO", color: "#3B82F6", role: "citizen",  verified: false, state: "Enugu" },
@@ -157,7 +157,7 @@ export const INITIAL_POSTS: Post[] = [
     type: "discussion",
     status: "promoted",
     title: "What exactly happens if police detain you beyond 24 hours without charge?",
-    content: "I was detained for almost 36 hours last month without any charge being filed. The officers kept saying they were 'investigating'. I was finally released but I want to understand — was that lawful? What are my remedies?\n\nFrom what I've read in the module, Section 35(4) of the Constitution limits detention to 24 hours for bailable offences, or 48 hours if a court of competent jurisdiction makes an order. But nobody told me about any court order.",
+    content: "I was detained for almost 36 hours last month without any charge being filed. The officers kept saying they were 'investigating'. I was finally released but I want to understand,  was that lawful? What are my remedies?\n\nFrom what I've read in the module, Section 35(4) of the Constitution limits detention to 24 hours for bailable offences, or 48 hours if a court of competent jurisdiction makes an order. But nobody told me about any court order.",
     author: MOCK_AUTHORS[0],
     category: "Police Rights",
     tags: ["Section 35", "Detention", "Arrest Rights", "Police"],
@@ -170,7 +170,7 @@ export const INITIAL_POSTS: Post[] = [
         id: "c001",
         postId: "p001",
         author: MOCK_AUTHORS[2],
-        content: "You are absolutely right. Section 35(4) of the 1999 Constitution (as amended) limits detention without charge to 24 hours for ordinary offences. The officers cannot simply say 'we are investigating' — that does not extend the constitutional limit. Your remedy is a fundamental rights enforcement application under Order II of the Fundamental Rights (Enforcement Procedure) Rules 2009.",
+        content: "You are absolutely right. Section 35(4) of the 1999 Constitution (as amended) limits detention without charge to 24 hours for ordinary offences. The officers cannot simply say 'we are investigating',  that does not extend the constitutional limit. Your remedy is a fundamental rights enforcement application under Order II of the Fundamental Rights (Enforcement Procedure) Rules 2009.",
         likes: 34,
         isLiked: false,
         reactions: [],
@@ -209,7 +209,7 @@ export const INITIAL_POSTS: Post[] = [
     type: "argument",
     status: "active",
     title: "Should verbal rental agreements be enforceable in Nigerian courts?",
-    content: "Many Nigerians enter into verbal tenancy agreements, especially in informal settlements. The Tenancy Law of Lagos State (2011) and similar statutes across Nigeria generally require written agreements for certain periods. But in practice, millions of tenants have no written contract.\n\nI argue that verbal agreements should carry full legal weight if supported by evidence of rent payment history — bank transfers, receipts, or witness statements. The law as written disadvantages the most vulnerable tenants.",
+    content: "Many Nigerians enter into verbal tenancy agreements, especially in informal settlements. The Tenancy Law of Lagos State (2011) and similar statutes across Nigeria generally require written agreements for certain periods. But in practice, millions of tenants have no written contract.\n\nI argue that verbal agreements should carry full legal weight if supported by evidence of rent payment history,  bank transfers, receipts, or witness statements. The law as written disadvantages the most vulnerable tenants.",
     author: MOCK_AUTHORS[3],
     category: "Tenancy Law",
     tags: ["Verbal Contracts", "Tenancy", "Access to Justice", "Lagos"],
@@ -222,7 +222,7 @@ export const INITIAL_POSTS: Post[] = [
         id: "c003",
         postId: "p002",
         author: MOCK_AUTHORS[4],
-        content: "Counterpoint: The requirement for written contracts protects tenants too. Without a written agreement, landlords can also manipulate verbal terms. The solution isn't to remove the writing requirement — it's to make it easier for low-income tenants to create simple written agreements.",
+        content: "Counterpoint: The requirement for written contracts protects tenants too. Without a written agreement, landlords can also manipulate verbal terms. The solution isn't to remove the writing requirement,  it's to make it easier for low-income tenants to create simple written agreements.",
         likes: 19,
         isLiked: false,
         reactions: [],
@@ -284,8 +284,8 @@ export const INITIAL_POSTS: Post[] = [
     id: "p004",
     type: "announcement",
     status: "promoted",
-    title: "New Module Live: 24-Hour Detention Rule — Know Your Rights Before They're Violated",
-    content: "We've just published a comprehensive new module on detention rights under Section 35 of the 1999 Constitution. This covers:\n\n• The exact 24-hour and 48-hour limits\n• What 'bailable' vs 'capital' offences mean\n• How to count the detention period\n• Habeas corpus — when to apply and how\n• Your rights at a police station\n\nThis module was requested by over 200 community members. Thank you for shaping what we build.",
+    title: "New Module Live: 24-Hour Detention Rule,  Know Your Rights Before They're Violated",
+    content: "We've just published a comprehensive new module on detention rights under Section 35 of the 1999 Constitution. This covers:\n\n• The exact 24-hour and 48-hour limits\n• What 'bailable' vs 'capital' offences mean\n• How to count the detention period\n• Habeas corpus,  when to apply and how\n• Your rights at a police station\n\nThis module was requested by over 200 community members. Thank you for shaping what we build.",
     author: MOCK_AUTHORS[6],
     category: "Platform Update",
     tags: ["New Module", "Detention", "Section 35", "Learning"],
@@ -324,7 +324,7 @@ export const INITIAL_POSTS: Post[] = [
     id: "p005",
     type: "case_study",
     status: "active",
-    title: "How I successfully challenged an illegal lockout — Lagos, April 2025",
+    title: "How I successfully challenged an illegal lockout,  Lagos, April 2025",
     content: "I want to share my experience for anyone facing the same situation. My landlord locked me out on a Saturday with no court order and no notice, claiming I owed rent (which I had paid and have receipts for).\n\n**What I did:**\n1. Photographed the locked door and recorded the landlord refusing entry\n2. Contacted a lawyer through LawTicha that same day\n3. Sent a formal demand letter within 48 hours\n4. Filed a complaint with the Lagos Tenancy Tribunal\n\nThe landlord backed down within 3 days of receiving the letter. The tribunal ordered him to pay my legal costs.\n\nKey lesson: The Lagos Tenancy Law 2011, Section 21 prohibits 'self-help eviction' entirely. The landlord's solicitor knew this and advised him to settle.",
     author: MOCK_AUTHORS[5],
     category: "Tenancy Law",
@@ -378,7 +378,7 @@ export const INITIAL_POSTS: Post[] = [
         resolved: false,
       },
     ],
-    adminNote: "Flagged for review — may be asking for illegal tax evasion advice rather than legal tax planning.",
+    adminNote: "Flagged for review,  may be asking for illegal tax evasion advice rather than legal tax planning.",
   },
   {
     id: "p007",
@@ -400,7 +400,7 @@ export const INITIAL_POSTS: Post[] = [
     pinned: false,
     removed: true,
     removedAt: "2025-04-21T08:30:00Z",
-    removedReason: "Facilitating document fraud — directly violates platform community standards.",
+    removedReason: "Facilitating document fraud,  directly violates platform community standards.",
     removedBy: "Super Admin",
     shares: 0,
     bookmarks: 0,
@@ -422,7 +422,7 @@ const INITIAL_STATS: CommunityStats = {
   flaggedContent: 3,
 };
 
-// ─── Initial State ────────────────────────────────────────────────────────────
+//  Initial State 
 
 const initialState: CommunityState = {
   posts: INITIAL_POSTS,
@@ -442,7 +442,7 @@ const initialState: CommunityState = {
   createPostStep: 1,
 };
 
-// ─── Async Thunks (API integration stubs) ────────────────────────────────────
+//  Async Thunks (API integration stubs) 
 
 export const fetchPosts = createAsyncThunk(
   "community/fetchPosts",
@@ -539,14 +539,14 @@ export const addComment = createAsyncThunk(
   }
 );
 
-// ─── Slice ────────────────────────────────────────────────────────────────────
+//  Slice 
 
 const communitySlice = createSlice({
   name: "community",
   initialState,
   reducers: {
 
-    // ── Filters ──────────────────────────────────────────────────────────────
+    //  Filters 
     setTypeFilter(state, action: PayloadAction<PostType | "all">) {
       state.filters.type = action.payload;
     },
@@ -566,7 +566,7 @@ const communitySlice = createSlice({
       state.filters = initialState.filters;
     },
 
-    // ── Modal ─────────────────────────────────────────────────────────────────
+    //  Modal 
     setActiveModal(state, action: PayloadAction<CommunityState["activeModal"]>) {
       state.activeModal = action.payload;
     },
@@ -577,7 +577,7 @@ const communitySlice = createSlice({
       state.selectedPost = action.payload;
     },
 
-    // ── Post Actions (Admin) ──────────────────────────────────────────────────
+    //  Post Actions (Admin) 
 
     promotePost(state, action: PayloadAction<{ postId: string; adminName: string }>) {
       const post = state.posts.find(p => p.id === action.payload.postId);
@@ -669,7 +669,7 @@ const communitySlice = createSlice({
       }
     },
 
-    // ── Comment Moderation (Admin) ────────────────────────────────────────────
+    //  Comment Moderation (Admin) 
 
     removeComment(state, action: PayloadAction<{ postId: string; commentId: string; reason: string }>) {
       const post = state.posts.find(p => p.id === action.payload.postId);
@@ -708,7 +708,7 @@ const communitySlice = createSlice({
       }
     },
 
-    // ── User Actions ──────────────────────────────────────────────────────────
+    //  User Actions 
 
     toggleLikePost(state, action: PayloadAction<string>) {
       const post = state.posts.find(p => p.id === action.payload);
@@ -789,7 +789,7 @@ const communitySlice = createSlice({
       }
     },
 
-    // ── Optimistic local post creation (before API confirms) ─────────────────
+    //  Optimistic local post creation (before API confirms) 
     addPostLocally(state, action: PayloadAction<Post>) {
       state.posts.unshift(action.payload);
       state.stats.totalPosts += 1;
@@ -871,7 +871,7 @@ const communitySlice = createSlice({
   },
 });
 
-// ─── Selectors ────────────────────────────────────────────────────────────────
+//  Selectors 
 
 export const selectAllPosts = (state: { community: CommunityState }) => state.community.posts;
 
@@ -931,7 +931,7 @@ export const {
 
 export default communitySlice.reducer;
 
-// ─── Category Constants ───────────────────────────────────────────────────────
+//  Category Constants 
 
 export const COMMUNITY_CATEGORIES = [
   "General",
