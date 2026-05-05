@@ -1,0 +1,158 @@
+"use client";
+import React from "react";
+import {
+  MessageSquare, Video, Phone, Clock,
+  CheckCircle, XCircle, 
+  RefreshCw, 
+  BadgeCheck,
+  X
+  
+  ,
+} from "lucide-react";
+import { AnyRequest, ConsultMode, RequestStatus } from "./types";
+
+
+export const REQUESTS: AnyRequest[] = [
+  {
+    id: "c001",
+    kind: "consultation",
+    lawyerName: "Adaeze Okonkwo",
+    lawyerInitials: "AO",
+    lawyerColorA: "#1E3A5F",
+    lawyerColorB: "#2D5A8E",
+    lawyerTitle: "Criminal & Civil Rights Lawyer",
+    mode: "video",
+    topic: "My landlord locked me out without a court order",
+    detail: "The landlord changed the locks on Saturday evening without any notice or court order. I have 4 months left on my tenancy agreement.",
+    status: "completed",
+    fee: 18000,
+    createdAt: "Apr 14, 2025 · 09:22",
+    scheduledAt: "Apr 15, 2025 · 14:00",
+    completedAt: "Apr 15, 2025 · 14:48",
+    rating: 5,
+    nbaNumber: "NBA/LAG/2014/01847",
+    receiptId: "RCP-2025-04140098",
+    timeline: [
+      { time: "Apr 14 · 09:22", label: "Request sent" },
+      { time: "Apr 14 · 10:08", label: "Lawyer accepted", note: "Adaeze confirmed and sent a pre-session briefing." },
+      { time: "Apr 14 · 10:15", label: "Payment processed", note: "NGN 18,000 charged via Paystack." },
+      { time: "Apr 15 · 14:00", label: "Video session started" },
+      { time: "Apr 15 · 14:48", label: "Session completed", note: "Duration: 48 minutes." },
+      { time: "Apr 15 · 15:02", label: "You submitted a review" },
+    ],
+  },
+  {
+    id: "c002",
+    kind: "consultation",
+    lawyerName: "Emeka Nwosu",
+    lawyerInitials: "EN",
+    lawyerColorA: "#1A3B2E",
+    lawyerColorB: "#2D6A4F",
+    lawyerTitle: "Property & Tenancy Lawyer",
+    mode: "message",
+    topic: "Severance pay entitlement after retrenchment",
+    detail: "I was retrenched two weeks ago and my employer claims I am not entitled to severance because I was on a probationary contract.",
+    status: "accepted",
+    fee: 4500,
+    createdAt: "Apr 19, 2025 · 16:44",
+    scheduledAt: undefined,
+    nbaNumber: "NBA/ABJ/2012/00934",
+    timeline: [
+      { time: "Apr 19 · 16:44", label: "Request sent" },
+      { time: "Apr 19 · 18:30", label: "Lawyer accepted", note: "Emeka confirmed. Written consultation in progress." },
+      { time: "Apr 19 · 18:35", label: "Payment processed", note: "NGN 4,500 charged via Paystack." },
+    ],
+  },
+  {
+    id: "c003",
+    kind: "consultation",
+    lawyerName: "Fatimah Bello",
+    lawyerInitials: "FB",
+    lawyerColorA: "#2D1A3B",
+    lawyerColorB: "#4A2D6A",
+    lawyerTitle: "Family & Domestic Rights Lawyer",
+    mode: "call",
+    topic: "Child custody arrangement after separation",
+    detail: "Separated 3 months ago. Need clarity on what custody arrangement I can request and the correct process.",
+    status: "pending",
+    fee: 9000,
+    createdAt: "Apr 21, 2025 · 11:05",
+    scheduledAt: undefined,
+    nbaNumber: "NBA/KAN/2016/02211",
+    timeline: [
+      { time: "Apr 21 · 11:05", label: "Request sent", note: "Awaiting lawyer confirmation." },
+    ],
+  },
+  {
+    id: "c004",
+    kind: "consultation",
+    lawyerName: "Ngozi Eze",
+    lawyerInitials: "NE",
+    lawyerColorA: "#2D1A1A",
+    lawyerColorB: "#7B2828",
+    lawyerTitle: "Employment & Labour Lawyer",
+    mode: "message",
+    topic: "Workplace harassment,  NSITF contribution dispute",
+    detail: "",
+    status: "declined",
+    fee: 4500,
+    createdAt: "Apr 10, 2025 · 08:33",
+    nbaNumber: "NBA/PHC/2017/01563",
+    timeline: [
+      { time: "Apr 10 · 08:33", label: "Request sent" },
+      { time: "Apr 10 · 20:17", label: "Lawyer declined", note: "Ngozi is at capacity. No charge was made." },
+    ],
+  },
+  {
+    id: "lr001",
+    kind: "lawyer_request",
+    specialism: "Employment Law",
+    urgency: "This week",
+    location: "Lagos",
+    budget: "NGN 5,000 - 15,000",
+    description: "My employer deducted an undisclosed amount from my salary for three months and refuses to give an explanation. I need a labour lawyer to send a formal letter.",
+    status: "matched",
+    createdAt: "Apr 17, 2025 · 13:15",
+    matchedLawyerName: "Ngozi Eze",
+    matchedLawyerInitials: "NE",
+    matchedLawyerColorA: "#2D1A1A",
+    matchedLawyerColorB: "#7B2828",
+    matchedAt: "Apr 17, 2025 · 15:04",
+    timeline: [
+      { time: "Apr 17 · 13:15", label: "Request submitted" },
+      { time: "Apr 17 · 13:16", label: "Matching in progress", note: "Searching verified lawyers in Lagos with Employment Law specialism." },
+      { time: "Apr 17 · 15:04", label: "Lawyer matched", note: "Ngozi Eze accepted your request." },
+    ],
+  },
+  {
+    id: "lr002",
+    kind: "lawyer_request",
+    specialism: "Property & Tenancy",
+    urgency: "Today (urgent)",
+    location: "Abuja",
+    budget: "NGN 5,000 - 15,000",
+    description: "Agent collected one year rent plus two years caution and has gone dark. Need a property lawyer today.",
+    status: "pending",
+    createdAt: "Apr 21, 2025 · 07:48",
+    timeline: [
+      { time: "Apr 21 · 07:48", label: "Request submitted" },
+      { time: "Apr 21 · 07:49", label: "Matching in progress", note: "Searching verified lawyers in Abuja with Property specialism." },
+    ],
+  },
+];
+
+//  Helpers 
+export const STATUS_META: Record<RequestStatus, { label: string; bg: string; text: string; border: string; icon: React.ElementType }> = {
+  pending:   { label: "Pending",    bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: Clock       },
+  accepted:  { label: "In Progress",bg: "#EFF6FF", text: "#1E3A8A", border: "#93C5FD", icon: RefreshCw   },
+  completed: { label: "Completed",  bg: "#ECFDF5", text: "#065F46", border: "#6EE7B7", icon: CheckCircle },
+  declined:  { label: "Declined",   bg: "#FEF2F2", text: "#991B1B", border: "#FCA5A5", icon: XCircle     },
+  cancelled: { label: "Cancelled",  bg: "#F9FAFB", text: "#6B7280", border: "#D1D5DB", icon: X           },
+  matched:   { label: "Matched",    bg: "#F5F3FF", text: "#4C1D95", border: "#C4B5FD", icon: BadgeCheck  },
+};
+
+export const MODE_META: Record<ConsultMode, { icon: React.ElementType; label: string }> = {
+  message: { icon: MessageSquare, label: "Written Message" },
+  call:    { icon: Phone,         label: "Scheduled Call"  },
+  video:   { icon: Video,         label: "Video Session"   },
+};

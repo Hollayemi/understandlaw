@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Play, Pause, Volume2, Maximize2, Star, Clock, BookOpen, Search, ChevronRight, Check } from "lucide-react";
-
-//  Mock module data 
 const MODULE = {
   slug:       "rights-during-arrest",
   title:      "Rights During Arrest & Detention",
@@ -17,7 +15,7 @@ const MODULE = {
   instructor: { name: "Adaeze Okonkwo", email: "adaeze@understandlaw.ng", initials: "AO", color: "#3B82F6" },
   duration:   "30:45",
   currentTime: "00:46",
-  progress:   2.5, // percent of video played
+  progress:   2.5,
   description: `Understanding your rights during a police arrest is one of the most critical things every Nigerian should know. Section 35 of the 1999 Constitution guarantees your right to personal liberty,  and limits exactly what officers can lawfully do.
 
 This module walks through the precise steps of a lawful arrest, what the police must tell you, your right to silence, and when detention beyond 24 hours becomes unlawful. Armed with this knowledge, you can protect yourself calmly and legally.`,
