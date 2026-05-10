@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { StatusVariant } from "@/redux/types";
 
 //  Section Title 
 interface SectionTitleProps {
@@ -88,15 +89,13 @@ export function StatBar({ items }: StatBarProps) {
   );
 }
 
-//  Status Badge 
-type StatusVariant = "active" | "inactive" | "pending" | "approved" | "rejected" | "warning";
-
-const STATUS_CONFIG: Record<StatusVariant, { label: string; bg: string; text: string; dot: string }> = {
+export const STATUS_CONFIG: Record<StatusVariant, { label: string; bg: string; text: string; dot: string }> = {
   active:   { label: "Active",   bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   inactive: { label: "Inactive", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
   pending:  { label: "Pending",  bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
   approved: { label: "Approved", bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   rejected: { label: "Rejected", bg: "#FEF2F2", text: "#991B1B", dot: "#EF4444" },
+  suspended: { label: "Suspended",  bg: "#FEF3C7", text: "#92400E", dot: "#F59E0B" },
   warning:  { label: "Warning",  bg: "#FEF3C7", text: "#92400E", dot: "#F59E0B" },
 };
 

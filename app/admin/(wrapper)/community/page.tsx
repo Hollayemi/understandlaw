@@ -16,7 +16,7 @@ import {
   INITIAL_POSTS, POST_TYPE_CONFIG, POST_STATUS_CONFIG,
   COMMUNITY_CATEGORIES,
   type Post, type PostType, type PostStatus, type Comment,
-} from "@/redux/slices/community.slice";
+} from "@/redux/slices/admin/community.slice";
 
 //  Helpers 
 

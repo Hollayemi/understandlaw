@@ -11,23 +11,9 @@ import {
   Briefcase,
   File
 } from "lucide-react";
+import { useUserData } from "@/hook/useData";
+import { CitizenFull } from "@/redux/types";
 
-//  Mock user data 
-const USER = {
-  name: "Adaeze",
-  streak: 7,
-  xp: 1240,
-  level: 4,
-  nextLevelXp: 1500,
-  joinedDays: 14,
-};
-
-const STATS = [
-  { icon: BookOpen,   color: "#E8317A", bg: "#FFF0F5", value: 8,     label: "Topics Read"   },
-  { icon: Flame,      color: "#F59E0B", bg: "#FFFBEB", value: 7,     label: "Day Streak"    },
-  { icon: Trophy,     color: "#10B981", bg: "#ECFDF5", value: 2,     label: "Certificates"  },
-  { icon: Clock,      color: "#3B82F6", bg: "#EFF6FF", value: "14h", label: "Time Invested" },
-];
 
 const CONTINUE_READING = [
   {
@@ -141,17 +127,17 @@ function DailyQuiz() {
 }
 
 //  XP Progress bar 
-function XPBar() {
-  const pct = (USER.xp / USER.nextLevelXp) * 100;
+function XPBar({ profile }: {profile: any}) {
+  const pct = (profile.xpTotal / profile.xpLevel) * 100;
   return (
     <div className="hidden md:flex items-center gap-3">
       <div className="w-8 h-8 rounded-lg bg-[#E8317A]/15 border border-[#E8317A]/20 flex items-center justify-center flex-shrink-0">
-        <span className="text-sm font-bold text-[#E8317A]">{USER.level}</span>
+        <span className="text-sm font-bold text-[#E8317A]">{profile.xpLevel}</span>
       </div>
       <div className="flex-1">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-semibold text-gray-500">Level {USER.level}</span>
-          <span className="text-[10px] text-gray-400">{USER.xp} / {USER.nextLevelXp} XP</span>
+          <span className="text-[10px] font-semibold text-gray-500">Level {profile.xpLevel}</span>
+          <span className="text-[10px] text-gray-400">{profile.xpTotal} / {profile.xpTotal} XP</span>
         </div>
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #E8317A, #ff6fa8)" }} />
@@ -165,12 +151,25 @@ function XPBar() {
 export default function UserDashboardOverview() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [greeting, setGreeting] = useState("Good Morning");
+  const { userInfo } = useUserData()
+
+  const { user, profile } = userInfo as CitizenFull
+
+  console.log({userInfo})
+
 
   useEffect(() => {
     const h = new Date().getHours();
     if (h >= 12 && h < 17) setGreeting("Good Afternoon");
     else if (h >= 17) setGreeting("Good Evening");
   }, []);
+
+  const STATS = [
+  { icon: BookOpen,   color: "#E8317A", bg: "#FFF0F5", value: profile?.topicsCompletedCount ?? 0,     label: "Topics Read"   },
+  { icon: Flame,      color: "#F59E0B", bg: "#FFFBEB", value: profile?.streakDays ?? 0,     label: "Day Streak"    },
+  { icon: Trophy,     color: "#10B981", bg: "#ECFDF5", value: profile?.certificatesCount ?? 0,     label: "Certificates"  },
+  { icon: Clock,      color: "#3B82F6", bg: "#EFF6FF", value: `${profile?.totalStudyMinutes ?? 0}m`, label: "Time Invested" },
+];
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
@@ -180,11 +179,11 @@ export default function UserDashboardOverview() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
             <Flame size={13} className="text-amber-500" />
-            <span className="text-xs font-bold text-amber-700">{USER.streak} day streak</span>
+            <span className="text-xs font-bold text-amber-700">{profile?.streakDays} day streak</span>
           </div>
         </div>
         <div className="flex items-center gap-2.5">
-          <XPBar />
+          <XPBar profile={profile || {}} />
           <button className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 transition-colors shadow-sm">
             <Search size={15} className="text-gray-500" />
           </button>
@@ -204,14 +203,14 @@ export default function UserDashboardOverview() {
           <div className="flex flex-col justify-between">
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-1">
-                {greeting}, {USER.name} 👋
+                {greeting}, {user?.firstName} 👋
               </p>
               <h1 className="text-2xl xl:text-3xl font-bold text-gray-900 leading-tight mb-2">
                 Your rights are worth<br />
                 <span style={{ color: "#E8317A" }}>knowing.</span>
               </h1>
               <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
-                You've been learning for {USER.joinedDays} days. Keep going,  knowledge is the
+                You've been learning for {profile?.streakDays} days. Keep going,  knowledge is the
                 most powerful legal tool you have.
               </p>
             </div>

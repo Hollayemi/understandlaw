@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
 
 export const server = process.env.NODE_ENV === "production" ? "https://" : "http://localhost:5001";
+type actorTypes = "user" | "admin";
 
 export interface RequestConfig {
   url: string;
@@ -12,18 +13,19 @@ export interface RequestConfig {
   data?: any;
   params?: Record<string, any>;
   headers?: Record<string, string>;
-  actor?: string;
+  endpointActor?: actorTypes;
   skipSuccessToast?: boolean;
 }
 
-const getAuthHeaders = (by: string = "user") => {
+
+const getAuthHeaders = (by: actorTypes = "user") => {
   if (typeof window === "undefined") {
     return {
       "Content-Type": "application/json",
     };
   }
 
-  const token = localStorage.getItem("accessToken") || "";
+  const token = localStorage.getItem(by === "admin" ? "adminAccessToken" : "accessToken") || "";
 
   return {
     "Content-Type": "application/json",
@@ -39,10 +41,12 @@ const showSuccessToast = (data: any) => {
 };
 
 export const axiosBaseQuery = (
-  { baseUrl }: { baseUrl: string } = { baseUrl: "" },
+  { baseUrl, defaultActor }: { baseUrl?: string; defaultActor?: actorTypes } = { baseUrl: "", defaultActor: "user" },
 ): BaseQueryFn<RequestConfig, unknown, { status: number; data: any; message?: string }> => {
   return async (requestConfig) => {
-    const { url, method = "GET", data, params, headers = {}, actor = "user", skipSuccessToast = false } = requestConfig;
+    const { url, method = "GET", data, params, headers = {}, endpointActor, skipSuccessToast = false } = requestConfig;
+
+    const actor = endpointActor || defaultActor;
 
     try {
       const authHeaders = getAuthHeaders(actor);
