@@ -54,13 +54,6 @@ export default function AuthPage() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // Check if user is already logged in
-  // useEffect(() => {
-  //   const token = localStorage.getItem("accessToken");
-  //   if (token) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -123,10 +116,6 @@ export default function AuthPage() {
       }).unwrap();
       console.log({result});
 
-      if (!result.data?.user?.isVerified) {
-        // router.push("/verify-email-pending");
-      } else {
-      }
       if(result.success) router.push("/dashboard");
 
     } catch (error: any) {

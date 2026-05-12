@@ -31,7 +31,7 @@ export const lawyerApi = createApi({
     
     submitVerification: builder.mutation<ApiResponse<LawyerProfile>, SubmitVerificationPayload>({
       query: (data) => ({
-        url: "/citizen/lawyer-profile",
+        url: "/lawyers/me/verification",
         method: "POST",
         data,
       }),

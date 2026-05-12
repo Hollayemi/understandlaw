@@ -8,6 +8,9 @@ import {
 import {
   StatBar, FilterBar, Table, StatusBadge, Avatar, PageHeader,
 } from "../_components";
+import { useAdminListLawyersQuery } from "@/redux/slices/admin/lawyer.slice";
+import { formatTime, getInitial } from "@/utils/function";
+import { LawyerFull } from "@/redux/types/lawyer";
 
 //  Types 
 type LawyerStatus = "active" | "inactive" | "pending";
@@ -35,71 +38,6 @@ interface Lawyer {
 }
 
 //  Mock Data 
-const LAWYERS: Lawyer[] = [
-  {
-    id: "l001", name: "Adaeze Okonkwo",  initials: "AO", color: "#1E3A5F",
-    email: "adaeze@lawticha.ng", phone: "08012345678", state: "Lagos",
-    specialisms: ["Criminal", "Employment"], nbaNumber: "NBA/LAG/2014/01847",
-    yearsCall: 10, joinedAt: "Jan 5, 2025", status: "active",
-    rating: 4.9, reviewCount: 84, consultations: 312,
-    responseTime: "< 1 hr", badges: ["Verified", "Top Rated", "Responsive"],
-    lastActive: "2 hours ago", available: true,
-  },
-  {
-    id: "l002", name: "Emeka Nwosu",     initials: "EN", color: "#1A3B2E",
-    email: "emeka@lawticha.ng",  phone: "08098765432", state: "Abuja",
-    specialisms: ["Property", "Business"], nbaNumber: "NBA/ABJ/2012/00934",
-    yearsCall: 12, joinedAt: "Jan 10, 2025", status: "active",
-    rating: 4.8, reviewCount: 112, consultations: 487,
-    responseTime: "< 2 hrs", badges: ["Verified", "Top Rated"],
-    lastActive: "5 hours ago", available: true,
-  },
-  {
-    id: "l003", name: "Fatimah Bello",   initials: "FB", color: "#2D1A3B",
-    email: "fatimah@lawticha.ng", phone: "07011223344", state: "Kano",
-    specialisms: ["Family", "Criminal"], nbaNumber: "NBA/KAN/2016/02211",
-    yearsCall: 8, joinedAt: "Jan 20, 2025", status: "active",
-    rating: 4.7, reviewCount: 56, consultations: 198,
-    responseTime: "< 3 hrs", badges: ["Verified", "Responsive"],
-    lastActive: "1 day ago", available: false,
-  },
-  {
-    id: "l004", name: "Chidi Okafor",    initials: "CO", color: "#1A2D3B",
-    email: "chidi@lawticha.ng",  phone: "08055667788", state: "Lagos",
-    specialisms: ["Business", "Consumer"], nbaNumber: "NBA/LAG/2015/03102",
-    yearsCall: 9, joinedAt: "Feb 2, 2025", status: "active",
-    rating: 4.6, reviewCount: 73, consultations: 254,
-    responseTime: "< 2 hrs", badges: ["Verified", "Top Rated"],
-    lastActive: "3 hours ago", available: true,
-  },
-  {
-    id: "l005", name: "Ngozi Eze",       initials: "NE", color: "#2D1A1A",
-    email: "ngozi@lawticha.ng",  phone: "09055443322", state: "Rivers",
-    specialisms: ["Employment", "Consumer"], nbaNumber: "NBA/PHC/2017/01563",
-    yearsCall: 7, joinedAt: "Feb 14, 2025", status: "active",
-    rating: 4.8, reviewCount: 49, consultations: 163,
-    responseTime: "< 1 hr", badges: ["Verified", "Responsive"],
-    lastActive: "6 hours ago", available: true,
-  },
-  {
-    id: "l006", name: "Abubakar Sadiq",  initials: "AS", color: "#2A2D1A",
-    email: "abubakar@lawticha.ng", phone: "08033221100", state: "Kaduna",
-    specialisms: ["Property", "Road Traffic"], nbaNumber: "NBA/KAD/2018/00789",
-    yearsCall: 6, joinedAt: "Mar 1, 2025", status: "inactive",
-    rating: 4.5, reviewCount: 38, consultations: 121,
-    responseTime: "< 4 hrs", badges: ["Verified"],
-    lastActive: "3 weeks ago", available: false,
-  },
-  {
-    id: "l007", name: "Obiageli Nwachukwu", initials: "ON", color: "#1E4040",
-    email: "obi.n@lawticha.ng", phone: "07077665544", state: "Anambra",
-    specialisms: ["Family", "Employment"], nbaNumber: "NBA/AWK/2019/00456",
-    yearsCall: 5, joinedAt: "Mar 15, 2025", status: "pending",
-    rating: 0, reviewCount: 0, consultations: 0,
-    responseTime: "N/A", badges: [],
-    lastActive: "Just joined", available: false,
-  },
-];
 
 const BADGE_COLORS: Record<string, { bg: string; text: string }> = {
   "Verified":   { bg: "#FFFBEB", text: "#92400E" },
@@ -108,18 +46,18 @@ const BADGE_COLORS: Record<string, { bg: string; text: string }> = {
 };
 
 //  Lawyer Detail Drawer 
-function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void }) {
+function LawyerDrawer({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="flex-1 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div className="w-full max-w-md bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${lawyer.color}, ${lawyer.color}99)` }} />
+        <div className="h-1 w-full"  />
         <div className="p-6 border-b border-[#F3F4F6]">
           <div className="flex items-start gap-4">
-            <Avatar initials={lawyer.initials} color={lawyer.color} size="lg" />
+            <Avatar initials={getInitial(lawyer.userId?.fullName || "")}  size="lg" />
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-[#111827]">{lawyer.name}</h2>
+              <h2 className="text-base font-bold text-[#111827]">{lawyer.userId?.fullName}</h2>
               <p className="text-xs text-[#6B7280]">{lawyer.specialisms.join(" · ")}</p>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {lawyer.badges.map(b => (
@@ -140,7 +78,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void
             {[
               { label: "Rating",    value: lawyer.rating > 0 ? `★ ${lawyer.rating}` : "N/A" },
               { label: "Reviews",   value: lawyer.reviewCount },
-              { label: "Sessions",  value: lawyer.consultations },
+              { label: "Sessions",  value: lawyer.consultationCount },
             ].map(s => (
               <div key={s.label} className="bg-[#F9FAFB] rounded-xl p-3 text-center border border-[#F3F4F6]">
                 <p className="text-sm font-bold text-[#111827]">{s.value}</p>
@@ -152,12 +90,12 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void
           {/* Details */}
           <div className="space-y-3">
             {[
-              { icon: Mail,     label: "Email",        value: lawyer.email },
+              { icon: Mail,     label: "Email",        value: lawyer.userId.email },
               { icon: MapPin,   label: "State",        value: lawyer.state },
-              { icon: Calendar, label: "Joined",       value: lawyer.joinedAt },
+              { icon: Calendar, label: "Joined",       value: formatTime(lawyer.createdAt) },
               { icon: BadgeCheck, label: "NBA Number", value: lawyer.nbaNumber },
-              { icon: Award,    label: "Year of Call", value: `${lawyer.yearsCall} years` },
-              { icon: Clock,    label: "Response",     value: lawyer.responseTime },
+              { icon: Award,    label: "Year of Call", value: `${lawyer.yearOfCall} years` },
+              { icon: Clock,    label: "Response",     value: lawyer.responseTimeLabel },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex items-center gap-3 text-[13px]">
                 <Icon size={13} className="text-[#9CA3AF] flex-shrink-0" />
@@ -184,7 +122,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void
 }
 
 //  Row Actions 
-function ActionsMenu({ lawyer, onView }: { lawyer: Lawyer; onView: () => void }) {
+function ActionsMenu({ lawyer, onView }: { lawyer: LawyerFull; onView: () => void }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
@@ -214,27 +152,33 @@ function ActionsMenu({ lawyer, onView }: { lawyer: Lawyer; onView: () => void })
   );
 }
 
-//  Main Page 
+
 export default function LawyersPage() {
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");
-  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
+  const [selectedLawyer, setSelectedLawyer] = useState<LawyerFull | null>(null);
+
+  const { data, isLoading } = useAdminListLawyersQuery({})
+
+const lawyers = data?.data?.data || []
+
+console.log(lawyers)
 
   const stats = [
-    { label: "Total Lawyers",  value: LAWYERS.length,                                            icon: Scale,      color: "#E8317A", bg: "#FFF0F5" },
-    { label: "Active",         value: LAWYERS.filter(l => l.status === "active").length,         icon: BadgeCheck, color: "#10B981", bg: "#ECFDF5" },
-    { label: "Avg Rating",     value: (LAWYERS.filter(l => l.rating > 0).reduce((s, l) => s + l.rating, 0) / LAWYERS.filter(l => l.rating > 0).length).toFixed(1),
+    { label: "Total Lawyers",  value: lawyers.length,                                            icon: Scale,      color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Active",         value: lawyers.filter(l => l.isAvailable).length,         icon: BadgeCheck, color: "#10B981", bg: "#ECFDF5" },
+    { label: "Avg Rating",     value: (lawyers.filter(l => l.rating > 0).reduce((s, l) => s + l.rating, 0) / lawyers.filter(l => l.rating > 0).length).toFixed(1),
                                                                                                   icon: Star,       color: "#F59E0B", bg: "#FFFBEB" },
-    { label: "Pending Review", value: LAWYERS.filter(l => l.status === "pending").length,        icon: Clock,      color: "#9CA3AF", bg: "#F9FAFB" },
+    { label: "Pending Review", value: lawyers.filter(l => l.verificationStatus === "pending").length,        icon: Clock,      color: "#9CA3AF", bg: "#F9FAFB" },
   ];
 
-  const filtered = LAWYERS.filter(l => {
-    if (tab === "active"   && l.status !== "active")   return false;
-    if (tab === "inactive" && l.status !== "inactive") return false;
-    if (tab === "pending"  && l.status !== "pending")  return false;
+  const filtered = lawyers.filter(l => {
+    if (tab === "active"   && l.isAvailable)   return false;
+    if (tab === "inactive" && !l.isAvailable) return false;
+    if (tab === "pending"  && l.verificationStatus !== "pending")  return false;
     if (search) {
       const q = search.toLowerCase();
-      return l.name.toLowerCase().includes(q) || l.nbaNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
+      return l.userId.fullName.toLowerCase().includes(q) || l.nbaNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
     }
     return true;
   });
@@ -243,14 +187,14 @@ export default function LawyersPage() {
     {
       key: "lawyer",
       header: "Lawyer",
-      render: (l: Lawyer) => (
+      render: (l: LawyerFull) => (
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Avatar initials={l.initials} color={l.color} size="md" />
-            {l.available && <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#10B981] border-2 border-white" />}
+            <Avatar initials={getInitial(l.userId?.fullName || " ")}  size="md" />
+            {l.isAvailable && <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#10B981] border-2 border-white" />}
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-[#111827]">{l.name}</p>
+            <p className="text-[13px] font-semibold text-[#111827]">{l.userId?.fullName}</p>
             <p className="text-[11px] text-[#9CA3AF]">{l.nbaNumber}</p>
           </div>
         </div>
@@ -259,7 +203,7 @@ export default function LawyersPage() {
     {
       key: "specialisms",
       header: "Specialisms",
-      render: (l: Lawyer) => (
+      render: (l: LawyerFull) => (
         <div className="flex flex-wrap gap-1">
           {l.specialisms.map(s => (
             <span key={s} className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#F3F4F6] text-[#6B7280]">{s}</span>
@@ -270,7 +214,7 @@ export default function LawyersPage() {
     {
       key: "location",
       header: "State",
-      render: (l: Lawyer) => (
+      render: (l: LawyerFull) => (
         <div className="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
           <MapPin size={11} className="text-[#9CA3AF]" /> {l.state}
         </div>
@@ -279,11 +223,11 @@ export default function LawyersPage() {
     {
       key: "performance",
       header: "Performance",
-      render: (l: Lawyer) => (
-        l.rating > 0 ? (
+      render: (l: LawyerFull) => (
+        l?.rating > 0 ? (
           <div className="flex items-center gap-3 text-[11px] text-[#6B7280]">
             <span className="text-amber-500 font-semibold">★ {l.rating}</span>
-            <span className="flex items-center gap-1"><MessageSquare size={10} /> {l.consultations}</span>
+            <span className="flex items-center gap-1"><MessageSquare size={10} /> {l.consultationCount}</span>
           </div>
         ) : <span className="text-[11px] text-[#D1D5DB]">No data yet</span>
       ),
@@ -291,18 +235,18 @@ export default function LawyersPage() {
     {
       key: "status",
       header: "Status",
-      render: (l: Lawyer) => <StatusBadge status={l.status} />,
+      render: (l: LawyerFull) => <StatusBadge status={l.verificationStatus} />,
     },
     {
       key: "lastActive",
       header: "Last Active",
-      render: (l: Lawyer) => <span className="text-[12px] text-[#6B7280]">{l.lastActive}</span>,
+      render: (l: LawyerFull) => <span className="text-[12px] text-[#6B7280]">{formatTime(l.userId?.lastLoginAt)}</span>,
     },
     {
       key: "actions",
       header: "",
       width: "48px",
-      render: (l: Lawyer) => <ActionsMenu lawyer={l} onView={() => setSelectedLawyer(l)} />,
+      render: (l: LawyerFull) => <ActionsMenu lawyer={l} onView={() => setSelectedLawyer(l)} />,
     },
   ];
 
@@ -325,10 +269,10 @@ export default function LawyersPage() {
 
         <FilterBar
           options={[
-            { value: "all",      label: "All",      count: LAWYERS.length },
-            { value: "active",   label: "Active",   count: LAWYERS.filter(l => l.status === "active").length },
-            { value: "inactive", label: "Inactive", count: LAWYERS.filter(l => l.status === "inactive").length },
-            { value: "pending",  label: "Pending",  count: LAWYERS.filter(l => l.status === "pending").length },
+            { value: "all",      label: "All",      count: lawyers.length },
+            { value: "active",   label: "Active",   count: lawyers.filter(l => l.isAvailable).length },
+            { value: "inactive", label: "Inactive", count: lawyers.filter(l => !l.isAvailable).length },
+            { value: "pending",  label: "Pending",  count: lawyers.filter(l => l.verificationStatus === "pending").length },
           ]}
           value={tab}
           onChange={setTab}
@@ -345,13 +289,13 @@ export default function LawyersPage() {
         <Table
           columns={columns}
           data={filtered}
-          keyField="id"
+          keyField="_id"
           emptyMessage="No lawyers match your search."
           emptyIcon={<Scale size={36} />}
         />
 
         <div className="flex items-center justify-between mt-4 text-[12px] text-[#9CA3AF]">
-          <span>Showing {filtered.length} of {LAWYERS.length} lawyers</span>
+          <span>Showing {filtered.length} of {lawyers.length} lawyers</span>
           <div className="flex items-center gap-1">
             {[1, 2, "…", 5].map((p, i) => (
               <button key={i}

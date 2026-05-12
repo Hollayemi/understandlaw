@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import { Toggle } from "./types";
-import { User, UserProfile } from "@/redux/types";
+import { CitizenUser, CitizenProfile } from "@/redux/types";
 
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
@@ -68,8 +68,8 @@ export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: str
 }
 
 //  Profile tab 
-export function ProfileSettings({ user}: { user: User }) {
-  const { userInfo } = useUserData()
+export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: CitizenProfile }) {
+  const { userInfo, } = useUserData()
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -78,8 +78,8 @@ export function ProfileSettings({ user}: { user: User }) {
     lastName:  user.lastName || "" ,
     email:     user.email || "" ,
     phone:     user.phone || "" ,
-    state:     user.state || "" ,
-    bio:       user.bio || "" ,
+    state:     profile.stateCode || "" ,
+    bio:       profile.bio || "" ,
   });
 
   useEffect(() => {
@@ -88,8 +88,8 @@ export function ProfileSettings({ user}: { user: User }) {
     lastName:  user.lastName || "" ,
     email:     user.email || "" ,
     phone:     user.phone || "" ,
-    state:     user.state || "" ,
-    bio:       user.bio || "" ,
+    state:     profile.stateCode || "" ,
+    bio:       profile.bio || "" ,
   });
   }, [userInfo]);
 
@@ -187,7 +187,7 @@ export function ProfileSettings({ user}: { user: User }) {
 }
 
 //  Notifications tab 
-export function NotificationSettings({ profile }: {profile: UserProfile}) {
+export function NotificationSettings({ profile }: {profile: CitizenProfile}) {
   const [items, setItems] = useState<Toggle[]>([
     { id: "n1",  label: "Lawyer response notifications",    desc: "Get notified when a lawyer accepts or declines your consultation request.", value: profile.notifLawyerResponse  },
     { id: "n2",  label: "Consultation reminders",           desc: "Reminder 24 hours and 1 hour before a scheduled call or video session.",   value: profile.notifConsultReminder  },
@@ -229,7 +229,7 @@ export function NotificationSettings({ profile }: {profile: UserProfile}) {
 }
 
 //  Privacy tab 
-export function PrivacySettings({ profile}: {profile: UserProfile}) {
+export function PrivacySettings({ profile}: {profile: CitizenProfile}) {
   const [items, setItems] = useState<Toggle[]>([
     { id: "p1", label: "Show my reading activity to the community",  desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: profile.showActivityPublic  },
     { id: "p2", label: "Allow anonymous analytics",                  desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: profile.allowAnonymousAnalytics  },
@@ -282,7 +282,7 @@ export function PrivacySettings({ profile}: {profile: UserProfile}) {
 }
 
 //  Security tab 
-export function SecuritySettings({ profile}: {profile: UserProfile}) {
+export function SecuritySettings({ profile}: {profile: CitizenProfile}) {
   const [showCurrent, setShowCurrent]   = useState(false);
   const [showNew, setShowNew]           = useState(false);
   const [showConfirm, setShowConfirm]   = useState(false);
@@ -404,7 +404,7 @@ export function SecuritySettings({ profile}: {profile: UserProfile}) {
 }
 
 //  Appearance tab 
-export function AppearanceSettings({ profile}: {profile: UserProfile}) {
+export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [fontSize, setFontSize] = useState<"small" | "medium" | "large">("medium");
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -482,7 +482,7 @@ export function AppearanceSettings({ profile}: {profile: UserProfile}) {
 }
 
 //  Legal Preferences tab 
-export function LegalSettings({ profile}: {profile: UserProfile}) {
+export function LegalSettings({ profile}: {profile: CitizenProfile}) {
   const [interests, setInterests] = useState<string[]>(["criminal", "employment", "tenancy"]);
   const [lang, setLang] = useState("en");
   const [jurisdiction, setJurisdiction] = useState("federal");

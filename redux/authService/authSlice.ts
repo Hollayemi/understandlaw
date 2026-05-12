@@ -13,6 +13,7 @@ import {
     CitizenFull
 } from '../types';
 import { showError, showSuccess } from '@/app/components/ui/sonner';
+import { axiosBaseQuery } from '../shared/axiosBaseQuery';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/v1/auth`,
@@ -31,7 +32,7 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
     let result = await baseQuery(args, api, extraOptions);
     if (result.error && result.error.status === 401) {
         const refreshResult = await baseQuery(
-            { url: '/refresh-token', method: 'POST' },
+            { url: '/auth/refresh-token', method: 'POST' },
             api,
             extraOptions
         );
@@ -50,14 +51,14 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: baseQueryWithReauth,
+    baseQuery: axiosBaseQuery({}),
     tagTypes: ['User'],
     endpoints: (builder) => ({
         register: builder.mutation<ApiResponse<AuthResponse>, RegisterRequest>({
             query: (userData) => ({
-                url: '/register',
+                url: '/auth/register',
                 method: 'POST',
-                body: userData,
+                data: userData,
             }),
               async onQueryStarted(_, { queryFulfilled }) {
                 try {
@@ -78,13 +79,14 @@ export const authApi = createApi({
 
         signIn: builder.mutation<ApiResponse<AuthResponse>, SignInRequest>({
             query: (credentials) => ({
-                url: '/signin',
+                url: '/auth/signin',
                 method: 'POST',
-                body: credentials,
+                data: credentials,
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
+                    console.log(data.data.accessToken)
                     localStorage.setItem('accessToken', data.data.accessToken);
                     if(data.success) {
                         showSuccess("Welcome Back!", data.message || "Welcome back!");
@@ -98,15 +100,15 @@ export const authApi = createApi({
             invalidatesTags: ['User'],
         }),
 
-        refreshToken: builder.mutation<AuthResponse, void>({
+        refreshToken: builder.mutation<ApiResponse<AuthResponse>, void>({
             query: () => ({
-                url: '/refresh-token',
+                url: '/auth/refresh-token',
                 method: 'POST',
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('accessToken', data.data.accessToken);
                 } catch (error) {
                     // console.error('Token refresh failed:', error);
                 }
@@ -122,53 +124,55 @@ export const authApi = createApi({
 
         resendVerification: builder.mutation<{ message: string }, ResendVerificationRequest>({
             query: (data) => ({
-                url: '/resend-verification',
+                url: '/auth/resend-verification',
                 method: 'POST',
-                body: data,
+                data: data,
             }),
         }),
 
         forgotPassword: builder.mutation<{ message: string }, ForgotPasswordRequest>({
             query: (data) => ({
-                url: '/forgot-password',
+                url: '/auth/forgot-password',
                 method: 'POST',
-                body: data,
+                data: data,
             }),
         }),
 
         resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
             query: ({ token, password, confirmPassword }) => ({
-                url: `/reset-password/${token}`,
+                url: `/auth/reset-password/${token}`,
                 method: 'PATCH',
-                body: { password, confirmPassword },
+                data: { password, confirmPassword },
             }),
         }),
 
         getMe: builder.query<ApiResponse<CitizenFull>, void>({
-            query: () => '/me',
+            query: () => ({
+                url: "/auth/me"
+            }),
             providesTags: ['User'],
         }),
 
         updateProfile: builder.mutation<AuthResponse, UpdateProfileRequest>({
             query: (profileData) => ({
-                url: '/update-profile',
+                url: '/auth/update-profile',
                 method: 'PATCH',
-                body: profileData,
+                data: profileData,
             }),
             invalidatesTags: ['User'],
         }),
 
         updatePassword: builder.mutation<{ message: string }, UpdatePasswordRequest>({
             query: (passwordData) => ({
-                url: '/update-password',
+                url: '/auth/update-password',
                 method: 'PATCH',
-                body: passwordData,
+                data: passwordData,
             }),
         }),
 
         logout: builder.mutation<{ message: string }, void>({
             query: () => ({
-                url: '/logout',
+                url: '/auth/logout',
                 method: 'POST',
             }),
             async onQueryStarted(_, { queryFulfilled }) {
@@ -184,9 +188,9 @@ export const authApi = createApi({
 
         deactivateAccount: builder.mutation<{ message: string }, DeactivateAccountRequest>({
             query: (data) => ({
-                url: '/deactivate',
+                url: '/auth/deactivate',
                 method: 'DELETE',
-                body: data,
+                data: data,
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
