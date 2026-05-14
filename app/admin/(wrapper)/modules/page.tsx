@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen, Users, TrendingUp, Award, Plus, Search,
@@ -11,127 +11,68 @@ import {
   Tag, AlignLeft, Download,
 } from "lucide-react";
 import { StatBar, FilterBar, Avatar, PageHeader, StatusBadge } from "../_components";
+import {
+  useGetModulesQuery,
+  useGetModuleOverviewStatsQuery,
+  useGetDailyActivityStatsQuery,
+  useCreateModuleMutation,
+  useDeleteModuleMutation,
+  useUpdateModuleMutation,
+} from "@/redux/slices/admin/modules.slice";
+// import { useModulesUiActions, useModulesUiSelectors } from "@/redux/slices/types";
+import { Module, ModuleCategory, ModuleStatus, CreateModulePayload } from "@/redux/slices/types";
+import { useGetInstructorsQuery } from "@/redux/slices/admin/admin.slice";
 
-//  Types 
-type ModuleCategory =
-  | "criminal" | "tenancy" | "employment" | "contracts"
-  | "business" | "family" | "consumer" | "road";
-
-type ModuleStatus = "active" | "inactive" | "pending";
-
-interface Module {
-  id: string;
-  title: string;
-  category: ModuleCategory;
-  status: ModuleStatus;
-  thumbnail: string | null;
-  description: string;
-  topicCount: number;
-  enrolledCount: number;
-  completionRate: number;
-  avgRating: number;
-  reviewCount: number;
-  totalWatchTime: string;
-  createdAt: string;
-  updatedAt: string;
-  instructor: string;
-  instructorInitials: string;
-  instructorColor: string;
-  trending: boolean;
-}
-
-//  Category Config 
+// Category Config
 const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: React.ElementType; color: string; bg: string }> = {
-  criminal:    { label: "Police & Criminal",    icon: Shield,    color: "#3B82F6", bg: "#EFF6FF" },
-  tenancy:     { label: "Landlord & Tenancy",   icon: Home,      color: "#10B981", bg: "#ECFDF5" },
-  employment:  { label: "Employment & Labour",  icon: Briefcase, color: "#8B5CF6", bg: "#F5F3FF" },
-  contracts:   { label: "Contracts & Agreements", icon: FileText, color: "#F59E0B", bg: "#FFFBEB" },
-  business:    { label: "Business & Commerce",  icon: Building2, color: "#06B6D4", bg: "#ECFEFF" },
-  family:      { label: "Family & Personal",    icon: Heart,     color: "#EF4444", bg: "#FEF2F2" },
-  consumer:    { label: "Consumer Rights",      icon: Globe,     color: "#E8317A", bg: "#FFF0F5" },
-  road:        { label: "Road Traffic",         icon: Car,       color: "#F97316", bg: "#FFF7ED" },
+  criminal: { label: "Police & Criminal", icon: Shield, color: "#3B82F6", bg: "#EFF6FF" },
+  tenancy: { label: "Landlord & Tenancy", icon: Home, color: "#10B981", bg: "#ECFDF5" },
+  employment: { label: "Employment & Labour", icon: Briefcase, color: "#8B5CF6", bg: "#F5F3FF" },
+  contracts: { label: "Contracts & Agreements", icon: FileText, color: "#F59E0B", bg: "#FFFBEB" },
+  business: { label: "Business & Commerce", icon: Building2, color: "#06B6D4", bg: "#ECFEFF" },
+  family: { label: "Family & Personal", icon: Heart, color: "#EF4444", bg: "#FEF2F2" },
+  consumer: { label: "Consumer Rights", icon: Globe, color: "#E8317A", bg: "#FFF0F5" },
+  road: { label: "Road Traffic", icon: Car, color: "#F97316", bg: "#FFF7ED" },
 };
 
-//  Mock Data 
-const MODULES: Module[] = [
-  {
-    id: "m001", title: "Rights During Arrest & Detention",
-    category: "criminal", status: "active", thumbnail: "/images/police_law.jpg",
-    description: "Know exactly what police can and cannot do,  Section 35 explained in full.",
-    topicCount: 14, enrolledCount: 3842, completionRate: 62, avgRating: 4.3, reviewCount: 284,
-    totalWatchTime: "2.1k hrs", createdAt: "Jan 12, 2025", updatedAt: "Apr 20, 2025",
-    instructor: "Adaeze Okonkwo", instructorInitials: "AO", instructorColor: "#3B82F6",
-    trending: true,
-  },
-  {
-    id: "m002", title: "Tenant Eviction Rights in Nigeria",
-    category: "tenancy", status: "active", thumbnail: "/images/tenancy_law.jpg",
-    description: "Eviction procedures, notice periods, illegal lockouts and deposit recovery.",
-    topicCount: 8, enrolledCount: 2519, completionRate: 48, avgRating: 4.1, reviewCount: 191,
-    totalWatchTime: "1.4k hrs", createdAt: "Feb 3, 2025", updatedAt: "Apr 18, 2025",
-    instructor: "Emeka Nwosu", instructorInitials: "EN", instructorColor: "#10B981",
-    trending: true,
-  },
-  {
-    id: "m003", title: "Wrongful Termination & Severance Pay",
-    category: "employment", status: "active", thumbnail: "/images/employment_law.jpg",
-    description: "Labour Act rights, severance entitlements, and National Industrial Court.",
-    topicCount: 12, enrolledCount: 1987, completionRate: 39, avgRating: 3.8, reviewCount: 143,
-    totalWatchTime: "980 hrs", createdAt: "Feb 18, 2025", updatedAt: "Apr 15, 2025",
-    instructor: "Fatimah Bello", instructorInitials: "FB", instructorColor: "#8B5CF6",
-    trending: false,
-  },
-  {
-    id: "m004", title: "What Makes a Contract Valid?",
-    category: "contracts", status: "active", thumbnail: "/images/contract_law.jpg",
-    description: "Offer, acceptance, consideration, capacity,  all elements explained plainly.",
-    topicCount: 7, enrolledCount: 1644, completionRate: 71, avgRating: 4.6, reviewCount: 209,
-    totalWatchTime: "740 hrs", createdAt: "Mar 1, 2025", updatedAt: "Apr 22, 2025",
-    instructor: "Chidi Okafor", instructorInitials: "CO", instructorColor: "#F59E0B",
-    trending: false,
-  },
-  {
-    id: "m005", title: "Registering a Business in Nigeria",
-    category: "business", status: "active", thumbnail: null,
-    description: "CAC requirements, business name vs company, registration steps.",
-    topicCount: 9, enrolledCount: 1102, completionRate: 55, avgRating: 4.5, reviewCount: 87,
-    totalWatchTime: "520 hrs", createdAt: "Mar 14, 2025", updatedAt: "Apr 10, 2025",
-    instructor: "Amina Garba", instructorInitials: "AG", instructorColor: "#06B6D4",
-    trending: false,
-  },
-  {
-    id: "m006", title: "Domestic Violence & Protection Orders",
-    category: "family", status: "active", thumbnail: null,
-    description: "VAPP Act rights, how to get a protection order, and legal support pathways.",
-    topicCount: 8, enrolledCount: 892, completionRate: 44, avgRating: 4.8, reviewCount: 62,
-    totalWatchTime: "390 hrs", createdAt: "Apr 1, 2025", updatedAt: "Apr 21, 2025",
-    instructor: "Ngozi Eze", instructorInitials: "NE", instructorColor: "#EF4444",
-    trending: false,
-  },
-  {
-    id: "m007", title: "Consumer Protection Rights Nigeria",
-    category: "consumer", status: "pending", thumbnail: null,
-    description: "CPC Act rights, defective product claims, and consumer dispute resolution.",
-    topicCount: 6, enrolledCount: 0, completionRate: 0, avgRating: 0, reviewCount: 0,
-    totalWatchTime: "—", createdAt: "Apr 19, 2025", updatedAt: "Apr 21, 2025",
-    instructor: "Ikechukwu Eze", instructorInitials: "IE", instructorColor: "#E8317A",
-    trending: false,
-  },
-];
-
-//  Create Module Modal 
+// Create Module Modal Component
 function CreateModuleModal({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({
-    title: "", category: "criminal" as ModuleCategory,
-    description: "", instructor: "",
-    thumbnailType: "upload" as "upload" | "url",
+    title: "",
+    category: "criminal" as ModuleCategory,
+    description: "",
+    instructorId: "",
     thumbnailUrl: "",
   });
   const [step, setStep] = useState<1 | 2>(1);
+  const [createModule, { isLoading }] = useCreateModuleMutation();
+
+  
+  const { data: instructorsData, isLoading:instructorsLoading } = useGetInstructorsQuery({});
+
+  const instructors = instructorsData?.data || []
+
+  console.log(instructors)
+
 
   const set = (k: keyof typeof form) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleCreate = async () => {
+    try {
+      await createModule({
+        title: form.title,
+        category: form.category,
+        description: form.description,
+        instructorId: form.instructorId,
+        thumbnailUrl: form.thumbnailUrl || undefined,
+      }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to create module:", error);
+    }
+  };
 
   const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
 
@@ -140,7 +81,6 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
         <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8]" />
         <div className="p-6">
-          {/* Header */}
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-bold text-[#111827] text-sm">Create New Module</h3>
@@ -151,13 +91,11 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
 
-          {/* Step indicators */}
           <div className="flex items-center gap-2 mb-5">
             {[1, 2].map(n => (
               <React.Fragment key={n}>
-                <div className={`flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold transition-all ${
-                  step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
-                }`}>{n}</div>
+                <div className={`flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold transition-all ${step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                  }`}>{n}</div>
                 {n < 2 && <div className="flex-1 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
             ))}
@@ -185,11 +123,17 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
                   className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
-              <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Instructor / Legal Expert</label>
-                <input value={form.instructor} onChange={set("instructor")} placeholder="e.g. Adaeze Okonkwo" className={inputCls} />
+              <div className="">
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Instructor ID</label>
+                <select value={form.instructorId} onChange={set("instructorId")}
+                  className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] w-full text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#E8317A] transition-colors">
+                  <option value="all">All Categories</option>
+                  {instructors.map((each, i) => (
+                    <option key={each?._id} value={each?._id}>{each.name}</option>
+                  ))}
+                </select>
               </div>
-              <button onClick={() => setStep(2)} disabled={!form.title || !form.description}
+              <button onClick={() => setStep(2)} disabled={!form.title || !form.description || !form.instructorId}
                 className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-40 transition-colors">
                 Continue →
               </button>
@@ -199,26 +143,9 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">Module Thumbnail</label>
-                <div className="flex gap-2 mb-3">
-                  {(["upload", "url"] as const).map(t => (
-                    <button key={t} onClick={() => setForm(f => ({ ...f, thumbnailType: t }))}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${form.thumbnailType === t ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
-                      {t === "upload" ? <Upload size={12} /> : <ImageIcon size={12} />}
-                      {t === "upload" ? "Upload File" : "Image URL"}
-                    </button>
-                  ))}
-                </div>
-                {form.thumbnailType === "upload" ? (
-                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
-                    <Upload size={24} className="text-[#D1D5DB] mx-auto mb-2" />
-                    <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload or drag & drop</p>
-                    <p className="text-[10px] text-[#D1D5DB] mt-1">JPG, PNG or WebP, max 5MB</p>
-                  </div>
-                ) : (
-                  <input value={form.thumbnailUrl} onChange={set("thumbnailUrl")}
-                    placeholder="https://example.com/image.jpg" className={inputCls} />
-                )}
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">Module Thumbnail URL (Optional)</label>
+                <input value={form.thumbnailUrl} onChange={set("thumbnailUrl")}
+                  placeholder="https://example.com/thumbnail.jpg" className={inputCls} />
               </div>
 
               <div className="bg-[#F9FAFB] rounded-xl p-4 border border-[#F3F4F6]">
@@ -226,7 +153,6 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
                 <div className="space-y-1.5 text-[12px]">
                   <div className="flex justify-between"><span className="text-[#9CA3AF]">Title</span><span className="font-semibold text-[#111827] truncate max-w-[200px]">{form.title || "—"}</span></div>
                   <div className="flex justify-between"><span className="text-[#9CA3AF]">Category</span><span className="font-semibold text-[#111827]">{CATEGORY_CONFIG[form.category].label}</span></div>
-                  <div className="flex justify-between"><span className="text-[#9CA3AF]">Instructor</span><span className="font-semibold text-[#111827]">{form.instructor || "—"}</span></div>
                 </div>
               </div>
 
@@ -235,9 +161,9 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
                   className="flex-1 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:bg-[#F9FAFB] transition-colors">
                   Back
                 </button>
-                <button onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] transition-colors">
-                  Create Module
+                <button onClick={handleCreate} disabled={isLoading}
+                  className="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
+                  {isLoading ? "Creating..." : "Create Module"}
                 </button>
               </div>
             </div>
@@ -248,29 +174,27 @@ function CreateModuleModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-//  Module Card 
-function ModuleCard({ mod }: { mod: Module }) {
+// Module Card Component
+function ModuleCard({ mod, onDelete, onEdit }: { mod: Module; onDelete: (id: string) => void; onEdit: (mod: Module) => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const cat = CATEGORY_CONFIG[mod.category];
-  const CatIcon = cat.icon;
+  const cat = CATEGORY_CONFIG[mod.category as ModuleCategory];
+  const CatIcon = cat?.icon || BookOpen;
 
   return (
     <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-      {/* Thumbnail */}
-      <div className="relative h-36 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat.color}20, ${cat.color}08)` }}>
+      <div className="relative h-36 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat?.color || '#E8317A'}20, ${cat?.color || '#E8317A'}08)` }}>
         {mod.thumbnail ? (
           <img src={mod.thumbnail} alt={mod.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <CatIcon size={40} style={{ color: cat.color, opacity: 0.25 }} />
+            <CatIcon size={40} style={{ color: cat?.color || '#E8317A', opacity: 0.25 }} />
           </div>
         )}
-        {/* Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: cat.bg, color: cat.color }}>
-            {cat.label}
+            style={{ background: cat?.bg || '#FFF0F5', color: cat?.color || '#E8317A' }}>
+            {cat?.label || mod.category}
           </span>
           {mod.trending && (
             <span className="flex items-center gap-1 text-[10px] font-bold bg-[#EF4444] text-white px-2 py-0.5 rounded-full">
@@ -288,34 +212,28 @@ function ModuleCard({ mod }: { mod: Module }) {
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-8 z-20 w-40 bg-white border border-[#E5E7EB] rounded-xl shadow-xl py-1">
-                  {[
-                    { icon: Eye, label: "View Details", color: "#111827" },
-                    { icon: Edit2, label: "Edit Module", color: "#111827" },
-                    { icon: Trash2, label: "Delete", color: "#EF4444" },
-                  ].map(({ icon: Icon, label, color }) => (
-                    <button key={label}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[12px] font-medium hover:bg-[#F9FAFB] transition-colors text-left"
-                      style={{ color }} onClick={() => setMenuOpen(false)}>
-                      <Icon size={12} /> {label}
-                    </button>
-                  ))}
+                  <button onClick={() => { setMenuOpen(false); onEdit(mod); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[12px] font-medium hover:bg-[#F9FAFB] transition-colors text-left text-[#111827]">
+                    <Edit2 size={12} /> Edit Module
+                  </button>
+                  <button onClick={() => { setMenuOpen(false); onDelete(mod.id); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[12px] font-medium hover:bg-[#F9FAFB] transition-colors text-left text-[#EF4444]">
+                    <Trash2 size={12} /> Delete
+                  </button>
                 </div>
               </>
             )}
           </div>
         </div>
-        {/* Status badge bottom-left */}
         <div className="absolute bottom-3 left-3">
           <StatusBadge status={mod.status} />
         </div>
       </div>
 
-      {/* Body */}
       <div className="p-4 flex flex-col flex-1">
         <h3 className="text-[13px] font-bold text-[#111827] leading-snug mb-1 line-clamp-2">{mod.title}</h3>
         <p className="text-[11px] text-[#9CA3AF] leading-relaxed mb-3 line-clamp-2 flex-1">{mod.description}</p>
 
-        {/* Stats row */}
         <div className="grid grid-cols-3 gap-2 mb-3 bg-[#F9FAFB] rounded-xl p-2.5">
           <div className="text-center">
             <p className="text-[12px] font-bold text-[#111827]">{mod.topicCount}</p>
@@ -331,7 +249,6 @@ function ModuleCard({ mod }: { mod: Module }) {
           </div>
         </div>
 
-        {/* Rating + instructor */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
@@ -349,7 +266,6 @@ function ModuleCard({ mod }: { mod: Module }) {
           )}
         </div>
 
-        {/* View link */}
         <Link href={`/admin/modules/${mod.id}`}
           className="mt-3 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-all">
           Manage Module <ChevronRight size={12} />
@@ -359,41 +275,190 @@ function ModuleCard({ mod }: { mod: Module }) {
   );
 }
 
-//  Main Page 
+// Edit Module Modal
+function EditModuleModal({ module, onClose }: { module: Module; onClose: () => void }) {
+  const [form, setForm] = useState({
+    title: module.title,
+    category: module.category,
+    description: module.description,
+    status: module.status,
+    thumbnailUrl: module.thumbnail || "",
+  });
+  const [updateModule, { isLoading }] = useUpdateModuleMutation();
+
+  const set = (k: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleUpdate = async () => {
+    try {
+      await updateModule({
+        id: module.id,
+        data: {
+          title: form.title,
+          category: form.category as ModuleCategory,
+          description: form.description,
+          status: form.status as ModuleStatus,
+          thumbnailUrl: form.thumbnailUrl || undefined,
+        },
+      }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update module:", error);
+    }
+  };
+
+  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8]" />
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h3 className="font-bold text-[#111827] text-sm">Edit Module</h3>
+              <p className="text-[11px] text-[#9CA3AF] mt-0.5">Update module details</p>
+            </div>
+            <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#111827] transition-colors">
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Module Title</label>
+              <input value={form.title} onChange={set("title")} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-[#6B7280} uppercase tracking-wider mb-1.5">Category</label>
+              <select value={form.category} onChange={set("category")} className={inputCls}>
+                {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
+                  <option key={k} value={k}>{v.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Status</label>
+              <select value={form.status} onChange={set("status")} className={inputCls}>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Description</label>
+              <textarea value={form.description} onChange={set("description")}
+                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A]"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Thumbnail URL</label>
+              <input value={form.thumbnailUrl} onChange={set("thumbnailUrl")} placeholder="https://example.com/image.jpg" className={inputCls} />
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <button onClick={onClose}
+                className="flex-1 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:bg-[#F9FAFB] transition-colors">
+                Cancel
+              </button>
+              <button onClick={handleUpdate} disabled={isLoading}
+                className="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
+                {isLoading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main Page
 export default function AdminModulesPage() {
+  // UI State from Redux slice (optional - can also use local state)
   const [tab, setTab] = useState("all");
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const [showCreate, setShowCreate] = useState(false);
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const [editingModule, setEditingModule] = useState<Module | null>(null);
 
-  const totalEnrolled = MODULES.reduce((s, m) => s + m.enrolledCount, 0);
-  const totalTopics   = MODULES.reduce((s, m) => s + m.topicCount, 0);
-  const avgCompletion = Math.round(MODULES.filter(m => m.enrolledCount > 0)
-    .reduce((s, m) => s + m.completionRate, 0) / MODULES.filter(m => m.enrolledCount > 0).length);
 
+  // RTK Query hooks
+  const { data: modulesData, isLoading: modulesLoading, refetch } = useGetModulesQuery({
+    status: tab as any,
+    category: categoryFilter as any,
+    search: search || undefined,
+    page,
+    pageSize: 20,
+  });
+
+  const { data: statsData, isLoading: statsLoading } = useGetModuleOverviewStatsQuery();
+  const { data: dailyStatsData, isLoading: dailyStatsLoading } = useGetDailyActivityStatsQuery();
+  const [deleteModule] = useDeleteModuleMutation();
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this module? This action cannot be undone.")) {
+      try {
+        await deleteModule(id).unwrap();
+        refetch();
+      } catch (error) {
+        console.error("Failed to delete module:", error);
+      }
+    }
+  };
+
+  console.log(modulesData)
+
+  const modules = modulesData?.data?.data || [] as any;
+  const totalModules = modulesData?.data?.total || 0;
+
+  console.log(modules)
+
+  // Stats for StatBar
   const stats = [
-    { label: "Total Modules",  value: MODULES.length,                                        icon: BookOpen,   color: "#E8317A", bg: "#FFF0F5" },
-    { label: "Total Topics",   value: totalTopics,                                            icon: Layers,     color: "#3B82F6", bg: "#EFF6FF" },
-    { label: "Total Enrolled", value: totalEnrolled.toLocaleString(),                        icon: Users,      color: "#10B981", bg: "#ECFDF5" },
-    { label: "Avg Completion", value: `${avgCompletion}%`,                                   icon: Target,     color: "#F59E0B", bg: "#FFFBEB" },
+    { label: "Total Modules", value: statsData?.totalModules ?? 0, icon: BookOpen, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Total Topics", value: statsData?.totalTopics ?? 0, icon: Layers, color: "#3B82F6", bg: "#EFF6FF" },
+    { label: "Total Enrolled", value: (statsData?.totalEnrolled ?? 0).toLocaleString(), icon: Users, color: "#10B981", bg: "#ECFDF5" },
+    { label: "Avg Completion", value: `${statsData?.avgCompletion ?? 0}%`, icon: Target, color: "#F59E0B", bg: "#FFFBEB" },
   ];
 
-  const filtered = MODULES.filter(m => {
-    if (tab === "active"  && m.status !== "active")  return false;
-    if (tab === "pending" && m.status !== "pending") return false;
-    if (tab === "inactive"&& m.status !== "inactive")return false;
-    if (categoryFilter !== "all" && m.category !== categoryFilter) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return m.title.toLowerCase().includes(q) || m.instructor.toLowerCase().includes(q);
-    }
-    return true;
-  });
+  // Daily activity items
+  const dailyItems = [
+    { label: "Lessons watched today", value: dailyStatsData?.lessonsWatchedToday?.toLocaleString() ?? "0", change: dailyStatsData?.lessonsWatchedChange ?? 0, up: (dailyStatsData?.lessonsWatchedChange ?? 0) >= 0 },
+    { label: "New enrolments today", value: dailyStatsData?.newEnrolmentsToday?.toLocaleString() ?? "0", change: dailyStatsData?.newEnrolmentsChange ?? 0, up: (dailyStatsData?.newEnrolmentsChange ?? 0) >= 0 },
+    { label: "Completions today", value: dailyStatsData?.completionsToday?.toLocaleString() ?? "0", change: dailyStatsData?.completionsChange ?? 0, up: (dailyStatsData?.completionsChange ?? 0) >= 0 },
+    { label: "Avg session duration", value: `${dailyStatsData?.avgSessionDurationMinutes ?? 0} min`, change: dailyStatsData?.avgSessionDurationChange ?? 0, up: (dailyStatsData?.avgSessionDurationChange ?? 0) >= 0 },
+  ];
+
+  // Filter counts for FilterBar
+  // Note: In a real app, you'd want separate API calls for these counts
+  const filterCounts = {
+    all: totalModules,
+    active: modules.filter((m:any) => m.status === "active").length,
+    pending: modules.filter((m:any) => m.status === "pending").length,
+    inactive: modules.filter((m:any) => m.status === "inactive").length,
+  };
+
+  if (modulesLoading || statsLoading || dailyStatsLoading) {
+    return (
+      <div className="p-6 xl:p-8 max-w-7xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-8 w-48 bg-gray-200 rounded mb-4" />
+          <div className="h-4 w-64 bg-gray-200 rounded mb-6" />
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-gray-100 rounded-2xl" />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       {showCreate && <CreateModuleModal onClose={() => setShowCreate(false)} />}
+      {editingModule && <EditModuleModal module={editingModule} onClose={() => setEditingModule(null)} />}
 
       <div className="p-6 xl:p-8 max-w-7xl mx-auto">
         <PageHeader
@@ -416,18 +481,13 @@ export default function AdminModulesPage() {
 
         {/* Activity summary strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          {[
-            { label: "Lessons watched today", value: "1,247", change: "+12%", up: true },
-            { label: "New enrolments today",  value: "84",    change: "+8%",  up: true },
-            { label: "Completions today",     value: "31",    change: "-3%",  up: false },
-            { label: "Avg session duration",  value: "18 min",change: "+5%",  up: true },
-          ].map(s => (
+          {dailyItems.map(s => (
             <div key={s.label} className="bg-white rounded-xl border border-[#F3F4F6] p-3.5 flex flex-col gap-1">
               <p className="text-[10px] text-[#9CA3AF] font-medium">{s.label}</p>
               <p className="text-[15px] font-bold text-[#111827]">{s.value}</p>
               <div className={`flex items-center gap-1 text-[10px] font-semibold ${s.up ? "text-emerald-600" : "text-red-500"}`}>
                 <ArrowUp size={10} className={s.up ? "" : "rotate-180"} />
-                {s.change} vs yesterday
+                {s.change > 0 ? `+${s.change}` : s.change}% vs yesterday
               </div>
             </div>
           ))}
@@ -436,10 +496,10 @@ export default function AdminModulesPage() {
         {/* Filters */}
         <FilterBar
           options={[
-            { value: "all",      label: "All",      count: MODULES.length },
-            { value: "active",   label: "Active",   count: MODULES.filter(m => m.status === "active").length },
-            { value: "pending",  label: "Pending",  count: MODULES.filter(m => m.status === "pending").length },
-            { value: "inactive", label: "Inactive", count: MODULES.filter(m => m.status === "inactive").length },
+            { value: "all", label: "All", count: filterCounts.all },
+            { value: "active", label: "Active", count: filterCounts.active },
+            { value: "pending", label: "Pending", count: filterCounts.pending },
+            { value: "inactive", label: "Inactive", count: filterCounts.inactive },
           ]}
           value={tab}
           onChange={setTab}
@@ -459,8 +519,8 @@ export default function AdminModulesPage() {
           }
         />
 
-        {/* Grid */}
-        {filtered.length === 0 ? (
+        {/* Module Grid */}
+        {modules.length === 0 ? (
           <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16 text-center">
             <BookOpen size={36} className="text-[#E5E7EB] mx-auto mb-3" />
             <p className="text-sm font-semibold text-[#9CA3AF] mb-1">No modules found</p>
@@ -468,7 +528,9 @@ export default function AdminModulesPage() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(mod => <ModuleCard key={mod.id} mod={mod} />)}
+            {modules.map((mod:any) => (
+              <ModuleCard key={mod.id} mod={mod} onDelete={handleDelete} onEdit={setEditingModule} />
+            ))}
             {/* Add new card */}
             <button onClick={() => setShowCreate(true)}
               className="rounded-2xl border-2 border-dashed border-[#E5E7EB] flex flex-col items-center justify-center p-8 text-center hover:border-[#E8317A]/40 hover:bg-pink-50/20 transition-all group min-h-[320px]">
@@ -482,9 +544,32 @@ export default function AdminModulesPage() {
         )}
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-6 text-[12px] text-[#9CA3AF]">
-          <span>Showing {filtered.length} of {MODULES.length} modules</span>
-        </div>
+        {modulesData && modulesData?.data?.totalPages > 1 && (
+          <div className="flex items-center justify-between mt-6">
+            <div className="text-[12px] text-[#9CA3AF]">
+              Showing {modules.length} of {modulesData?.data?.total} modules
+            </div>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[12px] disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <span className="px-3 py-1.5 text-[12px] text-[#6B7280]">
+                Page {page} of {modulesData.data?.totalPages}
+              </span>
+              <button
+                onClick={() => setPage(p => Math.min(modulesData.data?.totalPages, p + 1))}
+                disabled={page === modulesData.data?.totalPages}
+                className="px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[12px] disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

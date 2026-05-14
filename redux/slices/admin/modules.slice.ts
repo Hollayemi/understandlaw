@@ -43,24 +43,12 @@ import {
     ModuleDetailSection,
     TopicDetailTab,
 } from "../types";
+import { axiosBaseQuery } from "@/redux/shared/axiosBaseQuery";
 
-
-const baseQuery = fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "/api/v1",
-    prepareHeaders: (headers) => {
-        if (typeof window !== "undefined") {
-            const token = localStorage.getItem("lawticha_admin_token");
-            if (token) headers.set("Authorization", `Bearer ${token}`);
-        }
-        return headers;
-    },
-}) as BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>;
-
-//  RTK Query API Slice 
 
 export const modulesApi = createApi({
     reducerPath: "modulesApi",
-    baseQuery,
+    baseQuery: axiosBaseQuery({ defaultActor: "admin" }),
     tagTypes: [
         "Module",
         "ModuleList",
@@ -89,7 +77,7 @@ export const modulesApi = createApi({
          * GET /admin/modules
          * List all modules with optional filtering, search and pagination.
          */
-        getModules: builder.query<PaginatedResponse<Module>, ModuleFilters>({
+        getModules: builder.query<ApiResponse<PaginatedResponse<Module[]>>, ModuleFilters>({
             query: (filters) => ({
                 url: "/admin/modules",
                 params: {
@@ -102,13 +90,7 @@ export const modulesApi = createApi({
                     ...(filters.sortOrder && { sortOrder: filters.sortOrder }),
                 },
             }),
-            providesTags: (result) =>
-                result
-                    ? [
-                        ...result.data.map(({ id }) => ({ type: "Module" as const, id })),
-                        { type: "ModuleList" },
-                    ]
-                    : [{ type: "ModuleList" }],
+            providesTags: [{ type: "ModuleList" }],
         }),
 
         /**
@@ -116,7 +98,9 @@ export const modulesApi = createApi({
          * Aggregate counts for the stats bar: totalModules, totalTopics, totalEnrolled, avgCompletion.
          */
         getModuleOverviewStats: builder.query<ModuleOverviewStats, void>({
-            query: () => "/admin/modules/stats",
+            query: () => ({
+                url: "/admin/modules/stats"
+            }),
             providesTags: ["ModuleStats"],
         }),
 
@@ -125,7 +109,9 @@ export const modulesApi = createApi({
          * Today's activity strip numbers (views, enrolments, completions, avg session).
          */
         getDailyActivityStats: builder.query<DailyActivityStats, void>({
-            query: () => "/admin/modules/daily-stats",
+            query: () => ({
+                url: "/admin/modules/daily-stats"
+            }),
             providesTags: ["DailyStats"],
         }),
 
@@ -134,7 +120,9 @@ export const modulesApi = createApi({
          * Fetch a single module by ID.
          */
         getModuleById: builder.query<ApiResponse<Module>, string>({
-            query: (id) => `/admin/modules/${id}`,
+            query: (id) => ({
+                url: `/admin/modules/${id}`
+            }),
             providesTags: (result, error, id) => [{ type: "Module", id }],
         }),
 
@@ -143,10 +131,10 @@ export const modulesApi = createApi({
          * Create a new module. Returns the created Module object.
          */
         createModule: builder.mutation<ApiResponse<Module>, CreateModulePayload>({
-            query: (body) => ({
+            query: (data) => ({
                 url: "/admin/modules",
                 method: "POST",
-                body,
+                data,
             }),
             invalidatesTags: ["ModuleList", "ModuleStats"],
         }),
@@ -162,7 +150,7 @@ export const modulesApi = createApi({
             query: ({ id, data }) => ({
                 url: `/admin/modules/${id}`,
                 method: "PATCH",
-                body: data,
+                data: data,
             }),
             invalidatesTags: (result, error, { id }) => [
                 { type: "Module", id },
@@ -190,14 +178,13 @@ export const modulesApi = createApi({
         /**
          * GET /admin/modules/:moduleId/topics
          * List all topics for a module, ordered by `order` ASC.
-         * Each topic object includes subtopicCount but NOT subtopic body (use getTopicById for that).
+         * Each topic object includes subtopicCount but NOT subtopic data (use getTopicById for that).
          */
-        getTopics: builder.query<Topic[], string>({
-            query: (moduleId) => `/admin/modules/${moduleId}/topics`,
-            providesTags: (result, error, moduleId) => [
-                { type: "TopicList", id: moduleId },
-                ...(result ?? []).map(({ id }) => ({ type: "Topic" as const, id })),
-            ],
+        getTopics: builder.query<ApiResponse<TopicWithSubTopics[]>, string>({
+            query: (moduleId) => ({
+                url: `/admin/modules/${moduleId}/topics`
+            }),
+            providesTags: [{ type: "Topic"  }],
         }),
 
         /**
@@ -208,8 +195,9 @@ export const modulesApi = createApi({
             ApiResponse<TopicWithSubTopics>,
             { moduleId: string; topicId: string }
         >({
-            query: ({ moduleId, topicId }) =>
-                `/admin/modules/${moduleId}/topics/${topicId}`,
+            query: ({ moduleId, topicId }) => ({
+                url: `/admin/modules/${moduleId}/topics/${topicId}`
+            }),
             providesTags: (result, error, { topicId }) => [{ type: "Topic", id: topicId }],
         }),
 
@@ -218,10 +206,10 @@ export const modulesApi = createApi({
          * Create a new topic within a module.
          */
         createTopic: builder.mutation<ApiResponse<Topic>, CreateTopicPayload>({
-            query: ({ moduleId, ...body }) => ({
+            query: ({ moduleId, ...data }) => ({
                 url: `/admin/modules/${moduleId}/topics`,
                 method: "POST",
-                body,
+                data,
             }),
             invalidatesTags: (result, error, { moduleId }) => [
                 { type: "TopicList", id: moduleId },
@@ -236,10 +224,10 @@ export const modulesApi = createApi({
          * videoUrl, thumbnailUrl, order, tags.
          */
         updateTopic: builder.mutation<ApiResponse<Topic>, UpdateTopicPayload>({
-            query: ({ moduleId, topicId, ...body }) => ({
+            query: ({ moduleId, topicId, ...data }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}`,
                 method: "PATCH",
-                body,
+                data,
             }),
             invalidatesTags: (result, error, { moduleId, topicId }) => [
                 { type: "Topic", id: topicId },
@@ -275,31 +263,23 @@ export const modulesApi = createApi({
             query: ({ moduleId, orderedIds }) => ({
                 url: `/admin/modules/${moduleId}/topics/reorder`,
                 method: "PATCH",
-                body: { orderedIds },
+                data: { orderedIds },
             }),
             invalidatesTags: (result, error, { moduleId }) => [
                 { type: "TopicList", id: moduleId },
             ],
         }),
 
-        // ════════════════════════════════════════════════════════════
-        //  SUBTOPIC ENDPOINTS
-        // ════════════════════════════════════════════════════════════
 
         /**
          * GET /admin/modules/:moduleId/topics/:topicId/subtopics
          * List all subtopics for a topic, ordered by `order` ASC.
          */
-        getSubTopics: builder.query<
-            SubTopic[],
-            { moduleId: string; topicId: string }
-        >({
-            query: ({ moduleId, topicId }) =>
-                `/admin/modules/${moduleId}/topics/${topicId}/subtopics`,
-            providesTags: (result, error, { topicId }) => [
-                { type: "SubTopicList", id: topicId },
-                ...(result ?? []).map(({ id }) => ({ type: "SubTopic" as const, id })),
-            ],
+        getSubTopics: builder.query<ApiResponse<SubTopic[]>, { moduleId: string; topicId: string } >({
+            query: ({ moduleId, topicId }) => ({
+                url: `/admin/modules/${moduleId}/topics/${topicId}/subtopics`
+            }),
+            providesTags: [{ type: "SubTopic" }],
         }),
 
         /**
@@ -307,10 +287,10 @@ export const modulesApi = createApi({
          * Create a new subtopic. `order` defaults to last position if omitted.
          */
         createSubTopic: builder.mutation<ApiResponse<SubTopic>, CreateSubTopicPayload>({
-            query: ({ moduleId, topicId, ...body }) => ({
+            query: ({ moduleId, topicId, ...data }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/subtopics`,
                 method: "POST",
-                body,
+                data,
             }),
             invalidatesTags: (result, error, { topicId }) => [
                 { type: "SubTopicList", id: topicId },
@@ -322,10 +302,10 @@ export const modulesApi = createApi({
          * Update any combination of: title, notes (instructor script), duration, order.
          */
         updateSubTopic: builder.mutation<ApiResponse<SubTopic>, UpdateSubTopicPayload>({
-            query: ({ moduleId, topicId, subtopicId, ...body }) => ({
+            query: ({ moduleId, topicId, subtopicId, ...data }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/subtopics/${subtopicId}`,
                 method: "PATCH",
-                body,
+                data,
             }),
             invalidatesTags: (result, error, { topicId, subtopicId }) => [
                 { type: "SubTopic", id: subtopicId },
@@ -344,7 +324,7 @@ export const modulesApi = createApi({
             query: ({ moduleId, topicId, subtopicId, notes }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/subtopics/${subtopicId}/notes`,
                 method: "PATCH",
-                body: { notes },
+                data: { notes },
             }),
             invalidatesTags: (result, error, { subtopicId, topicId }) => [
                 { type: "SubTopic", id: subtopicId },
@@ -377,7 +357,7 @@ export const modulesApi = createApi({
             query: ({ moduleId, topicId, orderedIds }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/subtopics/reorder`,
                 method: "PATCH",
-                body: { orderedIds },
+                data: { orderedIds },
             }),
             invalidatesTags: (result, error, { topicId }) => [
                 { type: "SubTopicList", id: topicId },
@@ -412,7 +392,9 @@ export const modulesApi = createApi({
          * Full module analytics: progress distribution, per-topic performance table.
          */
         getModuleAnalytics: builder.query<ModuleAnalytics, string>({
-            query: (moduleId) => `/admin/modules/${moduleId}/analytics`,
+            query: (moduleId) => ({
+                url: `/admin/modules/${moduleId}/analytics`
+            }),
             providesTags: (result, error, moduleId) => [
                 { type: "ModuleAnalytics", id: moduleId },
             ],
@@ -427,16 +409,13 @@ export const modulesApi = createApi({
             TopicAnalytics,
             { moduleId: string; topicId: string }
         >({
-            query: ({ moduleId, topicId }) =>
-                `/admin/modules/${moduleId}/topics/${topicId}/analytics`,
+            query: ({ moduleId, topicId }) => ({
+                url: `/admin/modules/${moduleId}/topics/${topicId}/analytics`
+            }),
             providesTags: (result, error, { topicId }) => [
                 { type: "TopicAnalytics", id: topicId },
             ],
         }),
-
-        // ════════════════════════════════════════════════════════════
-        //  LEARNER ENDPOINTS
-        // ════════════════════════════════════════════════════════════
 
         /**
          * GET /admin/modules/:moduleId/learners
@@ -483,17 +462,14 @@ export const modulesApi = createApi({
          * GET /admin/modules/:moduleId/topics/:topicId/comments
          * Fetch all comments for a topic. Pass `resolved` to filter open/closed.
          */
-        getComments: builder.query<Comment[], CommentsParams>({
+        getComments: builder.query<ApiResponse<Comment[]>, CommentsParams>({
             query: ({ moduleId, topicId, resolved }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/comments`,
                 params: {
                     ...(resolved !== undefined && { resolved }),
                 },
             }),
-            providesTags: (result, error, { topicId }) => [
-                { type: "CommentList", id: topicId },
-                ...(result ?? []).map(({ id }) => ({ type: "Comment" as const, id })),
-            ],
+            providesTags: [{ type: "Comment" }],
         }),
 
         /**
@@ -504,7 +480,7 @@ export const modulesApi = createApi({
             query: ({ moduleId, topicId, commentId, resolved }) => ({
                 url: `/admin/modules/${moduleId}/topics/${topicId}/comments/${commentId}/resolve`,
                 method: "PATCH",
-                body: { resolved },
+                data: { resolved },
             }),
             invalidatesTags: (result, error, { topicId, commentId }) => [
                 { type: "Comment", id: commentId },
@@ -544,7 +520,7 @@ export const modulesApi = createApi({
                 return {
                     url: "/admin/uploads/thumbnail",
                     method: "POST",
-                    body: formData,
+                    data: formData,
                     // Do NOT set Content-Type; browser sets multipart/form-data with boundary automatically
                 };
             },
@@ -565,7 +541,7 @@ export const modulesApi = createApi({
                 return {
                     url: "/admin/uploads/video",
                     method: "POST",
-                    body: formData,
+                    data: formData,
                 };
             },
             invalidatesTags: (result, error, { topicId }) => [
@@ -582,10 +558,10 @@ export const modulesApi = createApi({
             { uploadUrl: string; fileKey: string; expiresAt: string },
             { filename: string; mimeType: string; sizeBytes: number }
         >({
-            query: (body) => ({
+            query: (data) => ({
                 url: "/admin/uploads/presign",
                 method: "POST",
-                body,
+                data,
             }),
         }),
     }),

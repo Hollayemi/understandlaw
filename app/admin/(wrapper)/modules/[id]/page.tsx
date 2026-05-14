@@ -1,160 +1,119 @@
 "use client";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import {
   ChevronRight, ArrowLeft, Plus, Edit2, Trash2, Eye,
-  Video, Upload, FileText, GripVertical,
+  Video, Upload, GripVertical,
   ChevronDown, ChevronUp, Users, Clock, Star, BarChart3,
-  BookOpen, CheckCircle, MessageSquare, Heart, Flame,
-  Play, X, Save, AlertCircle, Image as ImageIcon,
-  Layers, Target, TrendingUp, Award, MoreHorizontal,
-  Mic, AlignLeft, Tag, RefreshCw, Loader2, Info,
-  SlidersHorizontal, Download, Filter, Calendar,
-  PlayCircle,
+  BookOpen, CheckCircle, MessageSquare, Heart, 
+  X, Save, Image as ImageIcon,
+  Layers, Target, Award, SlidersHorizontal, PlayCircle,
 } from "lucide-react";
-import { Avatar, StatusBadge, PageHeader } from "../../_components";
+import { StatusBadge } from "../../_components";
+import {
+  useGetModuleByIdQuery,
+  useGetTopicsQuery,
+  useGetTopicByIdQuery,
+  useUpdateTopicMutation,
+  useCreateTopicMutation,
+  useDeleteTopicMutation,
+  useReorderTopicsMutation,
+  useUpdateSubTopicMutation,
+  useUpdateSubTopicNotesMutation,
+  useDeleteSubTopicMutation,
+  useCreateSubTopicMutation,
+  useReorderSubTopicsMutation,
+  useGetModuleActivityQuery,
+  useGetTopLearnersQuery,
+  useGetModuleAnalyticsQuery,
+  useUpdateModuleMutation,
+  useDeleteModuleMutation,
+  useUploadThumbnailMutation,
+} from "@/redux/slices/admin/modules.slice";
+import type { 
+  Topic, 
+  SubTopic, 
+  TopicStatus, 
+  VideoType,
+  TopicWithSubTopics,
+  Module,
+} from "@/redux/slices/types";
 
-//  Types 
-type TopicStatus = "published" | "draft" | "pending";
-
-interface SubTopic {
-  id: string;
-  title: string;
-  notes: string;
-  duration: string;
-  order: number;
-  completedBy: number;
-}
-
-interface Topic {
-  id: string;
-  title: string;
-  classification: string;
-  overview: string;
-  status: TopicStatus;
-  order: number;
-  videoType: "youtube" | "upload" | null;
-  videoUrl: string;
-  thumbnailUrl: string;
-  duration: string;
-  watchCount: number;
-  completionRate: number;
-  likes: number;
-  comments: number;
-  subtopics: SubTopic[];
-}
-
-//  Mock Module Data 
-const MODULE = {
-  id: "m001",
-  title: "Rights During Arrest & Detention",
-  category: "criminal",
-  categoryLabel: "Police & Criminal Rights",
-  categoryColor: "#3B82F6",
-  categoryBg: "#EFF6FF",
-  status: "active",
-  thumbnail: "/images/police_law.jpg",
-  description: "Know exactly what police officers can and cannot do,  and how to protect yourself in any encounter. This module covers Section 35 of the 1999 Constitution in full, alongside practical guidance for every Nigerian.",
-  instructor: "Adaeze Okonkwo",
-  instructorInitials: "AO",
-  instructorColor: "#3B82F6",
-  instructorEmail: "adaeze@lawticha.ng",
-  enrolledCount: 3842,
-  completionRate: 62,
-  avgRating: 4.3,
-  reviewCount: 284,
-  totalWatchTime: "2,104 hrs",
-  createdAt: "Jan 12, 2025",
-  updatedAt: "Apr 20, 2025",
-};
-
-const TOPICS_DATA: Topic[] = [
-  {
-    id: "t001", title: "Understanding the Basics of Arrest",
-    classification: "Foundational", order: 1,
-    overview: "What constitutes a lawful arrest in Nigeria, and the constitutional basis for personal liberty protections.",
-    status: "published", videoType: "youtube", videoUrl: "https://youtube.com/watch?v=example1",
-    thumbnailUrl: "", duration: "4:32", watchCount: 3421, completionRate: 88, likes: 247, comments: 34,
-    subtopics: [
-      { id: "st001", title: "What is an Arrest?", notes: "Cover the legal definition of arrest under Nigerian law. Explain voluntary vs involuntary surrender. Reference Section 35(1) of the 1999 Constitution.", duration: "1:20", order: 1, completedBy: 3200 },
-      { id: "st002", title: "Types of Arrest in Nigeria", notes: "Distinguish: (1) arrest with warrant, (2) arrest without warrant, (3) citizen's arrest. Use real-world examples for each type.", duration: "1:45", order: 2, completedBy: 3100 },
-      { id: "st003", title: "Constitutional Basis", notes: "Walk through Section 35 line by line. Highlight the key subsections that limit police power. Connect to ECOWAS Charter.", duration: "1:27", order: 3, completedBy: 2890 },
-    ],
-  },
-  {
-    id: "t002", title: "What Police Must Tell You",
-    classification: "Rights", order: 2,
-    overview: "The mandatory disclosures officers must make at the point of arrest,  and what your silence means legally.",
-    status: "published", videoType: "upload", videoUrl: "",
-    thumbnailUrl: "", duration: "3:15", watchCount: 3189, completionRate: 82, likes: 198, comments: 21,
-    subtopics: [
-      { id: "st004", title: "The Right to Know the Reason for Arrest", notes: "Officers MUST state the reason for arrest at the time of arrest, or as soon as practicable after. Cite Section 35(3)(a). Role-play the correct scenario.", duration: "1:10", order: 1, completedBy: 2900 },
-      { id: "st005", title: "Right to Remain Silent (Caution)", notes: "Explain the police caution format. Distinguish between voluntary statements and statements under duress. Warn about the dangers of unsigned statements.", duration: "1:00", order: 2, completedBy: 2700 },
-      { id: "st006", title: "Right to Speak to a Lawyer", notes: "Section 35(3)(c) guarantees access to a legal practitioner. Explain how to invoke this right calmly and what happens if it is denied.", duration: "1:05", order: 3, completedBy: 2500 },
-    ],
-  },
-  {
-    id: "t003", title: "Your Right to Remain Silent",
-    classification: "Rights", order: 3,
-    overview: "How to invoke your right to silence, what it protects you from, and when it can be used in court.",
-    status: "published", videoType: "youtube", videoUrl: "https://youtube.com/watch?v=example3",
-    thumbnailUrl: "", duration: "5:01", watchCount: 2876, completionRate: 74, likes: 312, comments: 48,
-    subtopics: [
-      { id: "st007", title: "What the Right Covers", notes: "The right to silence is not absolute,  explain exceptions under Nigerian law. Cover self-incrimination protections.", duration: "1:30", order: 1, completedBy: 2500 },
-      { id: "st008", title: "Invoking the Right", notes: "Practical script: exactly what to say and how to say it. Tone, body language, and the importance of not being aggressive.", duration: "2:00", order: 2, completedBy: 2300 },
-      { id: "st009", title: "Silence in Court", notes: "Explain that silence cannot be used as evidence of guilt in Nigeria. Contrast with UK law. Address common misconceptions citizens have.", duration: "1:31", order: 3, completedBy: 2100 },
-    ],
-  },
-  {
-    id: "t004", title: "24-Hour Detention Rule",
-    classification: "Procedural", order: 4,
-    overview: "When detention becomes unlawful, how to count the 24-hour period, and what remedies are available.",
-    status: "draft", videoType: null, videoUrl: "",
-    thumbnailUrl: "", duration: "—", watchCount: 0, completionRate: 0, likes: 0, comments: 0,
-    subtopics: [
-      { id: "st010", title: "The 24/48-Hour Rule Explained", notes: "Section 35(4) and (5),  different rules for ordinary offences vs capital offences. Map out the timeline clearly.", duration: "—", order: 1, completedBy: 0 },
-      { id: "st011", title: "What to Do After 24 Hours", notes: "Habeas corpus application process. Who can file it (detainee, family member, lawyer). Which court to approach.", duration: "—", order: 2, completedBy: 0 },
-    ],
-  },
-  {
-    id: "t005", title: "Lawful vs Unlawful Arrest",
-    classification: "Foundational", order: 5,
-    overview: "How to tell the difference between a lawful and unlawful arrest,  and your immediate options when arrested unlawfully.",
-    status: "pending", videoType: null, videoUrl: "",
-    thumbnailUrl: "", duration: "—", watchCount: 0, completionRate: 0, likes: 0, comments: 0,
-    subtopics: [],
-  },
-];
-
-const RECENT_ACTIVITY = [
-  { user: "Chidinma O.", initials: "CO", color: "#3B82F6", action: "completed", topic: "Understanding Basics of Arrest", time: "5 min ago" },
-  { user: "Babatunde L.", initials: "BL", color: "#10B981", action: "liked", topic: "Your Right to Remain Silent", time: "12 min ago" },
-  { user: "Amina G.", initials: "AG", color: "#8B5CF6", action: "commented on", topic: "What Police Must Tell You", time: "28 min ago" },
-  { user: "Ikechukwu E.", initials: "IE", color: "#F59E0B", action: "enrolled in", topic: "this module", time: "1 hr ago" },
-  { user: "Funmilayo A.", initials: "FA", color: "#EF4444", action: "completed", topic: "What Police Must Tell You", time: "2 hrs ago" },
-  { user: "Emeka O.", initials: "EO", color: "#06B6D4", action: "completed", topic: "Understanding Basics of Arrest", time: "3 hrs ago" },
-];
-
-const TOP_LEARNERS = [
-  { name: "Adaeze Onyekachi", initials: "AO", color: "#6366F1", progress: 100, topics: 14 },
-  { name: "Chukwuemeka N.", initials: "CN", color: "#F97316", progress: 86, topics: 12 },
-  { name: "Mustapha I.", initials: "MI", color: "#14B8A6", progress: 71, topics: 10 },
-  { name: "Halima Y.", initials: "HY", color: "#EC4899", progress: 64, topics: 9 },
-];
-
-//  Topic Status Config 
+// Topic Status Config
 const TOPIC_STATUS_CFG: Record<TopicStatus, { bg: string; text: string; dot: string }> = {
   published: { bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   draft:     { bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
   pending:   { bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
 };
 
-//  Sub Topic Editor 
-function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }) {
+// Category Config for display
+const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  criminal:    { label: "Police & Criminal",    color: "#3B82F6", bg: "#EFF6FF" },
+  tenancy:     { label: "Landlord & Tenancy",   color: "#10B981", bg: "#ECFDF5" },
+  employment:  { label: "Employment & Labour",  color: "#8B5CF6", bg: "#F5F3FF" },
+  contracts:   { label: "Contracts & Agreements", color: "#F59E0B", bg: "#FFFBEB" },
+  business:    { label: "Business & Commerce",  color: "#06B6D4", bg: "#ECFEFF" },
+  family:      { label: "Family & Personal",    color: "#EF4444", bg: "#FEF2F2" },
+  consumer:    { label: "Consumer Rights",      color: "#E8317A", bg: "#FFF0F5" },
+  road:        { label: "Road Traffic",         color: "#F97316", bg: "#FFF7ED" },
+};
+
+// SubTopic Editor Component
+function SubTopicEditor({ 
+  st, 
+  moduleId, 
+  topicId, 
+  onDelete, 
+  onUpdate 
+}: { 
+  st: SubTopic; 
+  moduleId: string; 
+  topicId: string;
+  onDelete: (id: string) => void; 
+  onUpdate: (st: SubTopic) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [notes, setNotes] = useState(st.notes);
   const [title, setTitle] = useState(st.title);
   const [editing, setEditing] = useState(false);
+  const [updateSubTopicNotes, { isLoading: notesLoading }] = useUpdateSubTopicNotesMutation();
+  const [updateSubTopic] = useUpdateSubTopicMutation();
+
+  const handleSaveNotes = async () => {
+    try {
+      const result = await updateSubTopicNotes({
+        moduleId,
+        topicId,
+        subtopicId: st.id,
+        notes,
+      }).unwrap();
+      onUpdate({ ...st, notes: result.data?.notes });
+    } catch (error) {
+      console.error("Failed to save notes:", error);
+    }
+  };
+
+  console.log({
+     moduleId,
+        topicId,
+        subtopicId: st.id,
+  })
+
+  const handleSaveTitle = async () => {
+    try {
+      const result = await updateSubTopic({
+        moduleId,
+        topicId,
+        subtopicId: st.id,
+        title,
+      }).unwrap();
+      onUpdate({ ...st, title: result.data.title });
+      setEditing(false);
+    } catch (error) {
+      console.error("Failed to save title:", error);
+    }
+  };
 
   return (
     <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] overflow-hidden">
@@ -170,8 +129,11 @@ function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
+            onBlur={handleSaveTitle}
+            onKeyDown={e => e.key === "Enter" && handleSaveTitle()}
             onClick={e => e.stopPropagation()}
             className="flex-1 text-[12px] font-semibold text-[#111827] bg-white border border-[#E8317A] rounded-lg px-2 py-0.5 outline-none"
+            autoFocus
           />
         ) : (
           <span className="flex-1 text-[12px] font-semibold text-[#111827]">{title}</span>
@@ -183,13 +145,13 @@ function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }
             </span>
           )}
           <span className="text-[10px] text-[#9CA3AF] flex items-center gap-0.5">
-            <Clock size={9} /> {st.duration}
+            <Clock size={9} /> {st.duration || "—"}
           </span>
           <button onClick={e => { e.stopPropagation(); setEditing(!editing); }}
             className="w-6 h-6 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#E5E7EB] transition-colors">
             <Edit2 size={11} />
           </button>
-          <button onClick={e => { e.stopPropagation(); onDelete(); }}
+          <button onClick={e => { e.stopPropagation(); onDelete(st.id); }}
             className="w-6 h-6 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#EF4444] hover:bg-red-50 transition-colors">
             <Trash2 size={11} />
           </button>
@@ -211,8 +173,11 @@ function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] text-[#9CA3AF]">{notes.length} characters</span>
-              <button className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline">
-                <Save size={11} /> Save Notes
+              <button 
+                onClick={handleSaveNotes}
+                disabled={notesLoading}
+                className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline disabled:opacity-50">
+                <Save size={11} /> {notesLoading ? "Saving..." : "Save Notes"}
               </button>
             </div>
           </div>
@@ -222,30 +187,80 @@ function SubTopicEditor({ st, onDelete }: { st: SubTopic; onDelete: () => void }
   );
 }
 
-//  Topic Card (expanded editor) 
-function TopicCard({ topic, index }: { topic: Topic; index: number }) {
+// Topic Card Component (expanded editor)
+function TopicCard({ 
+  topic, 
+  moduleId, 
+  onUpdate, 
+  onDelete,
+  index 
+}: { 
+  topic: TopicWithSubTopics; 
+  moduleId: string; 
+  onUpdate: () => void;
+  onDelete: (id: string) => void;
+  index: number;
+}) {
   const [expanded, setExpanded] = useState(false);
-  const [subtopics, setSubtopics] = useState(topic.subtopics);
-  const [videoType, setVideoType] = useState(topic.videoType);
+  const [subtopics, setSubtopics] = useState(topic?.subtopics || []);
+  const [videoType, setVideoType] = useState<VideoType | null>(topic.videoType);
   const [videoUrl, setVideoUrl] = useState(topic.videoUrl);
+  const [updateTopic] = useUpdateTopicMutation();
+  const [createSubTopic] = useCreateSubTopicMutation();
+  const [deleteSubTopicMutation] = useDeleteSubTopicMutation();
   const cfg = TOPIC_STATUS_CFG[topic.status];
 
-  const addSubTopic = () => {
-    const newSt: SubTopic = {
-      id: `st${Date.now()}`, title: "New Sub-Topic", notes: "",
-      duration: "—", order: subtopics.length + 1, completedBy: 0,
-    };
-    setSubtopics([...subtopics, newSt]);
+  const addSubTopic = async () => {
+    try {
+      const result = await createSubTopic({
+        moduleId,
+        topicId: topic.id,
+        title: "New Sub-Topic",
+        notes: "",
+      }).unwrap();
+      setSubtopics([...subtopics, result.data]);
+      onUpdate();
+    } catch (error) {
+      console.error("Failed to create subtopic:", error);
+    }
   };
 
-  const deleteSubTopic = (id: string) => setSubtopics(subtopics.filter(s => s.id !== id));
+  const deleteSubTopic = async (id: string) => {
+    try {
+      await deleteSubTopicMutation({
+        moduleId,
+        topicId: topic.id,
+        subtopicId: id,
+      }).unwrap();
+      setSubtopics(subtopics.filter(s => s.id !== id));
+      onUpdate();
+    } catch (error) {
+      console.error("Failed to delete subtopic:", error);
+    }
+  };
+
+  const handleSaveVideo = async () => {
+    try {
+      await updateTopic({
+        moduleId,
+        topicId: topic.id,
+        videoType,
+        videoUrl: videoUrl || undefined,
+      }).unwrap();
+      onUpdate();
+    } catch (error) {
+      console.error("Failed to save video settings:", error);
+    }
+  };
+
+  const updateSubTopicInList = (updated: SubTopic) => {
+    setSubtopics(subtopics.map(s => s.id === updated.id ? updated : s));
+  };
 
   return (
     <div className={`bg-white rounded-2xl border overflow-hidden transition-all duration-200 ${expanded ? "border-[#E5E7EB] shadow-md" : "border-[#F3F4F6] shadow-sm hover:shadow-md"}`}>
-      {/* Accent line */}
       <div className="h-0.5 w-full" style={{ background: topic.status === "published" ? "#10B981" : topic.status === "draft" ? "#9CA3AF" : "#F59E0B" }} />
 
-      {/* Header */}
       <div
         className="flex items-center gap-3.5 p-4 cursor-pointer hover:bg-[#F9FAFB] transition-colors"
         onClick={() => setExpanded(!expanded)}
@@ -278,7 +293,7 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
               <span className="flex items-center gap-1"><MessageSquare size={11} /> {topic.comments}</span>
             </>
           )}
-          <span className="flex items-center gap-1"><Layers size={11} /> {subtopics.length} sub-topics</span>
+          <span className="flex items-center gap-1"><Layers size={11} /> {subtopics?.length || 0} sub-topics</span>
           {topic.videoType && (
             <span className="flex items-center gap-1 text-emerald-600">
               {topic.videoType === "youtube" ? <PlayCircle size={11} /> : <Video size={11} />}
@@ -290,11 +305,9 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
         {expanded ? <ChevronUp size={16} className="text-[#9CA3AF] flex-shrink-0" /> : <ChevronDown size={16} className="text-[#9CA3AF] flex-shrink-0" />}
       </div>
 
-      {/* Expanded Editor */}
       {expanded && (
         <div className="border-t border-[#F3F4F6]">
           <div className="p-5 grid lg:grid-cols-[1fr_320px] gap-6">
-
             {/* LEFT: Sub-topics */}
             <div>
               {/* Video section */}
@@ -306,7 +319,7 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                     { id: "upload",  icon: Upload,  label: "Upload Video" },
                   ] as const).map(t => (
                     <button key={t.id}
-                      onClick={() => setVideoType(t.id as "youtube" | "upload")}
+                      onClick={() => setVideoType(t.id)}
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${videoType === t.id ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
                       <t.icon size={12} /> {t.label}
                     </button>
@@ -330,7 +343,9 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                         className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
                       />
                     </div>
-                    <button className="px-4 rounded-xl bg-[#111827] text-white text-[12px] font-semibold hover:bg-[#1F2937] transition-colors">
+                    <button 
+                      onClick={handleSaveVideo}
+                      className="px-4 rounded-xl bg-[#111827] text-white text-[12px] font-semibold hover:bg-[#1F2937] transition-colors">
                       Save
                     </button>
                   </div>
@@ -340,7 +355,7 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                   <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-6 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
                     <Upload size={20} className="text-[#D1D5DB] mx-auto mb-2" />
                     <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload video</p>
-                    <p className="text-[10px] text-[#D1D5DB] mt-0.5">MP4, MOV or WebM,  max 500MB</p>
+                    <p className="text-[10px] text-[#D1D5DB] mt-0.5">MP4, MOV or WebM, max 500MB</p>
                   </div>
                 )}
 
@@ -398,8 +413,15 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
-                    {subtopics.map(st => (
-                      <SubTopicEditor key={st.id} st={st} onDelete={() => deleteSubTopic(st.id)} />
+                    {subtopics?.map(st => (
+                      <SubTopicEditor 
+                        key={st.id} 
+                        st={st} 
+                        moduleId={moduleId}
+                        topicId={topic.id}
+                        onDelete={deleteSubTopic} 
+                        onUpdate={updateSubTopicInList}
+                      />
                     ))}
                   </div>
                 )}
@@ -408,23 +430,26 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
 
             {/* RIGHT: Stats + settings */}
             <div className="flex flex-col gap-4">
-              {/* Topic settings */}
               <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] p-4">
                 <h4 className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Topic Settings</h4>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Classification</label>
-                    <select className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    <select 
+                      defaultValue={topic.classification}
+                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
                       {["Foundational", "Rights", "Procedural", "Advanced", "Scenario"].map(c => (
-                        <option key={c} selected={c === topic.classification}>{c}</option>
+                        <option key={c}>{c}</option>
                       ))}
                     </select>
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Status</label>
-                    <select className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    <select 
+                      defaultValue={topic.status}
+                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
                       {["published", "draft", "pending"].map(s => (
-                        <option key={s} selected={s === topic.status}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                        <option key={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                       ))}
                     </select>
                   </div>
@@ -434,7 +459,6 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                 </div>
               </div>
 
-              {/* Topic stats */}
               {topic.watchCount > 0 && (
                 <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] p-4">
                   <h4 className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Performance</h4>
@@ -456,7 +480,6 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                     })}
                   </div>
 
-                  {/* Completion bar */}
                   <div className="mt-3">
                     <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] mb-1">
                       <span>Completion rate</span><span>{topic.completionRate}%</span>
@@ -469,13 +492,14 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
                 </div>
               )}
 
-              {/* Quick actions */}
               <div className="flex flex-col gap-1.5">
-                <Link href={`/admin/modules/${MODULE.id}/topics/${topic.id}`}
+                <Link href={`/admin/modules/${moduleId}/topics/${topic.id}`}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-all">
                   <Eye size={12} /> View Full Topic Page
                 </Link>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
+                <button 
+                  onClick={() => onDelete(topic.id)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
                   <Trash2 size={12} className="text-[#EF4444]" /> <span className="text-[#EF4444]">Delete Topic</span>
                 </button>
               </div>
@@ -487,20 +511,125 @@ function TopicCard({ topic, index }: { topic: Topic; index: number }) {
   );
 }
 
-//  Main Page 
-export default function ModuleDetailPage({ params }: { params: { id: string } }) {
-  const [topics, setTopics] = useState(TOPICS_DATA);
+// Main Page
+export default function ModuleDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const moduleId = params?.id as string;
+  
   const [activeSection, setActiveSection] = useState<"topics" | "activity" | "settings">("topics");
+  const [topics, setTopics] = useState<TopicWithSubTopics[]>([]);
+  
+  // RTK Query hooks
+  const { data: moduleData, isLoading: moduleLoading, refetch: refetchModule } = useGetModuleByIdQuery(moduleId);
+  const { data: topicsData, isLoading: topicsLoading, refetch: refetchTopics } = useGetTopicsQuery(moduleId);
+  const { data: activityData } = useGetModuleActivityQuery({ moduleId, limit: 10 });
+  const { data: topLearnersData } = useGetTopLearnersQuery({ moduleId, limit: 5 });
+  const { data: analyticsData, isLoading: analyticsLoading } = useGetModuleAnalyticsQuery(moduleId, {
+    skip: activeSection !== "activity",
+  });
+  
+  const [createTopic] = useCreateTopicMutation();
+  const [deleteTopic] = useDeleteTopicMutation();
+  const [updateModule] = useUpdateModuleMutation();
+  const [deleteModule] = useDeleteModuleMutation();
 
-  const addTopic = () => {
-    const newTopic: Topic = {
-      id: `t${Date.now()}`, title: "New Topic", classification: "Foundational",
-      overview: "Add a description for this topic.", status: "draft", order: topics.length + 1,
-      videoType: null, videoUrl: "", thumbnailUrl: "", duration: "—",
-      watchCount: 0, completionRate: 0, likes: 0, comments: 0, subtopics: [],
-    };
-    setTopics([...topics, newTopic]);
+  const module = moduleData?.data;
+
+  console.log(topicsData)
+  
+  useEffect(() => {
+    if (topicsData) {
+      setTopics(topicsData.data);
+    }
+  }, [topicsData]);
+
+  const addTopic = async () => {
+    try {
+      await createTopic({
+        moduleId,
+        title: "New Topic",
+        classification: "Foundational",
+        overview: "Add a description for this topic.",
+        status: "draft",
+      }).unwrap();
+      refetchTopics();
+    } catch (error) {
+      console.error("Failed to create topic:", error);
+    }
   };
+
+  const handleDeleteTopic = async (topicId: string) => {
+    if (confirm("Are you sure you want to delete this topic?")) {
+      try {
+        await deleteTopic({ moduleId, topicId }).unwrap();
+        refetchTopics();
+      } catch (error) {
+        console.error("Failed to delete topic:", error);
+      }
+    }
+  };
+
+  const handleDeleteModule = async () => {
+    if (confirm("Are you sure you want to delete this module? All topics, subtopics, and analytics will be permanently deleted.")) {
+      try {
+        await deleteModule(moduleId).unwrap();
+        router.push("/admin/modules");
+      } catch (error) {
+        console.error("Failed to delete module:", error);
+      }
+    }
+  };
+
+  const handleUpdateModule = async (formData: any) => {
+    try {
+      await updateModule({
+        id: moduleId,
+        data: formData,
+      }).unwrap();
+      refetchModule();
+    } catch (error) {
+      console.error("Failed to update module:", error);
+    }
+  };
+
+  if (moduleLoading || topicsLoading) {
+    return (
+      <div className="p-6 xl:p-8 max-w-7xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-6 w-48 bg-gray-200 rounded mb-4" />
+          <div className="h-32 bg-gray-100 rounded-2xl mb-6" />
+          <div className="h-10 w-64 bg-gray-200 rounded-xl mb-5" />
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => <div key={i} className="h-24 bg-gray-100 rounded-2xl" />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!module) {
+    return (
+      <div className="p-6 xl:p-8 max-w-7xl mx-auto text-center">
+        <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16">
+          <BookOpen size={48} className="text-[#E5E7EB] mx-auto mb-4" />
+          <h2 className="text-lg font-bold text-[#111827] mb-2">Module Not Found</h2>
+          <p className="text-[13px] text-[#9CA3AF] mb-6">The module you're looking for doesn't exist or has been deleted.</p>
+          <Link href="/admin/modules" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E8317A] text-white text-[13px] font-semibold">
+            <ArrowLeft size={14} /> Back to Modules
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const categoryConfig = CATEGORY_CONFIG[module.category] || { label: module.category, color: "#E8317A", bg: "#FFF0F5" };
+
+  // Transform analytics data for display
+  const progressDistribution = analyticsData?.progressDistribution || [];
+  const topicPerformance = analyticsData?.topicPerformance || [];
+  const recentActivity = activityData || [];
+  const topLearners = topLearnersData || [];
 
   return (
     <div className="p-6 xl:p-8 max-w-7xl mx-auto">
@@ -511,18 +640,17 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
           <ArrowLeft size={12} /> Modules
         </Link>
         <ChevronRight size={11} className="text-[#D1D5DB]" />
-        <span className="text-[#111827] font-semibold">{MODULE.title}</span>
+        <span className="text-[#111827] font-semibold">{module.title}</span>
       </div>
 
       {/* Module header */}
       <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden mb-6">
-        <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${MODULE.categoryColor}, ${MODULE.categoryColor}60)` }} />
+        <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${categoryConfig.color}, ${categoryConfig.color}60)` }} />
         <div className="p-5 grid lg:grid-cols-[1fr_auto] gap-5">
           <div className="flex items-start gap-4">
-            {/* Thumbnail */}
             <div className="w-24 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#F3F4F6] border border-[#E5E7EB]">
-              {MODULE.thumbnail ? (
-                <img src={MODULE.thumbnail} alt="" className="w-full h-full object-cover" />
+              {module.thumbnail ? (
+                <img src={module.thumbnail} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <ImageIcon size={18} className="text-[#D1D5DB]" />
@@ -531,34 +659,33 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h1 className="text-[17px] font-bold text-[#111827]">{MODULE.title}</h1>
-                <StatusBadge status={MODULE.status as any} />
+                <h1 className="text-[17px] font-bold text-[#111827]">{module.title}</h1>
+                <StatusBadge status={module.status || "pending"} />
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: MODULE.categoryBg, color: MODULE.categoryColor }}>
-                  {MODULE.categoryLabel}
+                  style={{ background: categoryConfig.bg, color: categoryConfig.color }}>
+                  {categoryConfig.label}
                 </span>
               </div>
-              <p className="text-[12px] text-[#6B7280] leading-relaxed max-w-2xl mb-2">{MODULE.description}</p>
+              <p className="text-[12px] text-[#6B7280] leading-relaxed max-w-2xl mb-2">{module.description}</p>
               <div className="flex items-center gap-4 text-[11px] text-[#9CA3AF]">
                 <div className="flex items-center gap-1.5">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold"
-                    style={{ background: `linear-gradient(135deg, ${MODULE.instructorColor}, ${MODULE.instructorColor}80)` }}>
-                    {MODULE.instructorInitials}
+                    style={{ background: `linear-gradient(135deg, ${module.instructorColor}, ${module.instructorColor}80)` }}>
+                    {module.instructorInitials}
                   </div>
-                  <span className="font-medium text-[#6B7280]">{MODULE.instructor}</span>
+                  <span className="font-medium text-[#6B7280]">{module.instructor}</span>
                 </div>
-                <span>Updated {MODULE.updatedAt}</span>
+                <span>Updated {new Date(module.updatedAt).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
 
-          {/* Quick stats */}
           <div className="grid grid-cols-4 gap-3 text-center">
             {[
               { v: topics.length, l: "Topics", icon: Layers, c: "#E8317A" },
-              { v: MODULE.enrolledCount.toLocaleString(), l: "Enrolled", icon: Users, c: "#3B82F6" },
-              { v: `${MODULE.completionRate}%`, l: "Complete", icon: Target, c: "#10B981" },
-              { v: MODULE.avgRating, l: "Rating", icon: Star, c: "#F59E0B" },
+              { v: module.enrolledCount?.toLocaleString(), l: "Enrolled", icon: Users, c: "#3B82F6" },
+              { v: `${module.completionRate}%`, l: "Complete", icon: Target, c: "#10B981" },
+              { v: module.avgRating?.toFixed(1), l: "Rating", icon: Star, c: "#F59E0B" },
             ].map(s => {
               const Icon = s.icon;
               return (
@@ -596,24 +723,27 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-[15px] font-bold text-[#111827]">Topics ({topics.length})</h2>
-              <p className="text-[12px] text-[#9CA3AF] mt-0.5">Drag to reorder. Click to expand and edit.</p>
+              <p className="text-[12px] text-[#9CA3AF] mt-0.5">Click to expand and edit.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Link href={`/admin/modules/${params?.id || MODULE.id}/topics/new`}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
-                <Plus size={13} /> Add Topic
-              </Link>
-            </div>
+            <button onClick={addTopic}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+              <Plus size={13} /> Add Topic
+            </button>
           </div>
 
-          {/* Topics list */}
           <div className="flex flex-col gap-3">
             {topics.map((topic, i) => (
-              <TopicCard key={topic.id} topic={topic} index={i} />
+              <TopicCard 
+                key={topic.id} 
+                topic={topic} 
+                moduleId={moduleId}
+                onUpdate={refetchTopics}
+                onDelete={handleDeleteTopic}
+                index={i}
+              />
             ))}
           </div>
 
-          {/* Add topic inline */}
           <button onClick={addTopic}
             className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-[#E5E7EB] text-[12px] font-semibold text-[#9CA3AF] hover:border-[#E8317A] hover:text-[#E8317A] hover:bg-pink-50/20 transition-all">
             <Plus size={14} /> Add New Topic
@@ -642,8 +772,8 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F9FAFB]">
-                    {topics.filter(t => t.watchCount > 0).map(t => (
-                      <tr key={t.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    {topicPerformance.map(t => (
+                      <tr key={t.topicId} className="hover:bg-[#F9FAFB] transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-bold text-[#9CA3AF] w-4">{t.order}</span>
@@ -674,8 +804,8 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
                         </td>
                         <td className="px-5 py-3.5">
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
-                            style={{ background: TOPIC_STATUS_CFG[t.status].bg, color: TOPIC_STATUS_CFG[t.status].text }}>
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: TOPIC_STATUS_CFG[t.status].dot }} />
+                            style={{ background: TOPIC_STATUS_CFG[t.status as TopicStatus]?.bg || "#F3F4F6", color: TOPIC_STATUS_CFG[t.status as TopicStatus]?.text || "#6B7280" }}>
+                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: TOPIC_STATUS_CFG[t.status as TopicStatus]?.dot || "#9CA3AF" }} />
                             {t.status}
                           </span>
                         </td>
@@ -687,27 +817,24 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
             </div>
 
             {/* Completion funnel */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-5">
-              <h3 className="text-[14px] font-bold text-[#111827] mb-4">Learner Progress Distribution</h3>
-              <div className="space-y-3">
-                {[
-                  { label: "Completed all topics", count: 1141, pct: 30, color: "#10B981" },
-                  { label: "More than half done", count: 1226, pct: 32, color: "#3B82F6" },
-                  { label: "Less than half done", count: 958,  pct: 25, color: "#F59E0B" },
-                  { label: "Just enrolled", count: 517,  pct: 13, color: "#9CA3AF" },
-                ].map(s => (
-                  <div key={s.label}>
-                    <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="font-medium text-[#6B7280]">{s.label}</span>
-                      <span className="font-bold text-[#111827]">{s.count.toLocaleString()} <span className="text-[#9CA3AF] font-normal">({s.pct}%)</span></span>
+            {progressDistribution.length > 0 && (
+              <div className="bg-white rounded-2xl border border-[#F3F4F6] p-5">
+                <h3 className="text-[14px] font-bold text-[#111827] mb-4">Learner Progress Distribution</h3>
+                <div className="space-y-3">
+                  {progressDistribution.map(s => (
+                    <div key={s.label}>
+                      <div className="flex items-center justify-between text-[11px] mb-1">
+                        <span className="font-medium text-[#6B7280]">{s.label}</span>
+                        <span className="font-bold text-[#111827]">{s.count.toLocaleString()} <span className="text-[#9CA3AF] font-normal">({s.percentage}%)</span></span>
+                      </div>
+                      <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
+                        <div className="h-2 rounded-full" style={{ width: `${s.percentage}%`, background: s.color }} />
+                      </div>
                     </div>
-                    <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
-                      <div className="h-2 rounded-full" style={{ width: `${s.pct}%`, background: s.color }} />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* RIGHT SIDEBAR */}
@@ -723,22 +850,26 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
                 </div>
               </div>
               <div className="p-3 flex flex-col gap-2.5">
-                {RECENT_ACTIVITY.map((a, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                      style={{ background: `linear-gradient(135deg, ${a.color}, ${a.color}80)` }}>
-                      {a.initials}
+                {recentActivity.length === 0 ? (
+                  <p className="text-[11px] text-[#9CA3AF] text-center py-4">No recent activity</p>
+                ) : (
+                  recentActivity.map((a, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                        style={{ background: `linear-gradient(135deg, ${a.userColor}, ${a.userColor}80)` }}>
+                        {a.userInitials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] text-[#111827] leading-snug">
+                          <span className="font-semibold">{a.userName}</span>{" "}
+                          <span className="text-[#9CA3AF]">{a.action}</span>{" "}
+                          <span className="font-medium truncate">{a.targetTitle}</span>
+                        </p>
+                        <p className="text-[10px] text-[#D1D5DB]">{new Date(a.createdAt).toLocaleString()}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-[#111827] leading-snug">
-                        <span className="font-semibold">{a.user}</span>{" "}
-                        <span className="text-[#9CA3AF]">{a.action}</span>{" "}
-                        <span className="font-medium truncate">{a.topic}</span>
-                      </p>
-                      <p className="text-[10px] text-[#D1D5DB]">{a.time}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -748,25 +879,29 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
                 <h3 className="text-[13px] font-bold text-[#111827]">Top Learners</h3>
               </div>
               <div className="p-4 flex flex-col gap-3">
-                {TOP_LEARNERS.map((l, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <span className="text-[10px] font-bold text-[#D1D5DB] w-4">{i + 1}</span>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                      style={{ background: `linear-gradient(135deg, ${l.color}, ${l.color}80)` }}>
-                      {l.initials}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-semibold text-[#111827] truncate">{l.name}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <div className="flex-1 h-1 bg-[#F3F4F6] rounded-full overflow-hidden">
-                          <div className="h-1 rounded-full bg-[#E8317A]" style={{ width: `${l.progress}%` }} />
-                        </div>
-                        <span className="text-[9px] text-[#9CA3AF]">{l.progress}%</span>
+                {topLearners.length === 0 ? (
+                  <p className="text-[11px] text-[#9CA3AF] text-center py-4">No learners yet</p>
+                ) : (
+                  topLearners.map((l, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <span className="text-[10px] font-bold text-[#D1D5DB] w-4">{i + 1}</span>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                        style={{ background: `linear-gradient(135deg, ${l.color}, ${l.color}80)` }}>
+                        {l.initials}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-semibold text-[#111827] truncate">{l.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <div className="flex-1 h-1 bg-[#F3F4F6] rounded-full overflow-hidden">
+                            <div className="h-1 rounded-full bg-[#E8317A]" style={{ width: `${l.progressPercentage}%` }} />
+                          </div>
+                          <span className="text-[9px] text-[#9CA3AF]">{l.progressPercentage}%</span>
+                        </div>
+                      </div>
+                      {l.progressPercentage === 100 && <Award size={13} className="text-amber-400 flex-shrink-0" />}
                     </div>
-                    {l.progress === 100 && <Award size={13} className="text-amber-400 flex-shrink-0" />}
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -776,43 +911,63 @@ export default function ModuleDetailPage({ params }: { params: { id: string } })
       {/* SETTINGS SECTION */}
       {activeSection === "settings" && (
         <div className="max-w-2xl">
-          <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#F9FAFB]">
-              <h3 className="text-[14px] font-bold text-[#111827]">Module Settings</h3>
-            </div>
-            <div className="p-5 space-y-4">
-              {[
-                { label: "Module Title", value: MODULE.title },
-                { label: "Instructor", value: MODULE.instructor },
-                { label: "Category", value: MODULE.categoryLabel },
-              ].map(f => (
-                <div key={f.label}>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">{f.label}</label>
-                  <input defaultValue={f.value}
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            handleUpdateModule({
+              title: formData.get("title"),
+              category: formData.get("category"),
+              description: formData.get("description"),
+              status: formData.get("status"),
+            });
+          }}>
+            <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#F9FAFB]">
+                <h3 className="text-[14px] font-bold text-[#111827]">Module Settings</h3>
+              </div>
+              <div className="p-5 space-y-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Module Title</label>
+                  <input name="title" defaultValue={module.title}
                     className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] transition-colors" />
                 </div>
-              ))}
-              <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Overview / Description</label>
-                <textarea defaultValue={MODULE.description}
-                  className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] transition-colors" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Publication Status</label>
-                <select className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
-                  <option>Active</option><option>Inactive</option><option>Pending Review</option>
-                </select>
-              </div>
-              <div className="pt-2 flex items-center justify-between">
-                <button className="flex items-center gap-1.5 text-[12px] font-semibold text-[#EF4444] hover:underline">
-                  <Trash2 size={12} /> Delete Module
-                </button>
-                <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
-                  <Save size={13} /> Save Changes
-                </button>
+                <div>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Category</label>
+                  <select name="category" defaultValue={module.category}
+                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
+                      <option key={k} value={k}>{v.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Overview / Description</label>
+                  <textarea name="description" defaultValue={module.description}
+                    className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] transition-colors" />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Publication Status</label>
+                  <select name="status" defaultValue={module.status}
+                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending Review</option>
+                  </select>
+                </div>
+                <div className="pt-2 flex items-center justify-between">
+                  <button type="button"
+                    onClick={handleDeleteModule}
+                    className="flex items-center gap-1.5 text-[12px] font-semibold text-[#EF4444] hover:underline">
+                    <Trash2 size={12} /> Delete Module
+                  </button>
+                  <button type="submit"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+                    <Save size={13} /> Save Changes
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
+  data: T;
   total: number;
   page: number;
   pageSize: number;
@@ -20,8 +20,6 @@ export interface ApiError {
     code?: string;
   };
 }
-
-//  Enum / Union Types 
 
 export type ModuleCategory =
   | "criminal"

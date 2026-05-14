@@ -3,8 +3,11 @@ import { modulesApi, modulesUiSlice } from "./slices/admin/modules.slice";
 import { authApi } from "./authService/authSlice";
 import { adminAuthApi } from "./authService/adminAuthSlice";
 import { citizenApi, citizenUiSlice } from "./slices/citizens.slice";
+import { learnApi } from "./slices/learn.slice";
 import { lawyerApi } from "./slices/lawyers.slice";
 import { adminLawyerApi } from "./slices/admin/lawyer.slice";
+import { adminsApi } from "./slices/admin/admin.slice";
+
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +17,8 @@ export const store = configureStore({
     [citizenApi.reducerPath]: citizenApi.reducer,
     [lawyerApi.reducerPath]: lawyerApi.reducer,
     [adminLawyerApi.reducerPath]: adminLawyerApi.reducer,
+    [adminsApi.reducerPath]: adminsApi.reducer,
+    [learnApi.reducerPath]: learnApi.reducer,
     modulesUi: modulesUiSlice.reducer,
     citizenUi: citizenUiSlice.reducer,
   },
@@ -25,7 +30,9 @@ export const store = configureStore({
       .concat(authApi.middleware)
       .concat(citizenApi.middleware)
       .concat(adminLawyerApi.middleware)
-      .concat(lawyerApi.middleware),
+      .concat(lawyerApi.middleware)
+      .concat(learnApi.middleware)
+      .concat(adminsApi.middleware),
 
   devTools: process.env.NODE_ENV !== "production",
 });

@@ -1,8 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../shared/axiosBaseQuery";
 import {
-  VerificationStatus,
-  LawyerProfile,
   LawyerFull,
   SubmitVerificationPayload,
   UpdateLawyerProfilePayload,
@@ -29,7 +27,7 @@ export const lawyerApi = createApi({
       providesTags: ["LawyerMe"],
     }),
     
-    submitVerification: builder.mutation<ApiResponse<LawyerProfile>, SubmitVerificationPayload>({
+    submitVerification: builder.mutation<ApiResponse<LawyerFull>, SubmitVerificationPayload>({
       query: (data) => ({
         url: "/citizen/lawyer-profile",
         method: "POST",
@@ -38,7 +36,7 @@ export const lawyerApi = createApi({
       invalidatesTags: ["LawyerMe"],
     }),
     
-    updateMyLawyerProfile: builder.mutation<ApiResponse<LawyerProfile>, UpdateLawyerProfilePayload>({
+    updateMyLawyerProfile: builder.mutation<ApiResponse<LawyerFull>, UpdateLawyerProfilePayload>({
       query: (data) => ({
         url: "/lawyers/me/profile",
         method: "PATCH",
@@ -112,7 +110,7 @@ export const lawyerApi = createApi({
       providesTags: (result, error, id) => [{ type: "LawyerProfile", id }],
     }),
 
-    adminAdvanceVerification: builder.mutation<ApiResponse<LawyerProfile>, AdvanceVerificationPayload>({
+    adminAdvanceVerification: builder.mutation<ApiResponse<LawyerFull>, AdvanceVerificationPayload>({
       query: ({ profileId, note }) => ({
         url: `/admin/lawyers/${profileId}/verification/advance`,
         method: "POST",
@@ -125,7 +123,7 @@ export const lawyerApi = createApi({
       ],
     }),
 
-    adminRejectVerification: builder.mutation<ApiResponse<LawyerProfile>, RejectVerificationPayload>({
+    adminRejectVerification: builder.mutation<ApiResponse<LawyerFull>, RejectVerificationPayload>({
       query: ({ profileId, reason }) => ({
         url: `/admin/lawyers/${profileId}/verification/reject`,
         method: "POST",
