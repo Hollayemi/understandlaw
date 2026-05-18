@@ -1,5 +1,6 @@
 "use client";
 import { useGetMeQuery } from "@/redux/authService/authSlice";
+import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
 import { ApiResponse, CitizenProfile, LawyerProfile, CitizenFull } from "@/redux/types";
 import { useRef, useEffect, useState, createContext, useCallback } from "react";
 
@@ -19,13 +20,13 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const [notifications, setNotification] = useState<any[]>([]);
 
-    console.log("UserDataProvider rendered");
-
     const {
         data: userInfo,
         error: userErr,
         isLoading: userIsLoading,
-    } = useGetMeQuery();
+    } = useGetMeQuery(undefined, {
+        skip: !isAuthenticated("user")
+    });
 
 
     return (

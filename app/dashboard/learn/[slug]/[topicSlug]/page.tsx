@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  Play, Pause, Volume2, Maximize2, Star, Clock, BookOpen, 
+import {
+  Play, Pause, Volume2, Maximize2, Star, Clock, BookOpen,
   Search, ChevronRight, Check, Loader2, FileText, Award,
   ChevronLeft, Bookmark, Share2, List, Lock, Circle,
   GraduationCap, Zap, Menu, X, ChevronDown, ChevronUp,
@@ -18,14 +18,14 @@ import {
 } from "@/redux/slices/learn.slice";
 
 // Subtopic Component for rendering individual subtopic content
-const SubtopicContent = ({ 
-  subtopic, 
-  isActive, 
+const SubtopicContent = ({
+  subtopic,
+  isActive,
   onComplete,
-  isCompleted 
-}: { 
-  subtopic: any; 
-  isActive: boolean; 
+  isCompleted
+}: {
+  subtopic: any;
+  isActive: boolean;
   onComplete?: () => void;
   isCompleted?: boolean;
 }) => {
@@ -38,25 +38,23 @@ const SubtopicContent = ({
   }, [isActive]);
 
   return (
-    <div 
-      className={`border rounded-xl transition-all duration-300 ${
-        isActive 
-          ? "border-[#E8317A] shadow-md bg-white" 
+    <div
+      className={`border rounded-xl transition-all duration-300 ${isActive
+          ? "border-[#E8317A] shadow-md bg-white"
           : "border-gray-200 bg-white hover:border-gray-300"
-      }`}
+        }`}
     >
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 text-left"
       >
         <div className="flex items-center gap-3 flex-1">
-          <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
-            isCompleted 
-              ? "bg-green-100" 
-              : isActive 
-              ? "bg-[#E8317A]/10" 
-              : "bg-gray-100"
-          }`}>
+          <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${isCompleted
+              ? "bg-green-100"
+              : isActive
+                ? "bg-[#E8317A]/10"
+                : "bg-gray-100"
+            }`}>
             {isCompleted ? (
               <Check size={12} className="text-green-600" />
             ) : isActive ? (
@@ -68,9 +66,8 @@ const SubtopicContent = ({
             )}
           </div>
           <div className="flex-1">
-            <h4 className={`text-sm font-semibold ${
-              isActive ? "text-[#E8317A]" : "text-gray-900"
-            }`}>
+            <h4 className={`text-sm font-semibold ${isActive ? "text-[#E8317A]" : "text-gray-900"
+              }`}>
               {subtopic.title}
             </h4>
             <div className="flex items-center gap-3 mt-1">
@@ -102,7 +99,7 @@ const SubtopicContent = ({
                 {subtopic.notes || "No additional notes for this section."}
               </p>
             </div>
-            
+
             {subtopic.resources && subtopic.resources.length > 0 && (
               <div className="mt-3">
                 <p className="text-xs font-semibold text-gray-700 mb-2">Resources:</p>
@@ -122,7 +119,7 @@ const SubtopicContent = ({
               </div>
             )}
           </div>
-          
+
           {onComplete && !isCompleted && (
             <button
               onClick={onComplete}
@@ -142,7 +139,7 @@ export default function TopicDetailPage() {
   const router = useRouter();
   const slug = params?.slug as string;
   const topicSlug = params?.topicSlug as string;
-  
+
   const [playing, setPlaying] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeSubtopicId, setActiveSubtopicId] = useState<string | null>(null);
@@ -151,18 +148,18 @@ export default function TopicDetailPage() {
   const videoProgressInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch module data for context
-  const { 
-    data: moduleData, 
-    isLoading: moduleLoading 
+  const {
+    data: moduleData,
+    isLoading: moduleLoading
   } = useGetLearnModuleBySlugQuery(slug, {
     skip: !slug,
   });
 
   // Fetch current topic data
-  const { 
-    data: topicData, 
+  const {
+    data: topicData,
     isLoading: topicLoading,
-    refetch: refetchTopic 
+    refetch: refetchTopic
   } = useGetLearnTopicBySlugQuery(
     { moduleSlug: slug, topicSlug: topicSlug },
     { skip: !slug || !topicSlug }
@@ -212,19 +209,19 @@ export default function TopicDetailPage() {
 
   const handleMarkComplete = async () => {
     if (!module || !topic) return;
-    
+
     try {
       const result = await markTopicComplete({
         moduleId: module._id,
         topicId: topic._id,
       }).unwrap();
-      
+
       if (result.data?.certificateUnlocked) {
         alert("🎉 Congratulations! You've unlocked your certificate!");
       }
-      
+
       refetchTopic();
-      
+
       // Auto-navigate to next topic
       if (nextTopic) {
         setTimeout(() => {
@@ -247,8 +244,8 @@ export default function TopicDetailPage() {
     return `https://www.youtube.com/embed/${videoId}?autoplay=${playing ? 1 : 0}&enablejsapi=1`;
   };
 
-  const subtopicProgress = subtopics.length > 0 
-    ? (completedSubtopics.size / subtopics.length) * 100 
+  const subtopicProgress = subtopics.length > 0
+    ? (completedSubtopics.size / subtopics.length) * 100
     : 0;
   const isCompleted = topic?.completed || false;
 
@@ -281,8 +278,8 @@ export default function TopicDetailPage() {
             Learn
           </Link>
           <ChevronRight size={12} className="text-gray-300 flex-shrink-0" />
-          <Link 
-            href={`/dashboard/learn/${slug}`} 
+          <Link
+            href={`/dashboard/learn/${slug}`}
             className="hover:text-gray-900 transition-colors truncate max-w-[120px] md:max-w-[200px] whitespace-nowrap"
           >
             {module.title}
@@ -296,7 +293,7 @@ export default function TopicDetailPage() {
           <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
             <Search size={14} className="text-gray-600" />
           </button>
-          <button 
+          <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
           >
@@ -331,7 +328,7 @@ export default function TopicDetailPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
-        
+
         {/* Video Player Section */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 mb-6">
           <div className="relative" style={{ aspectRatio: "16/9" }}>
@@ -351,7 +348,7 @@ export default function TopicDetailPage() {
                 onPause={() => setPlaying(false)}
               />
             ) : (
-              <div 
+              <div
                 className="w-full h-full flex flex-col items-center justify-center"
                 style={{ background: module.gradient }}
               >
@@ -364,10 +361,10 @@ export default function TopicDetailPage() {
 
         {/* Two Column Layout for Desktop */}
         <div className="flex flex-col lg:flex-row gap-6">
-          
+
           {/* LEFT COLUMN - Topic Content */}
           <div className={`flex-1 ${sidebarOpen ? 'lg:pr-4' : ''}`}>
-            
+
             {/* Topic Header */}
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 mb-5">
               <div className="flex items-start justify-between flex-wrap gap-4">
@@ -395,7 +392,7 @@ export default function TopicDetailPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 {!isCompleted && (
                   <button
                     onClick={handleMarkComplete}
@@ -407,7 +404,7 @@ export default function TopicDetailPage() {
                     Mark Lesson Complete
                   </button>
                 )}
-                
+
                 {isCompleted && (
                   <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-xl">
                     <Check size={18} className="text-green-600" />
@@ -433,7 +430,7 @@ export default function TopicDetailPage() {
                   <ChevronDown size={18} className="text-gray-400" />
                 )}
               </button>
-              
+
               {descExpanded && (
                 <div className="px-5 pb-5 pt-2 border-t border-gray-100">
                   <div className="prose prose-sm max-w-none">
@@ -441,7 +438,7 @@ export default function TopicDetailPage() {
                       {topic.overview || topic.classification || "No overview available for this lesson."}
                     </p>
                   </div>
-                  
+
                   {/* Instructor info */}
                   <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <div
@@ -472,23 +469,29 @@ export default function TopicDetailPage() {
                       {subtopics.length} sections • {subtopicProgress.toFixed(0)}% complete
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-1.5 rounded-full transition-all duration-300"
-                        style={{
-                          width: `${subtopicProgress}%`,
-                          background: "linear-gradient(90deg, #E8317A, #ff6fa8)"
-                        }}
-                      />
+                  <div>
+                    <div>
+                      <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`}>Open Lesson</Link>
+
+                      <div className="flex items-center gap-2">
+                        <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-1.5 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${subtopicProgress}%`,
+                              background: "linear-gradient(90deg, #E8317A, #ff6fa8)"
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-[#E8317A]">
+                          {completedSubtopics.size}/{subtopics.length}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-xs font-semibold text-[#E8317A]">
-                      {completedSubtopics.size}/{subtopics.length}
-                    </span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-5 space-y-3">
                 {subtopics.map((subtopic: any) => (
                   <SubtopicContent
@@ -499,7 +502,7 @@ export default function TopicDetailPage() {
                     onComplete={() => handleSubtopicComplete(subtopic._id)}
                   />
                 ))}
-                
+
                 {subtopics.length === 0 && (
                   <div className="text-center py-8">
                     <FileText size={40} className="text-gray-300 mx-auto mb-3" />
@@ -530,7 +533,7 @@ export default function TopicDetailPage() {
           {sidebarOpen && (
             <div className="lg:w-80 flex-shrink-0">
               <div className="sticky top-28 space-y-5">
-                
+
                 {/* Lesson Progress Card */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="p-4 border-b border-gray-100">
@@ -572,26 +575,23 @@ export default function TopicDetailPage() {
                             block: 'center'
                           });
                         }}
-                        className={`w-full flex items-center gap-2 p-3 text-left transition-colors hover:bg-gray-50 ${
-                          activeSubtopicId === subtopic._id ? 'bg-pink-50/50' : ''
-                        }`}
+                        className={`w-full flex items-center gap-2 p-3 text-left transition-colors hover:bg-gray-50 ${activeSubtopicId === subtopic._id ? 'bg-pink-50/50' : ''
+                          }`}
                       >
-                        <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
-                          completedSubtopics.has(subtopic._id)
+                        <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${completedSubtopics.has(subtopic._id)
                             ? "bg-green-100"
                             : activeSubtopicId === subtopic._id
-                            ? "bg-[#E8317A]/10"
-                            : "bg-gray-100"
-                        }`}>
+                              ? "bg-[#E8317A]/10"
+                              : "bg-gray-100"
+                          }`}>
                           {completedSubtopics.has(subtopic._id) ? (
                             <Check size={10} className="text-green-600" />
                           ) : (
                             <span className="text-[9px] text-gray-500">{idx + 1}</span>
                           )}
                         </div>
-                        <span className={`text-xs flex-1 truncate ${
-                          activeSubtopicId === subtopic._id ? 'font-semibold text-[#E8317A]' : 'text-gray-600'
-                        }`}>
+                        <span className={`text-xs flex-1 truncate ${activeSubtopicId === subtopic._id ? 'font-semibold text-[#E8317A]' : 'text-gray-600'
+                          }`}>
                           {subtopic.title}
                         </span>
                         <span className="text-[9px] text-gray-400">{subtopic.duration}</span>
@@ -614,7 +614,7 @@ export default function TopicDetailPage() {
                       </div>
                     </Link>
                   )}
-                  
+
                   {nextTopic && !isCompleted && (
                     <button
                       onClick={() => router.push(`/dashboard/learn/${slug}/topic/${nextTopic.slug}`)}

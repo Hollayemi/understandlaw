@@ -9,9 +9,10 @@ import {
     CitizenFull
 } from '../types';
 import { showError, showSuccess } from '@/app/components/ui/sonner';
+import { server } from '../shared/axiosBaseQuery';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/v1/auth/admin`,
+    baseUrl: `${server}/api/v1/auth/admin`,
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = localStorage.getItem('adminAccessToken');

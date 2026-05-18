@@ -16,6 +16,7 @@ import {
   useMarkTopicCompleteMutation,
   useSaveVideoProgressMutation,
 } from "@/redux/slices/learn.slice";
+import AskQuestionButton from "@/app/dashboard/community/_components/AskQuestionButton";
 
 // Types
 interface Subtopic {
@@ -166,48 +167,7 @@ export default function SubtopicContentPage() {
     }
   }, [topic, subtopicId, completedSubtopics]);
 
-  // Mock data for demonstration
-  useEffect(() => {
-    // Mock likes count
-    setLikesCount(topic?.likes || 245);
-    
-    // Mock comments
-    setComments([
-      {
-        _id: "1",
-        userId: "user1",
-        userName: "Chidi Okonkwo",
-        userInitials: "CO",
-        userColor: "#3B82F6",
-        text: "This is really helpful! Thanks for breaking it down so clearly.",
-        likes: 12,
-        createdAt: new Date().toISOString(),
-        replies: [
-          {
-            _id: "1-1",
-            userId: "user2",
-            userName: "Ada Eze",
-            userInitials: "AE",
-            userColor: "#10B981",
-            text: "I agree! The examples make it much easier to understand.",
-            likes: 3,
-            createdAt: new Date().toISOString(),
-          }
-        ]
-      },
-      {
-        _id: "2",
-        userId: "user3",
-        userName: "Emeka Nwosu",
-        userInitials: "EN",
-        userColor: "#F59E0B",
-        text: "What happens if the police don't follow these procedures?",
-        likes: 8,
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-      }
-    ]);
-  }, [topic]);
-
+ 
   const currentIndex = topics.findIndex((t: any) => t.slug === topicSlug);
   const prevTopic = topics[currentIndex - 1];
   const nextTopic = topics[currentIndex + 1];
@@ -254,23 +214,7 @@ export default function SubtopicContentPage() {
     setShowShareMenu(false);
   };
 
-  const handleCommentSubmit = () => {
-    if (!newComment.trim()) return;
-    
-    const newCommentObj: Comment = {
-      _id: Date.now().toString(),
-      userId: "current-user",
-      userName: "You",
-      userInitials: "YO",
-      userColor: "#E8317A",
-      text: newComment,
-      likes: 0,
-      createdAt: new Date().toISOString(),
-    };
-    
-    setComments(prev => [newCommentObj, ...prev]);
-    setNewComment("");
-  };
+
 
   const handleTopicComplete = async () => {
     if (!module || !topic) return;
@@ -601,6 +545,14 @@ export default function SubtopicContentPage() {
                         <MessageCircle size={16} />
                         Discussion ({comments.length})
                       </button>
+
+                      <AskQuestionButton
+                        referenceType="subtopic"
+                        referenceId={subtopicId} 
+                        referenceTitle={activeSubtopic?.title}
+                        moduleTitle={module.title}
+                        topicTitle={topic.title} 
+                      />
                     </div>
                     
                     <div className="flex items-center gap-2">

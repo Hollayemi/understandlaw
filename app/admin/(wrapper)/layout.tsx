@@ -24,6 +24,7 @@ import {
   FileText,
   Star,
 } from "lucide-react";
+import RouteGuard from "@/app/components/wrapper/RouteGuard";
 
 const NAV_GROUPS = [
   {
@@ -125,8 +126,8 @@ const NAV_GROUPS = [
 
 const BADGE_STYLES = {
   amber: { bg: "#FEF3C7", text: "#B45309", border: "#FDE68A" },
-  pink:  { bg: "#FCE7F3", text: "#BE185D", border: "#FBCFE8" },
-  red:   { bg: "#FEE2E2", text: "#B91C1C", border: "#FECACA" },
+  pink: { bg: "#FCE7F3", text: "#BE185D", border: "#FBCFE8" },
+  red: { bg: "#FEE2E2", text: "#B91C1C", border: "#FECACA" },
 };
 
 interface NavItemConfig {
@@ -175,9 +176,8 @@ function NavItem({
 
       <Icon
         size={17}
-        className={`flex-shrink-0 transition-colors ${
-          isActive ? "text-[#E8317A]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
-        }`}
+        className={`flex-shrink-0 transition-colors ${isActive ? "text-[#E8317A]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+          }`}
       />
 
       {!collapsed && (
@@ -224,8 +224,8 @@ function NavItem({
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed]     = useState(false);
-  const [mobileOpen, setMobileOpen]   = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [notifications, setNotifications] = useState(6);
 
   useEffect(() => {
@@ -496,10 +496,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
         </header>
-
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        <RouteGuard actor="admin">
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </RouteGuard>
 
       </div>
     </div>

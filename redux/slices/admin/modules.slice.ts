@@ -97,7 +97,7 @@ export const modulesApi = createApi({
          * GET /admin/modules/stats
          * Aggregate counts for the stats bar: totalModules, totalTopics, totalEnrolled, avgCompletion.
          */
-        getModuleOverviewStats: builder.query<ModuleOverviewStats, void>({
+        getModuleOverviewStats: builder.query<ApiResponse<ModuleOverviewStats>, void>({
             query: () => ({
                 url: "/admin/modules/stats"
             }),
@@ -108,7 +108,7 @@ export const modulesApi = createApi({
          * GET /admin/modules/daily-stats
          * Today's activity strip numbers (views, enrolments, completions, avg session).
          */
-        getDailyActivityStats: builder.query<DailyActivityStats, void>({
+        getDailyActivityStats: builder.query<ApiResponse<DailyActivityStats>, void>({
             query: () => ({
                 url: "/admin/modules/daily-stats"
             }),

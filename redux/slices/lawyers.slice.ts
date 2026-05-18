@@ -178,6 +178,7 @@ export const {
   useUploadDocumentMutation,
   useGetMarketplaceLawyersQuery,
   useGetLawyerByNbaNumberQuery,
+  
   useAdminListLawyersQuery,
   useAdminGetLawyerStatsQuery,
   useAdminGetLawyerByIdQuery,

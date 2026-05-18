@@ -15,6 +15,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import RouteGuard from "../components/wrapper/RouteGuard";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Overview",    href: "/dashboard" },
@@ -143,6 +144,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/*  Main  */}
+      <RouteGuard actor="user">
       <div className="flex-1 min-w-0 flex flex-col">
 
         {/* Mobile top bar */}
@@ -161,6 +163,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {children}
       </div>
+      </RouteGuard>
     </div>
   );
 }

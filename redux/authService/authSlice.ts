@@ -84,18 +84,17 @@ export const authApi = createApi({
                 data: credentials,
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    console.log(data.data.accessToken)
-                    localStorage.setItem('accessToken', data.data.accessToken);
-                    if(data.success) {
-                        showSuccess("Welcome Back!", data.message || "Welcome back!");
-                    }else {
-                        showError("Sign in failed", data.message || "An unexpected error occurred. Please try again.");
-                    }
-                } catch (error) {
-                   
-                }
+                // try {
+                //     const { data } = await queryFulfilled;
+                //     console.log(data.data.accessToken)
+                //     localStorage.setItem('accessToken', data.data.accessToken);
+                //     if(data.success) {
+                //         showSuccess("Welcome Back!", data.message || "Welcome back!")
+                //     }else {
+                //         showError("Sign in failed", data.message || "An unexpected error occurred. Please try again.");
+                //     }
+                // } catch (error) {   
+                // }
             },
             invalidatesTags: ['User'],
         }),

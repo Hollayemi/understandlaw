@@ -56,8 +56,8 @@ export const adminLawyerApi = createApi({
     }),
 
     adminRejectVerification: builder.mutation<ApiResponse<LawyerFull>, RejectVerificationPayload>({
-      query: ({ profileId, reason }) => ({
-        url: `/admin/lawyers/${profileId}/verification/reject`,
+      query: ({ profileId, reason, infoNeeded }) => ({
+        url: `/admin/lawyers/${profileId}/verification/reject?infoNeeded=${infoNeeded}`,
         method: "POST",
         data: { reason },
       }),

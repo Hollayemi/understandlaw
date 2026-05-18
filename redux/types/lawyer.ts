@@ -5,6 +5,7 @@ export type VerificationStatus =
   | "training"
   | "assessment"
   | "verified"
+  | "approved"
   | "rejected";
 
 export type LawyerBadge = "Verified Lawyer" | "Top Rated" | "Responsive";
@@ -178,6 +179,7 @@ export interface AdvanceVerificationPayload {
 }
 
 export interface RejectVerificationPayload {
+  infoNeeded?: string;
   profileId: string;
   reason: string;
 }

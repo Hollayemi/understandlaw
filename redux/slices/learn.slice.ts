@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../shared/axiosBaseQuery";
 import { ApiResponse, Pagination } from "../types";
-import { ModuleCategory } from "./types";
+import { ModuleCategory, TopicWithSubTopics } from "./types";
 
 
 
@@ -179,6 +179,7 @@ export interface ListLearnModulesParams {
   search?: string;
   category?: ModuleCategory | "all";
   page?: number;
+  status?: string;
   pageSize?: number;
 }
 
@@ -213,6 +214,7 @@ export const learnApi = createApi({
           ...(params.search && { search: params.search }),
           ...(params.category && params.category !== "all" && { category: params.category }),
           page: params.page ?? 1,
+          status: 'active',
           pageSize: params.pageSize ?? 20,
         },
       }),
@@ -250,6 +252,13 @@ export const learnApi = createApi({
       providesTags: (result, error, { topicSlug }) => [
         { type: "LearnTopicDetail", id: topicSlug },
       ],
+    }),
+
+    listTopics: builder.query<ApiResponse<TopicWithSubTopics[]>, { moduleId?: string }>({
+      query: (params) => ({
+        url: `/learn/modules/${params?.moduleId}/topics`,
+        method: "GET",
+      }),
     }),
 
     /**
@@ -361,6 +370,7 @@ export const {
   useListLearnModulesQuery,
   useGetLearnModuleBySlugQuery,
   useGetLearnTopicBySlugQuery,
+  useListTopicsQuery,
   useGetContinueReadingQuery,
   useGetFeaturedTopicsQuery,
   useToggleSaveModuleMutation,

@@ -6,9 +6,8 @@ import { toast } from "sonner";
 import {
   useSignInMutation,
   useRegisterMutation,
-  useGetMeQuery
 } from "@/redux/authService/authSlice";
-import { showError } from "../components/ui/sonner";
+import { showError, showSuccess } from "../components/ui/sonner";
 
 type Tab = "login" | "register";
 
@@ -73,11 +72,11 @@ export default function AuthPage() {
         email: formData.email,
         password: formData.password,
         phone: formData.phone || undefined,
-        role: "citizen",
+        role: formData.role,
       }).unwrap();
 
       if (result?.success) {
-        router.push("/dashboard");
+        router.push(formData.role === "citizen" ? "/dashboard" : "/auth/lawyer-setup");
       }
 
     } catch (error: any) {
@@ -114,9 +113,16 @@ export default function AuthPage() {
         email: formData.email,
         password: formData.password,
       }).unwrap();
-      console.log({result});
 
-      if(result.success) router.push("/dashboard");
+      localStorage.setItem('accessToken', result.data.accessToken);
+      if (result.success) {
+        showSuccess("Welcome Back!", result.message || "Welcome back!")
+      } else {
+        showError("Sign in failed", result.message || "An unexpected error occurred. Please try again.");
+      }
+      console.log({ result });
+
+      if (result.success) router.replace("/dashboard");
 
     } catch (error: any) {
       console.log(error)
@@ -208,8 +214,8 @@ export default function AuthPage() {
                   key={t}
                   onClick={() => switchTab(t)}
                   className={`flex-1 py-4 text-sm font-semibold transition-all ${tab === t
-                      ? "text-[#E8317A] border-b-2 border-[#E8317A] bg-pink-50/40"
-                      : "text-gray-400 hover:text-gray-600"
+                    ? "text-[#E8317A] border-b-2 border-[#E8317A] bg-pink-50/40"
+                    : "text-gray-400 hover:text-gray-600"
                     }`}
                 >
                   {t === "register" ? "Create Account" : "Sign In"}

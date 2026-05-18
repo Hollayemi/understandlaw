@@ -9,7 +9,7 @@ import {
   StatBar, FilterBar, Table, StatusBadge, Avatar, PageHeader,
 } from "../_components";
 import { useAdminListLawyersQuery } from "@/redux/slices/admin/lawyer.slice";
-import { formatTime, getInitial } from "@/utils/function";
+import { formatTime, fullName, getInitial } from "@/utils/function";
 import { LawyerFull } from "@/redux/types/lawyer";
 
 //  Types 
@@ -55,9 +55,9 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => 
         <div className="h-1 w-full"  />
         <div className="p-6 border-b border-[#F3F4F6]">
           <div className="flex items-start gap-4">
-            <Avatar initials={getInitial(lawyer.userId?.fullName || "")}  size="lg" />
+            <Avatar initials={getInitial(fullName(lawyer.userId) || "")}  size="lg" />
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-[#111827]">{lawyer.userId?.fullName}</h2>
+              <h2 className="text-base font-bold text-[#111827]">{fullName(lawyer.userId)}</h2>
               <p className="text-xs text-[#6B7280]">{lawyer.specialisms.join(" · ")}</p>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {lawyer.badges.map(b => (
@@ -178,7 +178,7 @@ console.log(lawyers)
     if (tab === "pending"  && l.verificationStatus !== "pending")  return false;
     if (search) {
       const q = search.toLowerCase();
-      return l.userId.fullName.toLowerCase().includes(q) || l.nbaNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
+      return fullName(l.userId).toLowerCase().includes(q) || l.nbaNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
     }
     return true;
   });
@@ -190,11 +190,11 @@ console.log(lawyers)
       render: (l: LawyerFull) => (
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Avatar initials={getInitial(l.userId?.fullName || " ")}  size="md" />
+            <Avatar initials={getInitial(fullName(l.userId) || " ")}  size="md" />
             {l.isAvailable && <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#10B981] border-2 border-white" />}
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-[#111827]">{l.userId?.fullName}</p>
+            <p className="text-[13px] font-semibold text-[#111827]">{fullName(l.userId)}</p>
             <p className="text-[11px] text-[#9CA3AF]">{l.nbaNumber}</p>
           </div>
         </div>

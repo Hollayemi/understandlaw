@@ -1,24 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ShieldCheck, Clock, CheckCircle, XCircle, FileText,
-  Eye, Download, MessageSquare, ChevronRight, AlertCircle,
-  BadgeCheck, Calendar, MapPin, Award, Phone, Mail,
-  Upload, Loader2, X, Check, Info, Scale, Users,
+  Eye, Download, MessageSquare, AlertCircle,
+  Calendar, MapPin, Award, 
+  Loader2, X, Check, Info, Scale,
 } from "lucide-react";
-import { StatBar, FilterBar, Avatar, PageHeader, StatusBadge } from "../_components";
+import { StatBar, FilterBar, Avatar, PageHeader } from "../_components";
+import {
+  useAdminListLawyersQuery,
+  useAdminGetLawyerStatsQuery,
+  useAdminAdvanceVerificationMutation,
+  useAdminRejectVerificationMutation,
+  useAdminVerifyDocumentMutation,
+} from "@/redux/slices/admin/lawyer.slice";
+import type { LawyerFull, VerificationStatus as ApiVerificationStatus } from "@/redux/types/lawyer";
+import { formatFileSize } from "@/utils/function";
 
-//  Types 
-type VerificationStatus = "pending" | "approved" | "rejected" | "info_requested";
-
-interface Document {
-  id: string;
-  label: string;
-  filename: string;
-  uploadedAt: string;
-  size: string;
-  verified: boolean | null; // null = not yet reviewed
-}
+type UIStatus = "pending" | "approved" | "rejected" | "info_requested";
 
 interface VerificationRequest {
   id: string;
@@ -33,105 +32,51 @@ interface VerificationRequest {
   calledAt: string;
   specialisms: string[];
   submittedAt: string;
-  status: VerificationStatus;
+  status: UIStatus;
   documents: Document[];
   adminNote?: string;
   reviewedBy?: string;
   reviewedAt?: string;
+  lawyerData?: LawyerFull;
 }
 
-//  Mock Data 
-const REQUESTS: VerificationRequest[] = [
-  {
-    id: "v001",
-    name: "Obiageli Nwachukwu", initials: "ON", color: "#1E4040",
-    email: "obi.n@email.com", phone: "07077665544", state: "Anambra",
-    nbaNumber: "NBA/AWK/2019/00456", yearsCall: 5, calledAt: "2019",
-    specialisms: ["Family Law", "Employment"],
-    submittedAt: "Apr 21, 2025 · 09:14",
-    status: "pending",
-    documents: [
-      { id: "d1", label: "Call to Bar Certificate",   filename: "call_to_bar_nwachukwu.pdf",   uploadedAt: "Apr 21", size: "1.2 MB", verified: null },
-      { id: "d2", label: "Law School Certificate",    filename: "law_school_cert.pdf",          uploadedAt: "Apr 21", size: "980 KB", verified: null },
-      { id: "d3", label: "Practicing License 2025",   filename: "practicing_license_2025.pdf",  uploadedAt: "Apr 21", size: "2.1 MB", verified: null },
-      { id: "d4", label: "Government-Issued ID",      filename: "national_id_on.jpg",           uploadedAt: "Apr 21", size: "640 KB", verified: null },
-    ],
-  },
-  {
-    id: "v002",
-    name: "Tunde Adesanya",     initials: "TA", color: "#3B1A4A",
-    email: "tunde.a@law.ng",   phone: "08033114455", state: "Oyo",
-    nbaNumber: "NBA/IBD/2020/00712", yearsCall: 4, calledAt: "2020",
-    specialisms: ["Business Law", "Consumer Rights"],
-    submittedAt: "Apr 20, 2025 · 14:33",
-    status: "pending",
-    documents: [
-      { id: "d5", label: "Call to Bar Certificate",   filename: "bar_cert_tunde.pdf",           uploadedAt: "Apr 20", size: "1.5 MB", verified: null },
-      { id: "d6", label: "Law School Certificate",    filename: "law_school_tunde.pdf",          uploadedAt: "Apr 20", size: "1.1 MB", verified: null },
-      { id: "d7", label: "Practicing License 2025",   filename: "license_tunde_2025.pdf",       uploadedAt: "Apr 20", size: "1.8 MB", verified: null },
-      { id: "d8", label: "Government-Issued ID",      filename: "passport_tunde.jpg",            uploadedAt: "Apr 20", size: "512 KB", verified: null },
-    ],
-  },
-  {
-    id: "v003",
-    name: "Chinyere Okeke",     initials: "CO", color: "#1A3B1A",
-    email: "chinyere.o@gmail.com", phone: "09055112233", state: "Enugu",
-    nbaNumber: "NBA/ENU/2021/00289", yearsCall: 3, calledAt: "2021",
-    specialisms: ["Property Law", "Contracts"],
-    submittedAt: "Apr 19, 2025 · 11:05",
-    status: "info_requested",
-    adminNote: "The practicing license uploaded appears to be for 2024. Please resubmit the 2025 Supreme Court practicing license.",
-    documents: [
-      { id: "d9",  label: "Call to Bar Certificate",  filename: "bar_cert_chinyere.pdf",        uploadedAt: "Apr 19", size: "1.3 MB", verified: true  },
-      { id: "d10", label: "Law School Certificate",   filename: "law_school_chinyere.pdf",       uploadedAt: "Apr 19", size: "890 KB", verified: true  },
-      { id: "d11", label: "Practicing License",       filename: "license_chinyere_2024.pdf",    uploadedAt: "Apr 19", size: "2.0 MB", verified: false },
-      { id: "d12", label: "Government-Issued ID",     filename: "intl_passport_co.jpg",         uploadedAt: "Apr 19", size: "720 KB", verified: true  },
-    ],
-  },
-  {
-    id: "v004",
-    name: "Suleiman Balarabe",  initials: "SB", color: "#2A1A3B",
-    email: "suleiman.b@email.com", phone: "08077334455", state: "Katsina",
-    nbaNumber: "NBA/KAT/2018/00501", yearsCall: 6, calledAt: "2018",
-    specialisms: ["Criminal Law", "Road Traffic"],
-    submittedAt: "Apr 18, 2025 · 16:22",
-    status: "approved",
-    reviewedBy: "Super Admin", reviewedAt: "Apr 19, 2025 · 10:15",
-    documents: [
-      { id: "d13", label: "Call to Bar Certificate",  filename: "bar_cert_sb.pdf",              uploadedAt: "Apr 18", size: "1.1 MB", verified: true },
-      { id: "d14", label: "Law School Certificate",   filename: "law_school_sb.pdf",             uploadedAt: "Apr 18", size: "1.0 MB", verified: true },
-      { id: "d15", label: "Practicing License 2025",  filename: "license_sb_2025.pdf",          uploadedAt: "Apr 18", size: "1.9 MB", verified: true },
-      { id: "d16", label: "Government-Issued ID",     filename: "nimc_sb.jpg",                   uploadedAt: "Apr 18", size: "480 KB", verified: true },
-    ],
-  },
-  {
-    id: "v005",
-    name: "Blessing Igwe",      initials: "BI", color: "#3B1A1A",
-    email: "blessing.i@email.com", phone: "08099223344", state: "Delta",
-    nbaNumber: "NBA/WAR/2022/00134", yearsCall: 2, calledAt: "2022",
-    specialisms: ["Family Law"],
-    submittedAt: "Apr 17, 2025 · 09:47",
-    status: "rejected",
-    adminNote: "NBA registration number could not be verified with the Nigerian Bar Association records. Application rejected.",
-    reviewedBy: "Super Admin", reviewedAt: "Apr 18, 2025 · 14:30",
-    documents: [
-      { id: "d17", label: "Call to Bar Certificate",  filename: "bar_cert_bi.pdf",              uploadedAt: "Apr 17", size: "900 KB", verified: false },
-      { id: "d18", label: "Law School Certificate",   filename: "law_school_bi.pdf",             uploadedAt: "Apr 17", size: "820 KB", verified: true  },
-      { id: "d19", label: "Practicing License 2025",  filename: "license_bi_2025.pdf",          uploadedAt: "Apr 17", size: "1.6 MB", verified: false },
-      { id: "d20", label: "Government-Issued ID",     filename: "voters_card_bi.jpg",            uploadedAt: "Apr 17", size: "560 KB", verified: true  },
-    ],
-  },
-];
+interface Document {
+  id: string;
+  label: string;
+  filename: string;
+  uploadedAt: string;
+  size: string;
+  verified: boolean | null;
+  fileUrl?: string;
+  sizeBytes?: number;
+}
 
-//  Status Config 
-const STATUS_CFG = {
-  pending:        { label: "Pending Review", bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: Clock },
-  approved:       { label: "Approved",       bg: "#ECFDF5", text: "#065F46", border: "#6EE7B7", dot: "#10B981", icon: CheckCircle },
-  rejected:       { label: "Rejected",       bg: "#FEF2F2", text: "#991B1B", border: "#FCA5A5", dot: "#EF4444", icon: XCircle },
+// Helper to map API verification status to UI status
+const mapApiStatusToUI = (status: string): UIStatus => {
+  switch (status) {
+    case "pending":
+    case "credential_check":
+    case "training":
+    case "assessment":
+      return "pending";
+    case "approved":
+      return "approved";
+    case "rejected":
+      return "rejected";
+    default:
+      return "pending";
+  }
+};
+
+// Status Config
+const STATUS_CFG: Record<UIStatus, { label: string; bg: string; text: string; border: string; dot: string; icon: any }> = {
+  pending: { label: "Pending Review", bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: Clock },
+  approved: { label: "Approved", bg: "#ECFDF5", text: "#065F46", border: "#6EE7B7", dot: "#10B981", icon: CheckCircle },
+  rejected: { label: "Rejected", bg: "#FEF2F2", text: "#991B1B", border: "#FCA5A5", dot: "#EF4444", icon: XCircle },
   info_requested: { label: "Info Requested", bg: "#EFF6FF", text: "#1E3A8A", border: "#93C5FD", dot: "#3B82F6", icon: MessageSquare },
 };
 
-function StatusChip({ status }: { status: VerificationStatus }) {
+function StatusChip({ status }: { status: UIStatus }) {
   const cfg = STATUS_CFG[status];
   const Icon = cfg.icon;
   return (
@@ -142,17 +87,33 @@ function StatusChip({ status }: { status: VerificationStatus }) {
   );
 }
 
-//  Document Row 
-function DocRow({ doc }: { doc: Document }) {
+// Document Row Component
+function DocRow({ 
+  doc, 
+  profileId, 
+  onVerify 
+}: { 
+  doc: Document; 
+  profileId: string;
+  onVerify: (documentId: string, verified: boolean) => void;
+}) {
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleVerify = async (verified: boolean) => {
+    setIsVerifying(true);
+    await onVerify(doc.id, verified);
+    setIsVerifying(false);
+  };
+
   return (
     <div className="flex items-center gap-3 p-3.5 rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] hover:bg-white transition-colors">
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-        doc.verified === true  ? "bg-[#ECFDF5]" :
+        doc.verified === true ? "bg-[#ECFDF5]" :
         doc.verified === false ? "bg-[#FEF2F2]" :
         "bg-[#F3F4F6]"
       }`}>
         <FileText size={14} className={
-          doc.verified === true  ? "text-[#10B981]" :
+          doc.verified === true ? "text-[#10B981]" :
           doc.verified === false ? "text-[#EF4444]" :
           "text-[#9CA3AF]"
         } />
@@ -162,46 +123,81 @@ function DocRow({ doc }: { doc: Document }) {
         <p className="text-[10px] text-[#9CA3AF]">{doc.filename} · {doc.size} · {doc.uploadedAt}</p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
-        {doc.verified === true  && <span className="text-[10px] font-bold text-[#10B981] bg-[#ECFDF5] px-2 py-0.5 rounded-full">✓ Verified</span>}
-        {doc.verified === false && <span className="text-[10px] font-bold text-[#EF4444] bg-[#FEF2F2] px-2 py-0.5 rounded-full">✗ Issue</span>}
-        <button className="w-7 h-7 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
-          <Eye size={12} />
-        </button>
-        <button className="w-7 h-7 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
-          <Download size={12} />
-        </button>
+        {doc.verified === true && (
+          <span className="text-[10px] font-bold text-[#10B981] bg-[#ECFDF5] px-2 py-0.5 rounded-full">✓ Verified</span>
+        )}
+        {doc.verified === false && (
+          <span className="text-[10px] font-bold text-[#EF4444] bg-[#FEF2F2] px-2 py-0.5 rounded-full">✗ Issue</span>
+        )}
+        {doc.verified === null && (
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => handleVerify(true)}
+              disabled={isVerifying}
+              className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#ECFDF5] text-[#10B981] hover:bg-[#D1FAE5] transition-colors"
+            >
+              Verify
+            </button>
+            <button
+              onClick={() => handleVerify(false)}
+              disabled={isVerifying}
+              className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FEF2F2] text-[#EF4444] hover:bg-[#FEE2E2] transition-colors"
+            >
+              Reject
+            </button>
+          </div>
+        )}
+        {doc.fileUrl && (
+          <>
+            <a
+              href={doc.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-7 h-7 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#9CA3AF] transition-colors"
+            >
+              <Eye size={12} />
+            </a>
+            <a
+              href={doc.fileUrl}
+              download={doc.filename}
+              className="w-7 h-7 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#9CA3AF] transition-colors"
+            >
+              <Download size={12} />
+            </a>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-//  Review Modal 
+// Review Modal Component
 function ReviewModal({
   request,
   action,
   onClose,
   onSubmit,
+  isLoading,
 }: {
   request: VerificationRequest;
   action: "approve" | "reject" | "info";
   onClose: () => void;
   onSubmit: (note?: string) => void;
+  isLoading: boolean;
 }) {
   const [note, setNote] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const META = {
-    approve: { title: "Approve Verification",    icon: CheckCircle,  color: "#10B981", btnLabel: "Confirm Approval",      btnStyle: "bg-[#10B981] hover:bg-[#059669]" },
-    reject:  { title: "Reject Application",      icon: XCircle,      color: "#EF4444", btnLabel: "Reject Application",    btnStyle: "bg-[#EF4444] hover:bg-[#DC2626]" },
-    info:    { title: "Request More Information", icon: MessageSquare,color: "#3B82F6", btnLabel: "Send Request",          btnStyle: "bg-[#3B82F6] hover:bg-[#2563EB]" },
+    approve: { title: "Approve Verification", icon: CheckCircle, color: "#10B981", btnLabel: "Confirm Approval", btnStyle: "bg-[#10B981] hover:bg-[#059669]" },
+    reject: { title: "Reject Application", icon: XCircle, color: "#EF4444", btnLabel: "Reject Application", btnStyle: "bg-[#EF4444] hover:bg-[#DC2626]" },
+    info: { title: "Request More Information", icon: MessageSquare, color: "#3B82F6", btnLabel: "Send Request", btnStyle: "bg-[#3B82F6] hover:bg-[#2563EB]" },
   }[action];
 
   const Icon = META.icon;
 
-  const submit = async () => {
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
+  const handleSubmit = () => {
+    if (action === "reject" && !note.trim()) return;
+    if (action === "info" && !note.trim()) return;
     onSubmit(note || undefined);
   };
 
@@ -250,7 +246,7 @@ function ReviewModal({
               onChange={e => setNote(e.target.value)}
               placeholder={
                 action === "approve" ? "Add a private note for your records…" :
-                action === "reject"  ? "Explain why this application was rejected…" :
+                action === "reject" ? "Explain why this application was rejected…" :
                 "Specify what additional information or documents are needed…"
               }
               className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
@@ -263,11 +259,11 @@ function ReviewModal({
               Cancel
             </button>
             <button
-              onClick={submit}
-              disabled={loading || ((action === "reject" || action === "info") && !note.trim())}
+              onClick={handleSubmit}
+              disabled={isLoading || ((action === "reject" || action === "info") && !note.trim())}
               className={`flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50 transition-colors ${META.btnStyle}`}
             >
-              {loading ? <><Loader2 size={13} className="animate-spin" /> Processing…</> : META.btnLabel}
+              {isLoading ? <><Loader2 size={13} className="animate-spin" /> Processing…</> : META.btnLabel}
             </button>
           </div>
         </div>
@@ -276,13 +272,19 @@ function ReviewModal({
   );
 }
 
-//  Request Card 
+// Request Card Component
 function RequestCard({
   req,
+  profileId,
   onAction,
+  onDocumentVerify,
+  isActionLoading,
 }: {
   req: VerificationRequest;
+  profileId: string;
   onAction: (req: VerificationRequest, action: "approve" | "reject" | "info") => void;
+  onDocumentVerify: (documentId: string, verified: boolean) => void;
+  isActionLoading: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -290,11 +292,9 @@ function RequestCard({
     <div className={`bg-white rounded-2xl border overflow-hidden transition-all duration-200 ${
       expanded ? "border-[#E5E7EB] shadow-md" : "border-[#F3F4F6] shadow-sm hover:shadow-md hover:-translate-y-0.5"
     }`}>
-      {/* Status accent */}
       <div className="h-0.5 w-full" style={{ background: STATUS_CFG[req.status].dot }} />
 
       <div className="p-5">
-        {/* Header */}
         <div className="flex items-start gap-3.5 mb-4">
           <Avatar initials={req.initials} color={req.color} size="lg" />
           <div className="flex-1 min-w-0">
@@ -308,13 +308,12 @@ function RequestCard({
           </div>
         </div>
 
-        {/* Meta grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
           {[
-            { icon: MapPin,    value: req.state },
-            { icon: Award,     value: `Called ${req.calledAt} (${req.yearsCall}yr)` },
-            { icon: Calendar,  value: req.submittedAt.split("·")[0].trim() },
-            { icon: Scale,     value: req.specialisms.join(", ") },
+            { icon: MapPin, value: req.state },
+            { icon: Award, value: `Called ${req.calledAt} (${req.yearsCall}yr)` },
+            { icon: Calendar, value: req.submittedAt.split("·")[0].trim() },
+            { icon: Scale, value: req.specialisms.join(", ") },
           ].map(({ icon: Icon, value }) => (
             <div key={value} className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
               <Icon size={11} className="text-[#9CA3AF] flex-shrink-0" /> {value}
@@ -322,7 +321,6 @@ function RequestCard({
           ))}
         </div>
 
-        {/* Admin note (for info_requested / rejected) */}
         {req.adminNote && (
           <div className={`flex items-start gap-2.5 p-3 rounded-xl mb-4 border text-[12px] ${
             req.status === "info_requested"
@@ -334,14 +332,12 @@ function RequestCard({
           </div>
         )}
 
-        {/* Reviewed info */}
         {req.reviewedBy && (
           <p className="text-[11px] text-[#9CA3AF] mb-4">
             Reviewed by <strong className="text-[#6B7280]">{req.reviewedBy}</strong> on {req.reviewedAt}
           </p>
         )}
 
-        {/* Document progress */}
         <div className="flex items-center justify-between mb-4">
           <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider">
             Documents ({req.documents.filter(d => d.verified === true).length}/{req.documents.length} verified)
@@ -349,7 +345,7 @@ function RequestCard({
           <div className="flex items-center gap-1">
             {req.documents.map(d => (
               <div key={d.id} className={`w-2 h-2 rounded-full ${
-                d.verified === true  ? "bg-[#10B981]" :
+                d.verified === true ? "bg-[#10B981]" :
                 d.verified === false ? "bg-[#EF4444]" :
                 "bg-[#E5E7EB]"
               }`} title={d.label} />
@@ -357,23 +353,25 @@ function RequestCard({
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
           {req.status === "pending" && (
             <>
               <button
                 onClick={() => onAction(req, "approve")}
-                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+                disabled={isActionLoading}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] disabled:opacity-50 transition-colors">
                 <Check size={12} /> Approve
               </button>
               <button
                 onClick={() => onAction(req, "info")}
-                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#3B82F6] border border-[#BFDBFE] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors">
+                disabled={isActionLoading}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#3B82F6] border border-[#BFDBFE] bg-[#EFF6FF] hover:bg-[#DBEAFE] disabled:opacity-50 transition-colors">
                 <MessageSquare size={12} /> Request Info
               </button>
               <button
                 onClick={() => onAction(req, "reject")}
-                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#EF4444] border border-[#FCA5A5] bg-[#FEF2F2] hover:bg-[#FEE2E2] transition-colors">
+                disabled={isActionLoading}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#EF4444] border border-[#FCA5A5] bg-[#FEF2F2] hover:bg-[#FEE2E2] disabled:opacity-50 transition-colors">
                 <X size={12} /> Reject
               </button>
             </>
@@ -383,12 +381,14 @@ function RequestCard({
             <>
               <button
                 onClick={() => onAction(req, "approve")}
-                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+                disabled={isActionLoading}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] disabled:opacity-50 transition-colors">
                 <Check size={12} /> Approve Now
               </button>
               <button
                 onClick={() => onAction(req, "reject")}
-                className="flex items-center gap-1.5 px-4 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#EF4444] border border-[#FCA5A5] bg-[#FEF2F2] hover:bg-[#FEE2E2] transition-colors">
+                disabled={isActionLoading}
+                className="flex items-center gap-1.5 px-4 justify-center py-2.5 rounded-xl text-[12px] font-semibold text-[#EF4444] border border-[#FCA5A5] bg-[#FEF2F2] hover:bg-[#FEE2E2] disabled:opacity-50 transition-colors">
                 <X size={12} /> Reject
               </button>
             </>
@@ -410,21 +410,17 @@ function RequestCard({
           </button>
         </div>
 
-        {/* Documents expanded */}
         {expanded && (
           <div className="mt-5 pt-5 border-t border-[#F3F4F6] space-y-2">
             <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Submitted Documents</p>
-            {req.documents.map(doc => <DocRow key={doc.id} doc={doc} />)}
-
-            <div className="mt-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6]">
-              <div className="flex items-center gap-2 text-[11px] text-[#6B7280]">
-                <BadgeCheck size={12} className="text-[#E8317A]" />
-                NBA Cross-check: <span className="font-mono text-[#111827] ml-1">{req.nbaNumber}</span>
-                <a href="#" className="ml-auto text-[#E8317A] font-semibold hover:underline flex items-center gap-1">
-                  Verify on NBA Portal <ChevronRight size={11} />
-                </a>
-              </div>
-            </div>
+            {req.documents.map(doc => (
+              <DocRow 
+                key={doc.id} 
+                doc={doc} 
+                profileId={profileId}
+                onVerify={onDocumentVerify}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -432,47 +428,175 @@ function RequestCard({
   );
 }
 
-//  Main Page 
+// Helper to transform API LawyerFull to VerificationRequest
+const transformToVerificationRequest = (lawyer: LawyerFull): VerificationRequest => {
+  const fullName = lawyer.userId?.fullName || `${lawyer.userId?.firstName || ""} ${lawyer.userId?.lastName || ""}`;
+  const initials = fullName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  
+  // Extract documents from verificationDocuments
+  const documents: Document[] = (lawyer.verificationDocuments || []).map((doc: any, index: number) => ({
+    id: doc._id || `doc_${index}`,
+    label: doc.label || "Document",
+    filename: doc.filename || "document.pdf",
+    uploadedAt: doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "Unknown",
+    size: formatFileSize(doc.sizeBytes || 0),
+    verified: doc.verified ?? null,
+    fileUrl: doc.fileUrl,
+    sizeBytes: doc.sizeBytes,
+  }));
+
+  // Add required document templates if missing
+  const requiredDocs = ["Call to Bar Certificate", "Law School Certificate", "Practicing License", "Government-Issued ID"];
+  for (const required of requiredDocs) {
+    if (!documents.some(d => d.label === required)) {
+      documents.push({
+        id: `missing_${required}`,
+        label: required,
+        filename: "Not uploaded",
+        uploadedAt: "",
+        size: "0 B",
+        verified: null,
+      });
+    }
+  }
+
+  return {
+    id: lawyer._id,
+    name: fullName,
+    initials,
+    color: lawyer.colorA || "#1E4040",
+    email: lawyer.userId?.email || "",
+    phone: "",
+    state: lawyer.state || "",
+    nbaNumber: lawyer.nbaNumber || "",
+    yearsCall: lawyer.yearOfCall ? new Date().getFullYear() - lawyer.yearOfCall : 0,
+    calledAt: lawyer.calledAt?.toString() || "",
+    specialisms: lawyer.specialisms || [],
+    submittedAt: lawyer.createdAt ? new Date(lawyer.createdAt).toLocaleDateString() : "Unknown",
+    status: mapApiStatusToUI(lawyer.verificationStatus),
+    documents,
+    reviewedBy: undefined,
+    reviewedAt: undefined,
+    lawyerData: lawyer,
+  };
+};
+
+// Main Page Component
 export default function VerificationsPage() {
-  const [tab, setTab]           = useState("pending");
-  const [search, setSearch]     = useState("");
+  const [tab, setTab] = useState<string>("pending");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [modalState, setModalState] = useState<{
     req: VerificationRequest;
     action: "approve" | "reject" | "info";
   } | null>(null);
-  const [statuses, setStatuses] = useState<Record<string, VerificationStatus>>({});
 
-  const getStatus = (req: VerificationRequest): VerificationStatus =>
-    statuses[req.id] ?? req.status;
+  // Build query params
+  const queryParams = {
+    page,
+    pageSize: 10,
+    search: search || undefined,
+    verificationStatus: tab === "all" ? undefined : tab as ApiVerificationStatus,
+  };
 
+  // RTK Query hooks
+  const { data: lawyersData, isLoading: isLoadingList, refetch } = useAdminListLawyersQuery(queryParams);
+  const { data: statsData, refetch: refetchStats } = useAdminGetLawyerStatsQuery();
+  
+  const [advanceVerification, { isLoading: isAdvancing }] = useAdminAdvanceVerificationMutation();
+  const [rejectVerification, { isLoading: isRejecting }] = useAdminRejectVerificationMutation();
+  const [verifyDocument, { isLoading: isVerifyingDoc }] = useAdminVerifyDocumentMutation();
+
+  const isActionLoading = isAdvancing || isRejecting || isVerifyingDoc;
+
+  // Transform API data to VerificationRequest array
+  const requests: VerificationRequest[] = lawyersData?.data?.data?.map(transformToVerificationRequest) || [];
+
+  // Stats from API
   const stats = [
-    { label: "Total Requests",   value: REQUESTS.length,                                                                   icon: FileText,   color: "#E8317A", bg: "#FFF0F5" },
-    { label: "Pending Review",   value: REQUESTS.filter(r => getStatus(r) === "pending").length,                           icon: Clock,      color: "#F59E0B", bg: "#FFFBEB" },
-    { label: "Approved",         value: REQUESTS.filter(r => getStatus(r) === "approved").length,                          icon: CheckCircle,color: "#10B981", bg: "#ECFDF5" },
-    { label: "Info Requested",   value: REQUESTS.filter(r => getStatus(r) === "info_requested").length,                    icon: MessageSquare, color: "#3B82F6", bg: "#EFF6FF" },
+    { label: "Total Lawyers", value: statsData?.data?.total || 0, icon: FileText, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Pending Review", value: statsData?.data?.byStatus?.pending || 0, icon: Clock, color: "#F59E0B", bg: "#FFFBEB" },
+    { label: "Approved", value: statsData?.data?.byStatus?.approved || 0, icon: CheckCircle, color: "#10B981", bg: "#ECFDF5" },
+    { label: "Rejected", value: statsData?.data?.byStatus?.rejected || 0, icon: XCircle, color: "#EF4444", bg: "#FEF2F2" },
   ];
 
-  const filtered = REQUESTS.filter(r => {
-    const s = getStatus(r);
-    if (tab === "pending"        && s !== "pending")        return false;
-    if (tab === "info_requested" && s !== "info_requested") return false;
-    if (tab === "approved"       && s !== "approved")       return false;
-    if (tab === "rejected"       && s !== "rejected")       return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return r.name.toLowerCase().includes(q) || r.nbaNumber.toLowerCase().includes(q) || r.state.toLowerCase().includes(q);
-    }
+  // Filter requests by tab (client-side filter for pending/info_requested distinction)
+  const filteredRequests = requests.filter(req => {
+    if (tab === "pending") return req.status === "pending";
+    if (tab === "approved") return req.status === "approved";
+    if (tab === "rejected") return req.status === "rejected";
+    if (tab === "info_requested") return req.status === "info_requested";
     return true;
   });
 
-  const handleSubmit = (note?: string) => {
+  // Tab counts
+  const tabCounts = {
+    pending: requests.filter(r => r.status === "pending").length,
+    info_requested: requests.filter(r => r.status === "info_requested").length,
+    approved: requests.filter(r => r.status === "approved").length,
+    rejected: requests.filter(r => r.status === "rejected").length,
+    all: requests.length,
+  };
+
+  const handleAdvance = async (req: VerificationRequest, note?: string) => {
+    try {
+      await advanceVerification({ profileId: req.id, note }).unwrap();
+      refetch();
+      refetchStats();
+      setModalState(null);
+    } catch (error) {
+      console.error("Failed to advance verification:", error);
+    }
+  };
+
+  const handleReject = async (req: VerificationRequest, reason?: string) => {
+    try {
+      await rejectVerification({ profileId: req.id, reason: reason || "No reason provided" }).unwrap();
+      refetch();
+      refetchStats();
+      setModalState(null);
+    } catch (error) {
+      console.error("Failed to reject verification:", error);
+    }
+  };
+
+  const handleRequestInfo = async (req: VerificationRequest, note?: string) => {
+    // For info_requested, we can use the reject endpoint with a note
+    // Or implement a separate endpoint if available
+    try {
+      await rejectVerification({ profileId: req.id, reason: note || "Additional information required", infoNeeded: "true" }).unwrap();
+      refetch();
+      refetchStats();
+      setModalState(null);
+    } catch (error) {
+      console.error("Failed to request info:", error);
+    }
+  };
+
+  const handleDocumentVerify = async (profileId: string, documentId: string, verified: boolean) => {
+    try {
+      await verifyDocument({ profileId, documentId, verified }).unwrap();
+      refetch();
+    } catch (error) {
+      console.error("Failed to verify document:", error);
+    }
+  };
+
+  const handleModalSubmit = (note?: string) => {
     if (!modalState) return;
-    const newStatus: VerificationStatus =
-      modalState.action === "approve" ? "approved" :
-      modalState.action === "reject"  ? "rejected"  :
-      "info_requested";
-    setStatuses(prev => ({ ...prev, [modalState.req.id]: newStatus }));
-    setModalState(null);
+    const { req, action } = modalState;
+    
+    switch (action) {
+      case "approve":
+        handleAdvance(req, note);
+        break;
+      case "reject":
+        handleReject(req, note);
+        break;
+      case "info":
+        handleRequestInfo(req, note);
+        break;
+    }
   };
 
   return (
@@ -482,7 +606,8 @@ export default function VerificationsPage() {
           request={modalState.req}
           action={modalState.action}
           onClose={() => setModalState(null)}
-          onSubmit={handleSubmit}
+          onSubmit={handleModalSubmit}
+          isLoading={isActionLoading}
         />
       )}
 
@@ -492,7 +617,6 @@ export default function VerificationsPage() {
           subtitle="Review and approve lawyer credential applications before they go live on the marketplace."
         />
 
-        {/* Info banner */}
         <div className="mb-6 flex items-start gap-3 p-4 bg-[#FFFBEB] border border-[#FDE68A] rounded-2xl">
           <ShieldCheck size={16} className="text-[#F59E0B] flex-shrink-0 mt-0.5" />
           <div className="text-[12px] text-[#92400E]">
@@ -504,11 +628,11 @@ export default function VerificationsPage() {
 
         <FilterBar
           options={[
-            { value: "pending",        label: "Pending",      count: REQUESTS.filter(r => getStatus(r) === "pending").length },
-            { value: "info_requested", label: "Info Needed",  count: REQUESTS.filter(r => getStatus(r) === "info_requested").length },
-            { value: "approved",       label: "Approved",     count: REQUESTS.filter(r => getStatus(r) === "approved").length },
-            { value: "rejected",       label: "Rejected",     count: REQUESTS.filter(r => getStatus(r) === "rejected").length },
-            { value: "all",            label: "All" },
+            { value: "all", label: "All", count: statsData?.data?.total || 0 },
+            { value: "pending", label: "Pending", count: statsData?.data?.byStatus?.pending || 0 },
+            { value: "info_requested", label: "Info Needed", count: statsData?.data?.byStatus?.pending || 0 },
+            { value: "approved", label: "Approved", count: statsData?.data?.byStatus?.approved || 0 },
+            { value: "rejected", label: "Rejected", count: statsData?.data?.byStatus?.rejected || 0 },
           ]}
           value={tab}
           onChange={setTab}
@@ -517,7 +641,12 @@ export default function VerificationsPage() {
           onSearchChange={setSearch}
         />
 
-        {filtered.length === 0 ? (
+        {isLoadingList ? (
+          <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16 text-center">
+            <Loader2 size={36} className="text-[#E8317A] mx-auto mb-3 animate-spin" />
+            <p className="text-sm font-semibold text-[#9CA3AF]">Loading verifications...</p>
+          </div>
+        ) : filteredRequests.length === 0 ? (
           <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16 text-center">
             <ShieldCheck size={36} className="text-[#E5E7EB] mx-auto mb-3" />
             <p className="text-sm font-semibold text-[#9CA3AF] mb-1">No requests found</p>
@@ -525,13 +654,39 @@ export default function VerificationsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {filtered.map(req => (
+            {filteredRequests.map(req => (
               <RequestCard
                 key={req.id}
-                req={{ ...req, status: getStatus(req) }}
+                req={req}
+                profileId={req.id}
                 onAction={(r, action) => setModalState({ req: r, action })}
+                onDocumentVerify={(docId, verified) => handleDocumentVerify(req.id, docId, verified)}
+                isActionLoading={isActionLoading}
               />
             ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {lawyersData?.data && lawyersData.data.totalPages > 1 && (
+          <div className="flex justify-center gap-2 mt-6">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-4 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] disabled:opacity-50 hover:bg-[#F9FAFB] transition-colors"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-[12px] text-[#6B7280]">
+              Page {page} of {lawyersData.data.totalPages}
+            </span>
+            <button
+              onClick={() => setPage(p => Math.min(lawyersData.data.totalPages, p + 1))}
+              disabled={page === lawyersData.data.totalPages}
+              className="px-4 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] disabled:opacity-50 hover:bg-[#F9FAFB] transition-colors"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
