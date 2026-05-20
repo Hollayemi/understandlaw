@@ -1,5 +1,6 @@
+// app/(user)/library/page.tsx
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen, Download, ShoppingCart, Search, Filter,
@@ -10,145 +11,11 @@ import {
   Clock, CheckCircle, Home, Briefcase,
   Building2, Car, Users,
 } from "lucide-react";
+import { useListBooksQuery, useGetLibraryStatsQuery, useDownloadBookMutation, useCreateOrderMutation } from "@/redux/slices/library.slice";
+import { Book, BookCategory, BookFormat } from "@/redux/types/library";
+import { toast } from "sonner";
 
-//  Types 
-type BookFormat = "pdf" | "physical" | "both";
-type BookCategory =
-  | "criminal" | "tenancy" | "employment" | "contracts"
-  | "business" | "family" | "consumer" | "road" | "constitutional";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  description: string;
-  category: BookCategory;
-  coverUrl: string | null;
-  pdfUrl: string | null;
-  format: BookFormat;
-  pricePhysical: number | null;
-  totalPages: number;
-  isbn: string;
-  publishedYear: number;
-  tags: string[];
-  downloadCount: number;
-  orderCount: number;
-  featured: boolean;
-  stockCount: number | null;
-  rating: number;
-  reviewCount: number;
-}
-
-//  Mock Data 
-const BOOKS: Book[] = [
-  {
-    id: "b001",
-    title: "Know Your Rights: Arrest & Detention in Nigeria",
-    author: "Adaeze Okonkwo",
-    description: "A plain-English guide to Section 35 of the 1999 Constitution. Covers every stage of a police encounter,  from the moment of arrest to bail and court appearances. Know exactly what officers can and cannot do.",
-    category: "criminal",
-    coverUrl: "/images/police_law.jpg",
-    pdfUrl: "/books/arrest-rights.pdf",
-    format: "both",
-    pricePhysical: 3500,
-    totalPages: 142,
-    isbn: "978-978-XXX-001",
-    publishedYear: 2024,
-    tags: ["arrest", "police", "Section 35", "detention", "bail"],
-    downloadCount: 1847,
-    orderCount: 234,
-    featured: true,
-    stockCount: 80,
-    rating: 4.8,
-    reviewCount: 247,
-  },
-  {
-    id: "b002",
-    title: "Tenant Rights Handbook: Nigeria Edition",
-    author: "Emeka Nwosu",
-    description: "Everything a tenant in Nigeria needs to know,  notice periods, illegal lockouts, deposit recovery, and what to do when your landlord breaks the law. Covers Lagos Tenancy Law 2011.",
-    category: "tenancy",
-    coverUrl: "/images/tenancy_law.jpg",
-    pdfUrl: "/books/tenant-rights.pdf",
-    format: "both",
-    pricePhysical: 2800,
-    totalPages: 98,
-    isbn: "978-978-XXX-002",
-    publishedYear: 2024,
-    tags: ["tenancy", "eviction", "landlord", "deposit"],
-    downloadCount: 1203,
-    orderCount: 189,
-    featured: true,
-    stockCount: 120,
-    rating: 4.6,
-    reviewCount: 183,
-  },
-  {
-    id: "b003",
-    title: "Labour Law Guide for Nigerian Workers",
-    author: "Fatimah Bello",
-    description: "Wrongful termination, severance pay, NSITF contributions, workplace harassment,  a comprehensive guide to the Labour Act Cap. L1 in plain English for every Nigerian worker.",
-    category: "employment",
-    coverUrl: "/images/employment_law.jpg",
-    pdfUrl: "/books/labour-law.pdf",
-    format: "pdf",
-    pricePhysical: null,
-    totalPages: 176,
-    isbn: "978-978-XXX-003",
-    publishedYear: 2024,
-    tags: ["employment", "labour", "termination", "severance"],
-    downloadCount: 2914,
-    orderCount: 0,
-    featured: false,
-    stockCount: null,
-    rating: 4.7,
-    reviewCount: 312,
-  },
-  {
-    id: "b004",
-    title: "Nigerian Contract Law: A Citizen's Guide",
-    author: "Chidi Okafor",
-    description: "Understand what makes a contract legally binding in Nigeria. Covers offer, acceptance, consideration, capacity, and remedies for breach. Stop signing what you don't understand.",
-    category: "contracts",
-    coverUrl: "/images/contract_law.jpg",
-    pdfUrl: null,
-    format: "physical",
-    pricePhysical: 4200,
-    totalPages: 210,
-    isbn: "978-978-XXX-004",
-    publishedYear: 2023,
-    tags: ["contracts", "agreement", "breach", "consideration"],
-    downloadCount: 0,
-    orderCount: 67,
-    featured: false,
-    stockCount: 45,
-    rating: 4.5,
-    reviewCount: 89,
-  },
-  {
-    id: "b005",
-    title: "CAMA 2020: Business Registration Simplified",
-    author: "Amina Garba",
-    description: "Everything you need to register and manage a company or business name under CAMA 2020. CAC procedures, director duties, and common mistakes,  all made simple.",
-    category: "business",
-    coverUrl: null,
-    pdfUrl: "/books/cama-2020.pdf",
-    format: "pdf",
-    pricePhysical: null,
-    totalPages: 88,
-    isbn: "978-978-XXX-005",
-    publishedYear: 2025,
-    tags: ["CAMA", "CAC", "business registration", "company"],
-    downloadCount: 891,
-    orderCount: 0,
-    featured: false,
-    stockCount: null,
-    rating: 4.4,
-    reviewCount: 67,
-  },
-];
-
-//  Config 
+// Category Config
 const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: string; icon: React.ElementType }> = {
   criminal:      { label: "Police & Criminal", color: "#3B82F6", bg: "#EFF6FF", icon: Shield },
   tenancy:       { label: "Tenancy",           color: "#10B981", bg: "#ECFDF5", icon: Home },
@@ -168,21 +35,33 @@ const NIGERIAN_STATES = [
   "Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"
 ];
 
-//  Download Modal 
+// Download Modal Component
 function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
-  const [downloading, setDownloading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [downloadBook, { isLoading }] = useDownloadBookMutation();
   const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
 
   const handleDownload = async () => {
-    setDownloading(true);
-    for (let i = 10; i <= 100; i += 15) {
-      await new Promise(r => setTimeout(r, 200));
-      setProgress(Math.min(i, 100));
+    try {
+      // Simulate progress
+      const interval = setInterval(() => {
+        setProgress(prev => Math.min(prev + 20, 100));
+      }, 200);
+      
+      await downloadBook(book._id).unwrap();
+      clearInterval(interval);
+      setProgress(100);
+      setDone(true);
+      toast.success("Download started!");
+      
+      // Trigger actual PDF download
+      if (book.pdfUrl) {
+        window.open(book.pdfUrl, '_blank');
+      }
+    } catch (error) {
+      toast.error("Failed to download. Please try again.");
+      onClose();
     }
-    await new Promise(r => setTimeout(r, 300));
-    setDownloading(false);
-    setDone(true);
   };
 
   return (
@@ -201,8 +80,8 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
               <p className="text-[11px] text-[#9CA3AF] mt-0.5">by {book.author} · {book.totalPages} pages</p>
               <div className="flex items-center gap-1 mt-1.5">
                 <Star size={11} className="text-amber-400 fill-amber-400" />
-                <span className="text-[11px] font-semibold text-[#111827]">{book.rating}</span>
-                <span className="text-[11px] text-[#9CA3AF]">({book.reviewCount} reviews)</span>
+                <span className="text-[11px] font-semibold text-[#111827]">{book.rating || 4.5}</span>
+                <span className="text-[11px] text-[#9CA3AF]">({book.reviewCount || 0} reviews)</span>
               </div>
               <div className="flex items-center gap-1 mt-1 text-[11px] text-[#10B981] font-semibold">
                 <Download size={10} /> {book.downloadCount.toLocaleString()} downloads
@@ -222,7 +101,7 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
                 </p>
               </div>
 
-              {!downloading ? (
+              {!isLoading ? (
                 <button onClick={handleDownload}
                   className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-all"
                   style={{ background: "linear-gradient(135deg, #3B82F6, #60A5FA)" }}>
@@ -258,10 +137,11 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-//  Order Modal 
+// Order Modal Component
 function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submitting, setSubmitting] = useState(false);
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
   const [form, setForm] = useState({
     name: "", email: "", phone: "",
     address: "", state: "Lagos", quantity: 1, notes: "",
@@ -276,9 +156,24 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
 
   const submit = async () => {
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setSubmitting(false);
-    setStep(3);
+    try {
+      await createOrder({
+        bookId: book._id,
+        quantity: form.quantity,
+        deliveryAddress: form.address,
+        state: form.state,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        notes: form.notes,
+      }).unwrap();
+      setStep(3);
+      toast.success("Order placed successfully!");
+    } catch (error) {
+      toast.error("Failed to place order. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -286,7 +181,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
         <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] flex-shrink-0" />
 
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6] flex-shrink-0">
           <div>
             <h3 className="font-bold text-[#111827] text-sm">Order Physical Copy</h3>
@@ -308,8 +202,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
         </div>
 
         <div className="overflow-y-auto flex-1 px-6 py-5">
-
-          {/* Book preview */}
           <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] mb-5">
             <div className="w-10 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#E5E7EB]">
               {book.coverUrl ? <img src={book.coverUrl} alt="" className="w-full h-full object-cover" /> : <BookOpen size={14} className="text-[#9CA3AF] m-auto mt-4" />}
@@ -324,7 +216,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
             </div>
           </div>
 
-          {/* Step 1: Contact & Delivery */}
           {step === 1 && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -372,14 +263,12 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
             </div>
           )}
 
-          {/* Step 2: Confirm & Pay */}
           {step === 2 && (
             <div className="space-y-4">
               <button onClick={() => setStep(1)} className="flex items-center gap-1 text-[11px] text-[#9CA3AF] hover:text-[#111827] transition-colors mb-1">
                 ← Back
               </button>
 
-              {/* Order summary */}
               <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] p-4">
                 <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Order Summary</p>
                 <div className="space-y-2 text-[12px]">
@@ -402,7 +291,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
                 </div>
               </div>
 
-              {/* Delivery notice */}
               <div className="flex items-start gap-2.5 p-3.5 bg-[#FFFBEB] border border-[#FDE68A] rounded-xl">
                 <Package size={14} className="text-[#F59E0B] flex-shrink-0 mt-0.5" />
                 <div>
@@ -413,18 +301,10 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
                 </div>
               </div>
 
-              {/* Payment notice */}
-              <div className="flex items-start gap-2.5 p-3.5 bg-[#EFF6FF] border border-[#93C5FD] rounded-xl">
-                <Shield size={14} className="text-[#3B82F6] flex-shrink-0 mt-0.5" />
-                <p className="text-[11px] text-[#1E3A8A] leading-relaxed">
-                  Payment is processed securely via <strong>Paystack</strong>. You'll be redirected to complete payment after placing the order.
-                </p>
-              </div>
-
-              <button onClick={submit} disabled={submitting}
+              <button onClick={submit} disabled={submitting || isLoading}
                 className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-60 transition-all"
                 style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
-                {submitting
+                {(submitting || isLoading)
                   ? <><Loader2 size={13} className="animate-spin" /> Processing…</>
                   : <><Send size={13} /> Place Order & Pay NGN {total.toLocaleString()}</>
                 }
@@ -432,7 +312,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
             </div>
           )}
 
-          {/* Step 3: Confirmation */}
           {step === 3 && (
             <div className="text-center py-6">
               <div className="w-14 h-14 rounded-full bg-[#ECFDF5] border-2 border-[#6EE7B7] flex items-center justify-center mx-auto mb-4">
@@ -445,11 +324,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
               <p className="text-[11px] text-[#9CA3AF] mb-5">
                 A confirmation and tracking number will be sent to <strong>{form.email}</strong> once your order is dispatched.
               </p>
-              <div className="bg-[#F9FAFB] rounded-xl p-4 text-left mb-5 space-y-1.5 text-[12px]">
-                <div className="flex justify-between"><span className="text-[#9CA3AF]">Delivery to</span><span className="font-semibold text-[#111827]">{form.state}</span></div>
-                <div className="flex justify-between"><span className="text-[#9CA3AF]">Quantity</span><span className="font-semibold text-[#111827]">{form.quantity} {form.quantity > 1 ? "copies" : "copy"}</span></div>
-                <div className="flex justify-between"><span className="text-[#9CA3AF]">Amount paid</span><span className="font-bold text-[#E8317A]">NGN {total.toLocaleString()}</span></div>
-              </div>
               <button onClick={onClose}
                 className="w-full py-2.5 rounded-xl bg-[#111827] text-white text-[13px] font-bold hover:bg-[#1F2937] transition-colors">
                 Done
@@ -462,7 +336,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-//  Book Card 
+// Book Card Component
 function BookCard({
   book,
   onDownload,
@@ -480,7 +354,6 @@ function BookCard({
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-      {/* Cover */}
       <div className="relative h-44 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat.color}20, ${cat.color}08)` }}>
         {book.coverUrl ? (
           <img src={book.coverUrl} alt="" className="w-full h-full object-cover" />
@@ -491,7 +364,6 @@ function BookCard({
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
-        {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: cat.bg, color: cat.color }}>
             {cat.label}
@@ -503,39 +375,34 @@ function BookCard({
           )}
         </div>
 
-        {/* Format pill */}
         <div className="absolute bottom-3 left-3">
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm text-[#111827]">
             {book.format === "pdf" ? "📄 Free PDF" : book.format === "physical" ? "📦 Physical Only" : "📄 PDF + 📦 Book"}
           </span>
         </div>
 
-        {/* Save */}
         <button onClick={() => setSaved(!saved)}
           className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors">
           <Heart size={14} className={saved ? "text-[#E8317A] fill-[#E8317A]" : "text-gray-500"} />
         </button>
       </div>
 
-      {/* Body */}
       <div className="p-4 flex flex-col flex-1">
         <h3 className="text-[13px] font-bold text-gray-900 leading-snug mb-1 line-clamp-2">{book.title}</h3>
         <p className="text-[11px] text-gray-500 mb-2">by {book.author} · {book.publishedYear} · {book.totalPages}pp</p>
 
-        {/* Rating */}
         <div className="flex items-center gap-1.5 mb-3">
           <div className="flex gap-0.5">
             {[1,2,3,4,5].map(i => (
-              <Star key={i} size={11} className={i <= Math.round(book.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
+              <Star key={i} size={11} className={i <= Math.round(book.rating || 4.5) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
             ))}
           </div>
-          <span className="text-[11px] font-semibold text-gray-700">{book.rating}</span>
-          <span className="text-[10px] text-gray-400">({book.reviewCount})</span>
+          <span className="text-[11px] font-semibold text-gray-700">{book.rating || 4.5}</span>
+          <span className="text-[10px] text-gray-400">({book?.reviewCount || 0})</span>
         </div>
 
         <p className="text-[11px] text-gray-500 leading-relaxed mb-3 line-clamp-2 flex-1">{book.description}</p>
 
-        {/* Stats */}
         <div className="flex items-center gap-3 text-[10px] text-gray-400 mb-3">
           {book.format !== "physical" && (
             <span className="flex items-center gap-1">
@@ -554,21 +421,18 @@ function BookCard({
           )}
         </div>
 
-        {/* Price */}
         {book.pricePhysical !== null && (
           <p className="text-[13px] font-bold text-[#E8317A] mb-3">
             NGN {book.pricePhysical.toLocaleString()} / copy
           </p>
         )}
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-1 mb-3">
           {book.tags.slice(0, 3).map(t => (
             <span key={t} className="text-[10px] bg-gray-50 border border-gray-100 text-gray-500 px-2 py-0.5 rounded-md">{t}</span>
           ))}
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col gap-2 mt-auto">
           {book.pdfUrl && (
             <button onClick={() => onDownload(book)}
@@ -583,7 +447,7 @@ function BookCard({
               className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
               <ShoppingCart size={12} />
-              {book.stockCount === 0 ? "Out of Stock" : `Order Physical,  NGN ${(book.pricePhysical || 0).toLocaleString()}`}
+              {book.stockCount === 0 ? "Out of Stock" : `Order Physical, NGN ${(book.pricePhysical || 0).toLocaleString()}`}
             </button>
           )}
           <button onClick={() => onPreview(book)}
@@ -596,128 +460,33 @@ function BookCard({
   );
 }
 
-//  Book Detail Drawer 
-function BookDrawer({ book, onClose, onDownload, onOrder }: {
-  book: Book;
-  onClose: () => void;
-  onDownload: (b: Book) => void;
-  onOrder: (b: Book) => void;
-}) {
-  const cat = CATEGORY_CONFIG[book.category];
-  return (
-    <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="w-full max-w-md bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
-        <div className="h-1.5 w-full flex-shrink-0" style={{ background: `linear-gradient(90deg, ${cat.color}, ${cat.color}80)` }} />
-
-        {/* Cover hero */}
-        <div className="relative h-52 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat.color}30, ${cat.color}10)` }}>
-          {book.coverUrl ? (
-            <img src={book.coverUrl} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <BookOpen size={60} style={{ color: cat.color, opacity: 0.2 }} />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors">
-            <X size={14} />
-          </button>
-          <div className="absolute bottom-4 left-4">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: cat.bg, color: cat.color }}>
-              {cat.label}
-            </span>
-          </div>
-        </div>
-
-        <div className="p-6 flex-1">
-          <h2 className="text-base font-bold text-[#111827] mb-1 leading-snug">{book.title}</h2>
-          <p className="text-[12px] text-[#9CA3AF] mb-3">by {book.author} · {book.publishedYear} · {book.totalPages} pages</p>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 mb-4">
-            <div className="flex gap-0.5">
-              {[1,2,3,4,5].map(i => (
-                <Star key={i} size={13} className={i <= Math.round(book.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
-              ))}
-            </div>
-            <span className="text-[12px] font-bold text-[#111827]">{book.rating}</span>
-            <span className="text-[11px] text-[#9CA3AF]">({book.reviewCount} reviews)</span>
-          </div>
-
-          <p className="text-[13px] text-[#374151] leading-relaxed mb-4">{book.description}</p>
-
-          {/* Details */}
-          <div className="space-y-2 text-[12px] mb-5">
-            {[
-              { label: "ISBN", value: book.isbn },
-              { label: "Format", value: book.format === "pdf" ? "PDF (free download)" : book.format === "physical" ? "Physical book" : "PDF + Physical" },
-              { label: "Pages", value: `${book.totalPages} pages` },
-              ...(book.pricePhysical ? [{ label: "Price", value: `NGN ${book.pricePhysical.toLocaleString()} / copy` }] : []),
-              ...(book.stockCount !== null ? [{ label: "In Stock", value: `${book.stockCount} copies` }] : []),
-              ...(book.downloadCount > 0 ? [{ label: "Downloads", value: book.downloadCount.toLocaleString() }] : []),
-            ].map(d => (
-              <div key={d.label} className="flex items-center justify-between py-1.5 border-b border-[#F9FAFB]">
-                <span className="text-[#9CA3AF]">{d.label}</span>
-                <span className="font-semibold text-[#111827]">{d.value}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-1.5 mb-5">
-            {book.tags.map(t => (
-              <span key={t} className="text-[10px] bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full">{t}</span>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="flex flex-col gap-2">
-            {book.pdfUrl && (
-              <button onClick={() => { onDownload(book); onClose(); }}
-                className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-all"
-                style={{ background: "linear-gradient(135deg, #3B82F6, #60A5FA)" }}>
-                <Download size={14} /> Download Free PDF
-              </button>
-            )}
-            {book.format !== "pdf" && (
-              <button onClick={() => { onOrder(book); onClose(); }}
-                disabled={book.stockCount !== null && book.stockCount === 0}
-                className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-40 transition-all"
-                style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
-                <ShoppingCart size={14} />
-                Order Physical Copy,  NGN {(book.pricePhysical || 0).toLocaleString()}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-//  Main User Library Page 
+// Main User Library Page
 export default function UserLibraryPage() {
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [formatFilter, setFormatFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [formatFilter, setFormatFilter] = useState<string>("all");
   const [downloadBook, setDownloadBook] = useState<Book | null>(null);
   const [orderBook, setOrderBook] = useState<Book | null>(null);
   const [previewBook, setPreviewBook] = useState<Book | null>(null);
 
-  const filtered = BOOKS.filter(b => {
-    if (categoryFilter !== "all" && b.category !== categoryFilter) return false;
-    if (formatFilter === "free" && b.format === "physical") return false;
-    if (formatFilter === "physical" && b.format === "pdf") return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) ||
-        b.tags.some(t => t.toLowerCase().includes(q));
-    }
-    return true;
+  const { data: booksData, isLoading: booksLoading, refetch } = useListBooksQuery({
+    search: search || undefined,
+    category: categoryFilter === "all" ? undefined : categoryFilter as any,
+    format: formatFilter === "all" ? undefined : formatFilter as any,
   });
 
-  const featured = BOOKS.filter(b => b.featured);
+  const { data: statsData } = useGetLibraryStatsQuery();
+
+  const {data: books = [], ...pagination} = booksData?.data || {};
+  const featured = books.filter((b: Book) => b.featured);
+
+  if (booksLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
+        <Loader2 className="animate-spin text-[#E8317A]" size={40} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -733,8 +502,6 @@ export default function UserLibraryPage() {
       )}
 
       <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
-
-        {/* Top bar */}
         <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
@@ -744,8 +511,7 @@ export default function UserLibraryPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-5 xl:px-8 py-7">
-
-          {/* Hero */}
+          {/* Hero Section */}
           <div className="rounded-2xl overflow-hidden mb-7 relative"
             style={{ background: "linear-gradient(135deg, #0B1120 0%, #1E3A5F 60%, #0B1120 100%)" }}>
             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
@@ -763,9 +529,9 @@ export default function UserLibraryPage() {
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { v: BOOKS.length, l: "Books" },
-                    { v: `${BOOKS.reduce((s, b) => s + b.downloadCount, 0).toLocaleString()}+`, l: "Downloads" },
-                    { v: BOOKS.filter(b => b.format !== "physical").length, l: "Free PDFs" },
+                    { v: statsData?.data?.totalBooks || 0, l: "Books" },
+                    { v: `${(statsData?.data?.totalDownloads || 0).toLocaleString()}+`, l: "Downloads" },
+                    { v: books?.filter(b => b.format !== "physical").length, l: "Free PDFs" },
                   ].map(s => (
                     <div key={s.l} className="bg-white/6 border border-white/8 rounded-xl p-3 text-center">
                       <p className="text-sm font-bold text-white">{s.v}</p>
@@ -777,7 +543,7 @@ export default function UserLibraryPage() {
             </div>
           </div>
 
-          {/* Featured */}
+          {/* Featured Books */}
           {featured.length > 0 && (
             <section className="mb-7">
               <div className="flex items-center justify-between mb-4">
@@ -835,7 +601,7 @@ export default function UserLibraryPage() {
                 <div className="flex bg-gray-100 rounded-xl p-1">
                   {[
                     { v: "all",      l: "All" },
-                    { v: "free",     l: "Free PDF" },
+                    { v: "pdf",     l: "Free PDF" },
                     { v: "physical", l: "Physical" },
                   ].map(opt => (
                     <button key={opt.v} onClick={() => setFormatFilter(opt.v)}
@@ -847,7 +613,6 @@ export default function UserLibraryPage() {
               </div>
             </div>
 
-            {/* Category pills */}
             <div className="flex gap-2 flex-wrap mt-3 pt-3 border-t border-gray-100">
               <button onClick={() => setCategoryFilter("all")}
                 className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${categoryFilter === "all" ? "bg-gray-900 text-white border-gray-900" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}>
@@ -867,7 +632,7 @@ export default function UserLibraryPage() {
           </div>
 
           {/* Book Grid */}
-          {filtered.length === 0 ? (
+          {books.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
               <BookOpen size={32} className="text-gray-200 mx-auto mb-3" />
               <p className="text-sm font-semibold text-gray-500">No books found</p>
@@ -876,7 +641,7 @@ export default function UserLibraryPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filtered.map(book => (
+              {books.map(book => (
                 <BookCard
                   key={book.id}
                   book={book}
@@ -892,7 +657,7 @@ export default function UserLibraryPage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
             {[
               { icon: Shield,    t: "Written by verified Nigerian lawyers" },
-              { icon: Download,  t: "Free PDFs,  no registration required" },
+              { icon: Download,  t: "Free PDFs, no registration required" },
               { icon: Truck,     t: "Physical copies delivered nationwide" },
               { icon: BookOpen,  t: "Plain English, no legal jargon" },
             ].map(({ icon: Icon, t }) => (
@@ -904,5 +669,100 @@ export default function UserLibraryPage() {
         </div>
       </div>
     </>
+  );
+}
+
+// Book Drawer Component
+function BookDrawer({ book, onClose, onDownload, onOrder }: {
+  book: Book;
+  onClose: () => void;
+  onDownload: (b: Book) => void;
+  onOrder: (b: Book) => void;
+}) {
+  const cat = CATEGORY_CONFIG[book.category];
+  return (
+    <div className="fixed inset-0 z-50 flex">
+      <div className="flex-1 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="w-full max-w-md bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
+        <div className="h-1.5 w-full flex-shrink-0" style={{ background: `linear-gradient(90deg, ${cat.color}, ${cat.color}80)` }} />
+
+        <div className="relative h-52 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat.color}30, ${cat.color}10)` }}>
+          {book.coverUrl ? (
+            <img src={book.coverUrl} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <BookOpen size={60} style={{ color: cat.color, opacity: 0.2 }} />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors">
+            <X size={14} />
+          </button>
+          <div className="absolute bottom-4 left-4">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: cat.bg, color: cat.color }}>
+              {cat.label}
+            </span>
+          </div>
+        </div>
+
+        <div className="p-6 flex-1">
+          <h2 className="text-base font-bold text-[#111827] mb-1 leading-snug">{book.title}</h2>
+          <p className="text-[12px] text-[#9CA3AF] mb-3">by {book.author} · {book.publishedYear} · {book.totalPages} pages</p>
+
+          <div className="flex items-center gap-1.5 mb-4">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => (
+                <Star key={i} size={13} className={i <= Math.round(book.rating || 4.5) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
+              ))}
+            </div>
+            <span className="text-[12px] font-bold text-[#111827]">{book.rating || 4.5}</span>
+            <span className="text-[11px] text-[#9CA3AF]">({book.reviewCount || 0} reviews)</span>
+          </div>
+
+          <p className="text-[13px] text-[#374151] leading-relaxed mb-4">{book.description}</p>
+
+          <div className="space-y-2 text-[12px] mb-5">
+            {[
+              { label: "ISBN", value: book.isbn },
+              { label: "Format", value: book.format === "pdf" ? "PDF (free download)" : book.format === "physical" ? "Physical book" : "PDF + Physical" },
+              { label: "Pages", value: `${book.totalPages} pages` },
+              ...(book.pricePhysical ? [{ label: "Price", value: `NGN ${book.pricePhysical.toLocaleString()} / copy` }] : []),
+              ...(book.stockCount !== null ? [{ label: "In Stock", value: `${book.stockCount} copies` }] : []),
+              ...(book.downloadCount > 0 ? [{ label: "Downloads", value: book.downloadCount.toLocaleString() }] : []),
+            ].map(d => (
+              <div key={d.label} className="flex items-center justify-between py-1.5 border-b border-[#F9FAFB]">
+                <span className="text-[#9CA3AF]">{d.label}</span>
+                <span className="font-semibold text-[#111827]">{d.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {book.tags.map(t => (
+              <span key={t} className="text-[10px] bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full">{t}</span>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {book.pdfUrl && (
+              <button onClick={() => { onDownload(book); onClose(); }}
+                className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-all"
+                style={{ background: "linear-gradient(135deg, #3B82F6, #60A5FA)" }}>
+                <Download size={14} /> Download Free PDF
+              </button>
+            )}
+            {book.format !== "pdf" && (
+              <button onClick={() => { onOrder(book); onClose(); }}
+                disabled={book.stockCount !== null && book.stockCount === 0}
+                className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-40 transition-all"
+                style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
+                <ShoppingCart size={14} />
+                Order Physical Copy, NGN {(book.pricePhysical || 0).toLocaleString()}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

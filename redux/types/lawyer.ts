@@ -57,7 +57,15 @@ export interface LawyerFees {
 
 export interface LawyerFull {
     _id: string;
-    userId: LawyerUser;
+    id: string;
+    email: string;
+    firstName: string;
+    isUserActive: boolean;
+    avatarInitials: string;
+    fullName: string;
+    lastName: string;
+    isActive: boolean;
+    lastLoginAt: string;
     specialisms: string[];
     languages: string[];
     verificationStatus: "pending" | "approved" | "rejected";
@@ -65,10 +73,12 @@ export interface LawyerFull {
     rating: any;
     isAvailable: boolean;
     fees: LawyerFees;
+    
     ratingAvg: number;
     reviewCount: number;
     consultationCount: number;
     responseTimeLabel: string;
+    responseTime: number;
     subscriptionTier: "basic" | "premium" | "professional"; // adjust as needed
     colorA: string; // hex color
     colorB: string; // hex color
@@ -269,4 +279,78 @@ export interface FormData {
   };
   responseTime: string;
   available: boolean;
+}
+
+
+// Marketplace Stats
+export interface MarketplaceStats {
+  totalLawyers: number;
+  averageRating: number;
+  totalConsultations: number;
+  verifiedLawyers: number;
+  responseRate: number; // percentage
+  averageResponseTime: number; // in hours
+}
+
+// Booking Consultation
+export interface BookConsultationPayload {
+  lawyerNbaNumber: string;
+  mode: "message" | "call" | "video";
+  topic: string;
+  description?: string;
+  preferredTimeSlot?: string; // for call/video
+  timezone?: string;
+}
+
+export interface BookingResponse {
+  consultationId: string;
+  status: "pending" | "accepted" | "scheduled" | "completed" | "cancelled";
+  fee: number;
+  lawyerResponseTime: string;
+  estimatedResponseAt: string;
+}
+
+// Request Lawyer Match
+export interface RequestMatchPayload {
+  specialism: string;
+  urgency: "today" | "this_week" | "within_two_weeks" | "no_rush";
+  location?: string;
+  budgetRange: string;
+  description: string;
+  preferredContactMethod?: "email" | "phone" | "whatsapp";
+}
+
+export interface MatchResponse {
+  requestId: string;
+  status: "pending" | "matched" | "expired";
+  estimatedMatchTime: string; // e.g., "2 hours"
+  matchedLawyer?: {
+    id: string;
+    name: string;
+    nbaNumber: string;
+  };
+}
+
+// Availability
+export interface AvailabilitySlot {
+  id: string;
+  startTime: string;
+  endTime: string;
+  isAvailable: boolean;
+  timezone: string;
+}
+
+// Submit Review
+export interface SubmitReviewPayload {
+  nbaNumber: string;
+  consultationId: string;
+  rating: number; // 1-5
+  comment: string;
+  tags?: string[]; // e.g., ["responsive", "knowledgeable"]
+}
+
+export interface ReviewResponse {
+  reviewId: string;
+  status: "pending" | "published" | "flagged";
+  createdAt: string;
 }

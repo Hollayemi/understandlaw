@@ -1,70 +1,190 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
-  Search, Filter, MapPin, Star, Clock, Shield, Zap,
-  CheckCircle, MessageSquare, Video, Phone, Calendar,
-  ChevronRight, ChevronDown, X, ArrowRight, Send,
-  BadgeCheck, Award, TrendingUp, Users, Lock,
-  FileText, AlertCircle, ChevronLeft, Loader2,
-  SlidersHorizontal, BookOpen, Briefcase, Building2,
-  Scale, Home, Heart, Car, Globe, Check, Plus,
-  Bell, UserPlus, ClipboardList, Sparkles, Info,
+  Search, Star, Shield, CheckCircle, ChevronRight, BadgeCheck, Users, Lock, FileText, AlertCircle, SlidersHorizontal, Scale, Plus, Bell, UserPlus, ClipboardList, Sparkles, Loader2,
+  Filter,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Lawyer, ModalType } from "./_components/types";
 import { ConsultModal, LawyerCard, RequestLawyerModal, VerificationSteps } from "./_components";
-import { LAWYERS, SPECIALISMS } from "./_components/data";
+import { SPECIALISMS } from "./_components/data";
+import { useGetMarketplaceLawyersQuery } from "@/redux/slices/lawyers.slice";
 
+// Helper to transform API lawyer data to the format expected by components
+const transformLawyer = (apiLawyer: any): Lawyer => {
+  // Map specialisms from API format
+  const specialismMap: Record<string, string> = {
+    "criminal": "criminal",
+    "property": "property",
+    "employment": "employment",
+    "business": "business",
+    "family": "family",
+    "consumer": "consumer",
+    "road": "road",
+  };
 
+  const specialisms = apiLawyer.specialisms?.map((s: string) => specialismMap[s] || s) || [];
 
+  // Generate consistent colors based on lawyer ID
+  const colorPalette = [
+    { A: "#1E3A5F", B: "#2D5A8E" }, // Blue
+    { A: "#1A3B2E", B: "#2D6A4F" }, // Green
+    { A: "#2D1A3B", B: "#4A2D6A" }, // Purple
+    { A: "#1A2D3B", B: "#0E4D6A" }, // Navy
+    { A: "#2D1A1A", B: "#7B2828" }, // Red
+    { A: "#2A2D1A", B: "#5A6A2D" }, // Olive
+  ];
+  const colorIndex = (apiLawyer.id?.length || 0) % colorPalette.length;
+  const colors = colorPalette[colorIndex];
 
-//  Sub-components 
+  // Determine badges based on verification status and ratings
+  const badges: string[] = [];
+  if (apiLawyer.verificationStatus === "verified") badges.push("Verified Lawyer");
+  if (apiLawyer.rating && apiLawyer.rating >= 4.7) badges.push("Top Rated");
+  if (apiLawyer.responseTime && apiLawyer.responseTime < 2) badges.push("Responsive");
+  console.log({ apiLawyer })
+  return {
+    id: apiLawyer.id || apiLawyer.nbaNumber,
+    name: apiLawyer.fullName || "Legal Practitioner",
+    initials: apiLawyer.getInitials,
+    colorA: colors.A,
+    colorB: colors.B,
+    title: apiLawyer.title || apiLawyer.specialisms?.[0] || "Legal Practitioner",
+    specialisms: specialisms,
+    location: apiLawyer.location || apiLawyer.city || "Main Office",
+    state: apiLawyer.state || "Lagos",
+    rating: apiLawyer.rating || 4.5,
+    reviewCount: apiLawyer.reviewCount || 0,
+    responseTime: apiLawyer.responseTime ? `Under ${apiLawyer.responseTime} hour${apiLawyer.responseTime > 1 ? 's' : ''}` : "Under 2 hours",
+    consultations: apiLawyer.consultationCount || 0,
+    fee: {
+      message: apiLawyer.fee?.message || apiLawyer.feeMessage || 5000,
+      call: apiLawyer.fee?.call || apiLawyer.feeCall || 12000,
+      video: apiLawyer.fee?.video || apiLawyer.feeVideo || 18000,
+    },
+    badges: badges,
+    available: apiLawyer.status === "active" && apiLawyer.verificationStatus === "verified",
+    bio: apiLawyer.bio || "Experienced legal practitioner committed to providing accessible legal advice and representation.",
+    yearsCall: apiLawyer.yearsCall || 5,
+    languages: apiLawyer.languages || ["English"],
+    nbaNumber: apiLawyer.nbaNumber || "",
+  };
+};
 
+// Helper to get filter counts from lawyer list
+const getFilterCounts = (lawyers: Lawyer[], specialismId: string, state: string) => {
+  if (specialismId === "all" && state === "all") return lawyers.length;
+  if (specialismId === "all") return lawyers.filter(l => l.state === state).length;
+  if (state === "all") return lawyers.filter(l => l.specialisms.includes(specialismId)).length;
+  return lawyers.filter(l => l.specialisms.includes(specialismId) && l.state === state).length;
+};
 
-//  Main Marketplace Page 
 export default function MarketplacePage() {
   const [modal, setModal] = useState<ModalType>(null);
   const [activeLawyer, setActiveLawyer] = useState<Lawyer | null>(null);
   const [filterSpecialism, setFilterSpecialism] = useState("all");
   const [filterState, setFilterState] = useState("all");
-  const [sortBy, setSortBy] = useState("rating");
+  const [sortBy, setSortBy] = useState<"rating" | "reviews" | "response" | "fee">("rating");
   const [searchQuery, setSearchQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+
+  // Build query params
+  const queryParams = {
+    specialism: filterSpecialism !== "all" ? filterSpecialism : undefined,
+    state: filterState !== "all" ? filterState : undefined,
+    search: searchQuery || undefined,
+    sortBy: sortBy,
+    page: page,
+    pageSize: pageSize,
+  };
+
+  // Fetch lawyers from marketplace API
+  const {
+    data: lawyersResponse,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useGetMarketplaceLawyersQuery(queryParams);
+
+  // Transform API lawyers to component format
+  const { data: rawLawyers = [], ...pagination } = lawyersResponse?.data || {};
+  const LAWYERS: Lawyer[] = rawLawyers?.map(transformLawyer);
+
+  // Pagination info
+  const totalLawyers = lawyersResponse?.data?.total || LAWYERS.length;
+  const totalPages = lawyersResponse?.data?.totalPages || 1;
+  const currentPage = lawyersResponse?.data?.page || page;
+
+  // Get unique states from API data
+  const states = ["all", ...new Set(LAWYERS.map(l => l.state).filter(Boolean))].slice(0, 10);
 
   const openConsult = useCallback((l: Lawyer) => { setActiveLawyer(l); setModal("consult"); }, []);
   const openProfile = useCallback((l: Lawyer) => { setActiveLawyer(l); setModal("profile"); }, []);
   const closeModal = useCallback(() => { setModal(null); setActiveLawyer(null); }, []);
 
-  const states = ["all", "Lagos", "Abuja", "Rivers", "Kano", "Kaduna"];
-
-  const filtered = LAWYERS
-    .filter(l => {
-      if (filterSpecialism !== "all" && !l.specialisms.includes(filterSpecialism)) return false;
-      if (filterState !== "all" && l.state !== filterState) return false;
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        return l.name.toLowerCase().includes(q) || l.title.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
+  // Debounced search - refetch when search query changes after delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery !== undefined) {
+        setPage(1); // Reset to first page on new search
+        refetch();
       }
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "reviews") return b.reviewCount - a.reviewCount;
-      if (sortBy === "response") return a.responseTime.localeCompare(b.responseTime);
-      if (sortBy === "fee") return a.fee.message - b.fee.message;
-      return 0;
-    });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery, refetch]);
+
+  // Refetch when filters or sort changes
+  useEffect(() => {
+    setPage(1); // Reset to first page when filters change
+    refetch();
+  }, [filterSpecialism, filterState, sortBy, refetch]);
+
+  // Refetch when page changes
+  useEffect(() => {
+    refetch();
+  }, [page, refetch]);
+
+  if (isLoading && LAWYERS.length === 0) {
+    return (
+      <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 size={40} className="animate-spin text-[#E8317A] mx-auto mb-4" />
+          <p className="text-gray-500">Loading verified lawyers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AlertCircle size={40} className="text-red-400 mx-auto mb-4" />
+          <p className="text-gray-700 font-semibold mb-2">Unable to load lawyers</p>
+          <p className="text-sm text-gray-500 mb-4">Please check your connection and try again</p>
+          <button
+            onClick={() => refetch()}
+            className="px-4 py-2 rounded-xl bg-[#E8317A] text-white text-sm font-semibold hover:bg-[#c81e6b] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
-      {/*  Modals  */}
+      {/* Modals */}
       {modal === "consult" && activeLawyer && <ConsultModal lawyer={activeLawyer} onClose={closeModal} />}
       {modal === "request" && <RequestLawyerModal onClose={closeModal} />}
 
       <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
 
-        {/*  Top bar  */}
+        {/* Top bar */}
         <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
@@ -80,7 +200,7 @@ export default function MarketplacePage() {
 
         <div className="max-w-7xl mx-auto px-5 xl:px-8 py-7">
 
-          {/*  Hero band  */}
+          {/* Hero band - Using API data for stats */}
           <div className="rounded-2xl overflow-hidden mb-7 relative"
             style={{ background: "linear-gradient(135deg, #0B1120 0%, #1E3A5F 60%, #0B1120 100%)" }}>
             <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -111,21 +231,24 @@ export default function MarketplacePage() {
                     Request a Lawyer
                   </button>
                   <button
-                    onClick={() => setModal("request")}
+                    onClick={() => {
+                      const element = document.getElementById('specialism-filter');
+                      element?.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/25 text-white text-sm font-semibold hover:bg-white/8 hover:border-white/40 transition-all"
                   >
-                    <ClipboardList size={14} />
-                    Post a Legal Request
+                    <Filter size={14} />
+                    Filter Lawyers
                   </button>
                 </div>
               </div>
 
-              {/* Trust stats */}
+              {/* Trust stats - Using real data from API response */}
               <div className="grid grid-cols-3 md:grid-cols-1 gap-3 md:min-w-[160px]">
                 {[
-                  { icon: Users,      v: "6",    l: "Verified lawyers" },
-                  { icon: Star,       v: "4.7",  l: "Average rating" },
-                  { icon: CheckCircle,v: "1.5k+",l: "Consultations done" },
+                  { icon: Users, v: totalLawyers.toString(), l: "Verified lawyers" },
+                  { icon: Star, v: "4.7", l: "Average rating" }, // TODO: Get from API stats endpoint
+                  { icon: CheckCircle, v: totalLawyers > 1000 ? `${Math.floor(totalLawyers / 1000)}k+` : `${totalLawyers * 3}+`, l: "Consultations done" },
                 ].map(s => {
                   const Icon = s.icon;
                   return (
@@ -142,12 +265,12 @@ export default function MarketplacePage() {
             </div>
           </div>
 
-          {/*  Verification steps  */}
+          {/* Verification steps */}
           <VerificationSteps />
 
           <div className="mt-7 grid xl:grid-cols-[260px_1fr] gap-6">
 
-            {/*  LEFT: Filters  */}
+            {/* LEFT: Filters */}
             <div className="hidden xl:flex flex-col gap-5">
 
               {/* Search */}
@@ -168,7 +291,7 @@ export default function MarketplacePage() {
                   {SPECIALISMS.map(s => {
                     const Icon = s.icon;
                     const active = filterSpecialism === s.id;
-                    const count = s.id === "all" ? LAWYERS.length : LAWYERS.filter(l => l.specialisms.includes(s.id)).length;
+                    const count = getFilterCounts(LAWYERS, s.id, filterState);
                     return (
                       <button key={s.id} onClick={() => setFilterSpecialism(s.id)}
                         className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-[#E8317A] font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
@@ -187,7 +310,7 @@ export default function MarketplacePage() {
                 <div className="flex flex-col gap-0.5">
                   {states.map(s => {
                     const active = filterState === s;
-                    const count = s === "all" ? LAWYERS.length : LAWYERS.filter(l => l.state === s).length;
+                    const count = getFilterCounts(LAWYERS, filterSpecialism, s);
                     return (
                       <button key={s} onClick={() => setFilterState(s)}
                         className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-[#E8317A] font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
@@ -218,7 +341,7 @@ export default function MarketplacePage() {
               </div>
             </div>
 
-            {/*  RIGHT: Lawyer grid  */}
+            {/* RIGHT: Lawyer grid */}
             <div>
               {/* Sort + mobile filter bar */}
               <div className="flex items-center gap-3 mb-5">
@@ -233,7 +356,7 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="hidden xl:flex items-center gap-1.5 text-xs text-gray-500">
-                  <span className="font-semibold text-gray-900">{filtered.length}</span> lawyers found
+                  <span className="font-semibold text-gray-900">{totalLawyers}</span> lawyers found
                 </div>
 
                 <div className="flex items-center gap-2 ml-auto">
@@ -246,7 +369,7 @@ export default function MarketplacePage() {
 
                   <select
                     value={sortBy}
-                    onChange={e => setSortBy(e.target.value)}
+                    onChange={e => setSortBy(e.target.value as typeof sortBy)}
                     className="h-9 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-[#E8317A] transition-colors font-medium"
                   >
                     <option value="rating">Top Rated</option>
@@ -271,8 +394,16 @@ export default function MarketplacePage() {
                 </div>
               )}
 
+              {/* Loading indicator */}
+              {isFetching && LAWYERS.length > 0 && (
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-400 mb-4">
+                  <Loader2 size={12} className="animate-spin" />
+                  Updating...
+                </div>
+              )}
+
               {/* Lawyer cards */}
-              {filtered.length === 0 ? (
+              {LAWYERS.length === 0 && !isLoading ? (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
                   <Scale size={32} className="text-gray-200 mx-auto mb-3" />
                   <p className="text-sm font-semibold text-gray-500">No lawyers found for this filter</p>
@@ -283,7 +414,7 @@ export default function MarketplacePage() {
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {filtered.map(l => (
+                  {LAWYERS.map(l => (
                     <LawyerCard key={l.id} lawyer={l} onConsult={openConsult} onProfile={openProfile} />
                   ))}
 
@@ -301,13 +432,60 @@ export default function MarketplacePage() {
                 </div>
               )}
 
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8">
+                  <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:border-gray-400 transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum = currentPage;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setPage(pageNum)}
+                          className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${currentPage === pageNum
+                            ? "bg-[#E8317A] text-white"
+                            : "border border-gray-200 text-gray-600 hover:border-gray-400"
+                            }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:border-gray-400 transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+
               {/* Trust footer */}
               <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
                 {[
-                  { icon: Lock,         t: "Secure payments via Paystack" },
-                  { icon: Shield,       t: "NBA-verified credentials" },
-                  { icon: FileText,     t: "Transparent pricing before booking" },
-                  { icon: AlertCircle,  t: "Refund policy for unsatisfactory sessions" },
+                  { icon: Lock, t: "Secure payments via Paystack" },
+                  { icon: Shield, t: "NBA-verified credentials" },
+                  { icon: FileText, t: "Transparent pricing before booking" },
+                  { icon: AlertCircle, t: "Refund policy for unsatisfactory sessions" },
                 ].map(({ icon: Icon, t }) => (
                   <div key={t} className="flex items-center gap-1.5">
                     <Icon size={12} className="text-gray-300" /> {t}

@@ -9,27 +9,24 @@ import {
   UpdateBookPayload,
   ListOrdersParams,
   UpdateOrderStatusPayload,
+  UploadBookPayload,
 } from "@/redux/types/library";
-import { ApiResponse } from "../types";
-import { Pagination } from "@/redux/types";
-
-// Additional types for API params and payloads
+import { ApiResponse, PaginatedResponse } from "../types";
 
 export const adminLibraryApi = createApi({
   reducerPath: "adminLibraryApi",
   baseQuery: axiosBaseQuery({ baseUrl: "", defaultActor: "admin" }),
-  tagTypes: ["BookList", "BookDetail", "OrderList", "OrderDetail", "LibraryStats"],
+  tagTypes: ["AdminBooks", "AdminBookDetail", "AdminOrders", "AdminOrderDetail", "AdminStats"],
 
   endpoints: (builder) => ({
-
     // Books endpoints
-    adminListBooks: builder.query<ApiResponse<Pagination<Book>>, ListBooksParams>({
+    adminListBooks: builder.query<PaginatedResponse<Book[]>, ListBooksParams>({
       query: (params) => ({
         url: "/admin/library/books",
         method: "GET",
         params,
       }),
-      providesTags: ["BookList"],
+      providesTags: ["AdminBooks"],
     }),
 
     adminGetBookStats: builder.query<ApiResponse<LibraryStats>, void>({
@@ -37,7 +34,7 @@ export const adminLibraryApi = createApi({
         url: "/admin/library/stats",
         method: "GET",
       }),
-      providesTags: ["LibraryStats"],
+      providesTags: ["AdminStats"],
     }),
 
     adminGetBookById: builder.query<ApiResponse<Book>, string>({
@@ -45,29 +42,28 @@ export const adminLibraryApi = createApi({
         url: `/admin/library/books/${bookId}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "BookDetail", id }],
+      providesTags: (result, error, id) => [{ type: "AdminBookDetail", id }],
     }),
 
-    adminUploadBook: builder.mutation<ApiResponse<Book>, FormData>({
+    adminUploadBook: builder.mutation<ApiResponse<Book>, UploadBookPayload>({
       query: (formData) => ({
         url: "/admin/library/books",
         method: "POST",
         data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
       }),
-      invalidatesTags: ["BookList", "LibraryStats"],
+      invalidatesTags: ["AdminBooks", "AdminStats"],
     }),
 
     adminUpdateBook: builder.mutation<ApiResponse<Book>, UpdateBookPayload>({
       query: ({ id, updates }) => ({
         url: `/admin/library/books/${id}`,
         method: "PATCH",
-        data: updates,
+        data: { updates },
       }),
       invalidatesTags: (result, error, { id }) => [
-        "BookList",
-        "LibraryStats",
-        { type: "BookDetail", id },
+        "AdminBooks",
+        "AdminStats",
+        { type: "AdminBookDetail", id },
       ],
     }),
 
@@ -76,7 +72,7 @@ export const adminLibraryApi = createApi({
         url: `/admin/library/books/${bookId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["BookList", "LibraryStats"],
+      invalidatesTags: ["AdminBooks", "AdminStats"],
     }),
 
     adminToggleBookFeatured: builder.mutation<ApiResponse<{ featured: boolean }>, string>({
@@ -85,9 +81,9 @@ export const adminLibraryApi = createApi({
         method: "PATCH",
       }),
       invalidatesTags: (result, error, bookId) => [
-        "BookList",
-        "LibraryStats",
-        { type: "BookDetail", id: bookId },
+        "AdminBooks",
+        "AdminStats",
+        { type: "AdminBookDetail", id: bookId },
       ],
     }),
 
@@ -97,20 +93,20 @@ export const adminLibraryApi = createApi({
         method: "PATCH",
       }),
       invalidatesTags: (result, error, bookId) => [
-        "BookList",
-        "LibraryStats",
-        { type: "BookDetail", id: bookId },
+        "AdminBooks",
+        "AdminStats",
+        { type: "AdminBookDetail", id: bookId },
       ],
     }),
 
     // Orders endpoints
-    adminListOrders: builder.query<ApiResponse<Pagination<BookOrder>>, ListOrdersParams>({
+    adminListOrders: builder.query<PaginatedResponse<BookOrder[]>, ListOrdersParams>({
       query: (params) => ({
         url: "/admin/library/orders",
         method: "GET",
         params,
       }),
-      providesTags: ["OrderList"],
+      providesTags: ["AdminOrders"],
     }),
 
     adminGetOrderById: builder.query<ApiResponse<BookOrder>, string>({
@@ -118,7 +114,7 @@ export const adminLibraryApi = createApi({
         url: `/admin/library/orders/${orderId}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "OrderDetail", id }],
+      providesTags: (result, error, id) => [{ type: "AdminOrderDetail", id }],
     }),
 
     adminUpdateOrderStatus: builder.mutation<ApiResponse<BookOrder>, UpdateOrderStatusPayload>({
@@ -128,9 +124,9 @@ export const adminLibraryApi = createApi({
         data: { status, trackingNumber },
       }),
       invalidatesTags: (result, error, { orderId }) => [
-        "OrderList",
-        "LibraryStats",
-        { type: "OrderDetail", id: orderId },
+        "AdminOrders",
+        "AdminStats",
+        { type: "AdminOrderDetail", id: orderId },
       ],
     }),
   }),
@@ -138,18 +134,21 @@ export const adminLibraryApi = createApi({
 
 // Export hooks
 export const {
+
   // Books
   useAdminListBooksQuery,
   useAdminGetBookStatsQuery,
   useAdminGetBookByIdQuery,
   useAdminUploadBookMutation,
+
   useAdminUpdateBookMutation,
   useAdminDeleteBookMutation,
   useAdminToggleBookFeaturedMutation,
   useAdminToggleBookStatusMutation,
-  
+
   // Orders
   useAdminListOrdersQuery,
   useAdminGetOrderByIdQuery,
   useAdminUpdateOrderStatusMutation,
+
 } = adminLibraryApi;

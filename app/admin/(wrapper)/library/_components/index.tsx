@@ -1,33 +1,50 @@
 "use client";
-import React, { useState } from "react";
-import { Book, BookCategory, BookFormat, BookOrder, OrderStatus } from "./types";
+import React, { useState, useRef } from "react";
+import { BookCategory, BookFormat, BookOrder, OrderStatus } from "./types";
 import { BOOK_STATUS_CFG, CATEGORY_CONFIG, FORMAT_CONFIG, ORDER_STATUS_CFG } from "./data";
+import { useAdminUploadBookMutation } from "@/redux/slices/admin/library.slice";
 import {
-  BookOpen, Download, ShoppingCart, Star, TrendingUp,
-  Plus, Upload, Search, Filter, MoreHorizontal, Eye,
-  Edit2, Trash2, Check, X, FileText, Package, Truck,
-  CheckCircle, XCircle, Clock, AlertCircle, Save,
-  Loader2, ChevronDown, ChevronUp, Image as ImageIcon,
-  Tag, Hash, BookMarked, Globe, ShieldCheck, Layers,
-  RefreshCw, Download as DownloadIcon, ExternalLink,
-  DollarSign, Archive, Flame, Info,
+  BookOpen, Star,
+  Upload, MoreHorizontal, Eye,
+  Edit2, Trash2, Check, X, FileText, Truck,
+  CheckCircle, AlertCircle,
+  Loader2, Image as ImageIcon,
+  Globe,
+  RefreshCw,
+  DollarSign, Flame, Info,
 } from "lucide-react";
+
+import { toast } from "sonner";
+import { Book } from "@/redux/types/library";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 
 export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (b: Book) => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [uploading, setUploading] = useState(false);
+  const [uploadBook, { isLoading: isUploading }] = useAdminUploadBookMutation();
   const [progress, setProgress] = useState(0);
   const [tagInput, setTagInput] = useState("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [covers, setCovers] = useState<UploadedImage[]>([])
+  const [pdfs, setPDFs] = useState<UploadedImage[]>([])
+  console.log({ pdfs, covers })
   const [form, setForm] = useState({
-    title: "", author: "", category: "criminal" as BookCategory,
-    description: "", isbn: "", publishedYear: new Date().getFullYear().toString(),
-    totalPages: "", format: "pdf" as BookFormat,
-    pricePhysical: "", stockCount: "",
+    title: "",
+    author: "",
+    category: "criminal" as BookCategory,
+    description: "",
+    isbn: "",
+    publishedYear: new Date().getFullYear().toString(),
+    totalPages: "",
+    format: "pdf" as BookFormat,
+    pricePhysical: "",
+    stockCount: "",
     tags: [] as string[],
     coverType: "upload" as "upload" | "url",
     coverUrl: "",
+    coverFile: covers.map((each) => each.base64)[0],
     pdfType: "upload" as "upload" | "url",
     pdfUrl: "",
+    pdfFile: pdfs.map((each) => each.base64)[0],
   });
 
   const set = (k: keyof typeof form) => (
@@ -36,7 +53,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
 
   const addTag = () => {
     const t = tagInput.trim().toLowerCase();
-    if (t && !form.tags.includes(t)) {
+    if (t && !form.tags.includes(t) && t.length <= 30) {
       setForm(f => ({ ...f, tags: [...f.tags, t] }));
     }
     setTagInput("");
@@ -44,41 +61,101 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
 
   const removeTag = (t: string) => setForm(f => ({ ...f, tags: f.tags.filter(x => x !== t) }));
 
-  const simulateUpload = async () => {
-    setUploading(true);
-    for (let i = 10; i <= 100; i += 10) {
-      await new Promise(r => setTimeout(r, 180));
-      setProgress(i);
+  const handleUpload = async () => {
+    setUploadError(null);
+
+    // Validation
+    if (
+      !form.title ||
+      !form.author ||
+      !form.description ||
+      !form.isbn ||
+      !form.totalPages
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
     }
-    await new Promise(r => setTimeout(r, 300));
-    const newBook: Book = {
-      id: `b${Date.now()}`,
+
+    // if (form.format !== "physical") {
+    //   console.log(form)
+    //   if (pdfs.length || covers.length) {
+    //     toast.error("Please provide a PDF file or URL");
+    //     return;
+    //   }
+    // }
+
+    if (
+      form.format !== "pdf" &&
+      (!form.pricePhysical || Number(form.pricePhysical) <= 0)
+    ) {
+      toast.error("Please enter a valid price for physical book");
+      return;
+    }
+
+    const payload = {
       title: form.title,
       author: form.author,
       description: form.description,
       category: form.category,
-      coverUrl: form.coverUrl || null,
-      pdfUrl: form.format !== "physical" ? (form.pdfUrl || "/books/placeholder.pdf") : null,
       format: form.format,
-      status: "draft",
-      pricePhysical: form.format !== "pdf" ? Number(form.pricePhysical) : null,
-      totalPages: Number(form.totalPages) || 0,
       isbn: form.isbn,
-      publishedYear: Number(form.publishedYear),
+      publishedYear: form.publishedYear,
+      totalPages: form.totalPages,
       tags: form.tags,
-      downloadCount: 0,
-      orderCount: 0,
-      createdAt: new Date().toISOString().split("T")[0],
-      updatedAt: new Date().toISOString().split("T")[0],
-      featured: false,
-      stockCount: form.format !== "pdf" ? (Number(form.stockCount) || null) : null,
+
+      ...(form.format !== "pdf" && {
+        pricePhysical: Number(form.pricePhysical),
+        ...(form.stockCount && {
+          stockCount: Number(form.stockCount),
+        }),
+      }),
+
+      ...(form.format !== "physical" && {
+        ...(pdfs.length && { pdfFile: pdfs.map((each) => each.base64)[0] }),
+        ...(form.pdfUrl && { pdfUrl: form.pdfUrl }),
+      }),
+
+      ...(covers.length && { coverFile: covers.map((each) => each.base64)[0] }),
+      ...(form.coverUrl && { coverUrl: form.coverUrl }),
     };
-    setUploading(false);
-    onAdd(newBook);
-    setStep(3);
+
+    try {
+      const result = await uploadBook(payload).unwrap();
+
+      toast.success("Book uploaded successfully!");
+      onAdd(result.data);
+      setStep(3);
+    } catch (error: any) {
+      console.error("Upload error:", error);
+
+      const errorMessage =
+        error?.data?.message ||
+        "Failed to upload book. Please try again.";
+
+      setUploadError(errorMessage);
+      toast.error(errorMessage);
+    }
+  };
+  const simulateProgress = () => {
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += 10;
+      setProgress(Math.min(currentProgress, 90));
+      if (currentProgress >= 90) clearInterval(interval);
+    }, 200);
+    return interval;
+  };
+
+  const handleUploadWithProgress = async () => {
+    setProgress(0);
+    const progressInterval = simulateProgress();
+    await handleUpload();
+    clearInterval(progressInterval);
+    setProgress(100);
   };
 
   const inputCls = "w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
+  const textareaCls = "w-full px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -94,9 +171,8 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
           <div className="flex items-center gap-2">
             {[1, 2, 3].map(n => (
               <React.Fragment key={n}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
-                  step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
-                }`}>{step > n ? <Check size={11} /> : n}</div>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                  }`}>{step > n ? <Check size={11} /> : n}</div>
                 {n < 3 && <div className="w-5 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
             ))}
@@ -107,21 +183,37 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
         </div>
 
         <div className="overflow-y-auto flex-1 px-6 py-5">
-
           {/* Step 1: Book Details */}
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Book Title *</label>
-                <input value={form.title} onChange={set("title")} placeholder="e.g. Know Your Rights: Arrest in Nigeria" className={inputCls} />
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                  Book Title <span className="text-[#E8317A]">*</span>
+                </label>
+                <input
+                  value={form.title}
+                  onChange={set("title")}
+                  placeholder="e.g. Know Your Rights: Arrest in Nigeria"
+                  className={inputCls}
+                />
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Author *</label>
-                  <input value={form.author} onChange={set("author")} placeholder="e.g. Adaeze Okonkwo" className={inputCls} />
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                    Author <span className="text-[#E8317A]">*</span>
+                  </label>
+                  <input
+                    value={form.author}
+                    onChange={set("author")}
+                    placeholder="e.g. Adaeze Okonkwo"
+                    className={inputCls}
+                  />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Category</label>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                    Category <span className="text-[#E8317A]">*</span>
+                  </label>
                   <select value={form.category} onChange={set("category")} className={`${inputCls} bg-white`}>
                     {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
                       <option key={k} value={k}>{v.label}</option>
@@ -129,48 +221,93 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                   </select>
                 </div>
               </div>
+
               <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Description</label>
-                <textarea value={form.description} onChange={set("description")}
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                  Description <span className="text-[#E8317A]">*</span>
+                </label>
+                <textarea
+                  value={form.description}
+                  onChange={set("description")}
+                  rows={3}
                   placeholder="What will readers learn from this book?"
-                  className="w-full h-20 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                  className={textareaCls}
                 />
               </div>
+
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">ISBN</label>
-                  <input value={form.isbn} onChange={set("isbn")} placeholder="978-XXX" className={inputCls} />
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                    ISBN <span className="text-[#E8317A]">*</span>
+                  </label>
+                  <input
+                    value={form.isbn}
+                    onChange={set("isbn")}
+                    placeholder="978-XXX-XXX"
+                    className={inputCls}
+                  />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Year</label>
-                  <input value={form.publishedYear} onChange={set("publishedYear")} type="number" className={inputCls} />
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                    Year <span className="text-[#E8317A]">*</span>
+                  </label>
+                  <input
+                    value={form.publishedYear}
+                    onChange={set("publishedYear")}
+                    type="number"
+                    className={inputCls}
+                  />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Pages</label>
-                  <input value={form.totalPages} onChange={set("totalPages")} type="number" placeholder="0" className={inputCls} />
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                    Pages <span className="text-[#E8317A]">*</span>
+                  </label>
+                  <input
+                    value={form.totalPages}
+                    onChange={set("totalPages")}
+                    type="number"
+                    placeholder="0"
+                    className={inputCls}
+                  />
                 </div>
               </div>
+
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Tags</label>
                 <div className="flex gap-2 mb-2">
-                  <input value={tagInput} onChange={e => setTagInput(e.target.value)}
+                  <input
+                    value={tagInput}
+                    onChange={e => setTagInput(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addTag())}
-                    placeholder="Type a tag and press Enter" className={`${inputCls} flex-1`} />
-                  <button onClick={addTag} className="px-3 rounded-xl bg-[#F3F4F6] text-[#6B7280] text-[12px] font-semibold hover:bg-[#E5E7EB] transition-colors">Add</button>
+                    placeholder="Type a tag and press Enter"
+                    className={`${inputCls} flex-1`}
+                  />
+                  <button
+                    onClick={addTag}
+                    className="px-3 rounded-xl bg-[#F3F4F6] text-[#6B7280] text-[12px] font-semibold hover:bg-[#E5E7EB] transition-colors"
+                  >
+                    Add
+                  </button>
                 </div>
                 {form.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {form.tags.map(t => (
                       <span key={t} className="inline-flex items-center gap-1 text-[11px] bg-[#F3F4F6] text-[#6B7280] px-2 py-0.5 rounded-md font-medium">
                         {t}
-                        <button onClick={() => removeTag(t)} className="hover:text-[#EF4444]"><X size={10} /></button>
+                        <button onClick={() => removeTag(t)} className="hover:text-[#EF4444]">
+                          <X size={10} />
+                        </button>
                       </span>
                     ))}
                   </div>
                 )}
               </div>
-              <button onClick={() => setStep(2)} disabled={!form.title || !form.author}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-40 transition-colors">
+
+              <button
+                onClick={() => setStep(2)}
+                disabled={!form.title || !form.author || !form.description || !form.isbn || !form.totalPages}
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-40 transition-colors"
+              >
                 Continue →
               </button>
             </div>
@@ -179,17 +316,25 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
           {/* Step 2: Format & Files */}
           {step === 2 && (
             <div className="space-y-4">
-              <button onClick={() => setStep(1)} className="flex items-center gap-1 text-[11px] text-[#9CA3AF] hover:text-[#111827] transition-colors mb-2">
+              <button
+                onClick={() => setStep(1)}
+                className="flex items-center gap-1 text-[11px] text-[#9CA3AF] hover:text-[#111827] transition-colors mb-2"
+              >
                 ← Back
               </button>
 
               {/* Format selector */}
               <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">Book Format</label>
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">
+                  Book Format <span className="text-[#E8317A]">*</span>
+                </label>
                 <div className="grid grid-cols-3 gap-2">
                   {(["pdf", "physical", "both"] as BookFormat[]).map(f => (
-                    <button key={f} onClick={() => setForm(prev => ({ ...prev, format: f }))}
-                      className={`py-3 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${form.format === f ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
+                    <button
+                      key={f}
+                      onClick={() => setForm(prev => ({ ...prev, format: f }))}
+                      className={`py-3 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${form.format === f ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}
+                    >
                       {f === "pdf" ? "📄 PDF Only" : f === "physical" ? "📦 Physical" : "📚 Both"}
                     </button>
                   ))}
@@ -199,48 +344,86 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               {/* PDF Upload */}
               {form.format !== "physical" && (
                 <div>
-                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">PDF File</label>
+                  <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">
+                    PDF File <span className="text-[#E8317A]">*</span>
+                  </label>
                   <div className="flex gap-2 mb-2">
                     {(["upload", "url"] as const).map(t => (
-                      <button key={t} onClick={() => setForm(f => ({ ...f, pdfType: t }))}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.pdfType === t ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+                      <button
+                        key={t}
+                        onClick={() => setForm(f => ({ ...f, pdfType: t, pdfFile: '', pdfUrl: "" }))}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.pdfType === t ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280]"}`}
+                      >
                         {t === "upload" ? <Upload size={11} /> : <Globe size={11} />}
-                        {t === "upload" ? "Upload" : "URL"}
+                        {t === "upload" ? "Upload File" : "External URL"}
                       </button>
                     ))}
                   </div>
                   {form.pdfType === "upload" ? (
-                    <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
-                      <FileText size={22} className="text-[#D1D5DB] mx-auto mb-2" />
-                      <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload PDF</p>
-                      <p className="text-[10px] text-[#D1D5DB] mt-0.5">PDF only · Max 50MB</p>
-                    </div>
+                    <>
+                      <ThumbnailUpload images={pdfs} title=" " type="pdf" setImages={setPDFs} maxImages={1}>
+                        {pdfs.length > 0 ? <div>
+                          <FileText size={22} className="text-[#10B981] mx-auto mb-2" />
+                          <p className="text-[12px] font-semibold text-[#111827]">{pdfs.map((pdf: any) => pdf.name).join(", ")}</p>
+                          <p className="text-[10px] text-[#9CA3AF] mt-0.5">
+                            {/* {pdfs.map((pdf: any) => pdf.name).join(", ").toFixed(2)} MB */}
+                          </p>
+                        </div> : <div
+                          className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#E8317A] transition-colors cursor-pointer"
+                        >
+                          <FileText size={22} className="text-[#D1D5DB] mx-auto mb-2" />
+                          <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload PDF</p>
+                          <p className="text-[10px] text-[#D1D5DB] mt-0.5">PDF only · Max 50MB</p>
+                        </div>}
+                      </ThumbnailUpload>
+                    </>
                   ) : (
-                    <input value={form.pdfUrl} onChange={set("pdfUrl")} placeholder="https://example.com/book.pdf" className={inputCls} />
+                    <input
+                      value={form.pdfUrl}
+                      onChange={set("pdfUrl")}
+                      placeholder="https://example.com/book.pdf"
+                      className={inputCls}
+                    />
                   )}
                 </div>
               )}
 
               {/* Cover Image */}
               <div>
-                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">Cover Image</label>
+                <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">
+                  Cover Image
+                </label>
                 <div className="flex gap-2 mb-2">
                   {(["upload", "url"] as const).map(t => (
-                    <button key={t} onClick={() => setForm(f => ({ ...f, coverType: t }))}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.coverType === t ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+                    <button
+                      key={t}
+                      onClick={() => setForm(f => ({ ...f, coverType: t, coverFile: '', coverUrl: "" }))}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.coverType === t ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280]"}`}
+                    >
                       {t === "upload" ? <Upload size={11} /> : <Globe size={11} />}
-                      {t === "upload" ? "Upload" : "URL"}
+                      {t === "upload" ? "Upload Image" : "Image URL"}
                     </button>
                   ))}
                 </div>
                 {form.coverType === "upload" ? (
-                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
-                    <ImageIcon size={22} className="text-[#D1D5DB] mx-auto mb-2" />
-                    <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload cover</p>
-                    <p className="text-[10px] text-[#D1D5DB] mt-0.5">JPG or PNG · 600×900px recommended</p>
-                  </div>
+                  <>
+                    <ThumbnailUpload preview images={covers} title=" " setImages={setCovers} maxImages={1}>
+                      <div
+                        className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#E8317A] transition-colors cursor-pointer"
+                      >
+                        <ImageIcon size={22} className="text-[#D1D5DB] mx-auto mb-2" />
+                        <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload cover</p>
+                        <p className="text-[10px] text-[#D1D5DB] mt-0.5">JPG or PNG · 600×900px recommended</p>
+                      </div>
+                    </ThumbnailUpload>
+                  </>
                 ) : (
-                  <input value={form.coverUrl} onChange={set("coverUrl")} placeholder="https://example.com/cover.jpg" className={inputCls} />
+                  <input
+                    value={form.coverUrl}
+                    onChange={set("coverUrl")}
+                    placeholder="https://example.com/cover.jpg"
+                    className={inputCls}
+                  />
                 )}
               </div>
 
@@ -248,12 +431,28 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               {form.format !== "pdf" && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Price (NGN)</label>
-                    <input value={form.pricePhysical} onChange={set("pricePhysical")} type="number" placeholder="e.g. 3500" className={inputCls} />
+                    <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                      Price (NGN) <span className="text-[#E8317A]">*</span>
+                    </label>
+                    <input
+                      value={form.pricePhysical}
+                      onChange={set("pricePhysical")}
+                      type="number"
+                      placeholder="e.g. 3500"
+                      className={inputCls}
+                    />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Stock Count</label>
-                    <input value={form.stockCount} onChange={set("stockCount")} type="number" placeholder="e.g. 100" className={inputCls} />
+                    <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
+                      Stock Count
+                    </label>
+                    <input
+                      value={form.stockCount}
+                      onChange={set("stockCount")}
+                      type="number"
+                      placeholder="Leave empty for unlimited"
+                      className={inputCls}
+                    />
                   </div>
                 </div>
               )}
@@ -262,32 +461,68 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <div className="bg-[#F9FAFB] rounded-xl p-4 border border-[#F3F4F6]">
                 <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Summary</p>
                 <div className="space-y-1.5 text-[12px]">
-                  <div className="flex justify-between"><span className="text-[#9CA3AF]">Title</span><span className="font-semibold text-[#111827] truncate max-w-[180px]">{form.title}</span></div>
-                  <div className="flex justify-between"><span className="text-[#9CA3AF]">Author</span><span className="font-semibold text-[#111827]">{form.author}</span></div>
-                  <div className="flex justify-between"><span className="text-[#9CA3AF]">Format</span><span className="font-semibold text-[#111827]">{FORMAT_CONFIG[form.format].label}</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">Title</span>
+                    <span className="font-semibold text-[#111827] truncate max-w-[180px]">{form.title || '—'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">Author</span>
+                    <span className="font-semibold text-[#111827]">{form.author || '—'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">Format</span>
+                    <span className="font-semibold text-[#111827]">{FORMAT_CONFIG[form.format]?.label || form.format}</span>
+                  </div>
                   {form.pricePhysical && (
-                    <div className="flex justify-between"><span className="text-[#9CA3AF]">Price</span><span className="font-semibold text-[#111827]">NGN {Number(form.pricePhysical).toLocaleString()}</span></div>
+                    <div className="flex justify-between">
+                      <span className="text-[#9CA3AF]">Price</span>
+                      <span className="font-semibold text-[#111827]">NGN {Number(form.pricePhysical).toLocaleString()}</span>
+                    </div>
                   )}
                 </div>
               </div>
 
-              <button onClick={simulateUpload} disabled={uploading}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-60 flex items-center justify-center gap-2 transition-colors">
-                {uploading ? (
+              {/* Error message */}
+              {uploadError && (
+                <div className="flex items-start gap-2 p-3 bg-[#FEF2F2] border border-[#FCA5A5] rounded-xl">
+                  <AlertCircle size={14} className="text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-[#991B1B]">{uploadError}</p>
+                </div>
+              )}
+
+              {/* Progress bar during upload */}
+              {isUploading && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] text-[#9CA3AF]">
+                    <span>Uploading book...</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+                    <div
+                      className="h-1.5 bg-[#E8317A] rounded-full transition-all duration-200"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={handleUploadWithProgress}
+                disabled={isUploading}
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-60 flex items-center justify-center gap-2 transition-colors"
+              >
+                {isUploading ? (
                   <>
                     <Loader2 size={13} className="animate-spin" />
                     Uploading... {progress}%
                   </>
                 ) : (
-                  <><Upload size={13} /> Upload Book</>
+                  <>
+                    <Upload size={13} />
+                    Upload Book
+                  </>
                 )}
               </button>
-
-              {uploading && (
-                <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-                  <div className="h-1.5 bg-[#E8317A] rounded-full transition-all duration-200" style={{ width: `${progress}%` }} />
-                </div>
-              )}
             </div>
           )}
 
@@ -297,11 +532,13 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <div className="w-14 h-14 rounded-full bg-[#ECFDF5] border-2 border-[#6EE7B7] flex items-center justify-center mx-auto mb-4">
                 <CheckCircle size={26} className="text-[#10B981]" />
               </div>
-              <h3 className="text-base font-bold text-[#111827] mb-1">Book Uploaded Successfully</h3>
-              <p className="text-[13px] text-[#9CA3AF] mb-2">"{form.title}" has been saved as a draft.</p>
-              <p className="text-[11px] text-[#9CA3AF] mb-6">Go to the book settings to publish it or update the status.</p>
-              <button onClick={onClose}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] transition-colors">
+              <h3 className="text-base font-bold text-[#111827] mb-1">Book Uploaded Successfully!</h3>
+              <p className="text-[13px] text-[#9CA3AF] mb-2">"{form.title}" has been added to the library.</p>
+              <p className="text-[11px] text-[#9CA3AF] mb-6">You can now manage it from the books list.</p>
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] transition-colors"
+              >
                 Done
               </button>
             </div>
@@ -493,13 +730,17 @@ export function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDel
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-8 z-20 w-44 bg-white border border-[#E5E7EB] rounded-xl shadow-xl py-1">
                   {[
-                    { icon: Edit2,   label: "Edit Book",       action: () => { onEdit(book); setMenuOpen(false); },            color: "#111827" },
-                    { icon: book.featured ? Star : Star, label: book.featured ? "Unfeature" : "Feature",
-                      action: () => { onToggleFeatured(book.id); setMenuOpen(false); }, color: "#F59E0B" },
-                    { icon: book.status === "active" ? X : Check,
+                    { icon: Edit2, label: "Edit Book", action: () => { onEdit(book); setMenuOpen(false); }, color: "#111827" },
+                    {
+                      icon: book.featured ? Star : Star, label: book.featured ? "Unfeature" : "Feature",
+                      action: () => { onToggleFeatured(book._id); setMenuOpen(false); }, color: "#F59E0B"
+                    },
+                    {
+                      icon: book.status === "active" ? X : Check,
                       label: book.status === "active" ? "Deactivate" : "Activate",
-                      action: () => { onToggleStatus(book.id); setMenuOpen(false); }, color: book.status === "active" ? "#EF4444" : "#10B981" },
-                    { icon: Trash2, label: "Delete",           action: () => { onDelete(book.id); setMenuOpen(false); },       color: "#EF4444" },
+                      action: () => { onToggleStatus(book._id); setMenuOpen(false); }, color: book.status === "active" ? "#EF4444" : "#10B981"
+                    },
+                    { icon: Trash2, label: "Delete", action: () => { onDelete(book._id); setMenuOpen(false); }, color: "#EF4444" },
                   ].map(({ icon: Icon, label, action, color }) => (
                     <button key={label} onClick={action}
                       className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[12px] font-medium hover:bg-[#F9FAFB] text-left"

@@ -5,11 +5,16 @@ export interface ApiResponse<T> {
 }
 
 export interface PaginatedResponse<T> {
-  data: T;
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  data: {
+    data: T;
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+  timestamp: string;
+  message?: string;
+  success: boolean;
 }
 
 export interface ApiError {
@@ -76,6 +81,7 @@ export interface CreateModulePayload {
   instructorId: string;
   /** Provide one of thumbnailUrl OR handle upload separately via uploadThumbnail */
   thumbnailUrl?: string;
+  thumbnailFile?: string;
   status?: ModuleStatus;
 }
 

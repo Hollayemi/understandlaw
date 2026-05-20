@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   { icon: BookOpen,        label: "Learn",        href: "/dashboard/learn" },
   { icon: BookMarked,      label: "Library",      href: "/dashboard/library" },
   { icon: Scale,           label: "Marketplace",  href: "/dashboard/marketplace" },
-  { icon: MessageSquare,   label: "Messages",     href: "/dashboard/messages" },
+  { icon: MessageSquare,   label: "community",     href: "/dashboard/community" },
   { icon: Award,           label: "Certificates", href: "/dashboard/certificates" },
   { icon: Settings,        label: "Settings",     href: "/dashboard/settings" },
 ];

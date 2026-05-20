@@ -6,6 +6,8 @@ import { citizenApi, citizenUiSlice } from "./slices/citizens.slice";
 import { learnApi } from "./slices/learn.slice";
 import { communityApi } from "./slices/community.slice";
 import { adminCommunityApi } from "./slices/admin/community.slice";
+import { libraryApi } from "./slices/library.slice";
+import { adminLibraryApi } from "./slices/admin/library.slice";
 import { lawyerApi } from "./slices/lawyers.slice";
 import { adminLawyerApi } from "./slices/admin/lawyer.slice";
 import { adminsApi } from "./slices/admin/admin.slice";
@@ -21,6 +23,8 @@ export const store = configureStore({
     [adminLawyerApi.reducerPath]: adminLawyerApi.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
     [learnApi.reducerPath]: learnApi.reducer,
+    [libraryApi.reducerPath]: libraryApi.reducer,
+    [adminLibraryApi.reducerPath]: adminLibraryApi.reducer,
     [communityApi.reducerPath]: communityApi.reducer,
     [adminCommunityApi.reducerPath]: adminCommunityApi.reducer,
     modulesUi: modulesUiSlice.reducer,
@@ -37,6 +41,8 @@ export const store = configureStore({
       .concat(lawyerApi.middleware)
       .concat(learnApi.middleware)
       .concat(communityApi.middleware)
+      .concat(libraryApi.middleware)
+      .concat(adminLibraryApi.middleware)
       .concat(adminCommunityApi.middleware)
       .concat(adminsApi.middleware),
 

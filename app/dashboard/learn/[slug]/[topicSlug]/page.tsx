@@ -16,6 +16,7 @@ import {
   useMarkTopicCompleteMutation,
   useSaveVideoProgressMutation,
 } from "@/redux/slices/learn.slice";
+import AskQuestionButton from "@/app/dashboard/community/_components/AskQuestionButton";
 
 // Subtopic Component for rendering individual subtopic content
 const SubtopicContent = ({
@@ -40,8 +41,8 @@ const SubtopicContent = ({
   return (
     <div
       className={`border rounded-xl transition-all duration-300 ${isActive
-          ? "border-[#E8317A] shadow-md bg-white"
-          : "border-gray-200 bg-white hover:border-gray-300"
+        ? "border-[#E8317A] shadow-md bg-white"
+        : "border-gray-200 bg-white hover:border-gray-300"
         }`}
     >
       <button
@@ -50,10 +51,10 @@ const SubtopicContent = ({
       >
         <div className="flex items-center gap-3 flex-1">
           <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${isCompleted
-              ? "bg-green-100"
-              : isActive
-                ? "bg-[#E8317A]/10"
-                : "bg-gray-100"
+            ? "bg-green-100"
+            : isActive
+              ? "bg-[#E8317A]/10"
+              : "bg-gray-100"
             }`}>
             {isCompleted ? (
               <Check size={12} className="text-green-600" />
@@ -330,8 +331,8 @@ export default function TopicDetailPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
         {/* Video Player Section */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 mb-6">
-          <div className="relative" style={{ aspectRatio: "16/9" }}>
+        <div className="bg-white  rounded-2xl overflow-hidden shadow-sm border border-gray-200 mb-6">
+          <div className="relative w-" style={{ aspectRatio: "4/3" }}>
             {topic.videoType === "youtube" && topic.videoUrl ? (
               <iframe
                 src={getYouTubeEmbedUrl()}
@@ -471,7 +472,7 @@ export default function TopicDetailPage() {
                   </div>
                   <div>
                     <div>
-                      <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`}>Open Lesson</Link>
+                      {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm !text-right underline text-[#E8317A]">Open Lesson</Link>}
 
                       <div className="flex items-center gap-2">
                         <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -520,11 +521,14 @@ export default function TopicDetailPage() {
                   Discussion
                 </h3>
               </div>
-              <div className="p-5 text-center text-gray-500">
-                <p className="text-sm">Have questions about this lesson?</p>
-                <button className="mt-2 text-sm text-[#E8317A] font-semibold hover:underline">
+              <div className="p-5  text-gray-500">
+                <p className="text-sm text-center">Have questions about this lesson?</p>
+                <div className="w-full mx-auto py-3">
+                  <AskQuestionButton />
+                </div>
+                {/* <button className="mt-2 text-sm text-[#E8317A] font-semibold hover:underline">
                   Ask a question
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -579,10 +583,10 @@ export default function TopicDetailPage() {
                           }`}
                       >
                         <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${completedSubtopics.has(subtopic._id)
-                            ? "bg-green-100"
-                            : activeSubtopicId === subtopic._id
-                              ? "bg-[#E8317A]/10"
-                              : "bg-gray-100"
+                          ? "bg-green-100"
+                          : activeSubtopicId === subtopic._id
+                            ? "bg-[#E8317A]/10"
+                            : "bg-gray-100"
                           }`}>
                           {completedSubtopics.has(subtopic._id) ? (
                             <Check size={10} className="text-green-600" />

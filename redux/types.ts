@@ -91,9 +91,15 @@ export interface CitizenFull {
 }
 
 export interface UpdateCitizenProfilePayload {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   phone?: string;
-  stateCode?: string;
+  state?: string;
   bio?: string;
+  avatarUrl?: string;
+
+  stateCode?: string;
   preferredLanguage?: string;
   jurisdictionCode?: string;
   legalInterestAreas?: string[];

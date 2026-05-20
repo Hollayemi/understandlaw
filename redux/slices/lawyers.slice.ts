@@ -5,23 +5,35 @@ import {
   SubmitVerificationPayload,
   UpdateLawyerProfilePayload,
   SetAvailabilityPayload,
-  ListLawyersParams,
-  AdvanceVerificationPayload,
-  RejectVerificationPayload,
-  VerifyDocumentPayload,
-  UpdateLawyerStatusPayload,
-  EmailLawyerPayload,
   ApiResponse,
-  PaginatedLawyers,
-  LawyerStats,
+  MarketplaceStats,
+  BookConsultationPayload,
+  BookingResponse,
+  RequestMatchPayload,
+  MatchResponse,
+  AvailabilitySlot,
+  SubmitReviewPayload,
+  ReviewResponse,
 } from "@/redux/types/lawyer"
+import { PaginatedResponse } from "./types";
 
 export const lawyerApi = createApi({
   reducerPath: "lawyerApi",
   baseQuery: axiosBaseQuery({ baseUrl: "" }),
-  tagTypes: ["LawyerMe", "LawyerProfile", "LawyerList", "LawyerStats"],
+  tagTypes: [
+    "LawyerMe", 
+    "LawyerProfile", 
+    "LawyerList", 
+    "LawyerStats",
+    "MarketplaceStats",
+    "MarketplaceStates",
+    "MarketplaceSpecialisms",
+    "FilterCounts",
+    "LawyerAvailability",
+  ],
 
   endpoints: (builder) => ({
+    // Existing endpoints
     getMyLawyerProfile: builder.query<ApiResponse<LawyerFull>, void>({
       query: () => ({ url: "/lawyers/me/profile", method: "GET" }),
       providesTags: ["LawyerMe"],
@@ -67,8 +79,7 @@ export const lawyerApi = createApi({
     }),
 
     // Public marketplace endpoints
-    getMarketplaceLawyers: builder.query<
-      ApiResponse<PaginatedLawyers>,
+    getMarketplaceLawyers: builder.query<PaginatedResponse<LawyerFull[]>,
       { specialism?: string; state?: string; search?: string; sortBy?: "rating" | "reviews" | "response" | "fee"; page?: number; pageSize?: number }
     >({
       query: (params) => ({
@@ -79,6 +90,9 @@ export const lawyerApi = createApi({
       providesTags: ["LawyerList"],
     }),
 
+
+    // ========== NEW MARKETPLACE ENDPOINTS ==========
+
     getLawyerByNbaNumber: builder.query<ApiResponse<LawyerFull>, string>({
       query: (nbaNumber) => ({
         url: `/marketplace/lawyers/${nbaNumber}`,
@@ -87,90 +101,62 @@ export const lawyerApi = createApi({
       providesTags: (result, error, nba) => [{ type: "LawyerProfile", id: nba }],
     }),
 
-    // Admin endpoints (keep if you have admin panel)
-    adminListLawyers: builder.query<ApiResponse<PaginatedLawyers>, ListLawyersParams>({
-      query: (params) => ({
-        url: "/admin/lawyers",
-        method: "GET",
-        params,
-      }),
-      providesTags: ["LawyerList"],
-    }),
-
-    adminGetLawyerStats: builder.query<ApiResponse<LawyerStats>, void>({
-      query: () => ({ url: "/admin/lawyers/stats", method: "GET" }),
-      providesTags: ["LawyerStats"],
-    }),
-
-    adminGetLawyerById: builder.query<ApiResponse<LawyerFull>, string>({
-      query: (profileId) => ({
-        url: `/admin/lawyers/${profileId}`,
+    // Get marketplace stats for hero section
+    getMarketplaceStats: builder.query<ApiResponse<MarketplaceStats>, void>({
+      query: () => ({
+        url: "/marketplace/stats",
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "LawyerProfile", id }],
+      providesTags: ["MarketplaceStats"],
     }),
 
-    adminAdvanceVerification: builder.mutation<ApiResponse<LawyerFull>, AdvanceVerificationPayload>({
-      query: ({ profileId, note }) => ({
-        url: `/admin/lawyers/${profileId}/verification/advance`,
+
+    // Book a consultation with a lawyer
+    bookConsultation: builder.mutation<ApiResponse<BookingResponse>, BookConsultationPayload>({
+      query: (data) => ({
+        url: "/marketplace/consultations",
         method: "POST",
-        data: { note },
+        data,
       }),
-      invalidatesTags: (result, error, { profileId }) => [
-        "LawyerList",
-        "LawyerStats",
-        { type: "LawyerProfile", id: profileId },
-      ],
+      invalidatesTags: ["LawyerList", "LawyerProfile"],
     }),
 
-    adminRejectVerification: builder.mutation<ApiResponse<LawyerFull>, RejectVerificationPayload>({
-      query: ({ profileId, reason }) => ({
-        url: `/admin/lawyers/${profileId}/verification/reject`,
+    // Request a lawyer match (when user isn't sure who to pick)
+    requestLawyerMatch: builder.mutation<ApiResponse<MatchResponse>, RequestMatchPayload>({
+      query: (data) => ({
+        url: "/marketplace/match-requests",
         method: "POST",
-        data: { reason },
+        data,
       }),
-      invalidatesTags: (result, error, { profileId }) => [
-        "LawyerList",
-        "LawyerStats",
-        { type: "LawyerProfile", id: profileId },
-      ],
     }),
 
-    adminVerifyDocument: builder.mutation<ApiResponse<{ message: string }>, VerifyDocumentPayload>({
-      query: ({ profileId, documentId, verified }) => ({
-        url: `/admin/lawyers/${profileId}/documents/${documentId}`,
-        method: "PATCH",
-        data: { verified },
+    // Get lawyer's available time slots for booking
+    getLawyerAvailability: builder.query<ApiResponse<AvailabilitySlot[]>, { nbaNumber: string; date?: string }>({
+      query: ({ nbaNumber, date }) => ({
+        url: `/marketplace/lawyers/${nbaNumber}/availability`,
+        method: "GET",
+        params: date ? { date } : undefined,
       }),
-      invalidatesTags: (result, error, { profileId }) => [
-        { type: "LawyerProfile", id: profileId },
-      ],
+      providesTags: (result, error, { nbaNumber }) => [{ type: "LawyerAvailability", id: nbaNumber }],
     }),
 
-    adminUpdateLawyerStatus: builder.mutation<ApiResponse<{ message: string }>, UpdateLawyerStatusPayload>({
-      query: ({ profileId, action, reason }) => ({
-        url: `/admin/lawyers/${profileId}/status`,
-        method: "PATCH",
-        data: { action, reason },
-      }),
-      invalidatesTags: (result, error, { profileId }) => [
-        "LawyerList",
-        "LawyerStats",
-        { type: "LawyerProfile", id: profileId },
-      ],
-    }),
-
-    adminEmailLawyer: builder.mutation<ApiResponse<{ message: string }>, EmailLawyerPayload>({
-      query: ({ profileId, subject, body }) => ({
-        url: `/admin/lawyers/${profileId}/email`,
+    // Submit a review after consultation
+    submitReview: builder.mutation<ApiResponse<ReviewResponse>, SubmitReviewPayload>({
+      query: ({ nbaNumber, consultationId, rating, comment, tags }) => ({
+        url: `/marketplace/lawyers/${nbaNumber}/reviews`,
         method: "POST",
-        data: { subject, body },
+        data: { consultationId, rating, comment, tags },
       }),
+      invalidatesTags: (result, error, { nbaNumber }) => [
+        { type: "LawyerProfile", id: nbaNumber },
+        "LawyerList",
+      ],
     }),
   }),
 });
 
 export const {
+  // Existing hooks
   useGetMyLawyerProfileQuery,
   useSubmitVerificationMutation,
   useUpdateMyLawyerProfileMutation,
@@ -179,17 +165,15 @@ export const {
   useGetMarketplaceLawyersQuery,
   useGetLawyerByNbaNumberQuery,
   
-  useAdminListLawyersQuery,
-  useAdminGetLawyerStatsQuery,
-  useAdminGetLawyerByIdQuery,
-  useAdminAdvanceVerificationMutation,
-  useAdminRejectVerificationMutation,
-  useAdminVerifyDocumentMutation,
-  useAdminUpdateLawyerStatusMutation,
-  useAdminEmailLawyerMutation,
+  // New hooks
+  useGetMarketplaceStatsQuery,
+  useBookConsultationMutation,
+  useRequestLawyerMatchMutation,
+  useGetLawyerAvailabilityQuery,
+  useSubmitReviewMutation,
 } = lawyerApi;
 
-// Keep constants that are used across the app
+
 export const AVAILABLE_SPECIALISMS = [
   { id: "criminal",       label: "Criminal Law",            group: "Litigation"    },
   { id: "employment",     label: "Employment & Labour",     group: "Litigation"    },
@@ -204,6 +188,8 @@ export const AVAILABLE_SPECIALISMS = [
   { id: "ip",             label: "Intellectual Property",   group: "Transactions"  },
   { id: "immigration",    label: "Immigration",             group: "Advisory"      },
 ] as const;
+
+
 
 export const NIGERIAN_STATES = [
   { code: "abia",       label: "Abia"           },

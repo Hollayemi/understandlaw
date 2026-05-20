@@ -13,7 +13,6 @@ import {
 } from "../_components";
 import { useListCitizensQuery } from "@/redux/slices/citizens.slice";
 import { CitizenFull } from "@/redux/types";
-import { POST_STATUS_CONFIG } from "@/redux/slices/admin/community.slice";
 
 //  Types 
 type CitizenStatus = "active" | "inactive" | "warning";

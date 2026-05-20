@@ -146,12 +146,13 @@ export default function ModuleDetailPage() {
   // Transform analytics data for display
   const progressDistribution = analyticsData?.progressDistribution || [];
   const topicPerformance = analyticsData?.topicPerformance || [];
-  const recentActivity = activityData || [];
-  const topLearners = topLearnersData || [];
+  const recentActivity = activityData?.data || [];
+  const topLearners = topLearnersData?.data || [];
+
+  console.log({recentActivity})
 
   return (
     <div className="p-6 xl:p-8 max-w-7xl mx-auto">
-
       {/* Breadcrumb */}
       <div className="flex items-center gap-1.5 text-[12px] text-[#9CA3AF] mb-5">
         <Link href="/admin/modules" className="hover:text-[#111827] transition-colors flex items-center gap-1">

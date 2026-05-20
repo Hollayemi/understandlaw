@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  BookOpen, 
-  MoreHorizontal, Edit2, Trash2, 
-  ChevronRight, Star, 
+  BookOpen,
+  MoreHorizontal, Edit2, Trash2,
+  ChevronRight, Star,
   Shield, Home, Briefcase, FileText, Building2,
-  Heart, Car, Globe, 
-  Flame, X
+  Heart, Car, Globe,
+  Flame, X,
+  Upload
   ,
 } from "lucide-react";
 import { StatusBadge } from "../../_components";
@@ -17,6 +18,7 @@ import {
 } from "@/redux/slices/admin/modules.slice";
 import { Module, ModuleCategory, ModuleStatus } from "@/redux/slices/types";
 import { useGetInstructorsQuery } from "@/redux/slices/admin/admin.slice";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 
 // Category Config
 export const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: React.ElementType; color: string; bg: string }> = {
@@ -34,6 +36,7 @@ export const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: Reac
 
 // Create Module Modal Component
 export function CreateModuleModal({ onClose }: { onClose: () => void }) {
+  const [images, setImages] = useState<UploadedImage[]>([]);
   const [form, setForm] = useState({
     title: "",
     category: "criminal" as ModuleCategory,
@@ -44,8 +47,8 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<1 | 2>(1);
   const [createModule, { isLoading }] = useCreateModuleMutation();
 
-  
-  const { data: instructorsData, isLoading:instructorsLoading } = useGetInstructorsQuery({});
+
+  const { data: instructorsData, isLoading: instructorsLoading } = useGetInstructorsQuery({});
 
   const instructors = instructorsData?.data || []
 
@@ -64,6 +67,7 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
         description: form.description,
         instructorId: form.instructorId,
         thumbnailUrl: form.thumbnailUrl || undefined,
+        thumbnailFile: images[0]?.base64 || undefined,
       }).unwrap();
       onClose();
     } catch (error) {
@@ -144,6 +148,13 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
                 <input value={form.thumbnailUrl} onChange={set("thumbnailUrl")}
                   placeholder="https://example.com/thumbnail.jpg" className={inputCls} />
               </div>
+              <p className="text-center text-gray-400">OR</p>
+              <ThumbnailUpload images={images} setImages={setImages} maxImages={1}>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
+                  <Upload size={11} /> Upload Thumbnail
+                </div>
+                <p className="text-[10px] text-[#D1D5DB]">JPG or PNG, 1280×720px recommended</p>
+              </ThumbnailUpload>
 
               <div className="bg-[#F9FAFB] rounded-xl p-4 border border-[#F3F4F6]">
                 <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Summary</p>

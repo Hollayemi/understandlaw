@@ -59,6 +59,8 @@ export default function DashboardLearnPage() {
   const featuredTopics = featuredData?.data || [];
   const continueReading = continueReadingData?.data || [];
 
+  console.log(featuredTopics)
+
   const toggleSave = async (moduleId: string, isCurrentlySaved: boolean) => {
     try {
       await toggleSaveModule(moduleId).unwrap();
@@ -337,7 +339,7 @@ export default function DashboardLearnPage() {
             {featuredTopics.map((f: any) => (
               <Link
                 key={f._id}
-                href={`/dashboard/learn/${f.slug}`}
+                href={`/dashboard/learn/${f.module}/${f.slug}`}
                 className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
               >
                 <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{f.title}</h3>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Shield, 
+  Shield,
   LogOut, Camera, Check, Eye, EyeOff,
   Smartphone, Moon, Sun, Monitor,
   Trash2, Download, AlertTriangle, Loader2, Save,
@@ -12,6 +12,8 @@ import {
 import { useUserData } from "@/hook/useData";
 import { Toggle } from "./types";
 import { CitizenUser, CitizenProfile } from "@/redux/types";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
+import { useUpdateMyProfileMutation } from "@/redux/slices/citizens.slice";
 
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
@@ -46,9 +48,8 @@ export function ToggleSwitch({
     <button
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
-      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${
-        value ? "bg-[#E8317A]" : "bg-gray-200"
-      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${value ? "bg-[#E8317A]" : "bg-gray-200"
+        } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
       <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${value ? "translate-x-5" : "translate-x-0"}`} />
     </button>
@@ -68,29 +69,40 @@ export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: str
 }
 
 //  Profile tab 
-export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: CitizenProfile }) {
+export function ProfileSettings({ user, profile }: { user: CitizenUser, profile: CitizenProfile }) {
   const { userInfo, } = useUserData()
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  const [form, setForm] = useState({
-    firstName: user.firstName || "" ,
-    lastName:  user.lastName || "" ,
-    email:     user.email || "" ,
-    phone:     user.phone || "" ,
-    state:     profile.stateCode || "" ,
-    bio:       profile.bio || "" ,
+  const [images, setImages] = useState<UploadedImage[]>([]);
+    const [form, setForm] = useState({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    state: profile.stateCode || "",
+    bio: profile.bio || "",
   });
+
+  const [updateProfile, {isLoading}] = useUpdateMyProfileMutation()
+
+  const handleUpdate = () => {
+    updateProfile({
+      ...form,
+      avatarUrl: images[0]?.base64 || undefined
+    }).unwrap()
+  }
+
+
 
   useEffect(() => {
     setForm({
-      firstName: user.firstName || "" ,
-    lastName:  user.lastName || "" ,
-    email:     user.email || "" ,
-    phone:     user.phone || "" ,
-    state:     profile.stateCode || "" ,
-    bio:       profile.bio || "" ,
-  });
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      state: profile.stateCode || "",
+      bio: profile.bio || "",
+    });
   }, [userInfo]);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -106,32 +118,38 @@ export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: 
 
   const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors";
 
-  const STATES = ["Lagos","Abuja","Rivers","Kano","Kaduna","Oyo","Anambra","Enugu","Delta","Kwara","Ondo","Ogun","Edo","Cross River","Akwa Ibom"];
+  const STATES = ["Lagos", "Abuja", "Rivers", "Kano", "Kaduna", "Oyo", "Anambra", "Enugu", "Delta", "Kwara", "Ondo", "Ogun", "Edo", "Cross River", "Akwa Ibom"];
 
   return (
     <div>
       {/* Avatar section */}
       <Section title="Profile Photo">
-        <div className="flex items-center gap-5">
+        <div className="flex items-start gap-5">
           <div className="relative">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E8317A] to-[#ff6fa8] flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
               AO
             </div>
-            <button className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gray-900 border-2 border-white flex items-center justify-center">
+            {/* <button className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gray-900 border-2 border-white flex items-center justify-center">
               <Camera size={11} className="text-white" />
+            </button> */}
+            <button className="px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors">
+              Remove
             </button>
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Profile picture</p>
             <p className="text-xs text-gray-500 mb-3">JPG or PNG, max 2MB.</p>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all">
-                Upload photo
-              </button>
-              <button className="px-4 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors">
-                Remove
-              </button>
-            </div>
+            <ThumbnailUpload images={images} title=" " setImages={setImages} maxImages={1}>
+              <div className="flex gap-2 -mt-2">
+                <div className="px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all">
+                  Upload photo
+                </div>
+              </div>
+            </ThumbnailUpload>
+            {images.length > 0 && <button onClick={handleUpdate} disabled={isLoading}
+              className="flex-1 py-2.5 px-5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
+              {isLoading ? "Saving..." : "Save Changes"}
+            </button>}
           </div>
         </div>
       </Section>
@@ -147,7 +165,7 @@ export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: 
           <div className="flex gap-2">
             <input value={form.email} onChange={set("email")} type="email" className={`${inputCls} flex-1`} />
             <span className={`flex items-center gap-1 text-[11px] ${user.isVerified ? "text-green-700 bg-green-50 border border-green-100" : "text-red-700 bg-red-50 border border-red-100"} px-2.5 py-1 rounded-lg font-semibold flex-shrink-0`}>
-             {user.isVerified ? <Check size={10} /> : <X size={10} />} {!user.isVerified && "Not"} Verified
+              {user.isVerified ? <Check size={10} /> : <X size={10} />} {!user.isVerified && "Not"} Verified
             </span>
           </div>
         </Field>
@@ -178,8 +196,8 @@ export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: 
           className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
           {saving ? <><Loader2 size={13} className="animate-spin" /> Saving...</>
-                  : saved ? <><Check size={13} /> Saved</>
-                  : <><Save size={13} /> Save Changes</>}
+            : saved ? <><Check size={13} /> Saved</>
+              : <><Save size={13} /> Save Changes</>}
         </button>
       </div>
     </div>
@@ -187,25 +205,25 @@ export function ProfileSettings({ user, profile}: { user: CitizenUser, profile: 
 }
 
 //  Notifications tab 
-export function NotificationSettings({ profile }: {profile: CitizenProfile}) {
+export function NotificationSettings({ profile }: { profile: CitizenProfile }) {
   const [items, setItems] = useState<Toggle[]>([
-    { id: "n1",  label: "Lawyer response notifications",    desc: "Get notified when a lawyer accepts or declines your consultation request.", value: profile.notifLawyerResponse  },
-    { id: "n2",  label: "Consultation reminders",           desc: "Reminder 24 hours and 1 hour before a scheduled call or video session.",   value: profile.notifConsultReminder  },
-    { id: "n3",  label: "Match alerts",                     desc: "Get notified when a lawyer is matched to your lawyer request.",            value: profile.notifMatchAlert  },
-    { id: "n4",  label: "Message notifications",            desc: "Notify me when a lawyer sends a written consultation reply.",              value: profile.notifMessages  },
-    { id: "n5",  label: "Review reminders",                 desc: "Remind me to rate a lawyer after a completed consultation.",              value: profile.notifReviewReminder  },
-    { id: "n6",  label: "Weekly learning digest",           desc: "A weekly summary of new legal topics and library additions.",             value: profile.notifWeeklyDigest  },
-    { id: "n7",  label: "Streak reminders",                 desc: "Daily nudge to keep my learning streak alive.",                           value: profile.notifStreakReminder },
-    { id: "n8",  label: "Platform updates",                 desc: "News about new features, lawyers, and content releases.",                 value: profile.notifPlatformUpdates  },
-    { id: "n9",  label: "Legal news alerts",                desc: "Notify me of major Nigerian legal developments relevant to my saved topics.", value: profile.notifPlatformUpdates },
-    { id: "n10", label: "Promotional emails",               desc: "Offers, referral rewards, and premium feature announcements.",            value: profile.notifPlatformUpdates  },
+    { id: "n1", label: "Lawyer response notifications", desc: "Get notified when a lawyer accepts or declines your consultation request.", value: profile.notifLawyerResponse },
+    { id: "n2", label: "Consultation reminders", desc: "Reminder 24 hours and 1 hour before a scheduled call or video session.", value: profile.notifConsultReminder },
+    { id: "n3", label: "Match alerts", desc: "Get notified when a lawyer is matched to your lawyer request.", value: profile.notifMatchAlert },
+    { id: "n4", label: "Message notifications", desc: "Notify me when a lawyer sends a written consultation reply.", value: profile.notifMessages },
+    { id: "n5", label: "Review reminders", desc: "Remind me to rate a lawyer after a completed consultation.", value: profile.notifReviewReminder },
+    { id: "n6", label: "Weekly learning digest", desc: "A weekly summary of new legal topics and library additions.", value: profile.notifWeeklyDigest },
+    { id: "n7", label: "Streak reminders", desc: "Daily nudge to keep my learning streak alive.", value: profile.notifStreakReminder },
+    { id: "n8", label: "Platform updates", desc: "News about new features, lawyers, and content releases.", value: profile.notifPlatformUpdates },
+    { id: "n9", label: "Legal news alerts", desc: "Notify me of major Nigerian legal developments relevant to my saved topics.", value: profile.notifPlatformUpdates },
+    { id: "n10", label: "Promotional emails", desc: "Offers, referral rewards, and premium feature announcements.", value: profile.notifPlatformUpdates },
   ]);
 
   const [channels, setChannels] = useState<Toggle[]>([
-    { id: "ch1", label: "Email",            desc: "Send notifications to adaeze.okonkwo@gmail.com",  value: profile.notifEmail  },
-    { id: "ch2", label: "SMS",              desc: "Send critical alerts to +234 801 234 5678",        value: profile.notifSms  },
-    { id: "ch3", label: "Push (browser)",   desc: "Browser push notifications when on the platform.", value: profile.notifPush  },
-    { id: "ch4", label: "In-app badge",     desc: "Show unread count badges in the sidebar.",         value: profile.notifInAppBadge  },
+    { id: "ch1", label: "Email", desc: "Send notifications to adaeze.okonkwo@gmail.com", value: profile.notifEmail },
+    { id: "ch2", label: "SMS", desc: "Send critical alerts to +234 801 234 5678", value: profile.notifSms },
+    { id: "ch3", label: "Push (browser)", desc: "Browser push notifications when on the platform.", value: profile.notifPush },
+    { id: "ch4", label: "In-app badge", desc: "Show unread count badges in the sidebar.", value: profile.notifInAppBadge },
   ]);
 
   const toggle = (setter: React.Dispatch<React.SetStateAction<Toggle[]>>) => (id: string, v: boolean) =>
@@ -229,12 +247,12 @@ export function NotificationSettings({ profile }: {profile: CitizenProfile}) {
 }
 
 //  Privacy tab 
-export function PrivacySettings({ profile}: {profile: CitizenProfile}) {
+export function PrivacySettings({ profile }: { profile: CitizenProfile }) {
   const [items, setItems] = useState<Toggle[]>([
-    { id: "p1", label: "Show my reading activity to the community",  desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: profile.showActivityPublic  },
-    { id: "p2", label: "Allow anonymous analytics",                  desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: profile.allowAnonymousAnalytics  },
-    { id: "p3", label: "Personalised content recommendations",       desc: "Use my reading history to suggest relevant topics and library entries.",              value: profile.personalizedRecommend  },
-    { id: "p4", label: "Show profile in community discussions",      desc: "Your name and avatar may appear when you comment or like community posts.",           value: profile.showProfileInCommunity  },
+    { id: "p1", label: "Show my reading activity to the community", desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: profile.showActivityPublic },
+    { id: "p2", label: "Allow anonymous analytics", desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: profile.allowAnonymousAnalytics },
+    { id: "p3", label: "Personalised content recommendations", desc: "Use my reading history to suggest relevant topics and library entries.", value: profile.personalizedRecommend },
+    { id: "p4", label: "Show profile in community discussions", desc: "Your name and avatar may appear when you comment or like community posts.", value: profile.showProfileInCommunity },
   ]);
 
   const toggle = (id: string, v: boolean) => setItems(prev => prev.map(x => x.id === id ? { ...x, value: v } : x));
@@ -282,13 +300,13 @@ export function PrivacySettings({ profile}: {profile: CitizenProfile}) {
 }
 
 //  Security tab 
-export function SecuritySettings({ profile}: {profile: CitizenProfile}) {
-  const [showCurrent, setShowCurrent]   = useState(false);
-  const [showNew, setShowNew]           = useState(false);
-  const [showConfirm, setShowConfirm]   = useState(false);
+export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
-  const [saving, setSaving]             = useState(false);
-  const [saved, setSaved]               = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const save = async () => {
     setSaving(true);
@@ -301,9 +319,9 @@ export function SecuritySettings({ profile}: {profile: CitizenProfile}) {
   const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors";
 
   const SESSIONS = [
-    { device: "Chrome on Windows", location: "Lagos, Nigeria",  time: "Active now",     current: true  },
-    { device: "Safari on iPhone",  location: "Lagos, Nigeria",  time: "2 hours ago",    current: false },
-    { device: "Chrome on Android", location: "Abuja, Nigeria",  time: "3 days ago",     current: false },
+    { device: "Chrome on Windows", location: "Lagos, Nigeria", time: "Active now", current: true },
+    { device: "Safari on iPhone", location: "Lagos, Nigeria", time: "2 hours ago", current: false },
+    { device: "Chrome on Android", location: "Abuja, Nigeria", time: "3 days ago", current: false },
   ];
 
   return (
@@ -338,8 +356,8 @@ export function SecuritySettings({ profile}: {profile: CitizenProfile}) {
             className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white disabled:opacity-60 hover:-translate-y-0.5 transition-all"
             style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
             {saving ? <><Loader2 size={13} className="animate-spin" /> Updating...</>
-                    : saved ? <><Check size={13} /> Updated</>
-                    : "Update Password"}
+              : saved ? <><Check size={13} /> Updated</>
+                : "Update Password"}
           </button>
         </div>
       </Section>
@@ -404,7 +422,7 @@ export function SecuritySettings({ profile}: {profile: CitizenProfile}) {
 }
 
 //  Appearance tab 
-export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
+export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [fontSize, setFontSize] = useState<"small" | "medium" | "large">("medium");
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -413,8 +431,8 @@ export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
   const [accentColor, setAccentColor] = useState("#E8317A");
 
   const themes = [
-    { id: "light",  icon: Sun,     label: "Light"  },
-    { id: "dark",   icon: Moon,    label: "Dark"   },
+    { id: "light", icon: Sun, label: "Light" },
+    { id: "dark", icon: Moon, label: "Dark" },
     { id: "system", icon: Monitor, label: "System" },
   ] as const;
 
@@ -441,7 +459,7 @@ export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
       <Section title="Reading Preferences" desc="These settings affect how legal content is displayed in the learn module.">
         <Field label="Font Size">
           <div className="flex gap-2">
-            {(["small","medium","large"] as const).map(s => (
+            {(["small", "medium", "large"] as const).map(s => (
               <button key={s} onClick={() => setFontSize(s)}
                 className={`flex-1 py-2.5 rounded-xl border-[1.5px] text-xs font-semibold capitalize transition-all ${fontSize === s ? "border-[#E8317A] bg-pink-50/50 text-[#E8317A]" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
                 {s}
@@ -464,9 +482,9 @@ export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
 
       <Section title="Accessibility">
         {[
-          { label: "Reduce motion",       desc: "Minimise animations and transitions throughout the app.",          v: reducedMotion, s: setReducedMotion },
-          { label: "High contrast mode",  desc: "Increase contrast for text and interactive elements.",             v: highContrast,  s: setHighContrast  },
-          { label: "Dyslexia-friendly font", desc: "Use an OpenDyslexic-style font in the reading module.",        v: dyslexicFont,  s: setDyslexicFont  },
+          { label: "Reduce motion", desc: "Minimise animations and transitions throughout the app.", v: reducedMotion, s: setReducedMotion },
+          { label: "High contrast mode", desc: "Increase contrast for text and interactive elements.", v: highContrast, s: setHighContrast },
+          { label: "Dyslexia-friendly font", desc: "Use an OpenDyslexic-style font in the reading module.", v: dyslexicFont, s: setDyslexicFont },
         ].map(a => (
           <div key={a.label} className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
             <div className="flex-1 pr-5">
@@ -482,20 +500,20 @@ export function AppearanceSettings({ profile}: {profile: CitizenProfile}) {
 }
 
 //  Legal Preferences tab 
-export function LegalSettings({ profile}: {profile: CitizenProfile}) {
+export function LegalSettings({ profile }: { profile: CitizenProfile }) {
   const [interests, setInterests] = useState<string[]>(["criminal", "employment", "tenancy"]);
   const [lang, setLang] = useState("en");
   const [jurisdiction, setJurisdiction] = useState("federal");
 
   const AREAS = [
-    { id: "criminal",   label: "Police & Criminal Rights" },
-    { id: "tenancy",    label: "Landlord & Tenancy"       },
-    { id: "employment", label: "Employment & Labour"      },
-    { id: "business",   label: "Business & Commerce"      },
-    { id: "family",     label: "Family Law"               },
-    { id: "consumer",   label: "Consumer Rights"          },
-    { id: "road",       label: "Road Traffic"             },
-    { id: "contract",   label: "Contracts"                },
+    { id: "criminal", label: "Police & Criminal Rights" },
+    { id: "tenancy", label: "Landlord & Tenancy" },
+    { id: "employment", label: "Employment & Labour" },
+    { id: "business", label: "Business & Commerce" },
+    { id: "family", label: "Family Law" },
+    { id: "consumer", label: "Consumer Rights" },
+    { id: "road", label: "Road Traffic" },
+    { id: "contract", label: "Contracts" },
   ];
 
   const toggle = (id: string) => setInterests(prev =>

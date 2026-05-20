@@ -112,7 +112,7 @@ export const adminsApi = createApi({
      * List all admin users with filtering
      */
 
-    getAdmins: builder.query<ApiResponse<PaginatedResponse<AdminUser[]>>, AdminFilters>({
+    getAdmins: builder.query<PaginatedResponse<AdminUser[]>, AdminFilters>({
       query: (filters) => ({
         url: "/admin/admins",
         params: {

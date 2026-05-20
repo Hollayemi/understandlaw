@@ -77,7 +77,7 @@ export const modulesApi = createApi({
          * GET /admin/modules
          * List all modules with optional filtering, search and pagination.
          */
-        getModules: builder.query<ApiResponse<PaginatedResponse<Module[]>>, ModuleFilters>({
+        getModules: builder.query<PaginatedResponse<Module[]>, ModuleFilters>({
             query: (filters) => ({
                 url: "/admin/modules",
                 params: {
@@ -373,7 +373,7 @@ export const modulesApi = createApi({
          * Recent activity feed for a module (enrolments, completions, likes, comments).
          * Supports cursor-based pagination via `before` ISO timestamp.
          */
-        getModuleActivity: builder.query<ActivityItem[], ModuleActivityParams>({
+        getModuleActivity: builder.query<ApiResponse<ActivityItem[]>, ModuleActivityParams>({
             query: ({ moduleId, limit = 20, before }) => ({
                 url: `/admin/modules/${moduleId}/activity`,
                 params: { limit, ...(before && { before }) },
@@ -441,9 +441,7 @@ export const modulesApi = createApi({
          * GET /admin/modules/:moduleId/learners/top
          * Top N learners by progress percentage. Used in the activity sidebar.
          */
-        getTopLearners: builder.query<
-            TopLearner[],
-            { moduleId: string; limit?: number }
+        getTopLearners: builder.query<ApiResponse<TopLearner[]>, { moduleId: string; limit?: number }
         >({
             query: ({ moduleId, limit = 5 }) => ({
                 url: `/admin/modules/${moduleId}/learners/top`,

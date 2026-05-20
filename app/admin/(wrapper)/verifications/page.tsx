@@ -430,8 +430,8 @@ function RequestCard({
 
 // Helper to transform API LawyerFull to VerificationRequest
 const transformToVerificationRequest = (lawyer: LawyerFull): VerificationRequest => {
-  const fullName = lawyer.userId?.fullName || `${lawyer.userId?.firstName || ""} ${lawyer.userId?.lastName || ""}`;
-  const initials = fullName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  const fullName = lawyer?.fullName;
+  const initials = fullName.split(" ").map((n:any) => n[0]).join("").toUpperCase().slice(0, 2);
   
   // Extract documents from verificationDocuments
   const documents: Document[] = (lawyer.verificationDocuments || []).map((doc: any, index: number) => ({
@@ -459,13 +459,12 @@ const transformToVerificationRequest = (lawyer: LawyerFull): VerificationRequest
       });
     }
   }
-
   return {
     id: lawyer._id,
     name: fullName,
     initials,
     color: lawyer.colorA || "#1E4040",
-    email: lawyer.userId?.email || "",
+    email: lawyer?.email || "",
     phone: "",
     state: lawyer.state || "",
     nbaNumber: lawyer.nbaNumber || "",

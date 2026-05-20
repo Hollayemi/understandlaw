@@ -4,8 +4,8 @@ import Link from "next/link";
 import {
   Plus, Edit2, Trash2, Eye,
   Video, Upload, GripVertical,
-  ChevronDown, ChevronUp, Clock, 
-  CheckCircle, MessageSquare, Heart, 
+  ChevronDown, ChevronUp, Clock,
+  CheckCircle, MessageSquare, Heart,
   X, Save, Image as ImageIcon,
   Layers, PlayCircle,
 } from "lucide-react";
@@ -16,33 +16,34 @@ import {
   useDeleteSubTopicMutation,
   useCreateSubTopicMutation,
 } from "@/redux/slices/admin/modules.slice";
-import type { 
-  SubTopic, 
-  TopicStatus, 
+import type {
+  SubTopic,
+  TopicStatus,
   VideoType,
   TopicWithSubTopics,
 } from "@/redux/slices/types";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 
 
 // Topic Status Config
 export const TOPIC_STATUS_CFG: Record<TopicStatus, { bg: string; text: string; dot: string }> = {
   published: { bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
-  draft:     { bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
-  pending:   { bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
+  draft: { bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
+  pending: { bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
 };
 
 // SubTopic Editor Component
-export function SubTopicEditor({ 
-  st, 
-  moduleId, 
-  topicId, 
-  onDelete, 
-  onUpdate 
-}: { 
-  st: SubTopic; 
-  moduleId: string; 
+export function SubTopicEditor({
+  st,
+  moduleId,
+  topicId,
+  onDelete,
+  onUpdate
+}: {
+  st: SubTopic;
+  moduleId: string;
   topicId: string;
-  onDelete: (id: string) => void; 
+  onDelete: (id: string) => void;
   onUpdate: (st: SubTopic) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -67,9 +68,9 @@ export function SubTopicEditor({
   };
 
   console.log({
-     moduleId,
-        topicId,
-        subtopicId: st.id,
+    moduleId,
+    topicId,
+    subtopicId: st.id,
   })
 
   const handleSaveTitle = async () => {
@@ -145,7 +146,7 @@ export function SubTopicEditor({
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] text-[#9CA3AF]">{notes.length} characters</span>
-              <button 
+              <button
                 onClick={handleSaveNotes}
                 disabled={notesLoading}
                 className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline disabled:opacity-50">
@@ -160,19 +161,20 @@ export function SubTopicEditor({
 }
 
 // Topic Card Component (expanded editor)
-export function TopicCard({ 
-  topic, 
-  moduleId, 
-  onUpdate, 
+export function TopicCard({
+  topic,
+  moduleId,
+  onUpdate,
   onDelete,
-  index 
-}: { 
-  topic: TopicWithSubTopics; 
-  moduleId: string; 
+  index
+}: {
+  topic: TopicWithSubTopics;
+  moduleId: string;
   onUpdate: () => void;
   onDelete: (id: string) => void;
   index: number;
 }) {
+  const [images, setImages] = useState<UploadedImage[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [subtopics, setSubtopics] = useState(topic?.subtopics || []);
   const [videoType, setVideoType] = useState<VideoType | null>(topic.videoType);
@@ -211,13 +213,13 @@ export function TopicCard({
     }
   };
 
-  const handleSaveVideo = async () => {
+  const handleSaveFile = async (thumbnail?: boolean) => {
     try {
       await updateTopic({
         moduleId,
         topicId: topic.id,
-        videoType,
-        videoUrl: videoUrl || undefined,
+        ...(!thumbnail && ({ videoType, videoUrl: videoUrl || undefined })),
+        ...(thumbnail && ({ thumbnail: images[0]?.base64 })),
       }).unwrap();
       onUpdate();
     } catch (error) {
@@ -288,7 +290,7 @@ export function TopicCard({
                 <div className="flex gap-2 mb-3">
                   {([
                     { id: "youtube", icon: PlayCircle, label: "YouTube Link" },
-                    { id: "upload",  icon: Upload,  label: "Upload Video" },
+                    { id: "upload", icon: Upload, label: "Upload Video" },
                   ] as const).map(t => (
                     <button key={t.id}
                       onClick={() => setVideoType(t.id)}
@@ -315,8 +317,8 @@ export function TopicCard({
                         className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
                       />
                     </div>
-                    <button 
-                      onClick={handleSaveVideo}
+                    <button
+                      onClick={() => handleSaveFile()}
                       className="px-4 rounded-xl bg-[#111827] text-white text-[12px] font-semibold hover:bg-[#1F2937] transition-colors">
                       Save
                     </button>
@@ -343,25 +345,20 @@ export function TopicCard({
               </div>
 
               {/* Thumbnail */}
-              <div className="mb-5">
-                <h4 className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Thumbnail</h4>
-                <div className="flex items-center gap-3">
-                  <div className="w-24 h-16 rounded-xl bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center overflow-hidden flex-shrink-0">
-                    {topic.thumbnailUrl ? (
-                      <img src={topic.thumbnailUrl} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <ImageIcon size={18} className="text-[#D1D5DB]" />
-                    )}
+              <div className="flex flex-col md:flex-row items-center justify-between ">
+                <ThumbnailUpload images={images} setImages={setImages} maxImages={1}>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
+                    <Upload size={11} /> Upload Thumbnail
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
-                      <Upload size={11} /> Upload Thumbnail
-                    </button>
-                    <p className="text-[10px] text-[#D1D5DB]">JPG or PNG, 1280×720px recommended</p>
-                  </div>
-                </div>
-              </div>
+                  <p className="text-[10px] text-[#D1D5DB]">JPG or PNG, 1280×720px recommended</p>
+                </ThumbnailUpload>
 
+                <button
+                  onClick={() => handleSaveFile(true)}
+                  className="px-4 py-3 rounded-xl bg-[#111827] text-white text-[12px] font-semibold hover:bg-[#1F2937] transition-colors">
+                  Save
+                </button>
+              </div>
               {/* Sub-topics */}
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -386,12 +383,12 @@ export function TopicCard({
                 ) : (
                   <div className="flex flex-col gap-2">
                     {subtopics?.map(st => (
-                      <SubTopicEditor 
-                        key={st.id} 
-                        st={st} 
+                      <SubTopicEditor
+                        key={st.id}
+                        st={st}
                         moduleId={moduleId}
                         topicId={topic.id}
-                        onDelete={deleteSubTopic} 
+                        onDelete={deleteSubTopic}
                         onUpdate={updateSubTopicInList}
                       />
                     ))}
@@ -407,7 +404,7 @@ export function TopicCard({
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Classification</label>
-                    <select 
+                    <select
                       defaultValue={topic.classification}
                       className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
                       {["Foundational", "Rights", "Procedural", "Advanced", "Scenario"].map(c => (
@@ -417,7 +414,7 @@ export function TopicCard({
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Status</label>
-                    <select 
+                    <select
                       defaultValue={topic.status}
                       className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
                       {["published", "draft", "pending"].map(s => (
@@ -469,7 +466,7 @@ export function TopicCard({
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-all">
                   <Eye size={12} /> View Full Topic Page
                 </Link>
-                <button 
+                <button
                   onClick={() => onDelete(topic.id)}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
                   <Trash2 size={12} className="text-[#EF4444]" /> <span className="text-[#EF4444]">Delete Topic</span>

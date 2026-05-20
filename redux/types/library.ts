@@ -7,6 +7,7 @@ export type BookCategory =
 
 export interface Book {
   id: string;
+  _id: string;
   title: string;
   author: string;
   description: string;
@@ -24,12 +25,15 @@ export interface Book {
   orderCount: number;
   createdAt: string;
   updatedAt: string;
+  reviewCount: number;
+  rating?: number;
   featured: boolean;
   stockCount: number | null;
 }
 
 export interface BookOrder {
   id: string;
+  _id: string;
   bookId: string;
   bookTitle: string;
   coverUrl: string | null;
@@ -37,6 +41,8 @@ export interface BookOrder {
   userName: string;
   userEmail: string;
   deliveryAddress: string;
+  name: string;
+  email: string;
   phone: string;
   state: string;
   quantity: number;
@@ -116,6 +122,22 @@ export interface UpdateOrderStatusPayload {
 }
 
 export interface UploadBookPayload {
-  formData: FormData;
-  onProgress?: (progress: number) => void;
+  title: string;
+  author: string;
+  description: string;
+  category: string;
+  format: BookFormat;
+  isbn: string;
+  publishedYear: string;
+  totalPages: string | number;
+  tags: string[];
+
+  pricePhysical?: number;
+  stockCount?: number;
+
+  pdfFile?: string;
+  pdfUrl?: string;
+
+  coverFile?: string;
+  coverUrl?: string;
 }
