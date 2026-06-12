@@ -206,7 +206,7 @@ console.log(lawyers)
       render: (l: LawyerFull) => (
         <div className="flex flex-wrap gap-1">
           {l.specialisms.map(s => (
-            <span key={s} className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#F3F4F6] text-[#6B7280]">{s}</span>
+            <span key={s._id} className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#F3F4F6] text-[#6B7280]">{s.name}</span>
           ))}
         </div>
       ),

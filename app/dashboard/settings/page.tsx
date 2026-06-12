@@ -102,8 +102,8 @@ export default function SettingsPage() {
           {/*  Content  */}
           <div>
             {tab === "profile"       && <ProfileSettings user={user} profile={profile} />}
-            {tab === "notifications" && <NotificationSettings profile={profile} />}
-            {tab === "privacy"       && <PrivacySettings profile={profile}  />}
+            {tab === "notifications" && <NotificationSettings user={user} />}
+            {tab === "privacy"       && <PrivacySettings user={user}  />}
             {tab === "security"      && <SecuritySettings profile={profile}  />}
             {tab === "appearance"    && <AppearanceSettings profile={profile}  />}
             {tab === "legal"         && <LegalSettings profile={profile}  />}

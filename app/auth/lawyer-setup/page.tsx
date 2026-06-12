@@ -23,9 +23,15 @@ import { UploadedDocument, FormData } from "@/redux/types/lawyer";
 import { REQUIRED_DOCUMENTS, STEPS } from "./components"
 import { showSuccess } from "@/app/components/ui/sonner";
 import { useRouter } from "next/navigation";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 
 
 export default function LawyerOnboardingPage() {
+    const { data:getSpecialisms, isLoading } = useListSpecialismsQuery()
+    console.log(getSpecialisms)
+    const specialisms = getSpecialisms?.data || []
+    console.log({specialisms})
+
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState<FormData>({
@@ -318,7 +324,7 @@ export default function LawyerOnboardingPage() {
           
           <div className="p-6 md:p-8">
             {currentStep === 0 && <ProfessionalStep form={form} updateForm={updateForm} errors={errors} />}
-            {currentStep === 1 && <SpecialismsStep form={form} updateForm={updateForm} errors={errors} />}
+            {currentStep === 1 && <SpecialismsStep specialisms={specialisms} form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 2 && <StoryStep form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 3 && <ConsultationStep form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 4 && (
@@ -328,7 +334,7 @@ export default function LawyerOnboardingPage() {
                 onRemove={handleDocumentRemove}
               />
             )}
-            {currentStep === 5 && <ReviewStep form={form} documents={documents} />}
+            {currentStep === 5 && <ReviewStep form={form} specialisms={specialisms} documents={documents} />}
           </div>
 
           {/* Navigation Buttons */}

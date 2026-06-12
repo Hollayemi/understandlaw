@@ -62,11 +62,12 @@ export interface LawyerFull {
     firstName: string;
     isUserActive: boolean;
     avatarInitials: string;
+    picture: string;
     fullName: string;
     lastName: string;
     isActive: boolean;
     lastLoginAt: string;
-    specialisms: string[];
+    specialisms: Specialism[];
     languages: string[];
     verificationStatus: "pending" | "approved" | "rejected";
     badges: any[];
@@ -114,7 +115,12 @@ export interface OnboardingProfessional {
   stateCode: string;
   languages: string[];
 }
-
+export interface Specialism {
+  _id: string;
+  name: string;
+  displayName: string;
+  group: string;
+}
 export interface OnboardingSpecialisms {
   specialisms: string[];
 }

@@ -126,7 +126,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
       onAdd(result.data);
       setStep(3);
     } catch (error: any) {
-      console.error("Upload error:", error);
+      // console.error("Upload error:", error);
 
       const errorMessage =
         error?.data?.message ||
@@ -563,7 +563,7 @@ export function OrderModal({ order, onClose, onUpdateStatus }: {
   const update = async (status: OrderStatus) => {
     setSaving(true);
     await new Promise(r => setTimeout(r, 800));
-    onUpdateStatus(order.id, status, tracking || undefined);
+    onUpdateStatus(order._id, status, tracking || undefined);
     setSaving(false);
     onClose();
   };
@@ -595,7 +595,7 @@ export function OrderModal({ order, onClose, onUpdateStatus }: {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[12px] font-bold text-[#111827] leading-snug">{order.bookTitle}</p>
-              <p className="text-[11px] text-[#9CA3AF] mt-0.5">Qty: {order.quantity} × NGN {order.unitPrice.toLocaleString()}</p>
+              <p className="text-[11px] text-[#9CA3AF] mt-0.5">Qty: {order.quantity} × NGN {order?.unitPrice?.toLocaleString()}</p>
               <p className="text-[12px] font-bold text-[#E8317A] mt-0.5">NGN {order.totalAmount.toLocaleString()}</p>
             </div>
           </div>

@@ -112,7 +112,7 @@ export const lawyerApi = createApi({
 
 
     // Book a consultation with a lawyer
-    bookConsultation: builder.mutation<ApiResponse<BookingResponse>, BookConsultationPayload>({
+    bookConsultation: builder.mutation<ApiResponse<{booking: BookingResponse; payment: any }>, BookConsultationPayload>({
       query: (data) => ({
         url: "/marketplace/consultations",
         method: "POST",
@@ -174,23 +174,6 @@ export const {
 } = lawyerApi;
 
 
-export const AVAILABLE_SPECIALISMS = [
-  { id: "criminal",       label: "Criminal Law",            group: "Litigation"    },
-  { id: "employment",     label: "Employment & Labour",     group: "Litigation"    },
-  { id: "property",       label: "Property & Tenancy",      group: "Transactions"  },
-  { id: "family",         label: "Family Law",              group: "Litigation"    },
-  { id: "business",       label: "Business & Commerce",     group: "Transactions"  },
-  { id: "constitutional", label: "Constitutional Rights",   group: "Litigation"    },
-  { id: "consumer",       label: "Consumer Protection",     group: "Advisory"      },
-  { id: "road",           label: "Road Traffic",            group: "Advisory"      },
-  { id: "contracts",      label: "Contracts & Agreements",  group: "Transactions"  },
-  { id: "tax",            label: "Tax & Revenue",           group: "Advisory"      },
-  { id: "ip",             label: "Intellectual Property",   group: "Transactions"  },
-  { id: "immigration",    label: "Immigration",             group: "Advisory"      },
-] as const;
-
-
-
 export const NIGERIAN_STATES = [
   { code: "abia",       label: "Abia"           },
   { code: "adamawa",    label: "Adamawa"        },
@@ -230,6 +213,7 @@ export const NIGERIAN_STATES = [
   { code: "yobe",       label: "Yobe"           },
   { code: "zamfara",    label: "Zamfara"        },
 ] as const;
+
 
 export const LANGUAGES = [
   "English", "Hausa", "Yoruba", "Igbo", "Fulfulde",

@@ -17,7 +17,7 @@ import { emitAuthExpired } from "./authEvents";
 export const server =
   process.env.NODE_ENV === "production"
     ? "https://lawticha.onrender.com"
-    : "http://localhost:5001";
+    : "http://localhost:5000";
 
 type ActorType = "user" | "admin";
 

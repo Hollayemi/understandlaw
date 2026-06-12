@@ -117,7 +117,7 @@ export interface CreatePostPayload {
 
 export interface CreateCommentInput {
   content: string;
-  images?: File[];
+  images?: string[];
   parentId?: string;
 }
 

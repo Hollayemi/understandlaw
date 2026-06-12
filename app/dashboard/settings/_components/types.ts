@@ -4,5 +4,6 @@ export interface Toggle {
   id: string;
   label: string;
   desc: string;
+  key:string;
   value: boolean;
 }

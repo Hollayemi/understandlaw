@@ -1,6 +1,5 @@
-// app/(user)/library/page.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, use } from "react";
 import Link from "next/link";
 import {
   BookOpen, Download, ShoppingCart, Search, Filter,
@@ -11,28 +10,29 @@ import {
   Clock, CheckCircle, Home, Briefcase,
   Building2, Car, Users,
 } from "lucide-react";
-import { useListBooksQuery, useGetLibraryStatsQuery, useDownloadBookMutation, useCreateOrderMutation } from "@/redux/slices/library.slice";
-import { Book, BookCategory, BookFormat } from "@/redux/types/library";
+import { useListBooksQuery, useGetLibraryStatsQuery, useDownloadBookMutation, useCreateOrderMutation, useGetUserOrderByIdQuery } from "@/redux/slices/library.slice";
+import { Book, BookCategory, BookFormat, BookOrder } from "@/redux/types/library";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Category Config
 const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-  criminal:      { label: "Police & Criminal", color: "#3B82F6", bg: "#EFF6FF", icon: Shield },
-  tenancy:       { label: "Tenancy",           color: "#10B981", bg: "#ECFDF5", icon: Home },
-  employment:    { label: "Employment",        color: "#8B5CF6", bg: "#F5F3FF", icon: Briefcase },
-  contracts:     { label: "Contracts",         color: "#F59E0B", bg: "#FFFBEB", icon: FileText },
-  business:      { label: "Business",          color: "#06B6D4", bg: "#ECFEFF", icon: Building2 },
-  family:        { label: "Family Law",        color: "#EF4444", bg: "#FEF2F2", icon: Users },
-  consumer:      { label: "Consumer Rights",   color: "#E8317A", bg: "#FFF0F5", icon: Globe },
-  road:          { label: "Road Traffic",      color: "#F97316", bg: "#FFF7ED", icon: Car },
-  constitutional:{ label: "Constitutional",    color: "#7C3AED", bg: "#F5F3FF", icon: Shield },
+  criminal: { label: "Police & Criminal", color: "#3B82F6", bg: "#EFF6FF", icon: Shield },
+  tenancy: { label: "Tenancy", color: "#10B981", bg: "#ECFDF5", icon: Home },
+  employment: { label: "Employment", color: "#8B5CF6", bg: "#F5F3FF", icon: Briefcase },
+  contracts: { label: "Contracts", color: "#F59E0B", bg: "#FFFBEB", icon: FileText },
+  business: { label: "Business", color: "#06B6D4", bg: "#ECFEFF", icon: Building2 },
+  family: { label: "Family Law", color: "#EF4444", bg: "#FEF2F2", icon: Users },
+  consumer: { label: "Consumer Rights", color: "#E8317A", bg: "#FFF0F5", icon: Globe },
+  road: { label: "Road Traffic", color: "#F97316", bg: "#FFF7ED", icon: Car },
+  constitutional: { label: "Constitutional", color: "#7C3AED", bg: "#F5F3FF", icon: Shield },
 };
 
 const NIGERIAN_STATES = [
-  "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
-  "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","FCT","Gombe","Imo",
-  "Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa",
-  "Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"
+  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
+  "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT", "Gombe", "Imo",
+  "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa",
+  "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
 ];
 
 // Download Modal Component
@@ -47,14 +47,13 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
       const interval = setInterval(() => {
         setProgress(prev => Math.min(prev + 20, 100));
       }, 200);
-      
+
       await downloadBook(book._id).unwrap();
       clearInterval(interval);
       setProgress(100);
       setDone(true);
       toast.success("Download started!");
-      
-      // Trigger actual PDF download
+
       if (book.pdfUrl) {
         window.open(book.pdfUrl, '_blank');
       }
@@ -137,11 +136,70 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
+// success Modal 
+function SuccessModal({ orderId, }: { orderId: string; }){
+  const { data:getBook, isLoading } = useGetUserOrderByIdQuery(orderId)
+  const order = getBook?.data || {} as BookOrder
+
+  console.log(order)
+
+  const router = useRouter()
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
+        <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] flex-shrink-0" />
+
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6] flex-shrink-0">
+          <div>
+            <h3 className="font-bold text-[#111827] text-sm">Order Physical Copy</h3>
+          </div>
+    
+          <button onClick={()=>router.push('/dashboard/library')} className="text-[#9CA3AF] hover:text-[#111827] transition-colors">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="overflow-y-auto flex-1 px-6 py-5">
+          <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] mb-5">
+            <div className="w-10 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#E5E7EB]">
+              {order.coverUrl ? <img src={order.coverUrl} alt="" className="w-full h-full object-cover" /> : <BookOpen size={14} className="text-[#9CA3AF] m-auto mt-4" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-bold text-[#111827] truncate">{order.bookTitle}</p>
+              <p className="text-[11px] text-[#9CA3AF]">quantity {order.quantity}</p>
+            </div>
+            <div className="text-right flex-shrink-0">
+              <p className="text-[14px] font-bold text-[#E8317A]">NGN {(order.totalAmount || 0).toLocaleString()}</p>
+              <p className="text-[10px] text-[#9CA3AF]">{order.status}</p>
+            </div>
+          </div>
+          <div className="text-center py-6">
+            <div className="w-14 h-14 rounded-full bg-[#ECFDF5] border-2 border-[#6EE7B7] flex items-center justify-center mx-auto mb-4">
+              <CheckCircle size={26} className="text-[#10B981]" />
+            </div>
+            <h3 className="text-base font-bold text-[#111827] mb-1">Order Placed!</h3>
+            <p className="text-[13px] text-[#9CA3AF] mb-1">
+              Your order for <strong className="text-[#111827]">"{order.bookTitle}"</strong> has been received.
+            </p>
+            <p className="text-[11px] text-[#9CA3AF] mb-5">
+              A confirmation and tracking number will be sent to <strong>{order.userEmail}</strong> once your order is dispatched.
+            </p>
+            <button onClick={()=>router.push('/dashboard/library')}
+              className="w-full py-2.5 rounded-xl bg-[#111827] text-white text-[13px] font-bold hover:bg-[#1F2937] transition-colors">
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 // Order Modal Component
 function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [submitting, setSubmitting] = useState(false);
   const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const router = useRouter()
   const [form, setForm] = useState({
     name: "", email: "", phone: "",
     address: "", state: "Lagos", quantity: 1, notes: "",
@@ -157,7 +215,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const submit = async () => {
     setSubmitting(true);
     try {
-      await createOrder({
+      const result = await createOrder({
         bookId: book._id,
         quantity: form.quantity,
         deliveryAddress: form.address,
@@ -167,7 +225,12 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
         phone: form.phone,
         notes: form.notes,
       }).unwrap();
-      setStep(3);
+
+      if (result.success) {
+        const paymentUrl = result.data.payment.data.authorization_url
+        router.push(paymentUrl)
+      }
+
       toast.success("Order placed successfully!");
     } catch (error) {
       toast.error("Failed to place order. Please try again.");
@@ -189,9 +252,8 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
           <div className="flex items-center gap-2">
             {[1, 2, 3].map(n => (
               <React.Fragment key={n}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
-                  step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
-                }`}>{step > n ? <Check size={11} /> : n}</div>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                  }`}>{step > n ? <Check size={11} /> : n}</div>
                 {n < 3 && <div className="w-5 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
             ))}
@@ -312,24 +374,6 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
             </div>
           )}
 
-          {step === 3 && (
-            <div className="text-center py-6">
-              <div className="w-14 h-14 rounded-full bg-[#ECFDF5] border-2 border-[#6EE7B7] flex items-center justify-center mx-auto mb-4">
-                <CheckCircle size={26} className="text-[#10B981]" />
-              </div>
-              <h3 className="text-base font-bold text-[#111827] mb-1">Order Placed!</h3>
-              <p className="text-[13px] text-[#9CA3AF] mb-1">
-                Your order for <strong className="text-[#111827]">"{book.title}"</strong> has been received.
-              </p>
-              <p className="text-[11px] text-[#9CA3AF] mb-5">
-                A confirmation and tracking number will be sent to <strong>{form.email}</strong> once your order is dispatched.
-              </p>
-              <button onClick={onClose}
-                className="w-full py-2.5 rounded-xl bg-[#111827] text-white text-[13px] font-bold hover:bg-[#1F2937] transition-colors">
-                Done
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -393,7 +437,7 @@ function BookCard({
 
         <div className="flex items-center gap-1.5 mb-3">
           <div className="flex gap-0.5">
-            {[1,2,3,4,5].map(i => (
+            {[1, 2, 3, 4, 5].map(i => (
               <Star key={i} size={11} className={i <= Math.round(book.rating || 4.5) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
             ))}
           </div>
@@ -461,7 +505,9 @@ function BookCard({
 }
 
 // Main User Library Page
-export default function UserLibraryPage() {
+export default function UserLibraryPage({ searchParams }: any) {
+  const { payment, orderId } = use(searchParams) as any
+  console.log({ payment, orderId })
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [formatFilter, setFormatFilter] = useState<string>("all");
@@ -477,7 +523,7 @@ export default function UserLibraryPage() {
 
   const { data: statsData } = useGetLibraryStatsQuery();
 
-  const {data: books = [], ...pagination} = booksData?.data || {};
+  const { data: books = [], ...pagination } = booksData?.data || {};
   const featured = books.filter((b: Book) => b.featured);
 
   if (booksLoading) {
@@ -492,6 +538,7 @@ export default function UserLibraryPage() {
     <>
       {downloadBook && <DownloadModal book={downloadBook} onClose={() => setDownloadBook(null)} />}
       {orderBook && <OrderModal book={orderBook} onClose={() => setOrderBook(null)} />}
+      {payment === "success" && <SuccessModal orderId={orderId} />}
       {previewBook && (
         <BookDrawer
           book={previewBook}
@@ -600,8 +647,8 @@ export default function UserLibraryPage() {
               <div className="flex gap-2 flex-wrap">
                 <div className="flex bg-gray-100 rounded-xl p-1">
                   {[
-                    { v: "all",      l: "All" },
-                    { v: "pdf",     l: "Free PDF" },
+                    { v: "all", l: "All" },
+                    { v: "pdf", l: "Free PDF" },
                     { v: "physical", l: "Physical" },
                   ].map(opt => (
                     <button key={opt.v} onClick={() => setFormatFilter(opt.v)}
@@ -656,10 +703,10 @@ export default function UserLibraryPage() {
           {/* Trust footer */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
             {[
-              { icon: Shield,    t: "Written by verified Nigerian lawyers" },
-              { icon: Download,  t: "Free PDFs, no registration required" },
-              { icon: Truck,     t: "Physical copies delivered nationwide" },
-              { icon: BookOpen,  t: "Plain English, no legal jargon" },
+              { icon: Shield, t: "Written by verified Nigerian lawyers" },
+              { icon: Download, t: "Free PDFs, no registration required" },
+              { icon: Truck, t: "Physical copies delivered nationwide" },
+              { icon: BookOpen, t: "Plain English, no legal jargon" },
             ].map(({ icon: Icon, t }) => (
               <div key={t} className="flex items-center gap-1.5">
                 <Icon size={12} className="text-gray-300" /> {t}
@@ -711,7 +758,7 @@ function BookDrawer({ book, onClose, onDownload, onOrder }: {
 
           <div className="flex items-center gap-1.5 mb-4">
             <div className="flex gap-0.5">
-              {[1,2,3,4,5].map(i => (
+              {[1, 2, 3, 4, 5].map(i => (
                 <Star key={i} size={13} className={i <= Math.round(book.rating || 4.5) ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
               ))}
             </div>

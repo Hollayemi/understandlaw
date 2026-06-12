@@ -15,14 +15,13 @@ import { UploadedDocument, EducationEntry } from "@/redux/types/lawyer";
 import {
   useSubmitVerificationMutation,
   useUploadDocumentMutation,
-  AVAILABLE_SPECIALISMS,
   NIGERIAN_STATES,
   LANGUAGES,
 } from "@/redux/slices/lawyers.slice";
 
 export const RESPONSE_TIMES = [
-  "Under 1 hour", "Under 2 hours", "Under 3 hours", 
-  "Under 6 hours", "Under 12 hours", "Under 24 hours",
+ {label: "Under 1 hour", value: 1,}, {label: "Under 2 hours", value: 2}, {label: "Under 3 hours", value: 3}, 
+  {label: "Under 6 hours", value: 6}, {label: "Under 12 hours", value: 12}, {label: "Under 24 hours", value: 24},
 ];
 
 export const REQUIRED_DOCUMENTS = [
@@ -128,7 +127,7 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
   );
 }
 
-export function SpecialismsStep({ form, updateForm, errors }: any) {
+export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) {
   const toggleSpecialism = (id: string) => {
     const newList = form.specialisms.includes(id)
       ? form.specialisms.filter((s: string) => s !== id)
@@ -155,13 +154,13 @@ export function SpecialismsStep({ form, updateForm, errors }: any) {
           Areas of Specialisation <span className="text-[#E8317A]">*</span>
         </label>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          {AVAILABLE_SPECIALISMS.map(spec => {
+          {specialisms.map((spec:any) => {
             const isSelected = form.specialisms.includes(spec.id);
             return (
               <button
                 key={spec.id}
                 type="button"
-                onClick={() => toggleSpecialism(spec.id)}
+                onClick={() => toggleSpecialism(spec._id)}
                 className={`flex items-center gap-3 p-3 rounded-xl border-[1.5px] text-left transition-all group
                   ${isSelected 
                     ? 'border-[#E8317A] bg-pink-50 shadow-sm' 
@@ -170,7 +169,7 @@ export function SpecialismsStep({ form, updateForm, errors }: any) {
               >
                 <div className={`w-2 h-2 rounded-full transition-colors ${isSelected ? 'bg-[#E8317A]' : 'bg-[#D1D5DB]'}`} />
                 <span className={`text-[13px] font-medium flex-1 ${isSelected ? 'text-[#E8317A]' : 'text-[#374151]'}`}>
-                  {spec.label}
+                  {spec.displayName}
                 </span>
                 {isSelected && <Check size={14} className="text-[#E8317A]" />}
               </button>
@@ -411,17 +410,17 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {RESPONSE_TIMES.map(rt => (
             <button
-              key={rt}
+              key={rt.value}
               type="button"
-              onClick={() => updateForm("responseTime", rt)}
+              onClick={() => updateForm("responseTime", rt.value)}
               className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-[13px] font-medium transition-all
-                ${form.responseTime === rt
+                ${form.responseTime === rt.value
                   ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
                   : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50'
                 }`}
             >
               <Clock size={14} />
-              {rt}
+              {rt.label}
             </button>
           ))}
         </div>
@@ -564,10 +563,10 @@ export function DocumentsStep({ documents, onUpload, onRemove, uploadProgress }:
   );
 }
 
-export function ReviewStep({ form, documents }: any) {
+export function ReviewStep({ form, documents, specialisms }: any) {
   const getSpecialismLabels = () => {
     return form.specialisms
-      .map((id: string) => AVAILABLE_SPECIALISMS.find(s => s.id === id)?.label)
+      .map((id:any) => specialisms.find((s:any) => s._id === id)?.displayName)
       .filter(Boolean)
       .join(", ");
   };

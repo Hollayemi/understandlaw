@@ -57,13 +57,14 @@ export function ToggleSwitch({
 }
 
 export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: string, v: boolean) => void }) {
+   const [updateProfile, {isLoading}] = useUpdateMyProfileMutation()
   return (
     <div className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
       <div className="flex-1 pr-4">
         <p className="text-xs font-semibold text-gray-800">{item.label}</p>
         <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
       </div>
-      <ToggleSwitch value={item.value} onChange={(v) => onChange(item.id, v)} />
+      <ToggleSwitch value={item.value} onChange={(v) =>  updateProfile({ [item.key]: !Boolean(item.value) }).unwrap()} />
     </div>
   );
 }
@@ -126,9 +127,9 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
       <Section title="Profile Photo">
         <div className="flex items-start gap-5">
           <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E8317A] to-[#ff6fa8] flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+            {user.avatarUrl ? <img src={user.avatarUrl} alt="image" className="w-16 h-16 rounded-2xl" /> : <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E8317A] to-[#ff6fa8] flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
               AO
-            </div>
+            </div>}
             {/* <button className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gray-900 border-2 border-white flex items-center justify-center">
               <Camera size={11} className="text-white" />
             </button> */}
@@ -205,26 +206,26 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
 }
 
 //  Notifications tab 
-export function NotificationSettings({ profile }: { profile: CitizenProfile }) {
+export function NotificationSettings({ user }: { user: CitizenUser }) {
   const [items, setItems] = useState<Toggle[]>([
-    { id: "n1", label: "Lawyer response notifications", desc: "Get notified when a lawyer accepts or declines your consultation request.", value: profile.notifLawyerResponse },
-    { id: "n2", label: "Consultation reminders", desc: "Reminder 24 hours and 1 hour before a scheduled call or video session.", value: profile.notifConsultReminder },
-    { id: "n3", label: "Match alerts", desc: "Get notified when a lawyer is matched to your lawyer request.", value: profile.notifMatchAlert },
-    { id: "n4", label: "Message notifications", desc: "Notify me when a lawyer sends a written consultation reply.", value: profile.notifMessages },
-    { id: "n5", label: "Review reminders", desc: "Remind me to rate a lawyer after a completed consultation.", value: profile.notifReviewReminder },
-    { id: "n6", label: "Weekly learning digest", desc: "A weekly summary of new legal topics and library additions.", value: profile.notifWeeklyDigest },
-    { id: "n7", label: "Streak reminders", desc: "Daily nudge to keep my learning streak alive.", value: profile.notifStreakReminder },
-    { id: "n8", label: "Platform updates", desc: "News about new features, lawyers, and content releases.", value: profile.notifPlatformUpdates },
-    { id: "n9", label: "Legal news alerts", desc: "Notify me of major Nigerian legal developments relevant to my saved topics.", value: profile.notifPlatformUpdates },
-    { id: "n10", label: "Promotional emails", desc: "Offers, referral rewards, and premium feature announcements.", value: profile.notifPlatformUpdates },
-  ]);
+    { id: "n1", label: "Lawyer response notifications", key: "notifLawyerResponse", desc: "Get notified when a lawyer accepts or declines your consultation request.", value: user.notifLawyerResponse },
+    { id: "n2", label: "Consultation reminders", key: "notifConsultReminder", desc: "Reminder 24 hours and 1 hour before a scheduled call or video session.", value: user.notifConsultReminder },
+    { id: "n3", label: "Match alerts", key: "notifMatchAlert", desc: "Get notified when a lawyer is matched to your lawyer request.", value: user.notifMatchAlert },
+    { id: "n4", label: "Message notifications", key: "notifMessages", desc: "Notify me when a lawyer sends a written consultation reply.", value: user.notifMessages },
+    { id: "n5", label: "Review reminders", key: "notifReviewReminder", desc: "Remind me to rate a lawyer after a completed consultation.", value: user.notifReviewReminder },
+    { id: "n6", label: "Weekly learning digest", key: "notifWeeklyDigest", desc: "A weekly summary of new legal topics and library additions.", value: user.notifWeeklyDigest },
+    { id: "n7", label: "Streak reminders", key: "notifStreakReminder", desc: "Daily nudge to keep my learning streak alive.", value: user.notifStreakReminder },
+    { id: "n8", label: "Platform updates", key: "notifPlatformUpdates", desc: "News about new features, lawyers, and content releases.", value: user.notifPlatformUpdates },
+    { id: "n9", label: "Legal news alerts", key: "notifLegalNews", desc: "Notify me of major Nigerian legal developments relevant to my saved topics.", value: user.notifLegalNews },
+    { id: "n10", label: "Promotional emails", key: "notifPromotional", desc: "Offers, referral rewards, and premium feature announcements.", value: user.notifPromotional },
+]);
 
   const [channels, setChannels] = useState<Toggle[]>([
-    { id: "ch1", label: "Email", desc: "Send notifications to adaeze.okonkwo@gmail.com", value: profile.notifEmail },
-    { id: "ch2", label: "SMS", desc: "Send critical alerts to +234 801 234 5678", value: profile.notifSms },
-    { id: "ch3", label: "Push (browser)", desc: "Browser push notifications when on the platform.", value: profile.notifPush },
-    { id: "ch4", label: "In-app badge", desc: "Show unread count badges in the sidebar.", value: profile.notifInAppBadge },
-  ]);
+    { id: "ch1", label: "Email", key: "notifEmail", desc: "Send notifications to adaeze.okonkwo@gmail.com", value: user.notifEmail },
+    { id: "ch2", label: "SMS", key: "notifSms", desc: "Send critical alerts to +234 801 234 5678", value: user.notifSms },
+    { id: "ch3", label: "Push (browser)", key: "notifPush", desc: "Browser push notifications when on the platform.", value: user.notifPush },
+    { id: "ch4", label: "In-app badge", key: "notifInAppBadge", desc: "Show unread count badges in the sidebar.", value: user.notifInAppBadge },
+]);
 
   const toggle = (setter: React.Dispatch<React.SetStateAction<Toggle[]>>) => (id: string, v: boolean) =>
     setter(prev => prev.map(x => x.id === id ? { ...x, value: v } : x));
@@ -247,13 +248,13 @@ export function NotificationSettings({ profile }: { profile: CitizenProfile }) {
 }
 
 //  Privacy tab 
-export function PrivacySettings({ profile }: { profile: CitizenProfile }) {
-  const [items, setItems] = useState<Toggle[]>([
-    { id: "p1", label: "Show my reading activity to the community", desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: profile.showActivityPublic },
-    { id: "p2", label: "Allow anonymous analytics", desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: profile.allowAnonymousAnalytics },
-    { id: "p3", label: "Personalised content recommendations", desc: "Use my reading history to suggest relevant topics and library entries.", value: profile.personalizedRecommend },
-    { id: "p4", label: "Show profile in community discussions", desc: "Your name and avatar may appear when you comment or like community posts.", value: profile.showProfileInCommunity },
-  ]);
+export function PrivacySettings({ user }: { user: CitizenUser }) {
+ const [items, setItems] = useState<Toggle[]>([
+    { id: "p1", label: "Show my reading activity to the community", key: "showActivityPublic", desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: user.showActivityPublic },
+    { id: "p2", label: "Allow anonymous analytics", key: "allowAnonymousAnalytics", desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: user.allowAnonymousAnalytics },
+    { id: "p3", label: "Personalised content recommendations", key: "personalizedRecommend", desc: "Use my reading history to suggest relevant topics and library entries.", value: user.personalizedRecommend },
+    { id: "p4", label: "Show profile in community discussions", key: "showProfileInCommunity", desc: "Your name and avatar may appear when you comment or like community posts.", value: user.showProfileInCommunity },
+]);
 
   const toggle = (id: string, v: boolean) => setItems(prev => prev.map(x => x.id === id ? { ...x, value: v } : x));
 

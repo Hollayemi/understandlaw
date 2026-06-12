@@ -1,5 +1,6 @@
 "use client";
 import { useGetMeQuery } from "@/redux/authService/authSlice";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
 import { ApiResponse, CitizenProfile, LawyerProfile, CitizenFull } from "@/redux/types";
 import { useRef, useEffect, useState, createContext, useCallback } from "react";
@@ -28,6 +29,12 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
         skip: !isAuthenticated("user")
     });
 
+    const {
+        data: specialisms,
+        error: specialismsErr,
+        isLoading: specialismsIsLoading,
+    } = useListSpecialismsQuery();
+
 
     return (
         <DataContext.Provider
@@ -35,6 +42,7 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
                 ...defaultProvider,
                 userInfo:
                     (!userErr && !userIsLoading && (userInfo as any)?.data) || {} as CitizenFull,
+                specialisms: (!specialismsErr && !specialismsIsLoading && (specialisms as any)?.data) || [],
                 loading,
                 setLoading,
               

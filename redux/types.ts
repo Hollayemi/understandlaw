@@ -23,7 +23,30 @@ export interface CitizenProfile {
   certificatesCount: number;
   totalStudyMinutes: number;
 
-  // Preferences
+  createdAt?: string;
+  updatedAt?: string;
+}
+export type StatusVariant = "active" | "inactive" | "pending" | "suspended" | "approved" | "rejected" | "warning";
+export interface CitizenUser {
+  _id: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  role: "citizen";
+  state: string;
+  status: StatusVariant;
+  authProvider: string;
+  avatarUrl?: string;
+  isActive: boolean;
+  isVerified: boolean;
+  lastLoginAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+
+    // Preferences
   preferredLanguage: string;
   jurisdictionCode: string;
   legalInterestAreas: string[];
@@ -63,26 +86,6 @@ export interface CitizenProfile {
   twoFaEnabled: boolean;
   acceptedTermsAt?: string;
 
-  createdAt?: string;
-  updatedAt?: string;
-}
-export type StatusVariant = "active" | "inactive" | "pending" | "suspended" | "approved" | "rejected" | "warning";
-export interface CitizenUser {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  phone?: string;
-  role: "citizen";
-  status: StatusVariant;
-  authProvider: string;
-  avatarUrl?: string;
-  isActive: boolean;
-  isVerified: boolean;
-  lastLoginAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface CitizenFull {

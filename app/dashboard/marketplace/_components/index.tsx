@@ -1,23 +1,25 @@
 "use client";
 import React, { useState } from "react";
 import {
-  MapPin, Clock, Shield, 
-  CheckCircle, MessageSquare, 
+  MapPin, Clock, Shield,
+  CheckCircle, MessageSquare,
   ChevronRight, X, Send,
   ChevronLeft, Loader2,
   Check, ClipboardList, Info,
 } from "lucide-react";
-import { ConsultMode, Lawyer } from "./types";
+import { ConsultMode } from "./types";
 import { useRouter } from "next/navigation";
 import { BADGE_ICON, BADGE_STYLE, CONSULT_MODES, SPECIALISMS } from "./data";
+import { LawyerFull } from "@/redux/types/lawyer";
+import { useBookConsultationMutation, useRequestLawyerMatchMutation } from "@/redux/slices/lawyers.slice";
 
 export function VerificationSteps() {
   const steps = [
-    { n: "01", title: "NBA Check",         desc: "Bar membership confirmed" },
-    { n: "02", title: "Document Review",   desc: "Credentials validated" },
+    { n: "01", title: "NBA Check", desc: "Bar membership confirmed" },
+    { n: "02", title: "Document Review", desc: "Credentials validated" },
     { n: "03", title: "Platform Training", desc: "Standards orientation" },
-    { n: "04", title: "Assessment",        desc: "Competency verified" },
-    { n: "05", title: "Badge Issued",      desc: "Profile goes live" },
+    { n: "04", title: "Assessment", desc: "Competency verified" },
+    { n: "05", title: "Badge Issued", desc: "Profile goes live" },
   ];
   return (
     <div className="bg-[#0B1120] rounded-2xl p-5 border border-white/6">
@@ -48,9 +50,9 @@ export function LawyerCard({
   onConsult,
   onProfile,
 }: {
-  lawyer: Lawyer;
-  onConsult: (l: Lawyer) => void;
-  onProfile: (l: Lawyer) => void;
+  lawyer: LawyerFull;
+  onConsult: (l: LawyerFull) => void;
+  onProfile: (l: LawyerFull) => void;
 }) {
   const router = useRouter();
   return (
@@ -61,31 +63,32 @@ export function LawyerCard({
       <div className="p-5 flex-1 flex flex-col">
         {/* Header */}
         <div className="flex items-start gap-3.5 mb-4">
-          <div className="relative flex-shrink-0">
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-              style={{ background: `linear-gradient(135deg, ${lawyer.colorA}, ${lawyer.colorB})` }}
-            >
-              {lawyer.initials}
-            </div>
-            {lawyer.available && (
+          <div className="relative shrink-0">
+            {lawyer.picture ? <img src={lawyer.picture} alt="" className="w-12 h-12 rounded-x" /> :
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                style={{ background: `linear-gradient(135deg, ${lawyer.colorA}, ${lawyer.colorB})` }}
+              >
+                {lawyer.avatarInitials}
+              </div>}
+            {lawyer.isAvailable && (
               <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#10B981] border-2 border-white" title="Available now" />
             )}
           </div>
 
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-gray-900 text-[15px] leading-tight truncate group-hover:text-[#E8317A] transition-colors">
-              {lawyer.name}
+              {lawyer.fullName}
             </h3>
             <p className="text-xs text-gray-500 mt-0.5">{lawyer.title}</p>
             <div className="flex items-center gap-1 mt-1 text-[11px] text-gray-400">
-              <MapPin size={10} className="flex-shrink-0" />
+              <MapPin size={10} className="shrink-0" />
               {lawyer.location}, {lawyer.state}
             </div>
           </div>
 
           {/* Rating pill */}
-          {/* <div className="flex-shrink-0 flex items-center gap-1 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-full">
+          {/* <div className="shrink-0 flex items-center gap-1 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-full">
             <Star size={11} className="text-amber-500 fill-amber-400" />
             <span className="text-xs font-bold text-amber-700">{lawyer.rating}</span>
           </div> */}
@@ -107,7 +110,7 @@ export function LawyerCard({
               </span>
             );
           })}
-          {!lawyer.available && (
+          {!lawyer.isAvailable && (
             <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-gray-50 text-gray-400 border-gray-200">
               <Clock size={9} /> Unavailable
             </span>
@@ -121,19 +124,19 @@ export function LawyerCard({
             <p className="text-[10px] text-gray-400">Reviews</p>
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">{lawyer.responseTime.replace("Under ", "<")}</p>
+            <p className="text-sm font-bold text-gray-900">  {"<" + lawyer.responseTime} hours</p>
             <p className="text-[10px] text-gray-400">Response</p>
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">{lawyer.consultations}</p>
+            <p className="text-sm font-bold text-gray-900">{lawyer.consultationCount}</p>
             <p className="text-[10px] text-gray-400">Sessions</p>
           </div>
         </div>
 
         {/* Fee preview */}
         <div className="flex items-center gap-2 mb-4 text-xs text-gray-500">
-          <MessageSquare size={11} className="text-gray-400 flex-shrink-0" />
-          <span>From <strong className="text-gray-900">NGN {lawyer.fee.message.toLocaleString()}</strong> / written consultation</span>
+          <MessageSquare size={11} className="text-gray-400 shrink-0" />
+          <span>From <strong className="text-gray-900">NGN {lawyer.fees.message.toLocaleString()}</strong> / written consultation</span>
         </div>
 
         {/* Actions */}
@@ -146,15 +149,15 @@ export function LawyerCard({
           </button>
           <button
             onClick={() => onConsult(lawyer)}
-            disabled={!lawyer.available}
+            disabled={!lawyer.isAvailable}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
             style={{
-              background: lawyer.available
+              background: lawyer.isAvailable
                 ? `linear-gradient(135deg, #E8317A, #ff6fa8)`
                 : "#9CA3AF",
             }}
           >
-            {lawyer.available ? "Book Now" : "Unavailable"}
+            {lawyer.isAvailable ? "Book Now" : "Unavailable"}
           </button>
         </div>
       </div>
@@ -163,23 +166,42 @@ export function LawyerCard({
 }
 
 //  Consult Modal 
-export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () => void }) {
+export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [mode, setMode] = useState<ConsultMode>("message");
   const [topic, setTopic] = useState("");
   const [detail, setDetail] = useState("");
   const [slot, setSlot] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [bookConsultation, { isLoading }] = useBookConsultationMutation()
+  const router = useRouter();
 
-  const fee = lawyer.fee[mode];
-
+  const fee = lawyer.fees[mode];
   const slots = ["Today, 2:00 PM", "Today, 5:00 PM", "Tomorrow, 10:00 AM", "Tomorrow, 3:00 PM", "Thu, 11:00 AM"];
 
+
+
   const submit = async () => {
-    setSubmitting(true);
     await new Promise(r => setTimeout(r, 1600));
-    setStep(3);
-    setSubmitting(false);
+    const payload = {
+      lawyerNbaNumber: lawyer.nbaNumber,
+      mode,
+      topic,
+      description: detail,
+      preferredTimeSlot: new Date().toISOString(),
+      timezone: new Date().toISOString(),
+    }
+
+    const booked = await bookConsultation(payload).unwrap()
+
+    if (booked.success) {
+      const paymentUrl = booked.data.payment.data.authorization_url
+      router.push(paymentUrl)
+    }
+
+    if (booked) {
+      setStep(3);
+    }
+
   };
 
   return (
@@ -200,12 +222,12 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
                 <CheckCircle size={28} className="text-[#10B981]" />
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-1">Request Sent</h3>
-              <p className="text-sm text-gray-500 mb-2">Your consultation request has been sent to {lawyer.name}.</p>
-              <p className="text-xs text-gray-400 mb-6">Expected response: <strong className="text-gray-700">{lawyer.responseTime.toLowerCase()}</strong></p>
+              <p className="text-sm text-gray-500 mb-2">Your consultation request has been sent to {lawyer.fullName}.</p>
+              <p className="text-xs text-gray-400 mb-6">Expected response: <strong className="text-gray-700">{lawyer.responseTime}</strong></p>
               <div className="bg-gray-50 rounded-xl p-4 text-left mb-5">
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-gray-500">Lawyer</span>
-                  <span className="font-semibold text-gray-900">{lawyer.name}</span>
+                  <span className="font-semibold text-gray-900">{lawyer.fullName}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-gray-500">Format</span>
@@ -213,7 +235,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
                 </div>
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-gray-500">Topic</span>
-                  <span className="font-semibold text-gray-900 truncate max-w-[180px]">{topic}</span>
+                  <span className="font-semibold text-gray-900 truncate max-w-45">{topic}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-500">Fee</span>
@@ -228,13 +250,13 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
             <>
               {/* Header */}
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0"
                   style={{ background: `linear-gradient(135deg, ${lawyer.colorA}, ${lawyer.colorB})` }}>
-                  {lawyer.initials}
+                  {lawyer.avatarInitials}
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Book a Consultation</h3>
-                  <p className="text-xs text-gray-500">{lawyer.name} - {lawyer.title}</p>
+                  <p className="text-xs text-gray-500">{lawyer.fullName} - {lawyer.title}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step === 1 ? "bg-[#E8317A] text-white" : "bg-gray-100 text-gray-400"}`}>1</span>
@@ -253,15 +275,15 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
                         return (
                           <button key={m.id} onClick={() => setMode(m.id)}
                             className={`flex items-center gap-3 p-3.5 rounded-xl border-[1.5px] text-left transition-all ${mode === m.id ? "border-[#E8317A] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"}`}>
-                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${mode === m.id ? "bg-[#E8317A]/10" : "bg-gray-100"}`}>
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${mode === m.id ? "bg-[#E8317A]/10" : "bg-gray-100"}`}>
                               <Icon size={16} className={mode === m.id ? "text-[#E8317A]" : "text-gray-500"} />
                             </div>
                             <div className="flex-1">
                               <p className={`text-sm font-semibold ${mode === m.id ? "text-[#E8317A]" : "text-gray-900"}`}>{m.label}</p>
                               <p className="text-[11px] text-gray-500">{m.desc}</p>
                             </div>
-                            <div className="flex-shrink-0 text-right">
-                              <p className="text-sm font-bold text-gray-900">NGN {lawyer.fee[m.id].toLocaleString()}</p>
+                            <div className="shrink-0 text-right">
+                              <p className="text-sm font-bold text-gray-900">NGN {lawyer.fees[m.id].toLocaleString()}</p>
                               <p className="text-[10px] text-gray-400">per session</p>
                             </div>
                           </button>
@@ -322,9 +344,9 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
                   <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Booking Summary</p>
                     <div className="space-y-1.5 text-xs">
-                      <div className="flex justify-between"><span className="text-gray-500">Lawyer</span><span className="font-semibold text-gray-900">{lawyer.name}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Lawyer</span><span className="font-semibold text-gray-900">{lawyer.fullName}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Format</span><span className="font-semibold">{CONSULT_MODES.find(m => m.id === mode)?.label}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Topic</span><span className="font-semibold truncate max-w-[180px]">{topic}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Topic</span><span className="font-semibold truncate max-w-45">{topic}</span></div>
                       <div className="flex justify-between border-t border-gray-200 pt-1.5 mt-1.5">
                         <span className="text-gray-500 font-semibold">Total</span>
                         <span className="font-bold text-[#E8317A] text-sm">NGN {fee.toLocaleString()}</span>
@@ -333,7 +355,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
                   </div>
 
                   <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl p-3">
-                    <Info size={13} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                    <Info size={13} className="text-amber-600 shrink-0 mt-0.5" />
                     <p className="text-[11px] text-amber-700 leading-relaxed">
                       Payment is processed securely via Paystack after the lawyer accepts your request. No charge until then.
                     </p>
@@ -341,11 +363,11 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
 
                   <button
                     onClick={submit}
-                    disabled={submitting || ((mode === "call" || mode === "video") && !slot)}
+                    disabled={isLoading || ((mode === "call" || mode === "video") && !slot)}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50"
                     style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
                   >
-                    {submitting ? <><Loader2 size={14} className="animate-spin" /> Sending...</> : <>Send Request <Send size={13} /></>}
+                    {isLoading ? <><Loader2 size={14} className="animate-spin" /> Sending...</> : <>Send Request <Send size={13} /></>}
                   </button>
                 </div>
               )}
@@ -359,23 +381,48 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: Lawyer; onClose: () 
 
 //  Request a Lawyer Modal 
 export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
+  const router = useRouter()
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [specialism, setSpecialism] = useState("");
   const [urgency, setUrgency] = useState("");
   const [location, setLocation] = useState("");
   const [budget, setBudget] = useState("");
   const [description, setDescription] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
-  const urgencies = ["Today (urgent)", "This week", "Within 2 weeks", "No rush"];
+  const [requestLawyer, { isLoading }] = useRequestLawyerMatchMutation()
+
+  const urgencies = [
+    { label: "Today (urgent)", value: "today" },
+    { label: "This week", value: "this_week" },
+    { label: "Within 2 weeks", value: "within_two_weeks", },
+    { label: "No rush", value: "no_rush" }
+  ];
   const budgets = ["Under NGN 5,000", "NGN 5,000 - 15,000", "NGN 15,000 - 30,000", "Above NGN 30,000"];
 
   const submit = async () => {
-    setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1800));
-    setStep(3);
-    setSubmitting(false);
+    await new Promise(r => setTimeout(r, 1600));
+    const payload = {
+      specialism,
+      urgency,
+      budgetRange: budget,
+      description,
+      preferredTimeSlot: new Date().toISOString(),
+      timezone: new Date().toISOString(),
+    }
+
+    const request = await requestLawyer(payload).unwrap()
+
+    if (request.success) {
+      const paymentUrl = request.data.payment.data.authorization_url
+      router.push(paymentUrl)
+    }
+
+    if (request) {
+      setStep(3);
+    }
+
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -445,9 +492,9 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <label className="block text-xs font-semibold text-gray-700 mb-2">How Urgent Is This?</label>
                     <div className="grid grid-cols-2 gap-2">
                       {urgencies.map(u => (
-                        <button key={u} onClick={() => setUrgency(u)}
-                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${urgency === u ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
-                          {u}
+                        <button key={u.value} onClick={() => setUrgency(u.value)}
+                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${urgency === u.value ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                          {u.label}
                         </button>
                       ))}
                     </div>
@@ -499,7 +546,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3">
-                    <Shield size={13} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                    <Shield size={13} className="text-blue-500 shrink-0 mt-0.5" />
                     <p className="text-[11px] text-blue-700 leading-relaxed">
                       Your request is visible only to verified lawyers matching your criteria. Your personal details are never shared without your consent.
                     </p>
@@ -507,11 +554,11 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
 
                   <button
                     onClick={submit}
-                    disabled={submitting || !budget || !description.trim()}
+                    disabled={isLoading || !budget || !description.trim()}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0"
                     style={{ background: "linear-gradient(90deg, #0B1120, #1E3A5F)" }}
                   >
-                    {submitting ? <><Loader2 size={14} className="animate-spin" /> Matching...</> : <><ClipboardList size={14} /> Submit Request</>}
+                    {isLoading ? <><Loader2 size={14} className="animate-spin" /> Matching...</> : <><ClipboardList size={14} /> Submit Request</>}
                   </button>
                 </div>
               )}

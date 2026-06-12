@@ -42,7 +42,7 @@ export const citizenApi = createApi({
      * Update preferences, appearance, location.
      */
     updateMyProfile: builder.mutation<ApiResponse<CitizenProfile>, UpdateCitizenProfilePayload>({
-      query: (data) => ({ url: "/citizen/me/profile", method: "PATCH", data }),
+      query: (data) => ({ url: "/citizen/me/profile", method: "PATCH", data, endpointActor: "user" }),
       invalidatesTags: ["CitizenMe", "CitizenProfile"],
     }),
 

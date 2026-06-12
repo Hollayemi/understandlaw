@@ -65,8 +65,8 @@ function Table({ columns, data, keyField, emptyMessage, emptyIcon }: {
             </tr>
           </thead>
           <tbody>
-            {data.map(item => (
-              <tr key={item[keyField]} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB] transition-colors">
+            {data.map((item, i) => (
+              <tr key={i} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB] transition-colors">
                 {columns.map(col => (
                   <td key={col.key} className="px-4 py-3">
                     {col.render ? col.render(item) : item[col.key]}
@@ -232,7 +232,7 @@ export default function AdminLibraryPage() {
           </div>
           <div>
             <p className="text-[12px] font-semibold text-[#111827] max-w-[160px] truncate">{o.bookTitle}</p>
-            <p className="text-[11px] text-[#9CA3AF]">#{o.id.slice(-6)} · Qty {o.quantity}</p>
+            <p className="text-[11px] text-[#9CA3AF]">#{o?._id?.slice(-6)} · Qty {o.quantity}</p>
           </div>
         </div>
       ),

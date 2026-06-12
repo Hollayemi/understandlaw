@@ -30,6 +30,7 @@ export interface Book {
 
 export interface BookOrder {
   id: string;
+  _id: string;
   bookId: string;
   bookTitle: string;
   coverUrl: string | null;

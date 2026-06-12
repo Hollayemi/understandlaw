@@ -6,6 +6,7 @@ import { useCreateCommunityPostMutation } from "@/redux/slices/community.slice";
 import { CommunityRoomType, ReferenceProp, ReferenceType } from "@/redux/types/community";
 import ReferenceSelector from "./ReferenceSelector";
 import { generateSlug } from "@/utils/function";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 
 const rooms: { id: CommunityRoomType; name: string; description: string; icon: string }[] = [
   { id: "general", name: "General Discussion", description: "General legal discussions", icon: "💬" },
@@ -42,10 +43,10 @@ export default function CreatePostModal({
   const [room, setRoom] = useState<CommunityRoomType>(initialRoom);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [images, setImages] = useState<File[]>([]);
   const [reference, setReference] = useState<ReferenceProp | null>(initialReference || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [images, setImages] = useState<UploadedImage[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,19 +66,7 @@ export default function CreatePostModal({
     setTags(tags.filter(t => t !== tag));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const validFiles = files.filter(file => file.type.startsWith('image/'));
-    if (images.length + validFiles.length <= 5) {
-      setImages([...images, ...validFiles]);
-    } else {
-      setError("Maximum 5 images allowed");
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
-  };
+ 
 
   const validateForm = () => {
     if (!title.trim()) {
@@ -121,7 +110,7 @@ export default function CreatePostModal({
           ...(reference.topicTitle && { topicTitle: reference.topicTitle }),
         },
       }),
-      images,
+      images: images.map((e: UploadedImage) => e.base64),
     };
     try {
       await createPost(payload as any).unwrap();
@@ -192,8 +181,8 @@ export default function CreatePostModal({
                   type="button"
                   onClick={() => setRoom(r.id)}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${room === r.id
-                      ? "border-[#E8317A] bg-[#E8317A]/5"
-                      : "border-gray-200 hover:border-gray-300"
+                    ? "border-[#E8317A] bg-[#E8317A]/5"
+                    : "border-gray-200 hover:border-gray-300"
                     }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -280,45 +269,18 @@ export default function CreatePostModal({
 
           {/* Image Upload */}
           <div>
+
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Attach Images (Optional)
             </label>
-            <div className="flex flex-wrap gap-3 mb-3">
-              {images.map((img, idx) => (
-                <div key={idx} className="relative group">
-                  <img
-                    src={URL.createObjectURL(img)}
-                    alt={`Preview ${idx}`}
-                    className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-                  />
-                  <button
-                    onClick={() => removeImage(idx)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <XCircle size={14} />
-                  </button>
-                </div>
-              ))}
-              {images.length < 5 && (
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-[#E8317A] hover:bg-[#E8317A]/5 transition-colors"
-                >
-                  <Upload size={16} className="text-gray-400" />
-                  <span className="text-[10px] text-gray-400 mt-1">Upload</span>
-                </button>
-              )}
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="hidden"
-            />
+            <ThumbnailUpload preview images={images} title=" " setImages={setImages} maxImages={3}>
+              <div className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
+              >
+                <ImageIcon size={14} /> Add image
+              </div>
+            </ThumbnailUpload>
             <p className="text-[10px] text-gray-400">
-              Upload up to 5 images (JPG, PNG, GIF). Max 5MB each.
+              Upload up to 3 images (JPG, PNG, GIF). Max 5MB each.
             </p>
           </div>
         </div>

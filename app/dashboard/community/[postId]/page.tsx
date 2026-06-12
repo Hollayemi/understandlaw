@@ -1,13 +1,12 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
-  Heart, MessageCircle, Eye, Pin, Lock, CheckCircle,
-  Share2, Flag, MoreVertical, ChevronLeft, Send,
-  Image as ImageIcon, X, ThumbsUp, Award, Star,
-  Bookmark, AlertTriangle, Users, Clock, ChevronRight
+  Heart, Pin, Lock, CheckCircle,
+  Share2, Flag, ChevronLeft, Send,
+  Image as ImageIcon, X, Award,
+  Bookmark
 } from "lucide-react";
 import {
   useGetCommunityPostQuery,
@@ -15,33 +14,26 @@ import {
   useToggleLikePostMutation,
   useToggleLikeCommentMutation,
   useAcceptAnswerMutation,
-  useResolvePostMutation,
-  usePinPostMutation,
-  useLockPostMutation,
 } from "@/redux/slices/community.slice";
 import { getInitial } from "@/utils/function";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 
 export default function PostDetailPage() {
   const params = useParams();
   const router = useRouter();
   const postId = params?.postId as string;
-
+  const [images, setImages] = useState<UploadedImage[]>([]);
   const [commentText, setCommentText] = useState("");
   const [commentImages, setCommentImages] = useState<File[]>([]);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const { data, isLoading, refetch } = useGetCommunityPostQuery(postId);
   const [createComment] = useCreateCommunityCommentMutation();
   const [toggleLikePost] = useToggleLikePostMutation();
   const [toggleLikeComment] = useToggleLikeCommentMutation();
   const [acceptAnswer] = useAcceptAnswerMutation();
-  const [resolvePost] = useResolvePostMutation();
-  const [pinPost] = usePinPostMutation();
-  const [lockPost] = useLockPostMutation();
 
   const post = data?.data;
   console.log({ post })
@@ -79,7 +71,7 @@ export default function PostDetailPage() {
     const payload = {
       content: commentText,
       ...(replyingTo && { parentId: replyingTo }),
-      images: commentImages,
+      images: images.map((e: UploadedImage) => e.base64),
     };
 
     try {
@@ -229,8 +221,8 @@ export default function PostDetailPage() {
               <button
                 onClick={handleLikePost}
                 className={`flex items-center gap-1 text-sm ${post.likedBy?.includes(post.author._id)
-                    ? "text-[#E8317A]"
-                    : "text-gray-500 hover:text-[#E8317A]"
+                  ? "text-[#E8317A]"
+                  : "text-gray-500 hover:text-[#E8317A]"
                   }`}
               >
                 <Heart size={16} className={post.likedBy?.includes(post.author._id) ? "fill-[#E8317A]" : ""} />
@@ -314,20 +306,13 @@ export default function PostDetailPage() {
                   )}
 
                   <div className="flex justify-between items-center mt-2">
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
-                    >
-                      <ImageIcon size={14} /> Add image
-                    </button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
+                    <ThumbnailUpload preview images={images} title=" " setImages={setImages} maxImages={2}>
+                      <div className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
+                      >
+                        <ImageIcon size={14} /> Add image
+                      </div>
+                    </ThumbnailUpload>
+
                     <button
                       onClick={handleSubmitComment}
                       disabled={!commentText.trim() && commentImages.length === 0}

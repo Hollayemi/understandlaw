@@ -5,74 +5,15 @@ import {
   Search, Star, Shield, CheckCircle, ChevronRight, BadgeCheck, Users, Lock, FileText, AlertCircle, SlidersHorizontal, Scale, Plus, Bell, UserPlus, ClipboardList, Sparkles, Loader2,
   Filter,
 } from "lucide-react";
-import { Lawyer, ModalType } from "./_components/types";
+import { ModalType } from "./_components/types";
 import { ConsultModal, LawyerCard, RequestLawyerModal, VerificationSteps } from "./_components";
 import { SPECIALISMS } from "./_components/data";
 import { useGetMarketplaceLawyersQuery } from "@/redux/slices/lawyers.slice";
+import { LawyerFull } from "@/redux/types/lawyer";
 
-// Helper to transform API lawyer data to the format expected by components
-const transformLawyer = (apiLawyer: any): Lawyer => {
-  // Map specialisms from API format
-  const specialismMap: Record<string, string> = {
-    "criminal": "criminal",
-    "property": "property",
-    "employment": "employment",
-    "business": "business",
-    "family": "family",
-    "consumer": "consumer",
-    "road": "road",
-  };
-
-  const specialisms = apiLawyer.specialisms?.map((s: string) => specialismMap[s] || s) || [];
-
-  // Generate consistent colors based on lawyer ID
-  const colorPalette = [
-    { A: "#1E3A5F", B: "#2D5A8E" }, // Blue
-    { A: "#1A3B2E", B: "#2D6A4F" }, // Green
-    { A: "#2D1A3B", B: "#4A2D6A" }, // Purple
-    { A: "#1A2D3B", B: "#0E4D6A" }, // Navy
-    { A: "#2D1A1A", B: "#7B2828" }, // Red
-    { A: "#2A2D1A", B: "#5A6A2D" }, // Olive
-  ];
-  const colorIndex = (apiLawyer.id?.length || 0) % colorPalette.length;
-  const colors = colorPalette[colorIndex];
-
-  // Determine badges based on verification status and ratings
-  const badges: string[] = [];
-  if (apiLawyer.verificationStatus === "verified") badges.push("Verified Lawyer");
-  if (apiLawyer.rating && apiLawyer.rating >= 4.7) badges.push("Top Rated");
-  if (apiLawyer.responseTime && apiLawyer.responseTime < 2) badges.push("Responsive");
-  console.log({ apiLawyer })
-  return {
-    id: apiLawyer.id || apiLawyer.nbaNumber,
-    name: apiLawyer.fullName || "Legal Practitioner",
-    initials: apiLawyer.getInitials,
-    colorA: colors.A,
-    colorB: colors.B,
-    title: apiLawyer.title || apiLawyer.specialisms?.[0] || "Legal Practitioner",
-    specialisms: specialisms,
-    location: apiLawyer.location || apiLawyer.city || "Main Office",
-    state: apiLawyer.state || "Lagos",
-    rating: apiLawyer.rating || 4.5,
-    reviewCount: apiLawyer.reviewCount || 0,
-    responseTime: apiLawyer.responseTime ? `Under ${apiLawyer.responseTime} hour${apiLawyer.responseTime > 1 ? 's' : ''}` : "Under 2 hours",
-    consultations: apiLawyer.consultationCount || 0,
-    fee: {
-      message: apiLawyer.fee?.message || apiLawyer.feeMessage || 5000,
-      call: apiLawyer.fee?.call || apiLawyer.feeCall || 12000,
-      video: apiLawyer.fee?.video || apiLawyer.feeVideo || 18000,
-    },
-    badges: badges,
-    available: apiLawyer.status === "active" && apiLawyer.verificationStatus === "verified",
-    bio: apiLawyer.bio || "Experienced legal practitioner committed to providing accessible legal advice and representation.",
-    yearsCall: apiLawyer.yearsCall || 5,
-    languages: apiLawyer.languages || ["English"],
-    nbaNumber: apiLawyer.nbaNumber || "",
-  };
-};
 
 // Helper to get filter counts from lawyer list
-const getFilterCounts = (lawyers: Lawyer[], specialismId: string, state: string) => {
+const getFilterCounts = (lawyers: LawyerFull[], specialismId: string, state: string) => {
   if (specialismId === "all" && state === "all") return lawyers.length;
   if (specialismId === "all") return lawyers.filter(l => l.state === state).length;
   if (state === "all") return lawyers.filter(l => l.specialisms.includes(specialismId)).length;
@@ -81,7 +22,7 @@ const getFilterCounts = (lawyers: Lawyer[], specialismId: string, state: string)
 
 export default function MarketplacePage() {
   const [modal, setModal] = useState<ModalType>(null);
-  const [activeLawyer, setActiveLawyer] = useState<Lawyer | null>(null);
+  const [activeLawyer, setActiveLawyer] = useState<LawyerFull | null>(null);
   const [filterSpecialism, setFilterSpecialism] = useState("all");
   const [filterState, setFilterState] = useState("all");
   const [sortBy, setSortBy] = useState<"rating" | "reviews" | "response" | "fee">("rating");
@@ -111,7 +52,7 @@ export default function MarketplacePage() {
 
   // Transform API lawyers to component format
   const { data: rawLawyers = [], ...pagination } = lawyersResponse?.data || {};
-  const LAWYERS: Lawyer[] = rawLawyers?.map(transformLawyer);
+  const LAWYERS: LawyerFull[] = rawLawyers
 
   // Pagination info
   const totalLawyers = lawyersResponse?.data?.total || LAWYERS.length;
@@ -121,8 +62,8 @@ export default function MarketplacePage() {
   // Get unique states from API data
   const states = ["all", ...new Set(LAWYERS.map(l => l.state).filter(Boolean))].slice(0, 10);
 
-  const openConsult = useCallback((l: Lawyer) => { setActiveLawyer(l); setModal("consult"); }, []);
-  const openProfile = useCallback((l: Lawyer) => { setActiveLawyer(l); setModal("profile"); }, []);
+  const openConsult = useCallback((l: LawyerFull) => { setActiveLawyer(l); setModal("consult"); }, []);
+  const openProfile = useCallback((l: LawyerFull) => { setActiveLawyer(l); setModal("profile"); }, []);
   const closeModal = useCallback(() => { setModal(null); setActiveLawyer(null); }, []);
 
   // Debounced search - refetch when search query changes after delay
@@ -242,9 +183,8 @@ export default function MarketplacePage() {
                   </button>
                 </div>
               </div>
-
               {/* Trust stats - Using real data from API response */}
-              <div className="grid grid-cols-3 md:grid-cols-1 gap-3 md:min-w-[160px]">
+              <div className="grid grid-cols-3 md:grid-cols-1 gap-3 md:min-w-40">
                 {[
                   { icon: Users, v: totalLawyers.toString(), l: "Verified lawyers" },
                   { icon: Star, v: "4.7", l: "Average rating" }, // TODO: Get from API stats endpoint
@@ -253,7 +193,7 @@ export default function MarketplacePage() {
                   const Icon = s.icon;
                   return (
                     <div key={s.l} className="bg-white/6 border border-white/8 rounded-xl p-3 flex items-center gap-2.5">
-                      <Icon size={14} className="text-[#E8317A] flex-shrink-0" />
+                      <Icon size={14} className="text-[#E8317A] shrink-0" />
                       <div>
                         <p className="text-sm font-bold text-white leading-none">{s.v}</p>
                         <p className="text-[10px] text-gray-500 mt-0.5">{s.l}</p>
@@ -415,7 +355,7 @@ export default function MarketplacePage() {
               ) : (
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
                   {LAWYERS.map(l => (
-                    <LawyerCard key={l.id} lawyer={l} onConsult={openConsult} onProfile={openProfile} />
+                    <LawyerCard key={l._id} lawyer={l} onConsult={openConsult} onProfile={openProfile} />
                   ))}
 
                   {/* Request card */}

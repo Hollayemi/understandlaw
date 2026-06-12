@@ -54,8 +54,7 @@ export const libraryApi = createApi({
       ],
     }),
 
-    // Orders endpoints
-    createOrder: builder.mutation<ApiResponse<BookOrder>, Partial<BookOrder>>({
+    createOrder: builder.mutation<ApiResponse<{order:BookOrder; payment: any}>, Partial<BookOrder>>({
       query: (orderData) => ({
         url: "/library/orders",
         method: "POST",
