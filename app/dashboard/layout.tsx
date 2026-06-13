@@ -14,6 +14,7 @@ import {
   Smartphone,
   Menu,
   X,
+  MessageSquareText,
 } from "lucide-react";
 import RouteGuard from "../components/wrapper/RouteGuard";
 
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Overview",    href: "/dashboard" },
   { icon: BookOpen,        label: "Learn",        href: "/dashboard/learn" },
   { icon: BookMarked,      label: "Library",      href: "/dashboard/library" },
+  { icon: MessageSquareText,      label: "Consultations",      href: "/dashboard/consultations" },
   { icon: Scale,           label: "Marketplace",  href: "/dashboard/marketplace" },
   { icon: MessageSquare,   label: "community",     href: "/dashboard/community" },
   { icon: Award,           label: "Certificates", href: "/dashboard/certificates" },

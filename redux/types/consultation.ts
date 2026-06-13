@@ -24,9 +24,10 @@ export interface CitizenInfo {
   id: string;
   name: string;
   initials: string;
-  color: string;
-  email: string;
-  state: string;
+  picture?: string;
+  color?: string;
+  email?: string;
+  state?: string;
 }
 
 export interface LawyerInfo {
@@ -35,6 +36,7 @@ export interface LawyerInfo {
   initials: string;
   color: string;
   specialisms: string[];
+  myPayout: string;
   nbaNumber: string;
 }
 
@@ -42,13 +44,13 @@ export interface Consultation {
   id: string;
   citizen: CitizenInfo;
   lawyer: LawyerInfo;
+  lawyerPayout: number;
   mode: ConsultMode;
   topic: string;
   detail: string;
   status: ConsultStatus;
   fee: number;
   platformFee: number;
-  lawyerPayout: number;
   createdAt: string;
   scheduledAt?: string;
   completedAt?: string;
@@ -65,15 +67,38 @@ export interface Consultation {
   refundReason?: string;
 }
 
-export interface MatchRequest {
+export interface Consultation2 {
   id: string;
-  citizen: {
+  lawyer: {
     name: string;
     initials: string;
     color: string;
-    email: string;
-    state: string;
+    nbaNumber: string;
+    specialisms: string[];
   };
+  mode: ConsultMode;
+  topic: string;
+  detail?: string;
+  status: ConsultStatus;
+  fee: number;
+  platformFee: number;
+  createdAt: string;
+  scheduledAt?: string;
+  completedAt?: string;
+  rating?: number;
+  ratingNote?: string;
+  disputed?: boolean;
+  disputeReason?: string;
+  refundRequested?: boolean;
+  refundApproved?: boolean;
+  transcript: Message[];
+  paymentRef?: string;
+  lawyerResponseAt?: string;
+}
+
+export interface MatchRequest {
+  id: string;
+  citizen: CitizenInfo;
   specialism: string;
   urgency: string;
   budget: string;
