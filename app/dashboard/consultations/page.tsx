@@ -1,70 +1,119 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import {  MessageSquare, Clock, CheckCircle,   ChevronRight,   Bell, Search, Plus, ArrowRight,  MessageCircle,  Zap, Receipt, Lock,} from "lucide-react";
-import { Consultation2 as Consultation, ConsultStatus } from "@/redux/types/consultation";
-import { MOCK_CONSULTATIONS } from "./components/data";
-import {getJourneyStep, StarRating, JourneyTracker, ConsultationDrawer, ConsultationCard} from "./components"
-
-
+import { MessageSquare, Clock, CheckCircle, ChevronRight, Bell, Search, Plus, ArrowRight, MessageCircle, Zap, Receipt, Lock } from "lucide-react";
+import { Consultation, ConsultStatus } from "@/redux/types/consultation";
+import { getJourneyStep, StarRating, JourneyTracker, ConsultationDrawer, ConsultationCard } from "./components";
+import {
+  useGetCitizenConsultationsQuery,
+  useGetCitizenStatsQuery,
+  useRaiseDisputeMutation,
+  useRequestRefundMutation,
+  useSubmitRatingMutation,
+} from "@/redux/slices/consultation.slice";
 
 export default function CitizenConsultationsPage() {
   const [tab, setTab] = useState<ConsultStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Consultation | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
-  const [consultations, setConsultations] = useState<Consultation[]>(MOCK_CONSULTATIONS);
+  // Query params
+  const queryParams = useMemo(() => ({
+    status: tab === "all" ? undefined : tab,
+    search: search || undefined,
+    page,
+    pageSize,
+  }), [tab, search, page, pageSize]);
 
-  // Stats
-  const stats = useMemo(() => {
-    const active    = consultations.filter(c => c.status === "active").length;
-    const waiting   = consultations.filter(c => c.status === "awaiting_lawyer").length;
-    const completed = consultations.filter(c => c.status === "completed").length;
-    const totalSpent = consultations
-      .filter(c => c.status !== "cancelled" && c.status !== "refunded")
-      .reduce((s, c) => s + c.fee, 0);
-    return { active, waiting, completed, totalSpent };
-  }, [consultations]);
+  // RTK Query hooks
+  const { 
+    data: consultationsData, 
+    isLoading: isLoadingConsultations,
+    refetch: refetchConsultations 
+  } = useGetCitizenConsultationsQuery(queryParams);
+  
+  const { 
+    data: statsData, 
+    isLoading: isLoadingStats 
+  } = useGetCitizenStatsQuery();
+  
+  const [raiseDispute] = useRaiseDisputeMutation();
+  const [requestRefund] = useRequestRefundMutation();
+  const [submitRating] = useSubmitRatingMutation();
+
+  const consultations = consultationsData?.data?.data || [];
+  const stats = statsData?.data || {
+    active: 0,
+    awaitingLawyer: 0,
+    completed: 0,
+    totalSpent: 0,
+    total: 0,
+    cancelled: 0,
+    disputed: 0,
+    refunded: 0,
+  };
+
+  // UI Stats from API data
+  const uiStats = useMemo(() => ({
+    active: stats.active || 0,
+    waiting: stats.awaitingLawyer || 0,
+    completed: stats.completed || 0,
+    totalSpent: stats?.total || 0,
+  }), [stats]);
 
   const filtered = useMemo(() => {
-    return consultations.filter(c => {
-      if (tab !== "all" && c.status !== tab) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        return (
-          c.topic.toLowerCase().includes(q) ||
-          c.lawyer.name.toLowerCase().includes(q)
-        );
-      }
-      return true;
-    });
-  }, [consultations, tab, search]);
-
-  const handleRaiseDispute = (id: string, reason: string) => {
-    setConsultations(prev =>
-      prev.map(c =>
-        c.id === id
-          ? { ...c, status: "disputed" as ConsultStatus, disputed: true, disputeReason: reason }
-          : c
-      )
+    // API already filters, this is just for local search refinement
+    if (!search) return consultations;
+    const q = search.toLowerCase();
+    return consultations.filter(c => 
+      c.topic.toLowerCase().includes(q) ||
+      c.lawyer?.name?.toLowerCase().includes(q)
     );
+  }, [consultations, search]);
+
+  const handleRaiseDispute = async (id: string, reason: string) => {
+    try {
+      await raiseDispute({ consultationId: id, reason }).unwrap();
+      refetchConsultations();
+    } catch (error) {
+      console.error("Failed to raise dispute:", error);
+    }
   };
 
-  const handleRequestRefund = (id: string) => {
-    setConsultations(prev =>
-      prev.map(c => c.id === id ? { ...c, status: "refunded" as ConsultStatus } : c)
-    );
+  const handleRequestRefund = async (id: string, reason?: string) => {
+    try {
+      await requestRefund({ consultationId: id, reason }).unwrap();
+      refetchConsultations();
+    } catch (error) {
+      console.error("Failed to request refund:", error);
+    }
   };
 
-  const handleSubmitRating = (id: string, rating: number, note: string) => {
-    setConsultations(prev =>
-      prev.map(c => c.id === id ? { ...c, rating, ratingNote: note } : c)
-    );
+  const handleSubmitRating = async (id: string, rating: number, comment: string) => {
+    try {
+      await submitRating({ consultationId: id, rating, comment }).unwrap();
+      refetchConsultations();
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+    }
   };
 
   const needsAction = consultations.filter(
     c => c.status === "active" || c.status === "awaiting_lawyer" || (c.status === "completed" && !c.rating)
   ).length;
+
+  if (isLoadingConsultations || isLoadingStats) {
+    return (
+      <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#E8317A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#6B7280]">Loading your consultations...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -79,7 +128,6 @@ export default function CitizenConsultationsPage() {
       )}
 
       <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
-
         {/* Top bar */}
         <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -106,7 +154,6 @@ export default function CitizenConsultationsPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-5 xl:px-8 py-7">
-
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-xl font-bold text-[#111827]">My Consultations</h1>
@@ -118,10 +165,10 @@ export default function CitizenConsultationsPage() {
           {/* Stats row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
-              { label: "Active",       value: stats.active,    color: "#10B981", bg: "#ECFDF5", icon: MessageCircle },
-              { label: "Awaiting",     value: stats.waiting,   color: "#E8317A", bg: "#FFF0F5", icon: Clock, pulse: stats.waiting > 0 },
-              { label: "Completed",    value: stats.completed, color: "#3B82F6", bg: "#EFF6FF", icon: CheckCircle },
-              { label: "Total Spent",  value: `NGN ${(stats.totalSpent / 1000).toFixed(0)}k`, color: "#6B7280", bg: "#F9FAFB", icon: Receipt },
+              { label: "Active", value: uiStats.active, color: "#10B981", bg: "#ECFDF5", icon: MessageCircle },
+              { label: "Awaiting", value: uiStats.waiting, color: "#E8317A", bg: "#FFF0F5", icon: Clock, pulse: uiStats.waiting > 0 },
+              { label: "Completed", value: uiStats.completed, color: "#3B82F6", bg: "#EFF6FF", icon: CheckCircle },
+              { label: "Total Spent", value: `NGN ${(uiStats.totalSpent / 1000).toFixed(0)}k`, color: "#6B7280", bg: "#F9FAFB", icon: Receipt },
             ].map(s => {
               const Icon = s.icon;
               return (
@@ -168,16 +215,13 @@ export default function CitizenConsultationsPage() {
             </div>
             <div className="flex items-center gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1 overflow-x-auto flex-shrink-0">
               {([
-                { v: "all",             l: "All" },
+                { v: "all", l: "All" },
                 { v: "awaiting_lawyer", l: "Waiting" },
-                { v: "active",          l: "Active" },
-                { v: "completed",       l: "Done" },
-                { v: "disputed",        l: "Disputed" },
+                { v: "active", l: "Active" },
+                { v: "completed", l: "Done" },
+                { v: "disputed", l: "Disputed" },
               ] as const).map(opt => {
-                const count =
-                  opt.v === "all"
-                    ? consultations.length
-                    : consultations.filter(c => c.status === opt.v).length;
+                const count = consultations.filter(c => opt.v === "all" ? true : c.status === opt.v).length;
                 return (
                   <button
                     key={opt.v}
@@ -229,6 +273,29 @@ export default function CitizenConsultationsPage() {
                   onClick={() => setSelected(c)}
                 />
               ))}
+              
+              {/* Pagination */}
+              {consultationsData?.data?.total && (
+                <div className="flex items-center justify-between mt-4 pt-2">
+                  <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1.5 text-[12px] font-medium text-[#6B7280] disabled:opacity-50 disabled:cursor-not-allowed hover:text-[#111827] transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-[12px] text-[#9CA3AF]">
+                    Page {page} of {Math.ceil(consultationsData.data.total / pageSize)}
+                  </span>
+                  <button
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={page >= Math.ceil(consultationsData.data.total / pageSize)}
+                    className="px-3 py-1.5 text-[12px] font-medium text-[#6B7280] disabled:opacity-50 disabled:cursor-not-allowed hover:text-[#111827] transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

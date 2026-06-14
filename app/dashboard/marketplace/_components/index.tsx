@@ -7,11 +7,11 @@ import {
   ChevronLeft, Loader2,
   Check, ClipboardList, Info,
 } from "lucide-react";
-import { ConsultMode } from "./types";
 import { useRouter } from "next/navigation";
 import { BADGE_ICON, BADGE_STYLE, CONSULT_MODES, SPECIALISMS } from "./data";
 import { LawyerFull } from "@/redux/types/lawyer";
 import { useBookConsultationMutation, useRequestLawyerMatchMutation } from "@/redux/slices/lawyers.slice";
+import { ConsultMode } from "@/redux/types/consultation";
 
 export function VerificationSteps() {
   const steps = [

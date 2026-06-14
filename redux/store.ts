@@ -14,6 +14,7 @@ import { adminConsultationApi } from "./slices/admin/consultation.slice";
 import { adminLawyerApi } from "./slices/admin/lawyer.slice";
 import { adminDashboardApi } from "./slices/admin/dashboard.admin.slice";
 import { adminsApi } from "./slices/admin/admin.slice";
+import { consultationsApi } from "./slices/consultation.slice";
 
 
 export const store = configureStore({
@@ -33,6 +34,7 @@ export const store = configureStore({
     [adminCommunityApi.reducerPath]: adminCommunityApi.reducer,
     [adminDashboardApi.reducerPath]: adminDashboardApi.reducer,
     [adminConsultationApi.reducerPath]: adminConsultationApi.reducer,
+    [consultationsApi.reducerPath]: consultationsApi.reducer,
     modulesUi: modulesUiSlice.reducer,
     citizenUi: citizenUiSlice.reducer,
   },
@@ -53,6 +55,7 @@ export const store = configureStore({
       .concat(adminCommunityApi.middleware)
       .concat(adminDashboardApi.middleware)
       .concat(adminConsultationApi.middleware)
+      .concat(consultationsApi.middleware)
       .concat(adminsApi.middleware),
 
   devTools: process.env.NODE_ENV !== "production",

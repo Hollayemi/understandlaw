@@ -36,7 +36,7 @@ export interface LawyerInfo {
   initials: string;
   color: string;
   specialisms: string[];
-  myPayout: string;
+  myPayout?: string;
   nbaNumber: string;
 }
 
@@ -59,6 +59,8 @@ export interface Consultation {
   duration?: string;
   disputed: boolean;
   disputeReason?: string;
+  lawyerResponseAt: string;
+  paymentRef: string;
   transcript: Message[];
   flagged: boolean;
   flagReason?: string;
@@ -113,6 +115,7 @@ export interface MatchRequest {
 // API Response types
 export interface ConsultationStats {
   total: number;
+  totalSpent: number;
   active: number;
   disputed: number;
   completed: number;
