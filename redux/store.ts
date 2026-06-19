@@ -15,6 +15,7 @@ import { adminLawyerApi } from "./slices/admin/lawyer.slice";
 import { adminDashboardApi } from "./slices/admin/dashboard.admin.slice";
 import { adminsApi } from "./slices/admin/admin.slice";
 import { consultationsApi } from "./slices/consultation.slice";
+import { chatApi, chatUiSlice } from "./slices/chat.slice";
 
 
 export const store = configureStore({
@@ -35,8 +36,10 @@ export const store = configureStore({
     [adminDashboardApi.reducerPath]: adminDashboardApi.reducer,
     [adminConsultationApi.reducerPath]: adminConsultationApi.reducer,
     [consultationsApi.reducerPath]: consultationsApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
     modulesUi: modulesUiSlice.reducer,
     citizenUi: citizenUiSlice.reducer,
+    chatUi: chatUiSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -56,6 +59,7 @@ export const store = configureStore({
       .concat(adminDashboardApi.middleware)
       .concat(adminConsultationApi.middleware)
       .concat(consultationsApi.middleware)
+      .concat(chatApi.middleware)
       .concat(adminsApi.middleware),
 
   devTools: process.env.NODE_ENV !== "production",
