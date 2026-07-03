@@ -4,7 +4,8 @@ import Link from "next/link";
 import { MessageSquare, CheckCircle, ChevronRight, Eye, AlertTriangle, DollarSign, TrendingUp, Activity, Timer, Star, Bell, Search, Zap, Inbox } from "lucide-react";
 import { ConsultStatus, Consultation, MatchRequest } from "@/redux/types/consultation";
 import { MODE_CFG } from "@/app/components/config";
-import { StarRating, StatusBadge, ConsultationDrawer, MatchRequestCard } from "./components";
+import { StarRating, StatusBadge, MatchRequestCard } from "../components/lawyer";
+import { ConsultationDrawer } from "../components/lawyer";
 import {
   useGetLawyerConsultationsQuery,
   useGetLawyerStatsQuery,

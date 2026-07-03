@@ -1,9 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { MessageSquare, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, } from "lucide-react";
+import { MessageSquare, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, } from "lucide-react";
 import { Consultation2 as Consultation, ConsultStatus } from "@/redux/types/consultation";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
+import { usePayConsultationMutation } from "@/redux/slices/consultation.slice";
+import { useRouter } from "next/navigation";
+import { useGetMessagesQuery } from "@/redux/slices/chat.slice";
+import { formatTime } from "@/utils/function";
 
 export function getJourneyStep(status: ConsultStatus): number {
   if (status === "pending") return 0;
@@ -91,7 +95,7 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
             </div>
             {!isLast && (
               <div
-                className="flex-1 h-[2px] mb-4 mx-1 rounded-full transition-all"
+                className="flex-1 h-[2px]! mb-4 mx-1 rounded-full transition-all"
                 style={{ background: lineColor }}
               />
             )}
@@ -103,6 +107,84 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
 }
 
 // ─── Consultation Detail Drawer ───────────────────────────────────────────────
+
+export const ConversationTab = ({ consult, isAdmin = false }: { consult: Consultation; isAdmin?: boolean }) => {
+  console.log({consult})
+  const router = useRouter()
+  const { data: rawMessages, isLoading } = useGetMessagesQuery({ conversationId: consult.conversationId, isAdmin })
+  const messages = rawMessages?.data?.messages || []
+  console.log({ messages })
+
+  return (
+    <div className="flex flex-col h-full">
+
+      <div className="flex-1 p-5 space-y-4 overflow-y-auto">
+        {messages.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-12 h-12 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-3">
+              <MessageSquare size={20} className="text-[#D1D5DB]" />
+            </div>
+            <p className="text-sm font-semibold text-[#9CA3AF]">No messages yet</p>
+            <p className="text-[11px] text-[#D1D5DB] mt-1">
+              {consult.status === "awaiting_lawyer"
+                ? "Your lawyer is reviewing your request and will respond shortly."
+                : "The conversation will appear here once it starts."}
+            </p>
+            {consult.status === "awaiting_lawyer" && (
+              <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#E8317A] font-semibold">
+                <Loader2 size={11} className="animate-spin" />
+                Awaiting lawyer response…
+              </div>
+            )}
+          </div>
+        ) : (
+          messages.map(msg => (
+            <div
+              key={msg._id}
+              className={`flex gap-2.5 ${msg.senderRole !== "lawyer" ? "flex-row-reverse" : ""}`}
+            >
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0 mt-0.5"
+                style={{
+                  background:
+                    msg.senderRole === "citizen"
+                      ? "linear-gradient(135deg, #6B7280, #9CA3AF)"
+                      : `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)`,
+                }}
+              >
+                {msg.senderRole === "citizen" ? "You" : consult.lawyer.initials}
+              </div>
+              <div className={`flex max-w-[85%] flex flex-col ${msg.senderRole === "lawyer" ? "items-end" : ""}`}>
+                <div className={`flex items-center gap-2 mb-1 ${msg.senderRole === "lawyer" ? "flex-row-reverse" : ""}`}>
+                  <p className="text-[10px] font-semibold text-[#9CA3AF]">{msg.senderName}</p>
+                  <p className="text-[10px] text-[#D1D5DB]">{formatTime(msg.createdAt)}</p>
+                </div>
+                <div
+                  className={`rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed ${msg.senderRole === "citizen"
+                    ? "bg-[#F3F4F6] text-[#374151] rounded-tl-sm"
+                    : "text-white rounded-tr-sm"
+                    }`}
+                  style={
+                    msg.senderRole === "lawyer"
+                      ? { background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}cc)` }
+                      : {}
+                  }
+                >
+                  {msg.content}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div className="p-4">
+        <button onClick={() => router.push("/dashboard/chat")} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+          Open Conversation
+        </button>
+      </div>
+    </div>
+  )
+}
 
 export function ConsultationDrawer({
   consult,
@@ -124,11 +206,12 @@ export function ConsultationDrawer({
   const [ratingNote, setRatingNote] = useState(consult.ratingNote ?? "");
   const [ratingSubmitted, setRatingSubmitted] = useState(!!consult.rating);
   const [loading, setLoading] = useState(false);
-  const [newMessage, setNewMessage] = useState("");
+
 
   const cfg = STATUS_CFG[consult.status];
   const StatusIcon = cfg.icon;
-  const ModeIcon = MODE_CFG[consult.mode].icon;
+
+  console.log(consult)
 
   const handleRatingSubmit = async () => {
     if (!rating) return;
@@ -168,7 +251,7 @@ export function ConsultationDrawer({
         <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-mono font-bold text-[#9CA3AF] mb-1">{consult.id}</p>
+              {/* <p className="text-[10px] font-mono font-bold text-[#9CA3AF] mb-1">{consult.id}</p> */}
               <h2 className="text-[14px] font-bold text-[#111827] leading-snug line-clamp-2">{consult.topic}</h2>
             </div>
             <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#111827] transition-colors flex-shrink-0 mt-0.5">
@@ -189,7 +272,7 @@ export function ConsultationDrawer({
                 <p className="text-[12px] font-semibold text-[#111827]">{consult.lawyer.name}</p>
                 <BadgeCheck size={12} className="text-amber-500 flex-shrink-0" />
               </div>
-              <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0]}</p>
+              <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0].displayName}</p>
             </div>
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <span
@@ -232,90 +315,7 @@ export function ConsultationDrawer({
 
           {/* ── Conversation ── */}
           {activeTab === "conversation" && (
-            <div className="flex flex-col h-full">
-              <div className="flex-1 p-5 space-y-4 overflow-y-auto">
-                {consult.transcript.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-12 h-12 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-3">
-                      <MessageSquare size={20} className="text-[#D1D5DB]" />
-                    </div>
-                    <p className="text-sm font-semibold text-[#9CA3AF]">No messages yet</p>
-                    <p className="text-[11px] text-[#D1D5DB] mt-1">
-                      {consult.status === "awaiting_lawyer"
-                        ? "Your lawyer is reviewing your request and will respond shortly."
-                        : "The conversation will appear here once it starts."}
-                    </p>
-                    {consult.status === "awaiting_lawyer" && (
-                      <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#E8317A] font-semibold">
-                        <Loader2 size={11} className="animate-spin" />
-                        Awaiting lawyer response…
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  consult.transcript.map(msg => (
-                    <div
-                      key={msg.id}
-                      className={`flex gap-2.5 ${msg.sender === "lawyer" ? "flex-row-reverse" : ""}`}
-                    >
-                      <div
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0 mt-0.5"
-                        style={{
-                          background:
-                            msg.sender === "citizen"
-                              ? "linear-gradient(135deg, #6B7280, #9CA3AF)"
-                              : `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)`,
-                        }}
-                      >
-                        {msg.sender === "citizen" ? "You" : consult.lawyer.initials}
-                      </div>
-                      <div className={`flex-1 max-w-[85%] flex flex-col ${msg.sender === "lawyer" ? "items-end" : ""}`}>
-                        <div className={`flex items-center gap-2 mb-1 ${msg.sender === "lawyer" ? "flex-row-reverse" : ""}`}>
-                          <p className="text-[10px] font-semibold text-[#9CA3AF]">{msg.senderName}</p>
-                          <p className="text-[10px] text-[#D1D5DB]">{msg.time}</p>
-                        </div>
-                        <div
-                          className={`rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed ${msg.sender === "citizen"
-                              ? "bg-[#F3F4F6] text-[#374151] rounded-tl-sm"
-                              : "text-white rounded-tr-sm"
-                            }`}
-                          style={
-                            msg.sender === "lawyer"
-                              ? { background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}cc)` }
-                              : {}
-                          }
-                        >
-                          {msg.text}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Reply input — only for active */}
-              {consult.status === "active" && (
-                <div className="flex-shrink-0 border-t border-[#F3F4F6] p-4">
-                  <div className="flex gap-2 items-end">
-                    <textarea
-                      value={newMessage}
-                      onChange={e => setNewMessage(e.target.value)}
-                      placeholder="Type your follow-up question…"
-                      rows={2}
-                      className="flex-1 px-3.5 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
-                    />
-                    <button
-                      disabled={!newMessage.trim()}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0 disabled:opacity-40 transition-all hover:-translate-y-0.5"
-                      style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
-                    >
-                      <Send size={14} />
-                    </button>
-                  </div>
-                  <p className="text-[10px] text-[#9CA3AF] mt-1.5">Follow-up questions within 48 hours are included at no extra charge.</p>
-                </div>
-              )}
-            </div>
+            <ConversationTab consult={consult} />
           )}
 
           {/* ── Details & Receipt ── */}
@@ -326,10 +326,10 @@ export function ConsultationDrawer({
                 <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] divide-y divide-[#F3F4F6] text-[12px]">
                   {[
                     { l: "Mode", v: MODE_CFG[consult.mode].label },
-                    { l: "Requested", v: consult.createdAt },
-                    ...(consult.scheduledAt ? [{ l: "Scheduled for", v: consult.scheduledAt }] : []),
-                    ...(consult.completedAt ? [{ l: "Completed", v: consult.completedAt }] : []),
-                    { l: "Payment ref", v: consult.paymentRef ?? "—" },
+                    { l: "Requested", v: formatTime(consult.createdAt) },
+                    ...(consult.scheduledAt ? [{ l: "Scheduled for", v: formatTime(consult.scheduledAt) }] : []),
+                    ...(consult.completedAt ? [{ l: "Completed", v: formatTime(consult.completedAt) }] : []),
+                    { l: "Payment ref", v: consult.receiptId ?? "—" },
                   ].map(r => (
                     <div key={r.l} className="flex justify-between items-center px-4 py-3">
                       <span className="text-[#9CA3AF]">{r.l}</span>
@@ -433,7 +433,6 @@ export function ConsultationDrawer({
                 </div>
               )}
 
-              {/* Dispute — for active/completed */}
               {(consult.status === "active" || consult.status === "completed") && !consult.disputed && (
                 <div className="bg-[#FEF2F2] border border-[#FCA5A5] rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -545,6 +544,8 @@ export function ConsultationDrawer({
   );
 }
 
+
+
 // ─── Consultation Card ────────────────────────────────────────────────────────
 
 export function ConsultationCard({
@@ -560,6 +561,14 @@ export function ConsultationCard({
   const modeColor = MODE_CFG[consult.mode].color;
   const urgent = consult.status === "active" || consult.status === "awaiting_lawyer";
   const hasUnread = consult.status === "active" && consult.transcript.some(m => m.sender === "lawyer");
+  const [payConsultation, { isLoading }] = usePayConsultationMutation()
+  const router = useRouter()
+
+  const handlePayment = async () => {
+    const res = await payConsultation({ id: consult.id }).unwrap()
+    const paymentUrl = res.data.data.authorization_url
+    router.push(paymentUrl)
+  }
 
   return (
     <button
@@ -590,7 +599,7 @@ export function ConsultationCard({
                 <p className="text-[13px] font-bold text-[#111827] truncate">{consult.lawyer.name}</p>
                 <BadgeCheck size={11} className="text-amber-500 flex-shrink-0" />
               </div>
-              <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0]}</p>
+              <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0].displayName}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -607,12 +616,22 @@ export function ConsultationCard({
               <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cfg.dot }} />
               {cfg.userLabel}
             </span>
+            {cfg.action === "pay" && (
+              <div
+                className="bg-green-700 text-white inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                onClick={handlePayment}
+              >
+                {isLoading ? <Cog size={10} className="text-white rotate" /> : <>
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-green-800" />
+                  Pay Now
+                </>}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Topic */}
         <p className="text-[13px] font-semibold text-[#374151] leading-snug mb-3 line-clamp-2">{consult.topic}</p>
-
         {/* Journey tracker */}
         {consult.status !== "cancelled" && consult.status !== "refunded" && (
           <div className="mb-4">

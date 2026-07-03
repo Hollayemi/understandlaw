@@ -5,19 +5,13 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import {
   ChevronRight, Plus, Search, MessageSquare, Loader2, X, RefreshCw,
-  Menu, Users, User, Clock, CheckCheck, Check,
+  Menu, Clock, CheckCircle, AlertTriangle, Filter,
 } from "lucide-react";
 import {
   useGetConversationsQuery,
-  chatUiActions,
-  selectLiveMessages,
-  selectTyping,
-  selectPresence,
-  selectUnread,
   selectSocketConnected,
-  selectTotalUnread,
   IConversation,
-  IMessage,
+  ConversationStatus,
 } from "@/redux/slices/chat.slice";
 import { useDispatch } from "react-redux";
 import { useChatSocket } from "@/hook/useChatSocket";
@@ -29,17 +23,24 @@ import {
   MessageInput,
   EmptyConversation,
   ConnectionBanner,
-  colorFromString,
-  getInitials,
 } from "@/app/components/chat";
 import { useGetMeQuery } from "@/redux/authService/authSlice";
 
+// ─── Status badge helper ──────────────────────────────────────────────────────
+
+const CONV_STATUS: Record<ConversationStatus, { label: string; color: string; bg: string }> = {
+  active:   { label: "Active",   color: "#065F46", bg: "#ECFDF5" },
+  closed:   { label: "Closed",   color: "#6B7280", bg: "#F9FAFB" },
+  archived: { label: "Archived", color: "#92400E", bg: "#FEF3C7" },
+};
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function CitizenConversationsPage() {
+export default function ConversationsPage() {
   const dispatch = useDispatch();
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<ConversationStatus | "all">("all");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -48,6 +49,7 @@ export default function CitizenConversationsPage() {
   const currentUser = meData?.data?.user;
   const currentUserId = currentUser?._id ?? "";
   const currentUserName = `${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim();
+  const userRole = (currentUser?.role ?? "citizen") as "citizen" | "lawyer" | "admin";
   const accessToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   // Socket
@@ -55,7 +57,9 @@ export default function CitizenConversationsPage() {
   const socketConnected = useSelector(selectSocketConnected);
 
   // Conversations list
-  const { data: convsData, isLoading, refetch } = useGetConversationsQuery({});
+  const { data: convsData, isLoading, refetch } = useGetConversationsQuery({
+    status: statusFilter === "all" ? undefined : statusFilter,
+  });
   const conversations: IConversation[] = convsData?.data?.conversations ?? [];
 
   const filtered = conversations.filter(c => {
@@ -63,6 +67,12 @@ export default function CitizenConversationsPage() {
     const other = c.participants.find(p => p.userId !== currentUserId);
     return other?.name?.toLowerCase().includes(search.toLowerCase());
   });
+
+  // Stats
+  const activeCount = conversations.filter(c => c.status === "active").length;
+  const unreadTotal = conversations.reduce((n, c) => {
+    return n + (c.participants.find(p => p.userId !== currentUserId)?.unreadCount ?? 0);
+  }, 0);
 
   // Active conversation
   const activeConversation = conversations.find(c => c._id === activeConvId) ?? null;
@@ -94,6 +104,23 @@ export default function CitizenConversationsPage() {
 
   const presence = useSelector((s: any) => s.chatUi.presence);
 
+  // ─── Role-specific configurations ──────────────────────────────────────────
+
+  const isLawyer = userRole === "lawyer";
+  const isCitizen = userRole === "citizen";
+
+  // Lawyer-specific: status filter tabs
+  const statusTabs = isLawyer ? ["all", "active", "closed"] as const : ["all"] as const;
+
+  // Stats for lawyer
+  const stats = isLawyer ? [
+    { label: "Active", value: activeCount, color: "#10B981", icon: CheckCircle },
+    { label: "Unread", value: unreadTotal, color: "#E8317A", icon: MessageSquare },
+    { label: "Total", value: conversations.length, color: "#6B7280", icon: Clock },
+  ] : [
+    { label: "Total", value: conversations.length, color: "#6B7280", icon: MessageSquare },
+  ];
+
   return (
     <div className="flex flex-col md:flex-row flex-1 bg-gradient-to-br from-gray-50 to-white h-screen overflow-hidden">
       {/* ── Overlay for mobile ── */}
@@ -118,9 +145,14 @@ export default function CitizenConversationsPage() {
                 <MessageSquare size={18} className="text-white" />
               </div>
               <div>
-                <h1 className="text-[16px] font-bold text-gray-900">Messages</h1>
+                <h1 className="text-[16px] font-bold text-gray-900">
+                  {isLawyer ? "Client Messages" : "Messages"}
+                </h1>
                 <p className="text-[11px] text-gray-400 font-medium">
-                  {conversations.length} conversation{conversations.length !== 1 ? "s" : ""}
+                  {isLawyer 
+                    ? `${activeCount} active · ${conversations.length} total`
+                    : `${conversations.length} conversation${conversations.length !== 1 ? "s" : ""}`
+                  }
                 </p>
               </div>
             </div>
@@ -131,12 +163,29 @@ export default function CitizenConversationsPage() {
               <RefreshCw size={14} className="group-hover:rotate-180 transition-transform duration-500" />
             </button>
           </div>
+
+          {/* Quick stats strip - Lawyer only */}
+          {isLawyer && (
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {stats.map(s => {
+                const Icon = s.icon;
+                return (
+                  <div key={s.label} className="bg-[#F9FAFB] rounded-xl p-2 text-center">
+                    <p className="text-[14px] font-bold" style={{ color: s.color }}>{s.value}</p>
+                    <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wider">{s.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Search */}
           <div className="relative">
             <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search conversations…"
+              placeholder={isLawyer ? "Search by client name…" : "Search conversations…"}
               className="w-full h-9 pl-9 pr-9 rounded-xl border border-gray-200/80 text-[13px] outline-none focus:border-[#E8317A] focus:ring-2 focus:ring-[#E8317A]/20 placeholder:text-gray-400 transition-all duration-200 bg-gray-50/80 hover:bg-white"
             />
             {search && (
@@ -145,6 +194,25 @@ export default function CitizenConversationsPage() {
               </button>
             )}
           </div>
+
+          {/* Status filter tabs - Lawyer only */}
+          {isLawyer && (
+            <div className="flex gap-1 bg-[#F9FAFB] rounded-xl p-1 mt-3">
+              {statusTabs.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`flex-1 py-1 rounded-lg text-[10px] font-semibold capitalize transition-all ${
+                    statusFilter === s
+                      ? "bg-white text-[#111827] shadow-sm"
+                      : "text-[#6B7280] hover:text-[#374151]"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Connection state */}
@@ -165,37 +233,55 @@ export default function CitizenConversationsPage() {
                 <MessageSquare size={20} className="text-gray-400" />
               </div>
               <p className="text-[13px] font-medium text-gray-600">
-                {search ? "No conversations match your search" : "No conversations yet"}
+                {search ? "No conversations match your search" : isLawyer ? "No conversations found" : "No conversations yet"}
               </p>
               <p className="text-[11px] text-gray-400 mt-1">
-                {search ? "Try adjusting your search" : "Start chatting with lawyers"}
+                {search ? "Try adjusting your search" : isLawyer ? "Select a conversation to start" : "Start chatting with lawyers"}
               </p>
             </div>
           ) : (
-            filtered.map(conv => (
-              <ConversationListItem
-                key={conv._id}
-                conversation={conv}
-                currentUserId={currentUserId}
-                isActive={conv._id === activeConvId}
-                presence={presence}
-                unreadCount={0}
-                onClick={() => handleSelectConversation(conv._id)}
-              />
-            ))
+            filtered.map(conv => {
+              const unread = conv.participants.find(p => p.userId !== currentUserId)?.unreadCount ?? 0;
+              return (
+                <div key={conv._id} className="relative">
+                  <ConversationListItem
+                    conversation={conv}
+                    currentUserId={currentUserId}
+                    isActive={conv._id === activeConvId}
+                    presence={presence}
+                    unreadCount={unread}
+                    onClick={() => handleSelectConversation(conv._id)}
+                  />
+                  {/* Status indicator - Lawyer only */}
+                  {isLawyer && conv.status !== "active" && (
+                    <span
+                      className="absolute top-3 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                      style={{
+                        background: CONV_STATUS[conv.status]?.bg,
+                        color: CONV_STATUS[conv.status]?.color,
+                      }}
+                    >
+                      {CONV_STATUS[conv.status]?.label}
+                    </span>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
 
-        {/* Footer CTA - Fixed */}
-        <div className="flex-shrink-0 p-4 border-t border-gray-100/80 bg-gradient-to-r from-gray-50/50 to-white sticky bottom-0">
-          <Link
-            href="/dashboard/marketplace"
-            className="flex items-center justify-center gap-2.5 w-full py-3 rounded-xl text-[13px] font-semibold text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[#E8317A]/25 hover:shadow-xl hover:shadow-[#E8317A]/35"
-            style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
-          >
-            <Plus size={15} /> Book a Lawyer
-          </Link>
-        </div>
+        {/* Footer CTA - Citizen only */}
+        {isCitizen && (
+          <div className="flex-shrink-0 p-4 border-t border-gray-100/80 bg-gradient-to-r from-gray-50/50 to-white sticky bottom-0">
+            <Link
+              href="/dashboard/marketplace"
+              className="flex items-center justify-center gap-2.5 w-full py-3 rounded-xl text-[13px] font-semibold text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[#E8317A]/25 hover:shadow-xl hover:shadow-[#E8317A]/35"
+              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+            >
+              <Plus size={15} /> Book a Lawyer
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* ── Main Chat Area ── */}
@@ -213,7 +299,9 @@ export default function CitizenConversationsPage() {
               Dashboard
             </Link>
             <ChevronRight size={12} className="text-gray-300" />
-            <span className="text-gray-700 font-semibold">Messages</span>
+            <span className="text-gray-700 font-semibold">
+              {isLawyer ? "Client Messages" : "Messages"}
+            </span>
           </nav>
           
           {activeConversation && (
@@ -233,11 +321,14 @@ export default function CitizenConversationsPage() {
             conversation={activeConversation}
             currentUserId={currentUserId}
             currentUserName={currentUserName}
+            userRole={userRole}
             chatSocket={chatSocket}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <EmptyConversation message="Select a conversation to start chatting" />
+            <EmptyConversation 
+              message={isLawyer ? "Select a client conversation" : "Select a conversation to start chatting"} 
+            />
           </div>
         )}
       </div>
@@ -251,14 +342,18 @@ function ChatPanel({
   conversation,
   currentUserId,
   currentUserName,
+  userRole,
   chatSocket,
 }: {
   conversation: IConversation;
   currentUserId: string;
   currentUserName: string;
+  userRole: 'citizen' | 'lawyer' | 'admin';
   chatSocket: ReturnType<typeof useChatSocket>;
 }) {
   const presence = useSelector((s: any) => s.chatUi.presence);
+  const isLawyer = userRole === "lawyer";
+  const isClosed = conversation.status !== "active";
 
   const {
     messages,
@@ -275,9 +370,13 @@ function ChatPanel({
     conversation,
     currentUserId,
     currentUserName,
-    currentUserRole: "citizen",
+    currentUserRole: userRole,
     chatSocket,
   });
+
+  // Consultation metadata
+  const otherParticipant = conversation.participants.find(p => p.userId !== currentUserId);
+  const meta = conversation.metadata as any;
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-gray-50/30 overflow-hidden">
@@ -291,13 +390,30 @@ function ChatPanel({
         />
       </div>
 
-      {/* Connection Banner - Fixed */}
+      {/* Consultation context banner - Lawyer only */}
+      {isLawyer && conversation.contextType === "consultation" && (
+        <div className="flex items-center gap-2.5 px-4 py-2 bg-[#EFF6FF] border-b border-[#BFDBFE] flex-shrink-0">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] flex-shrink-0" />
+          <p className="text-[11px] text-[#1E40AF] font-semibold flex-1 min-w-0">
+            Consultation chat
+            {meta?.mode && ` · ${meta.mode} mode`}
+            {meta?.feePaid && ` · NGN ${Number(meta.feePaid).toLocaleString()}`}
+          </p>
+          {isClosed && (
+            <span className="text-[9px] font-bold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">
+              CLOSED
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Connection Banner */}
       <div className="flex-shrink-0">
         <ConnectionBanner connected={socketConnected} />
       </div>
 
       {/* Messages - Scrollable */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
+      <div className="flex-1 overflow-y-auto custom-scrollbar md:px-4 py-4">
         <MessageList
           messages={messages}
           currentUserId={currentUserId}
@@ -315,11 +431,13 @@ function ChatPanel({
           onSend={sendMessage}
           onTypingStart={handleTypingStart}
           onTypingStop={handleTypingStop}
-          disabled={!socketConnected || conversation.status !== "active"}
+          disabled={!socketConnected || isClosed}
           placeholder={
-            conversation.status === "closed"
-              ? "This conversation is closed"
-              : "Type a message…"
+            isClosed
+              ? isLawyer 
+                ? "This consultation has ended"
+                : "This conversation is closed"
+              : `Reply to ${otherParticipant?.name ?? "client"}…`
           }
           replyTo={replyTo}
           onCancelReply={() => setReplyTo(null)}

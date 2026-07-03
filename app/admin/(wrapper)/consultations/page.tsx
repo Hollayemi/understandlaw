@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
-  MessageSquare, Video, Phone, Clock, CheckCircle, XCircle,
-  AlertTriangle, DollarSign, TrendingUp, Star,
-  Eye, Flag, Search, ChevronRight, Download,
-  Loader2, X, Check, RotateCcw,
-  Zap, BarChart3, Activity, UserCheck, Timer, Gavel,
+  MessageSquare, 
+  AlertTriangle, DollarSign, TrendingUp, 
+  Eye, Flag, Search, Download,
+  Loader2, 
+  Zap, BarChart3, Activity, Timer, Gavel,
 } from "lucide-react";
 import {
   StatBar, PageHeader,
@@ -15,17 +15,11 @@ import {
   useAdminGetConsultationStatsQuery,
   useAdminListMatchRequestsQuery,
   useAdminGetLawyerPerformanceQuery,
-  useAdminUpdateConsultationStatusMutation,
-  useAdminResolveDisputeMutation,
-  useAdminFlagConsultationMutation,
-  useAdminApproveRefundMutation,
-  useAdminAssignLawyerToMatchMutation,
-  useAdminAutoMatchMutation,
   useAdminBulkAutoMatchMutation,
 } from "@/redux/slices/admin/consultation.slice";
-import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
+import { ConsultStatus, ConsultMode, Consultation } from "@/redux/types/consultation";
 
-import {  STATUS_CFG, MODE_CFG, MATCH_STATUS_CFG, ConsultStatusBadge, StarRating, TranscriptDrawer, MatchCard, LawyerPerformanceRow, } from "./components"
+import {  MODE_CFG, ConsultStatusBadge, TranscriptDrawer, MatchCard, LawyerPerformanceRow, } from "./components"
 
 export default function ConsultationsPage() {
   const [tab, setTab] = useState<"all" | ConsultStatus>("all");
@@ -34,7 +28,6 @@ export default function ConsultationsPage() {
   const [selectedConsult, setSelectedConsult] = useState<Consultation | null>(null);
   const [activeSection, setActiveSection] = useState<"consultations" | "matches" | "performance">("consultations");
   const [matchRefreshKey, setMatchRefreshKey] = useState(0);
-
 
   const { data: consultationsData, isLoading: consultationsLoading } = useAdminListConsultationsQuery({
     status: tab === "all" ? undefined : tab,

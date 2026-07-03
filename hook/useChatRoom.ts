@@ -154,10 +154,19 @@ export function useChatRoom({
         replyTo: replyTo?._id,
       });
 
-      if (!result.success) {
-        dispatch(
-          chatUiActions.confirmMessage({ tempId, conversationId })
-        );
+      if (result.success && result.messageId) {
+        // Replace the optimistic message with the confirmed one
+        dispatch(chatUiActions.confirmMessage({
+          tempId,
+          conversationId,
+          confirmed: {
+            ...optimistic,
+            _id: result.messageId,
+            _pending: false,
+          }
+        }));
+      } else if (!result.success) {
+        dispatch(chatUiActions.confirmMessage({ tempId, conversationId }));
       }
       // On success the socket will emit "message:received" which updates liveMessages
     },

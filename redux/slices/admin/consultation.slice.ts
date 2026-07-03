@@ -47,6 +47,7 @@ export const adminConsultationApi = createApi({
         url: "/admin/consultations",
         method: "GET",
         params,
+        
       }),
       providesTags:[{ type: "ConsultationList", id: "LIST" }],
     }),

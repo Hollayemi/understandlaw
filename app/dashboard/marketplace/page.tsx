@@ -7,17 +7,25 @@ import {
 } from "lucide-react";
 import { ModalType } from "./_components/types";
 import { ConsultModal, LawyerCard, RequestLawyerModal, VerificationSteps } from "./_components";
-import { SPECIALISMS } from "./_components/data";
+// import { SPECIALISMS } from "./_components/data";
 import { useGetMarketplaceLawyersQuery } from "@/redux/slices/lawyers.slice";
 import { LawyerFull } from "@/redux/types/lawyer";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 
 
 // Helper to get filter counts from lawyer list
 const getFilterCounts = (lawyers: LawyerFull[], specialismId: string, state: string) => {
+  const hasSpecialism = (lawyer: LawyerFull) => {
+    return lawyer.specialisms.some(specialism => {
+      if (typeof specialism === "string") return specialism === specialismId;
+      return (specialism as any)._id === specialismId || (specialism as any).id === specialismId;
+    });
+ };
+
   if (specialismId === "all" && state === "all") return lawyers.length;
   if (specialismId === "all") return lawyers.filter(l => l.state === state).length;
-  if (state === "all") return lawyers.filter(l => l.specialisms.includes(specialismId)).length;
-  return lawyers.filter(l => l.specialisms.includes(specialismId) && l.state === state).length;
+  if (state === "all") return lawyers.filter(hasSpecialism).length;
+  return lawyers.filter(l => hasSpecialism(l) && l.state === state).length;
 };
 
 export default function MarketplacePage() {
@@ -49,8 +57,9 @@ export default function MarketplacePage() {
     error,
     refetch,
   } = useGetMarketplaceLawyersQuery(queryParams);
+  const { data: loadSpecialism } = useListSpecialismsQuery();
+  const SPECIALISMS = loadSpecialism?.data || [];
 
-  // Transform API lawyers to component format
   const { data: rawLawyers = [], ...pagination } = lawyersResponse?.data || {};
   const LAWYERS: LawyerFull[] = rawLawyers
 
@@ -229,14 +238,14 @@ export default function MarketplacePage() {
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Area of Law</p>
                 <div className="flex flex-col gap-0.5">
                   {SPECIALISMS.map(s => {
-                    const Icon = s.icon;
-                    const active = filterSpecialism === s.id;
-                    const count = getFilterCounts(LAWYERS, s.id, filterState);
+                    // const Icon = s.icon;
+                    const active = filterSpecialism === s._id;
+                    const count = getFilterCounts(LAWYERS, s._id, filterState);
                     return (
                       <button key={s.id} onClick={() => setFilterSpecialism(s.id)}
                         className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-[#E8317A] font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
-                        <Icon size={14} className={active ? "text-[#E8317A]" : "text-gray-400"} />
-                        <span className="flex-1">{s.label}</span>
+                        {/* <Icon size={14} className={active ? "text-[#E8317A]" : "text-gray-400"} /> */}
+                        <span className="flex-1">{s.displayName}</span>
                         <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${active ? "bg-pink-100 text-[#E8317A]" : "bg-gray-100 text-gray-400"}`}>{count}</span>
                       </button>
                     );

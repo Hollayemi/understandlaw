@@ -7,7 +7,6 @@ import {
 import { useAdminListBooksQuery, useAdminGetBookStatsQuery, useAdminListOrdersQuery, useAdminDeleteBookMutation, useAdminToggleBookFeaturedMutation, useAdminToggleBookStatusMutation, useAdminUpdateOrderStatusMutation } from "@/redux/slices/admin/library.slice";
 import { Book, BookOrder, OrderStatus } from "@/redux/types/library";
 import { BookCard, OrderModal, UploadBookModal } from "./_components";
-import { BOOKS, ORDERS } from "./_components/data";
 import {toast} from "sonner";
 
 // Stat Bar Component

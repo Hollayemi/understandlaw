@@ -8,18 +8,11 @@ import {
   Image as ImageIcon, File as FileIcon, Lock,
 } from "lucide-react";
 import { IMessage, IConversation, IParticipant, IPresence, MessageType } from "@/redux/slices/chat.slice";
+import { formatTime } from "@/utils/function";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-export function formatTime(iso: string): string {
-  const d = new Date(iso);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
-  if (diffDays === 0) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return d.toLocaleDateString([], { weekday: "short" });
-  return d.toLocaleDateString([], { day: "numeric", month: "short" });
-}
+
 
 export function formatFullTime(iso: string): string {
   return new Date(iso).toLocaleString([], {
@@ -215,7 +208,7 @@ export function ChatBubble({
 
   return (
     <div
-      className={`flex gap-2.5 mb-1 group ${isMine ? "flex-row-reverse" : ""}`}
+      className={`flex gap-1 md:gap-2.5 mb-1 group ${isMine ? "flex-row-reverse" : ""}`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
@@ -258,7 +251,7 @@ export function ChatBubble({
               className={`flex items-center gap-1 mt-1 ${isMine ? "justify-end" : "justify-start"}`}
             >
               <span className="text-[10px]" style={{ color: timeColor }}>
-                {formatTime(message.createdAt)}
+                {formatTime(message.createdAt, 'relative')}
               </span>
               {isMine && (
                 <MessageStatusIcon
@@ -484,13 +477,8 @@ export function ConversationHeader({
   const lastSeenLabel = (() => {
     if (isOnline) return "Online";
     if (!otherPresence?.lastSeenAt) return "Offline";
-    const diff = Date.now() - new Date(otherPresence.lastSeenAt).getTime();
-    const mins = Math.floor(diff / 60_000);
-    if (mins < 1) return "Just now";
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    return `${Math.floor(hrs / 24)}d ago`;
+   
+    return formatTime(otherPresence?.lastSeenAt, 'relative')
   })();
 
   const name = other?.name ?? conversation.groupName ?? "Chat";
@@ -498,7 +486,7 @@ export function ConversationHeader({
   const color = colorFromString(name);
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#F3F4F6] bg-white flex-shrink-0">
+    <div className="flex !fixed w-full md:relative top-0 items-center gap-3 px-4 py-3.5 border-b border-[#F3F4F6] bg-white flex-shrink-0">
       <div className="relative flex-shrink-0">
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
@@ -617,7 +605,7 @@ export function ConversationListItem({
             {name}
           </p>
           <span className="text-[10px] text-[#9CA3AF] flex-shrink-0">
-            {last ? formatTime(last.createdAt) : ""}
+            {last ? formatTime(last.createdAt, 'relative') : ""}
           </span>
         </div>
         <div className="flex items-center justify-between gap-2 mt-0.5">
@@ -725,7 +713,7 @@ export function MessageList({
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto px-4 py-4 space-y-0.5"
+      className="flex-1 overflow-y-auto md:px-4 py-4 space-y-0.5"
       style={{ scrollbarWidth: "thin", scrollbarColor: "#E5E7EB transparent" }}
     >
       {isLoadingHistory && (

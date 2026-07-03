@@ -1,29 +1,23 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   MessageSquare, Video, Phone, Clock, CheckCircle, XCircle,
-  AlertTriangle, DollarSign, TrendingUp, Star,
-  Eye, Flag, Search, ChevronRight, Download,
+  AlertTriangle, Star,
+  Flag, ChevronRight,
   Loader2, X, Check, RotateCcw,
-  Zap, BarChart3, Activity, UserCheck, Timer, Gavel,
+  Zap, Activity, UserCheck, Timer, Gavel,
 } from "lucide-react";
 import {
-  StatBar, PageHeader,
-} from "../_components";
-import {
-  useAdminListConsultationsQuery,
-  useAdminGetConsultationStatsQuery,
-  useAdminListMatchRequestsQuery,
-  useAdminGetLawyerPerformanceQuery,
   useAdminUpdateConsultationStatusMutation,
   useAdminResolveDisputeMutation,
   useAdminFlagConsultationMutation,
   useAdminApproveRefundMutation,
   useAdminAssignLawyerToMatchMutation,
   useAdminAutoMatchMutation,
-  useAdminBulkAutoMatchMutation,
 } from "@/redux/slices/admin/consultation.slice";
 import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
+import { ConversationTab } from "@/app/dashboard/consultations/components";
+import { formatTime } from "@/utils/function";
 
 
 export const STATUS_CFG: Record<ConsultStatus, { label: string; bg: string; text: string; dot: string; icon: React.ElementType }> = {
@@ -157,8 +151,8 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
           background: consult.disputed
             ? "#EF4444"
             : consult.status === "completed"
-            ? "#10B981"
-            : "linear-gradient(90deg, #E8317A, #ff6fa8)"
+              ? "#10B981"
+              : "linear-gradient(90deg, #E8317A, #ff6fa8)"
         }} />
 
         <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
@@ -226,62 +220,9 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
 
         <div className="flex-1 overflow-y-auto p-6">
           {/* Transcript Tab - same as original */}
+         
           {activeTab === "transcript" && (
-            <div>
-              {consult.transcript.length === 0 ? (
-                <div className="text-center py-12">
-                  <MessageSquare size={28} className="text-[#E5E7EB] mx-auto mb-2" />
-                  <p className="text-sm text-[#9CA3AF]">No messages yet</p>
-                  <p className="text-[11px] text-[#D1D5DB] mt-1">
-                    {consult.status === "awaiting_lawyer" ? "Waiting for lawyer to accept." : "Consultation has not started."}
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">
-                    Full Message Transcript · {consult.transcript.length} messages
-                  </p>
-                  {consult.transcript.map(msg => (
-                    <div key={msg.id} className={`flex gap-2.5 ${msg.sender === "lawyer" ? "flex-row-reverse" : ""}`}>
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0 mt-0.5`}
-                        style={{
-                          background: msg.sender === "citizen"
-                            ? `linear-gradient(135deg, ${consult.citizen.color}, ${consult.citizen.color}80)`
-                            : `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)`
-                        }}>
-                        {msg.sender === "citizen" ? consult.citizen.initials : consult.lawyer.initials}
-                      </div>
-                      <div className={`flex-1 max-w-[85%] ${msg.sender === "lawyer" ? "items-end" : ""} flex flex-col`}>
-                        <div className={`flex items-center gap-2 mb-1 ${msg.sender === "lawyer" ? "flex-row-reverse" : ""}`}>
-                          <p className="text-[10px] font-semibold text-[#9CA3AF]">{msg.senderName}</p>
-                          <p className="text-[10px] text-[#D1D5DB]">{msg.time}</p>
-                        </div>
-                        <div className={`rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed ${
-                          msg.sender === "citizen"
-                            ? "bg-[#F3F4F6] text-[#374151] rounded-tl-sm"
-                            : "text-white rounded-tr-sm"
-                        }`}
-                          style={msg.sender === "lawyer" ? { background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}cc)` } : {}}>
-                          {msg.text}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {consult.status === "completed" && consult.rating && (
-                <div className="mt-5 pt-5 border-t border-[#F3F4F6]">
-                  <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Citizen Review</p>
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                    <StarRating n={consult.rating} />
-                    {consult.ratingNote && (
-                      <p className="text-[12px] text-[#92400E] mt-2 leading-relaxed">"{consult.ratingNote}"</p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            <ConversationTab consult={consult} isAdmin />
           )}
 
           {/* Financials Tab - same as original */}
@@ -306,8 +247,8 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
               <div className="space-y-2 text-[12px]">
                 {[
                   { l: "Payment Method", v: "Paystack" },
-                  { l: "Payment Ref", v: `PAY-2025-${consult.id}` },
-                  { l: "Initiated", v: consult.createdAt },
+                  { l: "Payment Ref", v: consult.receiptId },
+                  { l: "Initiated", v: formatTime(consult.createdAt) },
                   { l: "Completed", v: consult.completedAt ?? "—" },
                   { l: "Duration", v: consult.duration ?? "—" },
                 ].map(r => (
@@ -382,8 +323,8 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
                 <button onClick={handleFlag} disabled={flagging || flagged || !flagNote.trim()}
                   className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 transition-colors flex items-center justify-center gap-1.5">
                   {flagging ? <><Loader2 size={11} className="animate-spin" /> Flagging…</>
-                  : flagged ? <><Check size={11} /> Flagged</>
-                  : <><Flag size={11} /> Flag for Review</>}
+                    : flagged ? <><Check size={11} /> Flagged</>
+                      : <><Flag size={11} /> Flag for Review</>}
                 </button>
               </div>
 
@@ -391,7 +332,7 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
                 <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Admin Actions</p>
                 {[
                   { label: "Send Warning to Lawyer", onClick: handleSendWarning, color: "#F59E0B", border: "#FDE68A", bg: "#FFFBEB" },
-                  { label: "Suspend Lawyer Account", onClick: () => {}, color: "#EF4444", border: "#FCA5A5", bg: "#FEF2F2" },
+                  { label: "Suspend Lawyer Account", onClick: () => { }, color: "#EF4444", border: "#FCA5A5", bg: "#FEF2F2" },
                   { label: "Cancel & Refund", onClick: () => handleApproveRefund(true), color: "#8B5CF6", border: "#C4B5FD", bg: "#F5F3FF" },
                 ].map(a => (
                   <button key={a.label} onClick={a.onClick}
@@ -423,6 +364,8 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
       console.error("Failed to auto-match:", error);
     }
   };
+
+  console.log(req.status)
 
   return (
     <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -486,12 +429,14 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
   );
 }
 
-// Lawyer Performance Row
+// Lawyer Performance Row ===>
 export function LawyerPerformanceRow({ lawyer, stats }: {
   lawyer: { id: string; name: string; initials: string; color: string; nbaNumber: string };
   stats: { total: number; completed: number; disputed: number; avgRating: number; totalRevenue: number };
 }) {
+
   const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+
   return (
     <tr className="hover:bg-[#F9FAFB] transition-colors border-b border-[#F9FAFB]">
       <td className="px-5 py-3.5">

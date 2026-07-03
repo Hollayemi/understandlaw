@@ -122,7 +122,7 @@ export const lawyerApi = createApi({
     }),
 
     // Request a lawyer match (when user isn't sure who to pick)
-    requestLawyerMatch: builder.mutation<ApiResponse<MatchResponse>, RequestMatchPayload>({
+    requestLawyerMatch: builder.mutation<ApiResponse<any>, RequestMatchPayload>({
       query: (data) => ({
         url: "/marketplace/match-requests",
         method: "POST",

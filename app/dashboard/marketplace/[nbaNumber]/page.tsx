@@ -11,6 +11,8 @@ import {
   Globe, BookOpen, Scale, Briefcase, Heart, Car, Building2, Home
 } from "lucide-react";
 import { useGetLawyerByNbaNumberQuery, useGetLawyerAvailabilityQuery, useBookConsultationMutation } from "@/redux/slices/lawyers.slice";
+import { Specialism } from "@/redux/types/lawyer";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 
 // Types
 type ConsultMode = "message" | "call" | "video";
@@ -350,6 +352,11 @@ export default function LawyerProfilePage() {
   const router = useRouter();
   const nbaNumber = params.nbaNumber as string;
   const normalizedNbaNumber = nbaNumber;
+  const {data:loadSpecialism} = useListSpecialismsQuery();
+
+  const specialismConfig = loadSpecialism?.data || []
+
+  console.log(specialismConfig)
   
   const [tab, setTab] = useState<"overview" | "reviews" | "faq">("overview");
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -371,15 +378,6 @@ export default function LawyerProfilePage() {
   if (lawyer?.rating && lawyer.rating >= 4.7) badges.push("Top Rated");
   if (lawyer?.responseTime && lawyer.responseTime < 2) badges.push("Responsive");
 
-  const specialismConfig: Record<string, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-    criminal: { label: "Criminal Law", color: "#3B82F6", bg: "#EFF6FF", icon: Shield },
-    property: { label: "Property & Tenancy", color: "#10B981", bg: "#ECFDF5", icon: Home },
-    employment: { label: "Employment & Labour", color: "#8B5CF6", bg: "#F5F3FF", icon: Briefcase },
-    business: { label: "Business & CAC", color: "#F59E0B", bg: "#FFFBEB", icon: Building2 },
-    family: { label: "Family Law", color: "#E8317A", bg: "#FFF0F5", icon: Heart },
-    consumer: { label: "Consumer Rights", color: "#06B6D4", bg: "#ECFEFF", icon: Globe },
-    road: { label: "Road Traffic", color: "#6B7280", bg: "#F9FAFB", icon: Car },
-  };
 
   // Mock reviews for now - these would come from a separate endpoint
   const reviews: Review[] = [];
@@ -555,18 +553,18 @@ export default function LawyerProfilePage() {
                     <div className="bg-white rounded-2xl border border-[#F3F4F6] shadow-sm p-6">
                       <h2 className="text-[14px] font-bold text-[#111827] mb-4">Practice Areas</h2>
                       <div className="flex flex-col gap-3">
-                        {lawyer.specialisms.map((id: string) => {
-                          const cfg = specialismConfig[id];
-                          if (!cfg) return null;
-                          const Icon = cfg.icon;
+                        {lawyer.specialisms.map((specialism: Specialism) => {
+                          // const cfg = specialismConfig[specialism];
+                          // if (!cfg) return null;
+                          // const Icon = cfg.icon;
                           return (
-                            <div key={id} className="flex items-center gap-3 p-3 rounded-xl border border-[#F3F4F6]"
-                              style={{ background: `${cfg.bg}60` }}>
-                              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                            <div key={specialism._id} className="flex items-center gap-3 p-3 rounded-xl border border-[#F3F4F6]">
+                              
+                              {/* <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                                 style={{ background: cfg.bg }}>
                                 <Icon size={15} style={{ color: cfg.color }} />
-                              </div>
-                              <span className="text-[13px] font-semibold text-[#111827]">{cfg.label}</span>
+                              </div> */}
+                              <span className="text-[13px] font-semibold text-[#111827]">{specialism.displayName}</span>
                             </div>
                           );
                         })}

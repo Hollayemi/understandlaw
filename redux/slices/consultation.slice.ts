@@ -53,6 +53,14 @@ export const consultationsApi = createApi({
   endpoints: (builder) => ({
     // ========== CITIZEN (USER) ENDPOINTS ==========
 
+    // Pay Consultation Fee
+    payConsultation: builder.mutation<ApiResponse<any>, {id: string}>({
+      query: ({id}) => ({
+        url: `/consultations/pay/${id}`,
+        method: "PATCH",
+      }),
+    }),
+
     // Get all consultations for the logged-in citizen
     getCitizenConsultations: builder.query<
       ApiResponse<PaginatedConsultations>,
@@ -563,6 +571,7 @@ export const consultationsApi = createApi({
 
 // Citizen hooks
 export const {
+  usePayConsultationMutation,
   useGetCitizenConsultationsQuery,
   useGetCitizenConsultationQuery,
   useGetCitizenStatsQuery,

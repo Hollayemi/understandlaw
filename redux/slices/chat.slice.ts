@@ -135,11 +135,12 @@ export const chatApi = createApi({
     // GET /chat/conversations/:id/messages
     getMessages: builder.query<
       ApiOk<{ messages: IMessage[] }>,
-      { conversationId: string; before?: string; limit?: number }
+      { conversationId: string; before?: string; limit?: number, isAdmin?: boolean }
     >({
-      query: ({ conversationId, before, limit }) => ({
+      query: ({ conversationId, before, limit, isAdmin }) => ({
         url: `/chat/conversations/${conversationId}/messages`,
         method: "GET",
+        endpointActor: !isAdmin ? "user" : "admin",
         params: { before, limit },
       }),
       providesTags: (r, e, { conversationId }) => [{ type: "Messages", id: conversationId }],
@@ -240,22 +241,23 @@ export const chatUiSlice = createSlice({
     },
 
     // Called when socket receives "message:received"
-    receiveMessage(state, action: PayloadAction<{ message: IMessage; conversationId: string }>) {
-      const { message, conversationId } = action.payload;
-      if (!state.liveMessages[conversationId]) {
-        state.liveMessages[conversationId] = [];
-      }
-      // Deduplicate by _id
-      const exists = state.liveMessages[conversationId].some(m => m._id === message._id);
-      if (!exists) {
-        state.liveMessages[conversationId].push(message);
-      }
-      // Increment unread if not the active conversation
-      if (state.activeConversationId !== conversationId) {
-        state.unread[conversationId] = (state.unread[conversationId] ?? 0) + 1;
-      }
-    },
-
+   receiveMessage(state, action: PayloadAction<{ message: IMessage; conversationId: string }>) {
+  const { message, conversationId } = action.payload;
+  if (!state.liveMessages[conversationId]) {
+    state.liveMessages[conversationId] = [];
+  }
+  // Deduplicate by _id AND by checking if a confirmed message already exists
+  const exists = state.liveMessages[conversationId].some(
+    m => m._id === message._id || 
+    (m._id === message._id.toString()) // handle ObjectId vs string mismatch
+  );
+  if (!exists) {
+    state.liveMessages[conversationId].push(message);
+  }
+  if (state.activeConversationId !== conversationId) {
+    state.unread[conversationId] = (state.unread[conversationId] ?? 0) + 1;
+  }
+},
     // Optimistic send — adds a pending message immediately
     optimisticSend(state, action: PayloadAction<IMessage>) {
       const msg = action.payload;
@@ -266,20 +268,20 @@ export const chatUiSlice = createSlice({
 
     // Replace a pending message with the confirmed one (or mark failed)
     confirmMessage(
-      state,
-      action: PayloadAction<{ tempId: string; conversationId: string; confirmed?: IMessage }>
-    ) {
-      const { tempId, conversationId, confirmed } = action.payload;
-      const msgs = state.liveMessages[conversationId];
-      if (!msgs) return;
-      const idx = msgs.findIndex(m => m._id === tempId);
-      if (idx === -1) return;
-      if (confirmed) {
-        msgs[idx] = confirmed;
-      } else {
-        msgs[idx] = { ...msgs[idx], _failed: true, _pending: false };
-      }
-    },
+  state,
+  action: PayloadAction<{ tempId: string; conversationId: string; confirmed?: IMessage }>
+) {
+  const { tempId, conversationId, confirmed } = action.payload;
+  const msgs = state.liveMessages[conversationId];
+  if (!msgs) return;
+  const idx = msgs.findIndex(m => m._id === tempId);
+  if (idx === -1) return;
+  if (confirmed) {
+    msgs[idx] = { ...confirmed, _pending: false };
+  } else {
+    msgs[idx] = { ...msgs[idx], _failed: true, _pending: false };
+  }
+},
 
     // Merge REST history into liveMessages (called after getMessages)
     hydrateMessages(

@@ -3,9 +3,9 @@ import { MessageSquare, Phone, Video,  MessageCircle, CheckCircle, Gavel, XCircl
 
 export const STATUS_CFG: Record<
   ConsultStatus,
-  { label: string; bg: string; text: string; dot: string; lawyerLabel:string; userLabel: string; icon: React.ElementType }
+  { label: string; bg: string; text: string; dot: string; lawyerLabel:string; userLabel: string; action?: string; icon: React.ElementType }
 > = {
-  pending:         { label: "Pending",          lawyerLabel: "Pending",            userLabel: "Waiting for payment",      bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B",  icon: Clock },
+  pending:         { label: "Pending",          lawyerLabel: "Pending",            userLabel: "Waiting for payment",      bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B",  icon: Clock,           action: "pay" },
   paid:            { label: "Paid",             lawyerLabel: "Paid",               userLabel: "Payment confirmed",         bg: "#EFF6FF", text: "#1E3A8A", dot: "#3B82F6",  icon: CheckCircle },
   processing:      { label: "Processing",       lawyerLabel: "Processing",         userLabel: "Payment confirmed",         bg: "#EFF6FF", text: "#1E3A8A", dot: "#3B82F6",  icon: CheckCircle },
   awaiting_lawyer: { label: "Awaiting Lawyer",  lawyerLabel: "Awaiting Lawyer",    userLabel: "Lawyer is reviewing",      bg: "#FFF0F5", text: "#9D174D", dot: "#E8317A",  icon: Clock },

@@ -319,11 +319,12 @@ export interface BookingResponse {
 // Request Lawyer Match
 export interface RequestMatchPayload {
   specialism: string;
-  urgency: "today" | "this_week" | "within_two_weeks" | "no_rush";
+  urgency: string | null;
+  topic: string;
   location?: string;
   budgetRange: string;
   description: string;
-  preferredContactMethod?: "email" | "phone" | "whatsapp";
+  mode: "message" | "call" | "video";
 }
 
 export interface MatchResponse {

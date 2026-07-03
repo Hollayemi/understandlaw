@@ -14,7 +14,7 @@ import {
   useAdminRejectVerificationMutation,
   useAdminVerifyDocumentMutation,
 } from "@/redux/slices/admin/lawyer.slice";
-import type { LawyerFull, VerificationStatus as ApiVerificationStatus } from "@/redux/types/lawyer";
+import type { LawyerFull, VerificationStatus as ApiVerificationStatus, Specialism } from "@/redux/types/lawyer";
 import { formatFileSize } from "@/utils/function";
 
 type UIStatus = "pending" | "approved" | "rejected" | "info_requested";
@@ -30,7 +30,7 @@ interface VerificationRequest {
   nbaNumber: string;
   yearsCall: number;
   calledAt: string;
-  specialisms: string[];
+  specialisms: Specialism[];
   submittedAt: string;
   status: UIStatus;
   documents: Document[];

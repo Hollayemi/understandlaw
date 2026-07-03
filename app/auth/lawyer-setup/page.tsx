@@ -30,6 +30,7 @@ export default function LawyerOnboardingPage() {
     const { data:getSpecialisms, isLoading } = useListSpecialismsQuery()
     console.log(getSpecialisms)
     const specialisms = getSpecialisms?.data || []
+    
     console.log({specialisms})
 
   const router = useRouter()

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Play, Pause, BookOpen, Flame, Trophy, Clock, ChevronRight,
-  Bookmark, Share2, TrendingUp, Zap, Lock, CheckCircle2,
-  Bell, Search, Star, ArrowRight, Users, BarChart3,
-  MessageCircle, Sparkles, Target, Calendar,
+  Bookmark, TrendingUp, Zap, CheckCircle2,
+  Bell, Search, Star, ArrowRight, Users,
+  MessageCircle, Target, Calendar,
   CarTaxiFront,
   House,
   Briefcase,
@@ -13,95 +13,114 @@ import {
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import { CitizenFull } from "@/redux/types";
+import {
+  useGetDashboardDataQuery,
+  useGetUserStatsQuery,
+  useGetContinueReadingQuery,
+  useGetDailyChallengeQuery,
+  useGetTrendingTopicsQuery,
+  useGetBookmarksQuery,
+  useGetCommunityHighlightsQuery,
+  useGetNextGoalQuery,
+  useSubmitQuizAnswerMutation,
+} from "@/redux/slices/dashboard.slice";
 
-
-const CONTINUE_READING = [
-  {
-    slug:     "rights-during-arrest",
-    icon:     <CarTaxiFront />,
-    gradient: "linear-gradient(135deg, #1E3A5F 0%, #2D5A8E 100%)",
-    tag:      "Police Rights",
-    tagColor: "#3B82F6",
-    title:    "Rights During Arrest & Detention",
-    progress: 62,
-    lastRead: "2 hours ago",
-    section:  "Section 3: Your right to remain silent",
-    xpReward: 50,
-  },
-  {
-    slug:     "tenant-eviction-rights",
-    icon:     <House />,
-    gradient: "linear-gradient(135deg, #1A3B2E 0%, #2D6A4F 100%)",
-    tag:      "Tenancy Law",
-    tagColor: "#10B981",
-    title:    "Tenant Eviction Rights in Nigeria",
-    progress: 25,
-    lastRead: "Yesterday",
-    section:  "Section 2: Notice periods explained",
-    xpReward: 80,
-  },
-];
-
-const DAILY_CHALLENGE = {
-  title: "Know Your Arrest Rights",
-  question: "How long can police legally detain you without charge in Nigeria?",
-  options: ["12 hours", "24 hours", "48 hours", "72 hours"],
-  correct: 1,
-  xpReward: 100,
-  completed: false,
+// Helper to get icons based on slug or type
+const getIconForTopic = (slug: string = '') => {
+  if (slug.includes("arrest") || slug.includes("police")) return <CarTaxiFront size={16} />;
+  if (slug.includes("eviction") || slug.includes("tenancy") || slug.includes("tenant")) return <House size={16} />;
+  if (slug.includes("employment") || slug.includes("termination") || slug.includes("labour")) return <Briefcase size={16} />;
+  if (slug.includes("contract") || slug.includes("agreement") || slug.includes("rental")) return <File size={16} />;
+  return <BookOpen size={16} />;
 };
 
-const TRENDING_TOPICS = [
-  { icon: <CarTaxiFront size={15} />, title: "Police Encounter Rights",    reads: "12.4k", hot: true,  slug: "police-encounter" },
-  { icon: <House size={15} />, title: "Illegal Eviction Notice",    reads: "9.1k",  hot: true,  slug: "eviction-notice" },
-  { icon: <Briefcase size={15} />, title: "Wrongful Termination",       reads: "7.8k",  hot: false, slug: "wrongful-termination" },
-  { icon: <File size={15} />, title: "Signing a Rental Agreement", reads: "6.2k",  hot: false, slug: "rental-agreement" },
-];
+const getTagColor = (tag: string) => {
+  const colors: Record<string, string> = {
+    "Police Rights": "#3B82F6",
+    "Tenancy Law": "#10B981",
+    "Employment Law": "#8B5CF6",
+    "Business Law": "#F59E0B",
+    "Family Law": "#EF4444",
+    "Contract Law": "#06B6D4",
+  };
+  return colors[tag] || "#E8317A";
+};
 
-const BOOKMARKS = [
-  { title: "Section 35,  Right to Personal Liberty", law: "1999 Constitution",    color: "#E8317A" },
-  { title: "Tenancy Law,  Notice to Quit Periods",   law: "Lagos Tenancy Law",    color: "#10B981" },
-  { title: "Labour Act S.11,  Severance Pay",        law: "Labour Act Cap. L1",   color: "#8B5CF6" },
-];
-
-const COMMUNITY_HIGHLIGHTS = [
-  { initials: "CI", color: "#3B82F6", name: "Chioma I.",    text: "Just used the arrest rights guide at a checkpoint. It worked!", time: "3h ago",  likes: 47 },
-  { initials: "BL", color: "#10B981", name: "Babatunde L.", text: "The eviction law section saved me ₦200k in illegal fees.", time: "1d ago",  likes: 89 },
-];
-
-//  Quiz component 
-function DailyQuiz() {
-  const [selected, setSelected] = useState<number | null>(null);
+// Quiz component with local state
+function DailyQuiz({ 
+  challenge, 
+  onQuizComplete 
+}: { 
+  challenge: any; 
+  onQuizComplete?: () => void 
+}) {
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [submitQuiz] = useSubmitQuizAnswerMutation();
+
+  const handleSelect = (index: number) => {
+    if (!revealed && !completed) {
+      setSelectedOption(index);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (selectedOption !== null && !revealed) {
+      setRevealed(true);
+      
+      try {
+        const result = await submitQuiz({
+          questionId: challenge?.id || "daily",
+          answer: selectedOption
+        }).unwrap();
+        
+        if (result.data?.correct) {
+          setCompleted(true);
+          if (onQuizComplete) onQuizComplete();
+        }
+      } catch (error) {
+        console.error("Failed to submit quiz:", error);
+      }
+    }
+  };
+
+  const handleReset = () => {
+    setSelectedOption(null);
+    setRevealed(false);
+    setCompleted(false);
+  };
+
+  if (!challenge) return null;
 
   return (
     <div className="bg-gradient-to-br from-[#111827] to-[#1E3A5F] rounded-2xl p-5 border border-white/8 relative overflow-hidden">
-      {/* Glow */}
       <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[#E8317A]/15 blur-3xl pointer-events-none" />
 
       <div className="flex items-center gap-2 mb-3">
         <Zap size={14} className="text-amber-400" />
         <span className="text-[11px] font-bold uppercase tracking-widest text-amber-400">Daily Challenge</span>
-        <span className="ml-auto text-[11px] bg-amber-400/15 text-amber-400 font-semibold px-2 py-0.5 rounded-full">+{DAILY_CHALLENGE.xpReward} XP</span>
+        <span className="ml-auto text-[11px] bg-amber-400/15 text-amber-400 font-semibold px-2 py-0.5 rounded-full">+{challenge.xpReward} XP</span>
       </div>
 
-      <p className="text-sm font-semibold text-white mb-4 leading-snug">{DAILY_CHALLENGE.question}</p>
+      <p className="text-sm font-semibold text-white mb-4 leading-snug">{challenge.question}</p>
 
       <div className="flex flex-col gap-2">
-        {DAILY_CHALLENGE.options.map((opt, i) => {
+        {challenge.options?.map((opt: string, i: number) => {
           let cls = "border border-white/10 text-gray-300 hover:border-white/30";
-          if (revealed) {
-            if (i === DAILY_CHALLENGE.correct) cls = "border-[#10B981] bg-[#10B981]/15 text-[#10B981] font-semibold";
-            else if (i === selected && i !== DAILY_CHALLENGE.correct) cls = "border-red-400/60 bg-red-400/10 text-red-400 line-through opacity-60";
+          if (revealed || completed) {
+            if (i === challenge.correct) cls = "border-[#10B981] bg-[#10B981]/15 text-[#10B981] font-semibold";
+            else if (i === selectedOption && i !== challenge.correct) cls = "border-red-400/60 bg-red-400/10 text-red-400 line-through opacity-60";
             else cls = "border-white/6 text-gray-500 opacity-40";
-          } else if (selected === i) {
+          } else if (selectedOption === i) {
             cls = "border-[#E8317A] bg-[#E8317A]/10 text-[#E8317A]";
           }
           return (
             <button
               key={opt}
-              onClick={() => { if (!revealed) setSelected(i); }}
-              className={`text-left text-xs px-4 py-2.5 rounded-xl transition-all ${cls} ${!revealed ? "cursor-pointer" : "cursor-default"}`}
+              onClick={() => handleSelect(i)}
+              disabled={revealed || completed}
+              className={`text-left text-xs px-4 py-2.5 rounded-xl transition-all ${cls} ${!revealed && !completed ? "cursor-pointer" : "cursor-default"}`}
             >
               {opt}
             </button>
@@ -109,35 +128,51 @@ function DailyQuiz() {
         })}
       </div>
 
-      {selected !== null && !revealed && (
+      {selectedOption !== null && !revealed && !completed && (
         <button
-          onClick={() => setRevealed(true)}
+          onClick={handleSubmit}
           className="mt-3 w-full py-2.5 rounded-xl text-xs font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors"
         >
           Submit Answer
         </button>
       )}
-      {revealed && (
-        <div className={`mt-3 text-xs font-semibold text-center py-2 rounded-xl ${selected === DAILY_CHALLENGE.correct ? "bg-[#10B981]/15 text-[#10B981]" : "bg-red-400/10 text-red-400"}`}>
-          {selected === DAILY_CHALLENGE.correct ? "✓ Correct! +100 XP earned" : "✗ Correct answer: 24 hours (Section 35)"}
+      
+      {(revealed || completed) && (
+        <div className="mt-3">
+          <div className={`text-xs font-semibold text-center py-2 rounded-xl ${
+            selectedOption === challenge.correct ? "bg-[#10B981]/15 text-[#10B981]" : "bg-red-400/10 text-red-400"
+          }`}>
+            {selectedOption === challenge.correct 
+              ? `✓ Correct! +${challenge.xpReward} XP earned` 
+              : `✗ Correct answer: ${challenge.options[challenge.correct]}`
+            }
+          </div>
+          {completed && (
+            <button
+              onClick={handleReset}
+              className="mt-2 w-full py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white border border-white/10 hover:border-white/20 transition-colors"
+            >
+              Reset Quiz
+            </button>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-//  XP Progress bar 
-function XPBar({ profile }: {profile: any}) {
-  const pct = (profile.xpTotal / profile.xpLevel) * 100;
+// XP Progress bar
+function XPBar({ xpTotal, xpLevel }: { xpTotal: number; xpLevel: number }) {
+  const pct = Math.min((xpTotal / xpLevel) * 100, 100);
   return (
     <div className="hidden md:flex items-center gap-3">
       <div className="w-8 h-8 rounded-lg bg-[#E8317A]/15 border border-[#E8317A]/20 flex items-center justify-center flex-shrink-0">
-        <span className="text-sm font-bold text-[#E8317A]">{profile.xpLevel}</span>
+        <span className="text-sm font-bold text-[#E8317A]">{xpLevel}</span>
       </div>
       <div className="flex-1">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-semibold text-gray-500">Level {profile.xpLevel}</span>
-          <span className="text-[10px] text-gray-400">{profile.xpTotal} / {profile.xpTotal} XP</span>
+          <span className="text-[10px] font-semibold text-gray-500">Level {xpLevel}</span>
+          <span className="text-[10px] text-gray-400">{xpTotal} / {xpLevel} XP</span>
         </div>
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #E8317A, #ff6fa8)" }} />
@@ -147,16 +182,24 @@ function XPBar({ profile }: {profile: any}) {
   );
 }
 
-//  Main 
+// Main Component
 export default function UserDashboardOverview() {
-  const [videoPlaying, setVideoPlaying] = useState(false);
+  const { userInfo } = useUserData();
+  const { user, profile } = userInfo as CitizenFull;
+  
+  // Local state
   const [greeting, setGreeting] = useState("Good Morning");
-  const { userInfo } = useUserData()
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
-  const { user, profile } = userInfo as CitizenFull
-
-  console.log({userInfo})
-
+  // API hooks
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useGetDashboardDataQuery();
+  const { data: statsData, isLoading: statsLoading } = useGetUserStatsQuery();
+  const { data: readingData, isLoading: readingLoading } = useGetContinueReadingQuery();
+  const { data: challengeData, isLoading: challengeLoading } = useGetDailyChallengeQuery();
+  const { data: trendingData, isLoading: trendingLoading } = useGetTrendingTopicsQuery({ limit: 4 });
+  const { data: bookmarksData, isLoading: bookmarksLoading } = useGetBookmarksQuery();
+  const { data: communityData, isLoading: communityLoading } = useGetCommunityHighlightsQuery({ limit: 2 });
+  const { data: goalData, isLoading: goalLoading } = useGetNextGoalQuery();
 
   useEffect(() => {
     const h = new Date().getHours();
@@ -164,26 +207,78 @@ export default function UserDashboardOverview() {
     else if (h >= 17) setGreeting("Good Evening");
   }, []);
 
+  // Handle video toggle
+  const handleVideoToggle = () => {
+    setVideoPlaying(!videoPlaying);
+  };
+
+  // Get data from API or fallback to defaults
+  const stats = statsData?.data || profile || {
+    topicsCompletedCount: 0,
+    streakDays: 0,
+    certificatesCount: 0,
+    totalStudyMinutes: 0,
+    xpTotal: 0,
+    xpLevel: 1,
+  };
+
+  const readingItems = readingData?.data || [];
+  const challenge = challengeData?.data || null;
+  const trending = trendingData?.data || [];
+  const bookmarks = bookmarksData?.data || [];
+  const community = communityData?.data || [];
+  const goal = goalData?.data || null;
+
+  // Stats configuration
   const STATS = [
-  { icon: BookOpen,   color: "#E8317A", bg: "#FFF0F5", value: profile?.topicsCompletedCount ?? 0,     label: "Topics Read"   },
-  { icon: Flame,      color: "#F59E0B", bg: "#FFFBEB", value: profile?.streakDays ?? 0,     label: "Day Streak"    },
-  { icon: Trophy,     color: "#10B981", bg: "#ECFDF5", value: profile?.certificatesCount ?? 0,     label: "Certificates"  },
-  { icon: Clock,      color: "#3B82F6", bg: "#EFF6FF", value: `${profile?.totalStudyMinutes ?? 0}m`, label: "Time Invested" },
-];
+    { icon: BookOpen, color: "#E8317A", bg: "#FFF0F5", value: stats?.topicsCompletedCount ?? 0, label: "Topics Read" },
+    { icon: Flame, color: "#F59E0B", bg: "#FFFBEB", value: stats?.streakDays ?? 0, label: "Day Streak" },
+    { icon: Trophy, color: "#10B981", bg: "#ECFDF5", value: stats?.certificatesCount ?? 0, label: "Certificates" },
+    { icon: Clock, color: "#3B82F6", bg: "#EFF6FF", value: `${stats?.totalStudyMinutes ?? 0}m`, label: "Time Invested" },
+  ];
+
+  // Loading state
+  if (dashboardLoading || statsLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#E8317A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (dashboardError) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
+        <div className="text-center">
+          <p className="text-red-500 mb-2">Failed to load dashboard</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="text-[#E8317A] hover:underline text-sm"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
 
-      {/*  Top bar  */}
+      {/* Top bar */}
       <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-5 xl:px-8 h-16">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
             <Flame size={13} className="text-amber-500" />
-            <span className="text-xs font-bold text-amber-700">{profile?.streakDays} day streak</span>
+            <span className="text-xs font-bold text-amber-700">{stats?.streakDays || 0} day streak</span>
           </div>
         </div>
         <div className="flex items-center gap-2.5">
-          <XPBar profile={profile || {}} />
+          <XPBar xpTotal={stats?.xpTotal || 0} xpLevel={stats?.xpLevel || 1} />
           <button className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 transition-colors shadow-sm">
             <Search size={15} className="text-gray-500" />
           </button>
@@ -196,21 +291,21 @@ export default function UserDashboardOverview() {
 
       <div className="p-5 xl:p-8 max-w-7xl mx-auto">
 
-        {/*  Welcome + Video  */}
+        {/* Welcome + Video */}
         <div className="grid xl:grid-cols-[1fr_420px] gap-5 mb-7">
 
           {/* Left: greeting */}
           <div className="flex flex-col justify-between">
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-1">
-                {greeting}, {user?.firstName} 👋
+                {greeting}, {user?.firstName || "User"} 👋
               </p>
               <h1 className="text-2xl xl:text-3xl font-bold text-gray-900 leading-tight mb-2">
                 Your rights are worth<br />
                 <span style={{ color: "#E8317A" }}>knowing.</span>
               </h1>
               <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
-                You've been learning for {profile?.streakDays} days. Keep going,  knowledge is the
+                You've been learning for {stats?.streakDays || 0} days. Keep going, knowledge is the
                 most powerful legal tool you have.
               </p>
             </div>
@@ -236,7 +331,6 @@ export default function UserDashboardOverview() {
           <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 min-h-[240px]"
             style={{ background: "linear-gradient(135deg, #0B1120 0%, #1E3A5F 50%, #0B1120 100%)" }}>
 
-            {/* Decorative dots */}
             <div className="absolute inset-0 opacity-[0.04]" style={{
               backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
               backgroundSize: "24px 24px",
@@ -246,10 +340,9 @@ export default function UserDashboardOverview() {
               <div className="absolute bottom-6 right-6 w-24 h-24 rounded-full bg-[#3B82F6]/10 blur-2xl" />
             </div>
 
-            {/* Content */}
             <div className="relative h-full flex flex-col items-center justify-center p-6 text-center">
               <div className="w-14 h-14 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center mb-4 backdrop-blur-sm cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => setVideoPlaying(!videoPlaying)}>
+                onClick={handleVideoToggle}>
                 {videoPlaying
                   ? <Pause size={20} className="text-white" />
                   : <Play size={20} className="text-white ml-1" />
@@ -278,7 +371,6 @@ export default function UserDashboardOverview() {
               )}
             </div>
 
-            {/* Badges at bottom */}
             <div className="absolute bottom-4 left-4 flex gap-2">
               {["Free Forever", "No Jargon", "🇳🇬 Nigerian Law"].map((b) => (
                 <span key={b} className="text-[10px] bg-white/10 text-white/80 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">
@@ -289,7 +381,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/*  Continue Reading  */}
+        {/* Continue Reading */}
         <section className="mb-7">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-900 text-base flex items-center gap-2">
@@ -301,59 +393,65 @@ export default function UserDashboardOverview() {
             </Link>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            {CONTINUE_READING.map((item) => (
-              <Link key={item.slug} href={`/dashboard/learn/${item.slug}`}
-                className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex">
-
-                {/* Color strip */}
-                <div className="w-1.5 flex-shrink-0" style={{ background: item.tagColor }} />
-
-                <div className="flex-1 p-5">
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor }}>{item.tag}</span>
-                      <h3 className="font-bold text-gray-900 text-sm mt-0.5 leading-snug group-hover:text-[#E8317A] transition-colors">{item.title}</h3>
+            {readingItems.length > 0 ? (
+              readingItems.slice(0, 2).map((item) => (
+                <Link key={item.slug} href={`/dashboard/learn/${item.slug}`}
+                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex">
+                  <div className="w-1.5 flex-shrink-0" style={{ background: item.tagColor || getTagColor(item.tag) }} />
+                  <div className="flex-1 p-5">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor || getTagColor(item.tag) }}>
+                          {item.tag}
+                        </span>
+                        <h3 className="font-bold text-gray-900 text-sm mt-0.5 leading-snug group-hover:text-[#E8317A] transition-colors">
+                          {item.title}
+                        </h3>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
+                        {getIconForTopic(item.slug)}
+                      </div>
                     </div>
-                    <div
-                      className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-xl flex-shrink-0"
-                    >
-                      {item.icon}
+
+                    <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1.5">
+                      <BookOpen size={11} className="text-gray-400" />
+                      {item.section || "Continue reading..."}
+                    </p>
+
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${item.progress || 0}%`, background: item.tagColor || getTagColor(item.tag) }} />
+                      </div>
+                      <span className="text-[10px] font-semibold text-gray-500">{item.progress || 0}%</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                        <Clock size={10} /> {item.lastRead || "Recently"}
+                      </span>
+                      <span className="text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full border border-amber-100 flex items-center gap-1">
+                        <Zap size={9} /> +{item.xpReward || 50} XP to finish
+                      </span>
                     </div>
                   </div>
-
-                  {/* Last position */}
-                  <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1.5">
-                    <BookOpen size={11} className="text-gray-400" />
-                    {item.section}
-                  </p>
-
-                  {/* Progress */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-1.5 rounded-full transition-all" style={{ width: `${item.progress}%`, background: item.tagColor }} />
-                    </div>
-                    <span className="text-[10px] font-semibold text-gray-500">{item.progress}%</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                      <Clock size={10} /> {item.lastRead}
-                    </span>
-                    <span className="text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full border border-amber-100 flex items-center gap-1">
-                      <Zap size={9} /> +{item.xpReward} XP to finish
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-2 text-center py-8 text-gray-500">
+                <p>No reading in progress. Start learning today!</p>
+                <Link href="/dashboard/learn" className="text-[#E8317A] hover:underline text-sm mt-2 inline-block">
+                  Browse topics →
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
-        {/*  Middle grid: Quiz + Trending + Bookmarks  */}
+        {/* Middle grid: Quiz + Trending + Bookmarks */}
         <div className="grid xl:grid-cols-3 gap-5 mb-7">
 
           {/* Daily Quiz */}
-          <DailyQuiz />
+          <DailyQuiz challenge={challenge} />
 
           {/* Trending Topics */}
           <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
@@ -362,20 +460,24 @@ export default function UserDashboardOverview() {
               <h3 className="font-bold text-gray-900 text-sm">Trending in Nigeria</h3>
             </div>
             <div className="flex flex-col gap-2">
-              {TRENDING_TOPICS.map((t, i) => (
-                <Link key={t.slug} href={`/dashboard/learn/${t.slug}`}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
-                  <span className="text-gray-400 text-[11px] font-bold w-4">{i + 1}</span>
-                  <span className="text-base">{t.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-900 group-hover:text-[#E8317A] transition-colors truncate">{t.title}</p>
-                    <p className="text-[10px] text-gray-400">{t.reads} reads</p>
-                  </div>
-                  {t.hot && (
-                    <span className="text-[9px] bg-red-50 text-red-500 font-bold px-1.5 py-0.5 rounded-full border border-red-100 flex-shrink-0">HOT</span>
-                  )}
-                </Link>
-              ))}
+              {trending.length > 0 ? (
+                trending.map((t, i) => (
+                  <Link key={i} href={`/dashboard/learn/${t.slug}`}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group">
+                    <span className="text-gray-400 text-[11px] font-bold w-4">{i + 1}</span>
+                    <span className="text-base">{getIconForTopic(t.slug)}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-gray-900 group-hover:text-[#E8317A] transition-colors truncate">{t.title}</p>
+                      <p className="text-[10px] text-gray-400">{t.reads || "0"} reads</p>
+                    </div>
+                    {t.hot && (
+                      <span className="text-[9px] bg-red-50 text-red-500 font-bold px-1.5 py-0.5 rounded-full border border-red-100 flex-shrink-0">HOT</span>
+                    )}
+                  </Link>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">No trending topics yet</p>
+              )}
             </div>
           </div>
 
@@ -389,16 +491,20 @@ export default function UserDashboardOverview() {
               <Link href="/dashboard/bookmarks" className="text-[10px] text-[#E8317A] font-semibold hover:underline">View all</Link>
             </div>
             <div className="flex flex-col gap-2.5">
-              {BOOKMARKS.map((b) => (
-                <div key={b.title} className="flex items-start gap-3 group cursor-pointer">
-                  <div className="w-1 h-8 rounded-full flex-shrink-0 mt-0.5" style={{ background: b.color }} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-900 group-hover:text-[#E8317A] transition-colors leading-snug line-clamp-1">{b.title}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{b.law}</p>
+              {bookmarks.length > 0 ? (
+                bookmarks.slice(0, 3).map((b) => (
+                  <div key={b.title} className="flex items-start gap-3 group cursor-pointer">
+                    <div className="w-1 h-8 rounded-full flex-shrink-0 mt-0.5" style={{ background: b.color || "#E8317A" }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-gray-900 group-hover:text-[#E8317A] transition-colors leading-snug line-clamp-1">{b.title}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{b.law}</p>
+                    </div>
+                    <ChevronRight size={12} className="text-gray-300 group-hover:text-[#E8317A] flex-shrink-0 mt-1 transition-colors" />
                   </div>
-                  <ChevronRight size={12} className="text-gray-300 group-hover:text-[#E8317A] flex-shrink-0 mt-1 transition-colors" />
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">No bookmarks yet</p>
+              )}
               <Link href="/dashboard/learn"
                 className="flex items-center gap-2 text-[11px] text-[#E8317A] font-semibold mt-1 hover:gap-3 transition-all">
                 <span>Start reading to add more</span>
@@ -408,7 +514,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/*  Community + Achievement row  */}
+        {/* Community + Achievement row */}
         <div className="grid xl:grid-cols-[1fr_300px] gap-5 mb-7">
 
           {/* Community */}
@@ -421,25 +527,29 @@ export default function UserDashboardOverview() {
               <Link href="/dashboard/community" className="text-[10px] text-[#E8317A] font-semibold hover:underline">Join discussion</Link>
             </div>
             <div className="flex flex-col gap-3">
-              {COMMUNITY_HIGHLIGHTS.map((c) => (
-                <div key={c.name} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${c.color}, ${c.color}80)` }}>
-                    {c.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-xs font-semibold text-gray-900">{c.name}</p>
-                      <span className="text-[10px] text-gray-400">{c.time}</span>
+              {community.length > 0 ? (
+                community.map((c) => (
+                  <div key={c.name} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                      style={{ background: `linear-gradient(135deg, ${c.color || "#3B82F6"}, ${c.color || "#3B82F6"}80)` }}>
+                      {c.initials}
                     </div>
-                    <p className="text-xs text-gray-600 leading-relaxed">"{c.text}"</p>
-                    <div className="flex items-center gap-1 mt-2">
-                      <Star size={11} className="text-amber-400 fill-amber-400" />
-                      <span className="text-[10px] text-gray-500">{c.likes} found this helpful</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-xs font-semibold text-gray-900">{c.name}</p>
+                        <span className="text-[10px] text-gray-400">{c.time || "Recently"}</span>
+                      </div>
+                      <p className="text-xs text-gray-600 leading-relaxed">"{c.text}"</p>
+                      <div className="flex items-center gap-1 mt-2">
+                        <Star size={11} className="text-amber-400 fill-amber-400" />
+                        <span className="text-[10px] text-gray-500">{c.likes || 0} found this helpful</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">No community highlights yet</p>
+              )}
             </div>
           </div>
 
@@ -452,40 +562,43 @@ export default function UserDashboardOverview() {
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Your Next Goal</span>
             </div>
 
-            <div className="bg-white/5 border border-white/8 rounded-xl p-4 mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Trophy size={16} className="text-amber-400" />
-                <p className="text-sm font-bold text-white">Law Aware Citizen</p>
-              </div>
-              <p className="text-xs text-gray-400 mb-3">Complete 3 more topics to unlock this badge</p>
-              <div className="flex items-center gap-2">
-                {[1,2,3,4,5].map((i) => (
-                  <div key={i} className={`flex-1 h-1.5 rounded-full ${i <= 2 ? "bg-amber-400" : "bg-white/10"}`} />
-                ))}
-              </div>
-              <p className="text-[10px] text-gray-500 mt-1.5">2 / 5 topics done</p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              {[
-                { done: true,  text: "Complete first topic" },
-                { done: true,  text: "Read 5 sections" },
-                { done: false, text: "Share a legal insight" },
-                { done: false, text: "Try a daily quiz" },
-              ].map((task) => (
-                <div key={task.text} className="flex items-center gap-2">
-                  {task.done
-                    ? <CheckCircle2 size={13} className="text-[#10B981] flex-shrink-0" />
-                    : <div className="w-3.5 h-3.5 rounded-full border border-white/20 flex-shrink-0" />
-                  }
-                  <span className={`text-xs ${task.done ? "text-gray-400 line-through" : "text-gray-300"}`}>{task.text}</span>
+            {goal ? (
+              <>
+                <div className="bg-white/5 border border-white/8 rounded-xl p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Trophy size={16} className="text-amber-400" />
+                    <p className="text-sm font-bold text-white">{goal.title || "Law Aware Citizen"}</p>
+                  </div>
+                  <p className="text-xs text-gray-400 mb-3">{goal.description || "Complete topics to unlock this badge"}</p>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: goal.total || 5 }, (_, i) => (
+                      <div key={i} className={`flex-1 h-1.5 rounded-full ${i < (goal.completed || 0) ? "bg-amber-400" : "bg-white/10"}`} />
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-gray-500 mt-1.5">{goal.completed || 0} / {goal.total || 5} tasks done</p>
                 </div>
-              ))}
-            </div>
+
+                <div className="flex flex-col gap-2">
+                  {goal.tasks?.map((task: any) => (
+                    <div key={task.text} className="flex items-center gap-2">
+                      {task.done
+                        ? <CheckCircle2 size={13} className="text-[#10B981] flex-shrink-0" />
+                        : <div className="w-3.5 h-3.5 rounded-full border border-white/20 flex-shrink-0" />
+                      }
+                      <span className={`text-xs ${task.done ? "text-gray-400 line-through" : "text-gray-300"}`}>{task.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-sm text-gray-400">Complete topics to unlock your next goal!</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/*  Explore Topics CTA  */}
+        {/* Explore Topics CTA */}
         <div
           className="rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-5 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #E8317A 0%, #ff6fa8 50%, #E8317A 100%)" }}

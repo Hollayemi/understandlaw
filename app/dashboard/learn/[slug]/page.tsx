@@ -39,6 +39,8 @@ export default function ModuleDetailPage() {
   const completedCount = topics.filter((t: any) => t.completed).length;
   const progressPercent = topics.length > 0 ? (completedCount / topics.length) * 100 : 0;
 
+  console.log({topics})
+
   const handleEnrol = async () => {
     if (!module) return;
     try {
@@ -124,7 +126,7 @@ export default function ModuleDetailPage() {
             {module.title}
           </h1>
           <p className="text-white/80 text-sm md:text-base max-w-2xl mx-auto mb-6">
-            {module.description}
+            {module.description.length > 120 ? module.description.slice(0, 120) + "..." : module.description}
           </p>
           
           {!isEnrolled ? (
@@ -137,7 +139,7 @@ export default function ModuleDetailPage() {
               {isEnrolling ? <Loader2 size={16} className="animate-spin inline mr-2" /> : null}
               Start Learning
             </button>
-          ) : (
+          ) : topics.length && (
             <div className="flex gap-3 justify-center">
               <Link
                 href={`/dashboard/learn/${slug}/${topics.find((t: any) => !t.completed)?.slug || topics[0]?.slug}`}
@@ -174,7 +176,7 @@ export default function ModuleDetailPage() {
                 <BookOpen size={18} className="text-green-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{module.lessonCount}</p>
+                <p className="text-2xl font-bold text-gray-900">{module.topics.length}</p>
                 <p className="text-xs text-gray-500">Lessons</p>
               </div>
             </div>

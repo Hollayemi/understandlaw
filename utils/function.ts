@@ -9,15 +9,15 @@ export function fullName(user: LawyerUser): string {
 }
 
 type dateType = 'relative' | 'datetime' | "date" | "time" | "short"
-export function formatTime(user: string, type: dateType = "relative"): string {
-    if (!user) return 'N/A';
+export function formatTime(time: string, type: dateType = "relative"): string {
+    if (!time) return 'N/A';
 
     let date: Date;
 
-    if (user.match(/^\d{4}-\d{2}-\d{2}T/)) {
-        date = new Date(user);
+    if (time.match(/^\d{4}-\d{2}-\d{2}T/)) {
+        date = new Date(time);
     } else {
-        return user;
+        return time;
     }
 
     if (isNaN(date.getTime())) return 'Invalid date';
@@ -68,3 +68,12 @@ export const formatFileSize = (bytes: number): string => {
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 };
+
+
+
+export function getUrgencyDeadline(maxDays: number | null) {
+  if (maxDays === null) return null;
+
+  const deadline = new Date();
+  return new Date(deadline.setDate(deadline.getDate() + maxDays)).toISOString()
+}

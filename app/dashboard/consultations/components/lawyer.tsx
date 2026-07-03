@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Clock, Loader2, X, Activity, Gavel, Star, ThumbsUp, ThumbsDown, } from "lucide-react";
 import { ConsultStatus, Consultation, MatchRequest } from "@/redux/types/consultation";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
+import { useRouter } from "next/navigation";
 
 export function StarRating({ n }: { n: number }) {
     return (
@@ -41,6 +42,8 @@ export function ConsultationDrawer({
     const [loading, setLoading] = useState(false);
     const modeConfig = MODE_CFG[consult.mode];
     const ModeIcon = modeConfig.icon;
+
+    const router = useRouter();
 
     const handleAccept = async () => {
         setLoading(true);
@@ -202,7 +205,7 @@ export function ConsultationDrawer({
                                 <p className="text-[12px] font-bold text-[#065F46]">Consultation in progress</p>
                             </div>
                             <p className="text-[11px] text-[#6B7280] mb-3">Respond within your stated response time to maintain your rating.</p>
-                            <button className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+                            <button onClick={() => router.push("/dashboard/chat")} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
                                 Open Conversation
                             </button>
                         </div>

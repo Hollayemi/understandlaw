@@ -1,3 +1,4 @@
+import { Specialism } from './lawyer';
 export type ConsultStatus =
   | "pending"
   | "paid"
@@ -35,7 +36,7 @@ export interface LawyerInfo {
   name: string;
   initials: string;
   color: string;
-  specialisms: string[];
+  specialisms: Specialism[];
   myPayout?: string;
   nbaNumber: string;
 }
@@ -46,6 +47,8 @@ export interface Consultation {
   lawyer: LawyerInfo;
   lawyerPayout: number;
   mode: ConsultMode;
+  conversationId: string;
+  receiptId: string;
   topic: string;
   detail: string;
   status: ConsultStatus;
@@ -69,6 +72,8 @@ export interface Consultation {
   refundReason?: string;
 }
 
+
+
 export interface Consultation2 {
   id: string;
   lawyer: {
@@ -76,8 +81,10 @@ export interface Consultation2 {
     initials: string;
     color: string;
     nbaNumber: string;
-    specialisms: string[];
+    specialisms: Specialism[];
   };
+  conversationId: string;
+  receiptId: string;
   mode: ConsultMode;
   topic: string;
   detail?: string;

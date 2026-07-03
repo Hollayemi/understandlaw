@@ -10,8 +10,10 @@ import {
 import { useRouter } from "next/navigation";
 import { BADGE_ICON, BADGE_STYLE, CONSULT_MODES, SPECIALISMS } from "./data";
 import { LawyerFull } from "@/redux/types/lawyer";
-import { useBookConsultationMutation, useRequestLawyerMatchMutation } from "@/redux/slices/lawyers.slice";
+import { NIGERIAN_STATES, useBookConsultationMutation, useRequestLawyerMatchMutation } from "@/redux/slices/lawyers.slice";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { ConsultMode } from "@/redux/types/consultation";
+import { getUrgencyDeadline } from "@/utils/function"
 
 export function VerificationSteps() {
   const steps = [
@@ -383,45 +385,53 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
 export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [topic, setTopic] = useState("");
+  const [mode, setMode] = useState("");
   const [specialism, setSpecialism] = useState("");
-  const [urgency, setUrgency] = useState("");
+  const [urgency, setUrgency] = useState<any>(60);
   const [location, setLocation] = useState("");
   const [budget, setBudget] = useState("");
   const [description, setDescription] = useState("");
-
+  const { data: loadSpecialism } = useListSpecialismsQuery();
   const [requestLawyer, { isLoading }] = useRequestLawyerMatchMutation()
-
+  const SPECIALISMS = loadSpecialism?.data || [];
   const urgencies = [
-    { label: "Today (urgent)", value: "today" },
-    { label: "This week", value: "this_week" },
-    { label: "Within 2 weeks", value: "within_two_weeks", },
-    { label: "No rush", value: "no_rush" }
+    { label: "Immediately (Today)", value: 0 },
+    { label: "Within 3 days", value: 3 },
+    { label: "Within 1 week", value: 7 },
+    { label: "Within 2 weeks", value: 14 },
+    { label: "Within 1 month", value: 30 },
+    { label: "Flexible / No rush", value: 60 },
   ];
+
+
   const budgets = ["Under NGN 5,000", "NGN 5,000 - 15,000", "NGN 15,000 - 30,000", "Above NGN 30,000"];
 
   const submit = async () => {
     await new Promise(r => setTimeout(r, 1600));
     const payload = {
       specialism,
-      urgency,
+      mode,
+      topic,
+      location,
+      urgency: getUrgencyDeadline(urgency),
       budgetRange: budget,
       description,
       preferredTimeSlot: new Date().toISOString(),
       timezone: new Date().toISOString(),
     }
 
-    const request = await requestLawyer(payload).unwrap()
+    console.log({payload})
+
+    const request = await requestLawyer(payload as any).unwrap()
 
     if (request.success) {
-      const paymentUrl = request.data.payment.data.authorization_url
-      router.push(paymentUrl)
-    }
-
-    if (request) {
       setStep(3);
     }
 
   };
+
+  console.log({urgency})
 
 
   return (
@@ -475,13 +485,13 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Area of Law Needed</label>
                     <div className="grid grid-cols-2 gap-2">
-                      {SPECIALISMS.filter(s => s.id !== "all").map(s => {
-                        const Icon = s.icon;
+                      {SPECIALISMS.filter(s => s._id !== "all").map(s => {
+                        // const Icon = s.icon;
                         return (
-                          <button key={s.id} onClick={() => setSpecialism(s.label)}
-                            className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left text-xs font-medium transition-all ${specialism === s.label ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
-                            <Icon size={14} className={specialism === s.label ? "text-[#E8317A]" : "text-gray-400"} />
-                            {s.label}
+                          <button key={s._id} onClick={() => setSpecialism(s._id)}
+                            className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left text-xs font-medium transition-all ${specialism === s._id ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                            <div className={`w-2 h-2 rounded-full ${specialism === s._id ? "bg-[#E8317A]" : "bg-white"}`} />
+                            {s.displayName}
                           </button>
                         );
                       })}
@@ -492,7 +502,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <label className="block text-xs font-semibold text-gray-700 mb-2">How Urgent Is This?</label>
                     <div className="grid grid-cols-2 gap-2">
                       {urgencies.map(u => (
-                        <button key={u.value} onClick={() => setUrgency(u.value)}
+                        <button key={u.label} onClick={() => setUrgency(u.value as any)}
                           className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${urgency === u.value ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
                           {u.label}
                         </button>
@@ -502,7 +512,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
 
                   <button
                     onClick={() => setStep(2)}
-                    disabled={!specialism || !urgency}
+                    disabled={!specialism}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0"
                     style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
                   >
@@ -519,12 +529,32 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
 
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Preferred State / Location <span className="font-normal text-gray-400">(optional)</span></label>
-                    <input value={location} onChange={e => setLocation(e.target.value)}
-                      placeholder="e.g. Lagos, Abuja, Port Harcourt"
+                    <select value={location} onChange={e => setLocation(e.target.value)}
+                      // placeholder="e.g. Lagos, Abuja, Port Harcourt"
                       className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                    >
+                      <option value="">Any State</option>
+                      {NIGERIAN_STATES.map((e:any, i:number) => <option key={i} value={e.code}>{e.label}</option> )}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Legal Topic</label>
+                    <input value={topic} onChange={e => setTopic(e.target.value)}
+                      placeholder="e.g. My landlord is trying to evict me without notice"
+                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
                     />
                   </div>
-
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Communication Mode</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {["Message", "Call", "Video"].map(b => (
+                        <button key={b} onClick={() => setMode(b.toLowerCase())}
+                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${mode === b.toLowerCase() ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                          {b}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Budget Range</label>
                     <div className="grid grid-cols-2 gap-2">
@@ -554,7 +584,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
 
                   <button
                     onClick={submit}
-                    disabled={isLoading || !budget || !description.trim()}
+                    disabled={isLoading || !budget || !description.trim() || !topic || !mode}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0"
                     style={{ background: "linear-gradient(90deg, #0B1120, #1E3A5F)" }}
                   >

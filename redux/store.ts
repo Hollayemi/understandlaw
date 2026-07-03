@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { modulesApi, modulesUiSlice } from "./slices/admin/modules.slice";
 import { authApi } from "./authService/authSlice";
+import { dashboardSlice, dashboardApi } from "./slices/dashboard.slice";
 import { adminAuthApi } from "./authService/adminAuthSlice";
 import { citizenApi, citizenUiSlice } from "./slices/citizens.slice";
 import { learnApi } from "./slices/learn.slice";
@@ -23,6 +24,7 @@ export const store = configureStore({
     [modulesApi.reducerPath]: modulesApi.reducer,
     [adminAuthApi.reducerPath]: adminAuthApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
     [othersApi.reducerPath]: othersApi.reducer,
     [citizenApi.reducerPath]: citizenApi.reducer,
     [lawyerApi.reducerPath]: lawyerApi.reducer,
@@ -40,11 +42,13 @@ export const store = configureStore({
     modulesUi: modulesUiSlice.reducer,
     citizenUi: citizenUiSlice.reducer,
     chatUi: chatUiSlice.reducer,
+    dashboardUi: dashboardSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(othersApi.middleware)
+      .concat(dashboardApi.middleware)
       .concat(modulesApi.middleware)
       .concat(adminAuthApi.middleware)
       .concat(authApi.middleware)
