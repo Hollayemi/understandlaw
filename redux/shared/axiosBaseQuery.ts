@@ -1,12 +1,3 @@
-/**
- * axiosBaseQuery.ts  (REPLACEMENT)
- *
- * Differences from the original:
- *  1. 401 → clears the relevant token, emits authExpired event
- *  2. 403 → emits authExpired event with "forbidden" reason
- *  3. Actor-aware token clearing  (admin vs user)
- */
-
 "use client";
 
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
@@ -29,7 +20,6 @@ export interface RequestConfig {
   headers?: Record<string, string>;
   endpointActor?: ActorType;
   skipSuccessToast?: boolean;
-  /** Pass true on logout / token-refresh endpoints to skip the 401 redirect */
   skipAuthRedirect?: boolean;
 }
 

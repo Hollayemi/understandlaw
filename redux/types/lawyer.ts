@@ -1,4 +1,3 @@
-
 export type VerificationStatus =
   | "pending"
   | "credential_check"
@@ -35,7 +34,6 @@ export interface VerificationDocument {
   fileUrl: string;
   uploadedAt: string;
   sizeBytes: number;
-  /** null = pending review | true = verified | false = failed */
   verified: boolean | null;
 }
 
@@ -74,7 +72,6 @@ export interface LawyerFull {
     rating: any;
     isAvailable: boolean;
     fees: LawyerFees;
-    
     ratingAvg: number;
     reviewCount: number;
     consultationCount: number;
@@ -308,6 +305,19 @@ export interface BookConsultationPayload {
   timezone?: string;
 }
 
+// Lightweight metadata for a document attached to a consultation/match request.
+// Actual file bytes are uploaded separately; this just references what was attached.
+export interface ConsultationDocumentMeta {
+  name: string;
+  sizeBytes: number;
+  fileUrl?: string;
+  /** Who attached it — the client themselves, or the firm's team (e.g. a refined case brief). */
+  source?: "citizen" | "firm";
+  /** Optional human label, e.g. "Case Brief", "Tenancy Agreement". */
+  label?: string;
+  uploadedAt?: string;
+}
+
 export interface BookingResponse {
   consultationId: string;
   status: "pending" | "accepted" | "scheduled" | "completed" | "cancelled";
@@ -325,6 +335,8 @@ export interface RequestMatchPayload {
   budgetRange: string;
   description: string;
   mode: "message" | "call" | "video";
+  notes?: string;
+  documents?: ConsultationDocumentMeta[];
 }
 
 export interface MatchResponse {

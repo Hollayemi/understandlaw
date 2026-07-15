@@ -1,4 +1,5 @@
 import { Specialism } from './lawyer';
+import { ConsultationDocumentMeta } from './lawyer';
 export type ConsultStatus =
   | "pending"
   | "paid"
@@ -11,7 +12,7 @@ export type ConsultStatus =
   | "refunded";
 
 export type ConsultMode = "message" | "call" | "video";
-export type MatchStatus = "pending" | "unassigned" | "matching" | "matched" | "expired";
+export type MatchStatus = "pending" | "unassigned" | "in_review" | "ready_for_call" | "matching" | "recommended" | "matched" | "expired";
 
 export interface Message {
   id: string;
@@ -70,6 +71,14 @@ export interface Consultation {
   refundRequested: boolean;
   refundApproved?: boolean;
   refundReason?: string;
+  /** Documents attached at intake (by the client) or added by the firm's team. */
+  documents?: ConsultationDocumentMeta[];
+  /** The firm's refined case brief for the assigned lawyer, if this came through the firm-assisted flow. */
+  caseBrief?: ConsultationDocumentMeta;
+  /** Additional context shared with the lawyer, collected at intake. */
+  notes?: string;
+  /** Human-readable urgency, e.g. "Within 3 days". */
+  urgencyLabel?: string;
 }
 
 
@@ -103,12 +112,32 @@ export interface Consultation2 {
   transcript: Message[];
   paymentRef?: string;
   lawyerResponseAt?: string;
+  documents?: ConsultationDocumentMeta[];
+  caseBrief?: ConsultationDocumentMeta;
+  notes?: string;
+  urgencyLabel?: string;
+}
+
+export interface RecommendedLawyerRef {
+  id: string;
+  lawyerId: string;
+  lawyerProfileId: string;
+  picture: string;
+  name: string;
+  initials: string;
+  nbaNumber: string;
+  title?: string;
+  color: string;
+  fee: string;
+  ratingAvg: number;
+  responseTimeLabel: number
 }
 
 export interface MatchRequest {
   id: string;
   citizen: CitizenInfo;
-  specialism: string;
+  specialism: Specialism;
+  topic: string;
   urgency: string;
   budget: string;
   description: string;
@@ -117,6 +146,23 @@ export interface MatchRequest {
   expiresAt: string;
   matchedLawyer?: string;
   matchedLawyerId?: string;
+  /** How the citizen wants the firm to handle this before a lawyer is picked. */
+  mode: ConsultMode;
+  /** Additional context the citizen shared at intake. */
+  notes?: string;
+  /** Documents attached by the citizen, plus anything the firm's team adds. */
+  documents?: ConsultationDocumentMeta[];
+  /** The firm's refined summary of the case, prepared for whichever lawyer picks it up. */
+  caseBrief?: ConsultationDocumentMeta;
+  /** Message the admin sent directly to the citizen (message-mode requests). */
+  adminMessage?: string;
+  adminMessageAt?: string;
+  /** Call/video session the admin organized (call or video mode requests). */
+  scheduledCall?: { dateTime: string; link?: string; note?: string };
+  /** Shortlist of lawyers the firm is recommending for the citizen to choose from. */
+  recommendedLawyers?: RecommendedLawyerRef[];
+  /** Set once the citizen (or admin) finalizes a match — the resulting paid consultation. */
+  consultationId?: string;
 }
 
 // API Response types

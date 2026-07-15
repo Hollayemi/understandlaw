@@ -2,10 +2,8 @@
 import React, { useState } from "react";
 import {
   MessageSquare, Video, Phone, Clock, CheckCircle, XCircle,
-  AlertTriangle, Star,
-  Flag, ChevronRight,
-  Loader2, X, Check, RotateCcw,
-  Zap, Activity, UserCheck, Timer, Gavel,
+  AlertTriangle, Star, Eye, Flag, ChevronRight, Loader2, X, Check, RotateCcw,
+  Zap, Activity, Timer, Gavel,
 } from "lucide-react";
 import {
   useAdminUpdateConsultationStatusMutation,
@@ -18,33 +16,8 @@ import {
 import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
 import { ConversationTab } from "@/app/dashboard/consultations/components";
 import { formatTime } from "@/utils/function";
+import { MATCH_STATUS_CFG, MODE_CFG, STATUS_CFG } from "@/app/components/config";
 
-
-export const STATUS_CFG: Record<ConsultStatus, { label: string; bg: string; text: string; dot: string; icon: React.ElementType }> = {
-  pending: { label: "Pending Payment", bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B", icon: Clock },
-  paid: { label: "Paid", bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B", icon: Clock },
-  processing: { label: "Awaiting Lawyer", bg: "#87CEFA", text: "#0000FF", dot: "#F59E0B", icon: Clock },
-  awaiting_lawyer: { label: "Awaiting Lawyer", bg: "#87CEFA", text: "#0000FF", dot: "#0000FF", icon: Timer },
-  active: { label: "Active", bg: "#ECFDF5", text: "#065F46", dot: "#10B981", icon: Activity },
-  completed: { label: "Completed", bg: "#F9FAFB", text: "#374151", dot: "#9CA3AF", icon: CheckCircle },
-  disputed: { label: "Disputed", bg: "#FEF2F2", text: "#991B1B", dot: "#EF4444", icon: Gavel },
-  cancelled: { label: "Cancelled", bg: "#F9FAFB", text: "#6B7280", dot: "#D1D5DB", icon: XCircle },
-  refunded: { label: "Refunded", bg: "#F5F3FF", text: "#4C1D95", dot: "#8B5CF6", icon: RotateCcw },
-};
-
-export const MODE_CFG: Record<ConsultMode, { label: string; icon: React.ElementType; color: string }> = {
-  message: { label: "Written", icon: MessageSquare, color: "#6B7280" },
-  call: { label: "Call", icon: Phone, color: "#3B82F6" },
-  video: { label: "Video", icon: Video, color: "#8B5CF6" },
-};
-
-export const MATCH_STATUS_CFG: Record<MatchRequest["status"], { label: string; bg: string; text: string; dot: string }> = {
-  pending: { label: "Unassigned", bg: "#FEF2F2", text: "#991B1B", dot: "#EF4444" },
-  unassigned: { label: "Unassigned", bg: "#FEF2F2", text: "#991B1B", dot: "#EF4444" },
-  matching: { label: "Matching…", bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
-  matched: { label: "Matched", bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
-  expired: { label: "Expired", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
-};
 
 // Sub-components (same as original)
 export function ConsultStatusBadge({ status }: { status: ConsultStatus }) {
@@ -199,7 +172,7 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
               </div>
             </div>
             <div className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-              <ModeIcon size={12} style={{ color: modeConfig.color }} />
+              {/* <ModeIcon size={12} style={{ color: modeConfig.color }} /> */}
               <span className="text-[11px] font-semibold" style={{ color: modeConfig.color }}>{modeConfig.label}</span>
             </div>
           </div>
@@ -351,7 +324,8 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
 }
 
 // Match Card with API mutations
-export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () => void }) {
+export function MatchCard({ req, onUpdate, onOpen }: { req: MatchRequest; onUpdate: () => void; onOpen: () => void }) {
+  console.log({req})
   const cfg = MATCH_STATUS_CFG[req.status];
   const [assignLawyer] = useAdminAssignLawyerToMatchMutation();
   const [autoMatch] = useAdminAutoMatchMutation();
@@ -365,7 +339,8 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
     }
   };
 
-  console.log(req.status)
+  const modeCfg = MODE_CFG[req.mode];
+  const ModeIcon = modeCfg.icon;
 
   return (
     <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -380,17 +355,22 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
             {/* <p className="text-[10px] text-[#9CA3AF]">{req.citizen.state} · {req.createdAt}</p> */}
           </div>
         </div>
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
-          style={{ background: cfg.bg, color: cfg.text }}>
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.dot }} />
-          {cfg.label}
-        </span>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+            style={{ background: cfg.bg, color: cfg.text }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.dot }} />
+            {cfg.label}
+          </span>
+          <button onClick={onOpen} title="Open" className="w-6 h-6 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:bg-[#F3F4F6] hover:text-[#111827] transition-colors">
+            <Eye size={12} />
+          </button>
+        </div>
       </div>
 
       <div className="space-y-1.5 text-[11px] text-[#6B7280] mb-3">
-        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Needs:</span><span className="font-semibold text-[#111827]">{req.specialism}</span></div>
+        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Needs:</span><span className="font-semibold text-[#111827]">{req.specialism.displayName}</span></div>
         <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Urgency:</span><span className="font-semibold text-[#EF4444]">{req.urgency}</span></div>
-        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Budget:</span><span>{req.budget}</span></div>
+        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Format:</span><span className="font-semibold flex items-center gap-1" style={{ color: modeCfg.color }}><ModeIcon size={10} />{modeCfg.label}</span></div>
       </div>
 
       <p className="text-[11px] text-[#6B7280] leading-relaxed mb-3 line-clamp-2">{req.description}</p>
@@ -402,15 +382,30 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
         </div>
       )}
 
-      {req.status === "unassigned" && (
+      {req.status === "recommended" && (
+        <div className="flex items-center gap-2 p-2.5 bg-[#FFF0F5] border border-[#FBCFE8] rounded-xl mb-3">
+          <Zap size={12} className="text-[#E8317A]" />
+          <p className="text-[11px] font-semibold text-[#9D174D]">
+            {req.recommendedLawyers?.length || 0} lawyer{(req.recommendedLawyers?.length || 0) === 1 ? "" : "s"} recommended, awaiting citizen's pick
+          </p>
+        </div>
+      )}
+
+      {(req.status === "pending" || req.status === "unassigned") && (
         <div className="flex gap-2">
-          <button onClick={handleAutoMatch} className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors flex items-center justify-center gap-1">
+          <button onClick={onOpen} className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors flex items-center justify-center gap-1">
+            <Eye size={10} /> Accept & Review
+          </button>
+          <button onClick={handleAutoMatch} className="flex-1 py-2 rounded-xl text-[11px] font-semibold text-[#111827] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors flex items-center justify-center gap-1">
             <Zap size={10} /> Auto-Match
           </button>
-          <button className="flex-1 py-2 rounded-xl text-[11px] font-semibold text-[#111827] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors flex items-center justify-center gap-1">
-            <UserCheck size={10} /> Assign Manually
-          </button>
         </div>
+      )}
+
+      {req.status === "in_review" && (
+        <button onClick={onOpen} className="w-full py-2 rounded-xl text-[11px] font-bold text-white bg-[#3B82F6] hover:bg-[#2563EB] transition-colors flex items-center justify-center gap-1.5">
+          <Activity size={10} /> Continue Review
+        </button>
       )}
 
       {req.status === "matching" && (
@@ -420,9 +415,9 @@ export function MatchCard({ req, onUpdate }: { req: MatchRequest; onUpdate: () =
         </div>
       )}
 
-      {req.status === "matched" && (
-        <button className="w-full py-2 rounded-xl text-[11px] font-semibold text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors">
-          View Match Details
+      {(req.status === "matched" || req.status === "recommended") && (
+        <button onClick={onOpen} className="w-full py-2 rounded-xl text-[11px] font-semibold text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors">
+          View Details
         </button>
       )}
     </div>

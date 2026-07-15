@@ -4,6 +4,7 @@ import { Clock, Loader2, X, Activity, Gavel, Star, ThumbsUp, ThumbsDown, } from 
 import { ConsultStatus, Consultation, MatchRequest } from "@/redux/types/consultation";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
 import { useRouter } from "next/navigation";
+import { DocumentsPanel } from "./index";
 
 export function StarRating({ n }: { n: number }) {
     return (
@@ -105,6 +106,20 @@ export function ConsultationDrawer({
                 </div>
 
                 <div className="flex-1 p-6 space-y-5">
+                    {/* Case documents & brief */}
+                    <div>
+                        <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Case File</p>
+                        <div className="border border-[#F3F4F6] rounded-xl overflow-hidden">
+                            <DocumentsPanel
+                                documents={consult.documents}
+                                caseBrief={consult.caseBrief}
+                                notes={consult.notes}
+                                urgencyLabel={consult.urgencyLabel}
+                                viewerRole="lawyer"
+                            />
+                        </div>
+                    </div>
+
                     {/* Fee breakdown */}
                     <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] p-4">
                         <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Fee Breakdown</p>
@@ -270,7 +285,7 @@ export function MatchRequestCard({
             <div className="grid grid-cols-2 gap-2 text-[11px] mb-3">
                 <div className="bg-[#F9FAFB] rounded-lg px-2.5 py-1.5">
                     <p className="text-[#9CA3AF]">Needs</p>
-                    <p className="font-semibold text-[#111827]">{req.specialism}</p>
+                    <p className="font-semibold text-[#111827]">{req.specialism.displayName}</p>
                 </div>
                 <div className="bg-[#F9FAFB] rounded-lg px-2.5 py-1.5">
                     <p className="text-[#9CA3AF]">Budget</p>

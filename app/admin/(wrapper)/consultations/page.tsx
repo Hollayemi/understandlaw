@@ -17,15 +17,18 @@ import {
   useAdminGetLawyerPerformanceQuery,
   useAdminBulkAutoMatchMutation,
 } from "@/redux/slices/admin/consultation.slice";
-import { ConsultStatus, ConsultMode, Consultation } from "@/redux/types/consultation";
+import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
 
-import {  MODE_CFG, ConsultStatusBadge, TranscriptDrawer, MatchCard, LawyerPerformanceRow, } from "./components"
+import {  ConsultStatusBadge, TranscriptDrawer, MatchCard, LawyerPerformanceRow, } from "./components"
+import { MODE_CFG } from "@/app/components/config";
+import { MatchRequestDrawer } from "./matchDrawer";
 
 export default function ConsultationsPage() {
   const [tab, setTab] = useState<"all" | ConsultStatus>("all");
   const [search, setSearch] = useState("");
   const [modeFilter, setModeFilter] = useState<ConsultMode | "all">("all");
   const [selectedConsult, setSelectedConsult] = useState<Consultation | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<MatchRequest | null>(null);
   const [activeSection, setActiveSection] = useState<"consultations" | "matches" | "performance">("consultations");
   const [matchRefreshKey, setMatchRefreshKey] = useState(0);
 
@@ -79,6 +82,14 @@ export default function ConsultationsPage() {
     <>
       {selectedConsult && (
         <TranscriptDrawer consult={selectedConsult} onClose={() => setSelectedConsult(null)} />
+      )}
+
+      {selectedMatch && (
+        <MatchRequestDrawer
+          req={selectedMatch}
+          onClose={() => setSelectedMatch(null)}
+          onUpdate={refreshMatches}
+        />
       )}
 
       <div className="p-6 xl:p-8 max-w-7xl mx-auto">
@@ -310,7 +321,7 @@ export default function ConsultationsPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {matchRequests.map(req => (
-                <MatchCard key={`${req.id}-${matchRefreshKey}`} req={req} onUpdate={refreshMatches} />
+                <MatchCard key={`${req.id}-${matchRefreshKey}`} req={req} onUpdate={refreshMatches} onOpen={() => setSelectedMatch(req)} />
               ))}
             </div>
           </>

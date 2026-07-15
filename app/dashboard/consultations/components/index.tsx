@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { MessageSquare, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, } from "lucide-react";
+import { MessageSquare, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, Download, Eye, FileImage, File as FileIcon, Lock, Sparkles, Paperclip, AlertCircle, } from "lucide-react";
 import { Consultation2 as Consultation, ConsultStatus } from "@/redux/types/consultation";
+import { ConsultationDocumentMeta } from "@/redux/types/lawyer";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
 import { usePayConsultationMutation } from "@/redux/slices/consultation.slice";
 import { useRouter } from "next/navigation";
 import { useGetMessagesQuery } from "@/redux/slices/chat.slice";
-import { formatTime } from "@/utils/function";
+import { formatTime, formatFileSize } from "@/utils/function";
 
 export function getJourneyStep(status: ConsultStatus): number {
   if (status === "pending") return 0;
@@ -106,6 +107,235 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
   );
 }
 
+// ─── Case Documents (shared between citizen & lawyer drawers) ────────────────
+
+function guessKind(name: string): "image" | "pdf" | "other" {
+  const ext = name.split(".").pop()?.toLowerCase() || "";
+  if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) return "image";
+  if (ext === "pdf") return "pdf";
+  return "other";
+}
+
+function DocIcon({ name, className }: { name: string; className?: string }) {
+  const kind = guessKind(name);
+  if (kind === "image") return <FileImage size={13} className={className} />;
+  if (kind === "pdf") return <FileText size={13} className={className} />;
+  return <FileIcon size={13} className={className} />;
+}
+
+export function DocumentPreviewModal({ doc, onClose }: { doc: ConsultationDocumentMeta; onClose: () => void }) {
+  const kind = guessKind(doc.name);
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#F3F4F6] flex-shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+              <DocIcon name={doc.name} className="text-[#6B7280]" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[12px] font-bold text-[#111827] truncate">{doc.label || doc.name}</p>
+              <p className="text-[10px] text-[#9CA3AF]">{formatFileSize(doc.sizeBytes)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {doc.fileUrl && (
+              <a
+                href={doc.fileUrl}
+                download={doc.name}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition-all hover:-translate-y-0.5"
+                style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              >
+                <Download size={11} /> Download
+              </a>
+            )}
+            <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <X size={14} className="text-[#6B7280]" />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-auto bg-[#F5F2EE] flex items-center justify-center p-4">
+          {!doc.fileUrl ? (
+            <div className="text-center py-10">
+              <FileIcon size={28} className="text-gray-300 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-gray-500">Preview unavailable</p>
+              <p className="text-xs text-gray-400 mt-1 max-w-xs mx-auto">
+                This file hasn't finished processing yet. Check back shortly.
+              </p>
+            </div>
+          ) : kind === "image" ? (
+            <img src={doc.fileUrl} alt={doc.name} className="max-w-full max-h-full rounded-lg object-contain" />
+          ) : kind === "pdf" ? (
+            <iframe src={doc.fileUrl} title={doc.name} className="w-full h-[65vh] rounded-lg bg-white" />
+          ) : (
+            <div className="text-center py-10">
+              <FileIcon size={28} className="text-gray-300 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-gray-500">No inline preview for this file type</p>
+              <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-[#E8317A] hover:underline mt-2">
+                Open in new tab <ExternalLink size={11} />
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DocRow({ doc, badge }: { doc: ConsultationDocumentMeta; badge?: { label: string; color: string; bg: string } }) {
+  const [preview, setPreview] = useState<ConsultationDocumentMeta | null>(null);
+  return (
+    <>
+      {preview && <DocumentPreviewModal doc={preview} onClose={() => setPreview(null)} />}
+      <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl">
+        <div className="w-8 h-8 rounded-lg bg-white border border-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+          <DocIcon name={doc.name} className="text-[#6B7280]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-[12px] font-semibold text-[#111827] truncate">{doc.label || doc.name}</p>
+            {badge && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: badge.bg, color: badge.color }}>
+                {badge.label}
+              </span>
+            )}
+          </div>
+          <p className="text-[10px] text-[#9CA3AF]">{formatFileSize(doc.sizeBytes)}</p>
+        </div>
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            onClick={() => setPreview(doc)}
+            title="Preview"
+            className="w-7 h-7 rounded-lg hover:bg-white border border-transparent hover:border-[#F3F4F6] flex items-center justify-center transition-colors"
+          >
+            <Eye size={12} className="text-[#6B7280]" />
+          </button>
+          {doc.fileUrl ? (
+            <a
+              href={doc.fileUrl}
+              download={doc.name}
+              title="Download"
+              className="w-7 h-7 rounded-lg hover:bg-white border border-transparent hover:border-[#F3F4F6] flex items-center justify-center transition-colors"
+            >
+              <Download size={12} className="text-[#6B7280]" />
+            </a>
+          ) : (
+            <span title="Not ready yet" className="w-7 h-7 rounded-lg flex items-center justify-center opacity-30">
+              <Download size={12} className="text-[#6B7280]" />
+            </span>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function DocumentsPanel({
+  documents,
+  caseBrief,
+  notes,
+  urgencyLabel,
+  viewerRole,
+}: {
+  documents?: ConsultationDocumentMeta[];
+  caseBrief?: ConsultationDocumentMeta;
+  notes?: string;
+  urgencyLabel?: string;
+  viewerRole: "citizen" | "lawyer";
+}) {
+  const clientDocs = (documents || []).filter(d => d.source !== "firm");
+  const firmDocs = (documents || []).filter(d => d.source === "firm");
+  const hasAnything = !!caseBrief || clientDocs.length > 0 || firmDocs.length > 0 || !!notes;
+
+  return (
+    <div className="p-5 space-y-4">
+      {urgencyLabel && (
+        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF]">
+          <AlertCircle size={11} />
+          <span>Urgency: <strong className="text-[#374151]">{urgencyLabel}</strong></span>
+        </div>
+      )}
+
+      {caseBrief && (
+        <div>
+          <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">
+            {viewerRole === "citizen" ? "Our Case Brief" : "Case Brief — From LawTicha"}
+          </p>
+          <div className="rounded-xl border-[1.5px] border-[#FBCFE8] bg-[#FFF0F5] p-1">
+            <DocRow doc={caseBrief} badge={{ label: "Prepared by our team", color: "#E8317A", bg: "#FFFFFF" }} />
+          </div>
+          <p className="text-[11px] text-[#9CA3AF] mt-2 leading-relaxed flex items-start gap-1.5">
+            <Sparkles size={11} className="shrink-0 mt-0.5" />
+            {viewerRole === "citizen"
+              ? "This is the refined summary our team put together from your intake and shared with your matched lawyer."
+              : "A refined summary prepared by the LawTicha team from the client's intake — a quick way to get up to speed."}
+          </p>
+        </div>
+      )}
+
+      {notes && (
+        <div>
+          <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Consultation Notes</p>
+          <div className="bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-4">
+            <p className="text-[12px] text-[#374151] leading-relaxed whitespace-pre-wrap">{notes}</p>
+          </div>
+        </div>
+      )}
+
+      {(clientDocs.length > 0 || firmDocs.length > 0) && (
+        <div>
+          <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">
+            Attached Documents {documents?.length ? `(${documents.length})` : ""}
+          </p>
+          <div className="space-y-2">
+            {clientDocs.map((d, i) => (
+              <DocRow
+                key={`${d.name}-${i}`}
+                doc={d}
+                badge={
+                  viewerRole === "lawyer"
+                    ? { label: "From client", color: "#374151", bg: "#F3F4F6" }
+                    : { label: "You attached this", color: "#374151", bg: "#F3F4F6" }
+                }
+              />
+            ))}
+            {firmDocs.map((d, i) => (
+              <DocRow key={`${d.name}-firm-${i}`} doc={d} badge={{ label: "From our team", color: "#E8317A", bg: "#FFF0F5" }} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!hasAnything && (
+        <div className="text-center py-12">
+          <div className="w-12 h-12 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-3">
+            <Paperclip size={20} className="text-[#D1D5DB]" />
+          </div>
+          <p className="text-sm font-semibold text-[#9CA3AF]">No documents yet</p>
+          <p className="text-[11px] text-[#D1D5DB] mt-1 max-w-xs mx-auto">
+            {viewerRole === "citizen"
+              ? "Anything you attach at booking, or that our team prepares for your lawyer, will show up here."
+              : "Any documents or notes the client shared at intake will show up here."}
+          </p>
+        </div>
+      )}
+
+      <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3">
+        <Lock size={13} className="text-blue-500 shrink-0 mt-0.5" />
+        <p className="text-[11px] text-blue-700 leading-relaxed">
+          {viewerRole === "citizen"
+            ? "Documents are only visible to you and the lawyer(s) assigned to this consultation."
+            : "These documents were shared specifically for this consultation — please treat them as confidential."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Consultation Detail Drawer ───────────────────────────────────────────────
 
 export const ConversationTab = ({ consult, isAdmin = false }: { consult: Consultation; isAdmin?: boolean }) => {
@@ -199,7 +429,7 @@ export function ConsultationDrawer({
   onRequestRefund: (id: string) => void;
   onSubmitRating: (id: string, rating: number, note: string) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<"conversation" | "details" | "help">("conversation");
+  const [activeTab, setActiveTab] = useState<"conversation" | "documents" | "details" | "help">("conversation");
   const [disputeReason, setDisputeReason] = useState("");
   const [showDisputeForm, setShowDisputeForm] = useState(false);
   const [rating, setRating] = useState(consult.rating ?? 0);
@@ -295,14 +525,15 @@ export function ConsultationDrawer({
           {/* Tabs */}
           <div className="flex gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1">
             {([
-              { id: "conversation" as const, label: "Conversation" },
-              { id: "details" as const, label: "Details & Receipt" },
-              { id: "help" as const, label: consult.status === "completed" ? "Rate & Review" : "Get Help" },
+              { id: "conversation" as const, label: "Chat" },
+              { id: "documents" as const, label: "Documents" },
+              { id: "details" as const, label: "Details" },
+              { id: "help" as const, label: consult.status === "completed" ? "Review" : "Help" },
             ]).map(t => (
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${activeTab === t.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}
+                className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all whitespace-nowrap ${activeTab === t.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}
               >
                 {t.label}
               </button>
@@ -316,6 +547,17 @@ export function ConsultationDrawer({
           {/* ── Conversation ── */}
           {activeTab === "conversation" && (
             <ConversationTab consult={consult} />
+          )}
+
+          {/* ── Documents ── */}
+          {activeTab === "documents" && (
+            <DocumentsPanel
+              documents={consult.documents}
+              caseBrief={consult.caseBrief}
+              notes={consult.notes}
+              urgencyLabel={consult.urgencyLabel}
+              viewerRole="citizen"
+            />
           )}
 
           {/* ── Details & Receipt ── */}
@@ -668,4 +910,3 @@ export function ConsultationCard({
     </button>
   );
 }
-

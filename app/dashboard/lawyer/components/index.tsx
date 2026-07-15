@@ -267,7 +267,7 @@ export function MatchRequestCard({
             <div className="grid grid-cols-2 gap-2 text-[11px] mb-3">
                 <div className="bg-[#F9FAFB] rounded-lg px-2.5 py-1.5">
                     <p className="text-[#9CA3AF]">Needs</p>
-                    <p className="font-semibold text-[#111827]">{req.specialism}</p>
+                    <p className="font-semibold text-[#111827]">{req.specialism?.displayName || ""}</p>
                 </div>
                 <div className="bg-[#F9FAFB] rounded-lg px-2.5 py-1.5">
                     <p className="text-[#9CA3AF]">Budget</p>

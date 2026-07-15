@@ -20,8 +20,9 @@ import {
   LawyerPerformanceStats,
   DashboardStats,
   MatchRequest,
+  RecommendedLawyerRef,
 } from "@/redux/types/consultation";
-import { ApiResponse } from "@/redux/types/lawyer";
+import { ApiResponse, ConsultationDocumentMeta } from "@/redux/types/lawyer";
 
 export const consultationsApi = createApi({
   reducerPath: "consultationsApi",
@@ -31,16 +32,18 @@ export const consultationsApi = createApi({
     "CitizenConsultations",
     "CitizenConsultation",
     "CitizenStats",
-    
+
     // Lawyer consultation tags
     "LawyerConsultations",
     "LawyerConsultation",
     "LawyerStats",
-    
+
     // Match request tags
     "MatchRequests",
     "MatchRequest",
-    
+    "CitizenMatchRequests",
+    "CitizenMatchRequest",
+
     // Admin tags
     "AdminConsultations",
     "Disputes",
@@ -54,8 +57,8 @@ export const consultationsApi = createApi({
     // ========== CITIZEN (USER) ENDPOINTS ==========
 
     // Pay Consultation Fee
-    payConsultation: builder.mutation<ApiResponse<any>, {id: string}>({
-      query: ({id}) => ({
+    payConsultation: builder.mutation<ApiResponse<any>, { id: string }>({
+      query: ({ id }) => ({
         url: `/consultations/pay/${id}`,
         method: "PATCH",
       }),
@@ -74,9 +77,9 @@ export const consultationsApi = createApi({
       providesTags: (result) =>
         result?.data?.data
           ? [
-              ...result.data.data.map(({ id }) => ({ type: "CitizenConsultation" as const, id })),
-              { type: "CitizenConsultations", id: "LIST" },
-            ]
+            ...result.data.data.map(({ id }) => ({ type: "CitizenConsultation" as const, id })),
+            { type: "CitizenConsultations", id: "LIST" },
+          ]
           : [{ type: "CitizenConsultations", id: "LIST" }],
     }),
 
@@ -164,6 +167,74 @@ export const consultationsApi = createApi({
       ],
     }),
 
+    // ========== CITIZEN MATCH REQUEST ENDPOINTS (firm-assisted flow) ==========
+
+    // List the citizen's own match requests
+    getCitizenMatchRequests: builder.query<
+      ApiResponse<PaginatedMatchRequests>,
+      ListMatchRequestsParams
+    >({
+      query: (params) => ({
+        url: "/consultations/citizen/match-requests",
+        method: "GET",
+        params,
+      }),
+      providesTags: (result) =>
+        result?.data?.data
+          ? [
+            ...result.data.data.map(({ id }) => ({ type: "CitizenMatchRequest" as const, id })),
+            { type: "CitizenMatchRequests", id: "LIST" },
+          ]
+          : [{ type: "CitizenMatchRequests", id: "LIST" }],
+    }),
+
+    // Get a single match request — status, admin message/scheduled call, documents, recommended lawyers
+    getCitizenMatchRequest: builder.query<ApiResponse<MatchRequest>, string>({
+      query: (id) => ({
+        url: `/consultations/citizen/match-requests/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "CitizenMatchRequest", id }],
+    }),
+
+    // Attach a supporting document to a match request
+    addCitizenMatchDocument: builder.mutation<ApiResponse<MatchRequest>, {matchRequestId: string; formData:FormData}>({
+      query: ({ matchRequestId, formData}) => ({
+        url: `/consultations/citizen/match-requests/${matchRequestId}/documents`,
+        method: "POST",
+        data: formData,
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "CitizenMatchRequest", id: matchRequestId },
+      ],
+    }),
+    
+    // Get suggested lawyer matched to request
+    getRequestSuggestedLawyer: builder.query<ApiResponse<RecommendedLawyerRef[]>, { matchRequestId: string }>({
+      query: ({ matchRequestId }) => ({
+        url: `/consultations/citizen/match-requests/suggested/${matchRequestId}`,
+        method: "GET",
+      })
+    }),
+
+    // Pick a lawyer from the recommended shortlist — creates the paid consultation
+    selectRecommendedLawyer: builder.mutation<
+      ApiResponse<{ result: any; payment: any }>,
+      { matchRequestId: string; lawyerProfileId: string }
+    >({
+      query: ({ matchRequestId, lawyerProfileId }) => ({
+        url: `/consultations/citizen/match-requests/${matchRequestId}/select-lawyer`,
+        method: "POST",
+        data: { lawyerProfileId },
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "CitizenMatchRequest", id: matchRequestId },
+        "CitizenMatchRequests",
+        "CitizenConsultations",
+        "CitizenStats",
+      ],
+    }),
+
     // ========== LAWYER ENDPOINTS ==========
 
     // Get all consultations for the logged-in lawyer
@@ -179,9 +250,9 @@ export const consultationsApi = createApi({
       providesTags: (result) =>
         result?.data?.data
           ? [
-              ...result.data.data.map(({ id }) => ({ type: "LawyerConsultation" as const, id })),
-              { type: "LawyerConsultations", id: "LIST" },
-            ]
+            ...result.data.data.map(({ id }) => ({ type: "LawyerConsultation" as const, id })),
+            { type: "LawyerConsultations", id: "LIST" },
+          ]
           : [{ type: "LawyerConsultations", id: "LIST" }],
     }),
 
@@ -290,9 +361,9 @@ export const consultationsApi = createApi({
       providesTags: (result) =>
         result?.data?.data
           ? [
-              ...result.data.data.map(({ id }) => ({ type: "MatchRequest" as const, id })),
-              { type: "MatchRequests", id: "LIST" },
-            ]
+            ...result.data.data.map(({ id }) => ({ type: "MatchRequest" as const, id })),
+            { type: "MatchRequests", id: "LIST" },
+          ]
           : [{ type: "MatchRequests", id: "LIST" }],
     }),
 
@@ -340,9 +411,9 @@ export const consultationsApi = createApi({
       providesTags: (result) =>
         result?.data?.data
           ? [
-              ...result.data.data.map(({ id }) => ({ type: "AdminConsultations" as const, id })),
-              { type: "AdminConsultations", id: "LIST" },
-            ]
+            ...result.data.data.map(({ id }) => ({ type: "AdminConsultations" as const, id })),
+            { type: "AdminConsultations", id: "LIST" },
+          ]
           : [{ type: "AdminConsultations", id: "LIST" }],
     }),
 
@@ -476,13 +547,13 @@ export const consultationsApi = createApi({
       invalidatesTags: (result) =>
         result?.data?.affectedCount
           ? [
-              "AdminConsultations",
-              "LawyerConsultations",
-              "CitizenConsultations",
-              "Disputes",
-              "Refunds",
-              "Flags",
-            ]
+            "AdminConsultations",
+            "LawyerConsultations",
+            "CitizenConsultations",
+            "Disputes",
+            "Refunds",
+            "Flags",
+          ]
           : [],
     }),
 
@@ -581,6 +652,14 @@ export const {
   useSendMessageMutation,
 } = consultationsApi;
 
+// Citizen match request hooks (firm-assisted flow)
+export const {
+  useGetCitizenMatchRequestsQuery,
+  useGetCitizenMatchRequestQuery,
+  useAddCitizenMatchDocumentMutation,
+  useSelectRecommendedLawyerMutation,
+} = consultationsApi;
+
 // Lawyer hooks
 export const {
   useGetLawyerConsultationsQuery,
@@ -597,6 +676,7 @@ export const {
   useGetMatchRequestsQuery,
   useAcceptMatchRequestMutation,
   useRejectMatchRequestMutation,
+  useGetRequestSuggestedLawyerQuery
 } = consultationsApi;
 
 // Admin hooks

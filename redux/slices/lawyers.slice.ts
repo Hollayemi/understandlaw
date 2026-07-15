@@ -30,6 +30,8 @@ export const lawyerApi = createApi({
     "MarketplaceSpecialisms",
     "FilterCounts",
     "LawyerAvailability",
+    "MatchRequestStatus",
+    "MyMatchRequests",
   ],
 
   endpoints: (builder) => ({
@@ -80,7 +82,12 @@ export const lawyerApi = createApi({
 
     // Public marketplace endpoints
     getMarketplaceLawyers: builder.query<PaginatedResponse<LawyerFull[]>,
-      { specialism?: string; state?: string; search?: string; sortBy?: "rating" | "reviews" | "response" | "fee"; page?: number; pageSize?: number }
+      {
+        specialism?: string; state?: string; search?: string; sortBy?: "rating" | "reviews" | "response" | "fee"; page?: number; pageSize?: number;
+        // When true, only lawyers on a paid subscription tier (eligible for
+        // direct booking, bypassing the firm-assisted intake) are returned.
+        subscribedOnly?: boolean;
+      }
     >({
       query: (params) => ({
         url: "/marketplace/lawyers",
@@ -121,13 +128,67 @@ export const lawyerApi = createApi({
       invalidatesTags: ["LawyerList", "LawyerProfile"],
     }),
 
-    // Request a lawyer match (when user isn't sure who to pick)
-    requestLawyerMatch: builder.mutation<ApiResponse<any>, RequestMatchPayload>({
+    // Request a lawyer match (when user isn't sure who to pick) — kicks off
+    // the firm-assisted flow: our team reviews the intake, then attaches
+    // recommended lawyers to this request for the citizen to choose from.
+    requestLawyerMatch: builder.mutation<ApiResponse<MatchResponse>, RequestMatchPayload>({
       query: (data) => ({
         url: "/marketplace/match-requests",
         method: "POST",
         data,
       }),
+      invalidatesTags: ["MyMatchRequests"],
+    }),
+
+    // Upload a supporting document (tenancy agreement, letter, evidence) to
+    // attach to a match request before or during intake.
+    uploadMatchDocument: builder.mutation<
+      ApiResponse<{ fileUrl: string; filename: string; sizeBytes: number; label?: string }>,
+      FormData
+    >({
+      query: (formData) => ({
+        url: "/marketplace/match-requests/documents/upload",
+        method: "POST",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+    }),
+
+    // Poll a single match request — used on the "finding your lawyer" status
+    // page to detect when the firm has attached recommended lawyers.
+    getMatchRequestStatus: builder.query<ApiResponse<any>, string>({
+      query: (id) => ({
+        url: `/marketplace/match-requests/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "MatchRequestStatus", id }],
+    }),
+
+    // All of the current citizen's match requests (so an in-progress request
+    // isn't lost if they navigate away before a lawyer is selected).
+    getMyMatchRequests: builder.query<ApiResponse<any>, void>({
+      query: () => ({
+        url: "/consultations/citizen/match-requests",
+        method: "GET",
+      }),
+      providesTags: ["MyMatchRequests"],
+    }),
+
+    // Citizen picks one of the firm-recommended lawyers, converting the
+    // match request into an actual booked consultation.
+    selectRecommendedLawyer: builder.mutation<
+      ApiResponse<{ booking: BookingResponse; payment: any }>,
+      { requestId: string; lawyerId: string }
+    >({
+      query: ({ requestId, lawyerId }) => ({
+        url: `/marketplace/match-requests/${requestId}/select`,
+        method: "POST",
+        data: { lawyerId },
+      }),
+      invalidatesTags: (result, error, { requestId }) => [
+        { type: "MatchRequestStatus", id: requestId },
+        "MyMatchRequests",
+      ],
     }),
 
     // Get lawyer's available time slots for booking
@@ -171,6 +232,12 @@ export const {
   useRequestLawyerMatchMutation,
   useGetLawyerAvailabilityQuery,
   useSubmitReviewMutation,
+
+  // Assisted-consultation flow hooks
+  useUploadMatchDocumentMutation,
+  useGetMatchRequestStatusQuery,
+  useGetMyMatchRequestsQuery,
+  useSelectRecommendedLawyerMutation,
 } = lawyerApi;
 
 

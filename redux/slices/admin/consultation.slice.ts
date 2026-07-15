@@ -19,7 +19,9 @@ import {
   LawyerPerformanceStats,
   LawyerPerformanceParams,
   DashboardStats,
+  RecommendedLawyerRef,
 } from "@/redux/types/consultation";
+import { ConsultationDocumentMeta } from "@/redux/types/lawyer";
 import { PaginatedResponse, ApiResponse } from "../types";
 
 export const adminConsultationApi = createApi({
@@ -47,9 +49,9 @@ export const adminConsultationApi = createApi({
         url: "/admin/consultations",
         method: "GET",
         params,
-        
+
       }),
-      providesTags:[{ type: "ConsultationList", id: "LIST" }],
+      providesTags: [{ type: "ConsultationList", id: "LIST" }],
     }),
 
     /**
@@ -260,6 +262,101 @@ export const adminConsultationApi = createApi({
       ],
     }),
 
+    /**
+     * Accept a match request and begin the firm's review (pending/unassigned -> in_review)
+     */
+    adminAcceptMatchRequest: builder.mutation<MatchRequest, { matchRequestId: string }>({
+      query: ({ matchRequestId }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/accept`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
+    /**
+     * Send the firm's own consultation message to the citizen (message-mode requests)
+     */
+    adminSendMatchMessage: builder.mutation<MatchRequest, { matchRequestId: string; message: string }>({
+      query: ({ matchRequestId, message }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/message`,
+        method: "POST",
+        data: { message },
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
+    /**
+     * Organize a call/video session with the citizen (call/video-mode requests)
+     */
+    adminScheduleMatchCall: builder.mutation<
+      MatchRequest,
+      { matchRequestId: string; dateTime: string; link?: string; note?: string }
+    >({
+      query: ({ matchRequestId, ...data }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/schedule-call`,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
+    /**
+     * Attach a document to a match request — either a supporting file or the firm's refined case brief
+     */
+    adminAddMatchDocument: builder.mutation<
+      MatchRequest,
+      { matchRequestId: string; document: ConsultationDocumentMeta; isCaseBrief?: boolean }
+    >({
+      query: ({ matchRequestId, document, isCaseBrief }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/documents`,
+        method: "POST",
+        data: { ...document, isCaseBrief },
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
+    adminUpdateMatch: builder.mutation<ApiResponse<MatchRequest>, { matchRequestId: string; status: string; note?: string }>({
+      query: ({ matchRequestId, status, note }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/status`,
+        method: "PATCH",
+        data: { status, note },
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
+    /**
+     * Send the citizen a shortlist of recommended, vetted lawyers to choose from
+     */
+    adminRecommendLawyers: builder.mutation<
+      MatchRequest,
+      { matchRequestId: string; lawyers: string[] }
+    >({
+      query: ({ matchRequestId, lawyers }) => ({
+        url: `/admin/consultations/match-requests/${matchRequestId}/recommend`,
+        method: "POST",
+        data: { lawyers },
+      }),
+      invalidatesTags: (result, error, { matchRequestId }) => [
+        { type: "MatchRequest", id: matchRequestId },
+        { type: "MatchRequestList", id: "LIST" },
+      ],
+    }),
+
     // ─── Lawyer Performance Endpoints ──────────────────────────────────────────
 
     /**
@@ -340,6 +437,12 @@ export const {
   useAdminAutoMatchMutation,
   useAdminBulkAutoMatchMutation,
   useAdminExpireMatchRequestMutation,
+  useAdminAcceptMatchRequestMutation,
+  useAdminSendMatchMessageMutation,
+  useAdminScheduleMatchCallMutation,
+  useAdminAddMatchDocumentMutation,
+  useAdminUpdateMatchMutation,
+  useAdminRecommendLawyersMutation,
 
   // Lawyer performance hooks
   useAdminGetLawyerPerformanceQuery,

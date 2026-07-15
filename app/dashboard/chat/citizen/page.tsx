@@ -1,23 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import {
   ChevronRight, Plus, Search, MessageSquare, Loader2, X, RefreshCw,
-  Menu, Users, User, Clock, CheckCheck, Check,
+  Menu,
 } from "lucide-react";
 import {
   useGetConversationsQuery,
-  chatUiActions,
-  selectLiveMessages,
-  selectTyping,
-  selectPresence,
-  selectUnread,
   selectSocketConnected,
-  selectTotalUnread,
   IConversation,
-  IMessage,
 } from "@/redux/slices/chat.slice";
 import { useDispatch } from "react-redux";
 import { useChatSocket } from "@/hook/useChatSocket";
@@ -29,8 +22,6 @@ import {
   MessageInput,
   EmptyConversation,
   ConnectionBanner,
-  colorFromString,
-  getInitials,
 } from "@/app/components/chat";
 import { useGetMeQuery } from "@/redux/authService/authSlice";
 
@@ -42,13 +33,27 @@ export default function CitizenConversationsPage() {
   const [search, setSearch] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // Mark component as client-side only
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Current user
   const { data: meData } = useGetMeQuery();
   const currentUser = meData?.data?.user;
   const currentUserId = currentUser?._id ?? "";
   const currentUserName = `${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim();
-  const accessToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  
+  // Only access localStorage on client side
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAccessToken(localStorage.getItem("accessToken"));
+    }
+  }, []);
 
   // Socket
   const chatSocket = useChatSocket({ token: accessToken });
@@ -69,6 +74,8 @@ export default function CitizenConversationsPage() {
 
   // Handle responsive
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
@@ -84,8 +91,10 @@ export default function CitizenConversationsPage() {
   const allParticipantIds = conversations.flatMap(c => c.participants.map(p => p.userId));
 
   useEffect(() => {
-    if (allParticipantIds.length) chatSocket.getPresence(allParticipantIds);
-  }, [conversations.length]); // eslint-disable-line
+    if (allParticipantIds.length && chatSocket) {
+      chatSocket.getPresence(allParticipantIds);
+    }
+  }, [conversations.length, chatSocket]); // eslint-disable-line
 
   const handleSelectConversation = (id: string) => {
     setActiveConvId(id);
@@ -94,11 +103,20 @@ export default function CitizenConversationsPage() {
 
   const presence = useSelector((s: any) => s.chatUi.presence);
 
+  // Don't render on server, or show a loading state
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <Loader2 className="w-8 h-8 animate-spin text-[#E8317A]" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col md:flex-row flex-1 bg-gradient-to-br from-gray-50 to-white h-screen overflow-hidden">
       {/* ── Overlay for mobile ── */}
       {isMobile && sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
           onClick={() => setSidebarOpen(false)}
         />
@@ -215,7 +233,7 @@ export default function CitizenConversationsPage() {
             <ChevronRight size={12} className="text-gray-300" />
             <span className="text-gray-700 font-semibold">Messages</span>
           </nav>
-          
+
           {activeConversation && (
             <div className="ml-auto flex items-center gap-2 text-xs text-gray-400">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50/80 rounded-full">
@@ -280,51 +298,57 @@ function ChatPanel({
   });
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-gray-50/30 overflow-hidden">
-      {/* Conversation Header - Fixed */}
-      <div className="flex-shrink-0 sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-gray-100/80">
-        <ConversationHeader
-          conversation={conversation}
-          currentUserId={currentUserId}
-          presence={presence}
-          isAdmin={false}
-        />
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="w-6 h-6 animate-spin text-[#E8317A]" />
       </div>
+    }>
+      <div className="flex-1 flex flex-col min-h-0 bg-gray-50/30 overflow-hidden">
+        {/* Conversation Header - Fixed */}
+        <div className="flex-shrink-0 sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-gray-100/80">
+          <ConversationHeader
+            conversation={conversation}
+            currentUserId={currentUserId}
+            presence={presence}
+            isAdmin={false}
+          />
+        </div>
 
-      {/* Connection Banner - Fixed */}
-      <div className="flex-shrink-0">
-        <ConnectionBanner connected={socketConnected} />
-      </div>
+        {/* Connection Banner - Fixed */}
+        <div className="flex-shrink-0">
+          <ConnectionBanner connected={socketConnected} />
+        </div>
 
-      {/* Messages - Scrollable */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
-        <MessageList
-          messages={messages}
-          currentUserId={currentUserId}
-          typingNames={typingNames}
-          onDeleteMessage={deleteMessage}
-          onReplyMessage={setReplyTo}
-          isAdmin={false}
-          isLoadingHistory={isLoadingHistory}
-        />
-      </div>
+        {/* Messages - Scrollable */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
+          <MessageList
+            messages={messages}
+            currentUserId={currentUserId}
+            typingNames={typingNames}
+            onDeleteMessage={deleteMessage}
+            onReplyMessage={setReplyTo}
+            isAdmin={false}
+            isLoadingHistory={isLoadingHistory}
+          />
+        </div>
 
-      {/* Message Input - Fixed at bottom */}
-      <div className="flex-shrink-0 sticky bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-100/80 px-4 py-3">
-        <MessageInput
-          onSend={sendMessage}
-          onTypingStart={handleTypingStart}
-          onTypingStop={handleTypingStop}
-          disabled={!socketConnected || conversation.status !== "active"}
-          placeholder={
-            conversation.status === "closed"
-              ? "This conversation is closed"
-              : "Type a message…"
-          }
-          replyTo={replyTo}
-          onCancelReply={() => setReplyTo(null)}
-        />
+        {/* Message Input - Fixed at bottom */}
+        <div className="flex-shrink-0 sticky bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-100/80 px-4 py-3">
+          <MessageInput
+            onSend={sendMessage}
+            onTypingStart={handleTypingStart}
+            onTypingStop={handleTypingStop}
+            disabled={!socketConnected || conversation.status !== "active"}
+            placeholder={
+              conversation.status === "closed"
+                ? "This conversation is closed"
+                : "Type a message…"
+            }
+            replyTo={replyTo}
+            onCancelReply={() => setReplyTo(null)}
+          />
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Play, Pause, BookOpen, Flame, Trophy, Clock, ChevronRight,
@@ -9,7 +9,8 @@ import {
   CarTaxiFront,
   House,
   Briefcase,
-  File
+  File,
+  ChevronLeft
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import { CitizenFull } from "@/redux/types";
@@ -177,6 +178,170 @@ function XPBar({ xpTotal, xpLevel }: { xpTotal: number; xpLevel: number }) {
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #E8317A, #ff6fa8)" }} />
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Auto-sliding carousel component
+function AutoSlideCarousel({ items, onSlideChange }: { items: any[], onSlideChange?: (index: number) => void }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const itemsPerPage = 2;
+
+  // Calculate total pages
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const currentPage = Math.floor(currentIndex / itemsPerPage);
+
+  // Navigate to specific slide
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    if (onSlideChange) onSlideChange(index);
+  };
+
+  // Navigate to next page
+  const nextSlide = () => {
+    const nextIndex = Math.min(currentIndex + itemsPerPage, items.length - itemsPerPage);
+    if (currentIndex + itemsPerPage >= items.length) {
+      // Loop back to start
+      goToSlide(0);
+    } else {
+      goToSlide(nextIndex);
+    }
+  };
+
+  // Navigate to previous page
+  const prevSlide = () => {
+    const prevIndex = Math.max(currentIndex - itemsPerPage, 0);
+    goToSlide(prevIndex);
+  };
+
+  // Auto-slide logic
+  useEffect(() => {
+    if (isPlaying && !isHovered && items.length > itemsPerPage) {
+      intervalRef.current = setInterval(() => {
+        nextSlide();
+      }, 5000); // Slide every 5 seconds
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPlaying, isHovered, currentIndex, items.length]);
+
+  // Get current items to display
+  const currentItems = items.slice(currentIndex, currentIndex + itemsPerPage);
+
+  return (
+    <div 
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Controls */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#E8317A] transition-colors shadow-sm"
+            aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+          >
+            {isPlaying ? <Pause size={14} className="text-gray-600" /> : <Play size={14} className="text-[#E8317A]" />}
+          </button>
+          <span className="text-[10px] text-gray-400 font-medium">
+            {isPlaying ? "Auto-sliding" : "Paused"}
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <button
+            onClick={prevSlide}
+            disabled={currentIndex === 0}
+            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${
+              currentIndex === 0 ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
+            }`}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={14} className="text-gray-600" />
+          </button>
+          
+          {/* Page indicators */}
+          <div className="flex gap-1.5 px-2">
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goToSlide(idx * itemsPerPage)}
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === currentPage ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          
+          <button
+            onClick={nextSlide}
+            disabled={currentIndex + itemsPerPage >= items.length}
+            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${
+              currentIndex + itemsPerPage >= items.length ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
+            }`}
+            aria-label="Next slide"
+          >
+            <ChevronRight size={14} className="text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* Slide content */}
+      <div className="grid md:grid-cols-2 gap-4 transition-all duration-500">
+        {currentItems.map((item) => (
+          <Link key={item.slug} href={`/dashboard/learn/${item.slug}`}
+            className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex">
+            <div className="w-1.5 flex-shrink-0" style={{ background: item.tagColor || getTagColor(item.tag) }} />
+            <div className="flex-1 p-5">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor || getTagColor(item.tag) }}>
+                    {item.tag}
+                  </span>
+                  <h3 className="font-bold text-gray-900 text-sm mt-0.5 leading-snug group-hover:text-[#E8317A] transition-colors">
+                    {item.title}
+                  </h3>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
+                  {getIconForTopic(item.slug)}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1.5">
+                <BookOpen size={11} className="text-gray-400" />
+                {item.section || "Continue reading..."}
+              </p>
+
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-1.5 rounded-full transition-all" style={{ width: `${item.progress || 0}%`, background: item.tagColor || getTagColor(item.tag) }} />
+                </div>
+                <span className="text-[10px] font-semibold text-gray-500">{item.progress || 0}%</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                  <Clock size={10} /> {item.lastRead || "Recently"}
+                </span>
+                <span className="text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full border border-amber-100 flex items-center gap-1">
+                  <Zap size={9} /> +{item.xpReward || 50} XP to finish
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
@@ -381,7 +546,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
 
-        {/* Continue Reading */}
+        {/* Continue Reading with Auto-sliding Carousel */}
         <section className="mb-7">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-900 text-base flex items-center gap-2">
@@ -392,59 +557,16 @@ export default function UserDashboardOverview() {
               All Modules <ChevronRight size={12} />
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {readingItems.length > 0 ? (
-              readingItems.slice(0, 2).map((item) => (
-                <Link key={item.slug} href={`/dashboard/learn/${item.slug}`}
-                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex">
-                  <div className="w-1.5 flex-shrink-0" style={{ background: item.tagColor || getTagColor(item.tag) }} />
-                  <div className="flex-1 p-5">
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor || getTagColor(item.tag) }}>
-                          {item.tag}
-                        </span>
-                        <h3 className="font-bold text-gray-900 text-sm mt-0.5 leading-snug group-hover:text-[#E8317A] transition-colors">
-                          {item.title}
-                        </h3>
-                      </div>
-                      <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
-                        {getIconForTopic(item.slug)}
-                      </div>
-                    </div>
-
-                    <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1.5">
-                      <BookOpen size={11} className="text-gray-400" />
-                      {item.section || "Continue reading..."}
-                    </p>
-
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${item.progress || 0}%`, background: item.tagColor || getTagColor(item.tag) }} />
-                      </div>
-                      <span className="text-[10px] font-semibold text-gray-500">{item.progress || 0}%</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                        <Clock size={10} /> {item.lastRead || "Recently"}
-                      </span>
-                      <span className="text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full border border-amber-100 flex items-center gap-1">
-                        <Zap size={9} /> +{item.xpReward || 50} XP to finish
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div className="col-span-2 text-center py-8 text-gray-500">
-                <p>No reading in progress. Start learning today!</p>
-                <Link href="/dashboard/learn" className="text-[#E8317A] hover:underline text-sm mt-2 inline-block">
-                  Browse topics →
-                </Link>
-              </div>
-            )}
-          </div>
+          {readingItems.length > 0 ? (
+            <AutoSlideCarousel items={readingItems} />
+          ) : (
+            <div className="text-center py-8 text-gray-500 bg-white rounded-2xl border border-gray-100">
+              <p>No reading in progress. Start learning today!</p>
+              <Link href="/dashboard/learn" className="text-[#E8317A] hover:underline text-sm mt-2 inline-block">
+                Browse topics →
+              </Link>
+            </div>
+          )}
         </section>
 
         {/* Middle grid: Quiz + Trending + Bookmarks */}
