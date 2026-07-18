@@ -15,7 +15,7 @@ import {
 } from "@/redux/slices/admin/consultation.slice";
 import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
 import { ConversationTab } from "@/app/dashboard/consultations/components";
-import { formatTime } from "@/utils/function";
+import { formatTime, substringWithMax } from "@/utils/function";
 import { MATCH_STATUS_CFG, MODE_CFG, STATUS_CFG } from "@/app/components/config";
 
 
@@ -368,7 +368,8 @@ export function MatchCard({ req, onUpdate, onOpen }: { req: MatchRequest; onUpda
       </div>
 
       <div className="space-y-1.5 text-[11px] text-[#6B7280] mb-3">
-        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Needs:</span><span className="font-semibold text-[#111827]">{req.specialism.displayName}</span></div>
+        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Needs:</span><span className="font-semibold text-[#111827]" title={req.topic}>{substringWithMax(req.topic, 40)}</span></div>
+        <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Area:</span><span className="font-semibold text-[#111827]">{req.specialism.displayName}</span></div>
         <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Urgency:</span><span className="font-semibold text-[#EF4444]">{req.urgency}</span></div>
         <div className="flex gap-2"><span className="text-[#9CA3AF] w-16 flex-shrink-0">Format:</span><span className="font-semibold flex items-center gap-1" style={{ color: modeCfg.color }}><ModeIcon size={10} />{modeCfg.label}</span></div>
       </div>

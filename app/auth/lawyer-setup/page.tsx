@@ -91,9 +91,9 @@ export default function LawyerOnboardingPage() {
     const newErrors: Record<string, string> = {};
     
     if (step === 0) { // Professional
-      if (!form.nbaNumber) newErrors.nbaNumber = "NBA number is required";
-      else if (!/^NBA\/[A-Z]{3}\/\d{4}\/\d{5}$/i.test(form.nbaNumber)) {
-        newErrors.nbaNumber = "Format: NBA/STATE/YYYY/12345";
+      if (!form.nbaNumber) newErrors.nbaNumber = "SCN number is required";
+      else if (!/^SCN\/[A-Z]{3}\/\d{4}\/\d{5}$/i.test(form.nbaNumber)) {
+        newErrors.nbaNumber = "Format: SCN/STATE/YYYY/12345";
       }
       if (!form.yearOfCall) newErrors.yearOfCall = "Year of call is required";
       else if (parseInt(form.yearOfCall) < 1960 || parseInt(form.yearOfCall) > new Date().getFullYear()) {

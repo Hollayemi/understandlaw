@@ -5,8 +5,9 @@ import LawyerConsultationsPage from "../lawyer/page"
 import CitizenConsultationsPage from "./citizen/page"
 
 const Consultation = () => {
-    const  {user} = useUserData() as any
-    return user?.role === "lawyer" ? <LawyerConsultationsPage /> : <CitizenConsultationsPage />
+    const  {userInfo} = useUserData() as any
+    console.log({userInfo})
+    return userInfo.user?.role === "lawyer" ? <LawyerConsultationsPage /> : <CitizenConsultationsPage />
 }
 
 export default Consultation

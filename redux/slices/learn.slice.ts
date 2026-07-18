@@ -3,13 +3,9 @@ import { axiosBaseQuery } from "../shared/axiosBaseQuery";
 import { ApiResponse, Pagination } from "../types";
 import { ModuleCategory, TopicWithSubTopics } from "./types";
 
-
-
-
 export type LearnModuleStatus = "active" | "inactive";
 export type LearnTopicStatus = "published" | "draft";
 export type LearnTabKey = "all" | "active" | "complete" | "saved";
-
 
 export interface LearnInstructor {
   _id: string;
@@ -18,7 +14,6 @@ export interface LearnInstructor {
   initials: string;
   color: string;
 }
-
 
 export interface LearnModule {
   _id: string;
@@ -31,7 +26,6 @@ export interface LearnModule {
   categoryBg: string;
   status: LearnModuleStatus;
   thumbnailUrl: string | null;
-  /** gradient string for thumbnail fallback */
   gradient: string;
   tag: string;
   tagColor: string;
@@ -44,16 +38,11 @@ export interface LearnModule {
   trending: boolean;
   createdAt: string;
   updatedAt: string;
-  /** Citizen-specific fields — only present when authenticated */
   enrolledAt?: string | null;
-  /** 0–100 */
   progressPercent?: number;
-  /** "active" | "complete" | "saved" */
   userTab?: LearnTabKey;
   isSaved?: boolean;
 }
-
-// ─── Module detail (single) ───────────────────────────────────────────────────
 
 export interface LearnModuleDetail extends LearnModule {
   fullDescription: string;
@@ -63,8 +52,6 @@ export interface LearnModuleDetail extends LearnModule {
   completionRate: number;
 }
 
-// ─── Topic summary (inside module detail) ────────────────────────────────────
-
 export interface LearnTopicSummary {
   _id: string;
   slug: string;
@@ -72,13 +59,9 @@ export interface LearnTopicSummary {
   order: number;
   duration: string;
   status: LearnTopicStatus;
-  /** Whether the authenticated citizen has completed this topic */
   completed: boolean;
-  /** true if this is the citizen's current in-progress topic */
   active: boolean;
 }
-
-// ─── Topic detail ─────────────────────────────────────────────────────────────
 
 export interface LearnSubTopicSummary {
   _id: string;
@@ -105,11 +88,8 @@ export interface LearnTopicDetail {
   videoUrl: string | null;
   thumbnailUrl: string | null;
   duration: string;
-  /** seconds for the player */
   durationSeconds: number;
-  /** e.g. "00:46" */
   currentTime: string;
-  /** 0–100 float for progress bar */
   progressPercent: number;
   watchCount: number;
   completionRate: number;
@@ -122,11 +102,8 @@ export interface LearnTopicDetail {
   subtopics: LearnSubTopicSummary[];
   createdAt: string;
   updatedAt: string;
-  /** Whether the authenticated citizen has completed this topic */
   completed: boolean;
 }
-
-// ─── "Continue reading" item (dashboard overview) ────────────────────────────
 
 export interface ContinueReadingItem {
   slug: string;
@@ -135,16 +112,12 @@ export interface ContinueReadingItem {
   tag: string;
   tagColor: string;
   gradient: string;
-  /** 0–100 */
   progressPercent: number;
   lastReadAt: string;
-  /** Human-readable e.g. "2 hours ago" */
   lastReadLabel: string;
   currentSectionTitle: string;
   xpRewardOnCompletion: number;
 }
-
-// ─── Featured topic (learn list page) ────────────────────────────────────────
 
 export interface FeaturedTopic {
   _id: string;
@@ -152,8 +125,6 @@ export interface FeaturedTopic {
   title: string;
   instructor: Pick<LearnInstructor, "name" | "email" | "initials" | "color">;
 }
-
-// ─── Save / unsave response ───────────────────────────────────────────────────
 
 export interface SaveModuleResponse {
   moduleId: string;
@@ -163,15 +134,106 @@ export interface SaveModuleResponse {
 export interface MarkTopicCompleteResponse {
   topicId: string;
   completed: boolean;
-  /** updated XP total */
   xpTotal: number;
   xpAwarded: number;
-  /** updated streak */
   streakDays: number;
-  /** updated module progress */
   moduleProgressPercent: number;
-  /** whether the certificate was unlocked */
   certificateUnlocked: boolean;
+}
+
+// ============================================
+// SUBTOPIC INTERACTION TYPES
+// ============================================
+
+export interface SubtopicLikeResponse {
+  subtopicId: string;
+  liked: boolean;
+  likesCount: number;
+}
+
+export interface SubtopicCompleteResponse {
+  subtopicId: string;
+  completed: boolean;
+  completedBy: number;
+}
+
+// Add these types to your learn.slice.ts
+
+export interface SubtopicState {
+  id: string;
+  title: string;
+  order: number;
+  likesCount: number;
+  completedBy: number;
+  liked: boolean;
+  completed: boolean;
+}
+
+export interface SubtopicWithStatus {
+  id: string;
+  title: string;
+  order: number;
+  duration: string;
+  completed: boolean;
+  liked: boolean;
+}
+
+export interface TopicProgress {
+  id: string;
+  title: string;
+  totalSubtopics: number;
+  completedSubtopics: number;
+  progressPercent: number;
+  completedSubtopicIds: string[];
+  subtopics: SubtopicWithStatus[];
+}
+
+export interface SubtopicStateResponse {
+  currentSubtopic: SubtopicState;
+  topic: TopicProgress;
+}
+
+// ============================================
+// BOOKMARK TYPES
+// ============================================
+
+export interface Bookmark {
+  id: string;
+  subtopicId: string;
+  url: string;
+  topicId: string;
+  moduleId: string;
+  subtopicTitle: string;
+  topicTitle: string;
+  moduleTitle: string;
+  highlightedText: string;
+  comment: string;
+  startOffset?: number;
+  endOffset?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBookmarkRequest {
+  highlightedText: string;
+  comment?: string;
+  url: string;
+  startOffset?: number;
+  endOffset?: number;
+}
+
+export interface UpdateBookmarkRequest {
+  highlightedText?: string;
+  comment?: string;
+  startOffset?: number;
+  endOffset?: number;
+}
+
+export interface ListBookmarksParams {
+  moduleId?: string;
+  topicId?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface ListLearnModulesParams {
@@ -193,15 +255,15 @@ export const learnApi = createApi({
     "ContinueReading",
     "FeaturedTopics",
     "SavedModules",
+    "Bookmarks",
+    "SubtopicState",
   ],
 
   endpoints: (builder) => ({
-    /**
-     * GET /learn/modules
-     * Paginated list of published modules for the dashboard learn page.
-     * When authenticated, returns citizen-specific fields:
-     * progressPercent, userTab ("active" | "complete" | "saved"), isSaved, enrolledAt.
-     */
+    // ============================================
+    // EXISTING ENDPOINTS
+    // ============================================
+
     listLearnModules: builder.query<
       ApiResponse<Pagination<LearnModule[]>>,
       ListLearnModulesParams
@@ -221,11 +283,6 @@ export const learnApi = createApi({
       providesTags: [{ type: "LearnModuleList" }],
     }),
 
-    /**
-     * GET /learn/modules/:slug
-     * Full module detail including ordered topics with citizen progress.
-     * Used on the /dashboard/learn/[slug] page.
-     */
     getLearnModuleBySlug: builder.query<ApiResponse<LearnModuleDetail>, string>({
       query: (slug) => ({
         url: `/learn/modules/${slug}`,
@@ -236,11 +293,6 @@ export const learnApi = createApi({
       ],
     }),
 
-    /**
-     * GET /learn/modules/:moduleSlug/topics/:topicSlug
-     * Full topic detail: video info, subtopics, citizen progress state.
-     * Used on the /dashboard/learn/[slug] video/topic view page.
-     */
     getLearnTopicBySlug: builder.query<
       ApiResponse<LearnTopicDetail>,
       { moduleSlug: string; topicSlug: string }
@@ -261,11 +313,6 @@ export const learnApi = createApi({
       }),
     }),
 
-    /**
-     * GET /learn/continue-reading
-     * Returns the citizen's in-progress modules (max 2 for the dashboard strip).
-     * Requires authentication.
-     */
     getContinueReading: builder.query<ApiResponse<ContinueReadingItem[]>, void>({
       query: () => ({
         url: "/learn/continue-reading",
@@ -274,10 +321,6 @@ export const learnApi = createApi({
       providesTags: ["ContinueReading"],
     }),
 
-    /**
-     * GET /learn/featured-topics
-     * A curated list of featured topics shown at the bottom of the learn page.
-     */
     getFeaturedTopics: builder.query<ApiResponse<FeaturedTopic[]>, void>({
       query: () => ({
         url: "/learn/featured-topics",
@@ -286,11 +329,6 @@ export const learnApi = createApi({
       providesTags: ["FeaturedTopics"],
     }),
 
-    /**
-     * POST /learn/modules/:moduleId/save
-     * Toggle save/unsave a module to the citizen's saved list.
-     * Returns the updated saved state.
-     */
     toggleSaveModule: builder.mutation<
       ApiResponse<SaveModuleResponse>,
       string
@@ -306,11 +344,6 @@ export const learnApi = createApi({
       ],
     }),
 
-    /**
-     * POST /learn/modules/:moduleId/enrol
-     * Enrol the citizen in a module.
-     * Returns the updated module with enrolledAt and progressPercent.
-     */
     enrolInModule: builder.mutation<
       ApiResponse<Pick<LearnModule, "_id" | "enrolledAt" | "progressPercent" | "userTab">>,
       string
@@ -326,11 +359,6 @@ export const learnApi = createApi({
       ],
     }),
 
-    /**
-     * POST /learn/modules/:moduleId/topics/:topicId/complete
-     * Mark a topic as completed for the authenticated citizen.
-     * Awards XP, updates streak, and checks for certificate unlock.
-     */
     markTopicComplete: builder.mutation<
       ApiResponse<MarkTopicCompleteResponse>,
       { moduleId: string; topicId: string }
@@ -346,12 +374,6 @@ export const learnApi = createApi({
       ],
     }),
 
-    /**
-     * PATCH /learn/modules/:moduleId/topics/:topicId/progress
-     * Save the citizen's current video watch position.
-     * Called periodically while the video is playing.
-     * Body: { currentTimeSeconds: number }
-     */
     saveVideoProgress: builder.mutation<
       ApiResponse<{ topicId: string; currentTimeSeconds: number }>,
       { moduleId: string; topicId: string; currentTimeSeconds: number }
@@ -361,12 +383,179 @@ export const learnApi = createApi({
         method: "PATCH",
         data: { currentTimeSeconds },
       }),
-      // Intentionally no tag invalidation — this is a silent background save
+    }),
+
+    // ============================================
+    // SUBTOPIC INTERACTION ENDPOINTS
+    // ============================================
+
+    /**
+     * POST /learn/subtopics/:subtopicId/like
+     * Toggle like on a subtopic
+     */
+    toggleLikeSubtopic: builder.mutation<
+      ApiResponse<SubtopicLikeResponse>,
+      string
+    >({
+      query: (subtopicId) => ({
+        url: `/learn/subtopics/${subtopicId}/like`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, subtopicId) => [
+        { type: "SubtopicState", id: subtopicId },
+      ],
+    }),
+
+    /**
+     * POST /learn/subtopics/:subtopicId/complete
+     * Toggle complete status on a subtopic
+     */
+    toggleCompleteSubtopic: builder.mutation<
+      ApiResponse<SubtopicCompleteResponse>,
+      string
+    >({
+      query: (subtopicId) => ({
+        url: `/learn/subtopics/${subtopicId}/complete`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, subtopicId) => [
+        { type: "SubtopicState", id: subtopicId },
+      ],
+    }),
+
+    /**
+     * GET /learn/subtopics/:subtopicId/state
+     * Get the current user's state for a subtopic
+     */
+    getSubtopicState: builder.query<
+      ApiResponse<SubtopicStateResponse>,
+      string
+    >({
+      query: (subtopicId) => ({
+        url: `/learn/subtopics/${subtopicId}/state`,
+        method: "GET",
+      }),
+      providesTags: (result, error, subtopicId) => [
+        { type: "SubtopicState", id: subtopicId },
+      ],
+    }),
+
+    // ============================================
+    // BOOKMARK ENDPOINTS
+    // ============================================
+
+    /**
+     * POST /learn/subtopics/:subtopicId/bookmarks
+     * Create a new bookmark for a subtopic
+     */
+    createBookmark: builder.mutation<
+      ApiResponse<Bookmark>,
+      { subtopicId: string; data: CreateBookmarkRequest }
+    >({
+      query: ({ subtopicId, data }) => ({
+        url: `/learn/subtopics/${subtopicId}/bookmarks`,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: (result, error, { subtopicId }) => [
+        { type: "Bookmarks", id: subtopicId },
+      ],
+    }),
+
+    /**
+     * GET /learn/subtopics/:subtopicId/bookmarks
+     * Get all bookmarks for a subtopic
+     */
+    listBookmarksForSubtopic: builder.query<
+      ApiResponse<Bookmark[]>,
+      string
+    >({
+      query: (subtopicId) => ({
+        url: `/learn/subtopics/${subtopicId}/bookmarks`,
+        method: "GET",
+      }),
+      providesTags: (result, error, subtopicId) => [
+        { type: "Bookmarks", id: subtopicId },
+      ],
+    }),
+
+    /**
+     * GET /learn/bookmarks
+     * Get all bookmarks for the authenticated user with pagination
+     */
+    listMyBookmarks: builder.query<
+      ApiResponse<Pagination<Bookmark[]>>,
+      ListBookmarksParams
+    >({
+      query: (params) => ({
+        url: "/learn/bookmarks",
+        method: "GET",
+        params: {
+          ...(params.moduleId && { moduleId: params.moduleId }),
+          ...(params.topicId && { topicId: params.topicId }),
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 20,
+        },
+      }),
+      providesTags: ["Bookmarks"],
+    }),
+
+    /**
+     * GET /learn/bookmarks/:bookmarkId
+     * Get a single bookmark by ID
+     */
+    getBookmarkById: builder.query<
+      ApiResponse<Bookmark>,
+      string
+    >({
+      query: (bookmarkId) => ({
+        url: `/learn/bookmarks/${bookmarkId}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, bookmarkId) => [
+        { type: "Bookmarks", id: bookmarkId },
+      ],
+    }),
+
+    /**
+     * PUT /learn/bookmarks/:bookmarkId
+     * Update a bookmark
+     */
+    updateBookmark: builder.mutation<
+      ApiResponse<Bookmark>,
+      { bookmarkId: string; data: UpdateBookmarkRequest }
+    >({
+      query: ({ bookmarkId, data }) => ({
+        url: `/learn/bookmarks/${bookmarkId}`,
+        method: "PUT",
+        data,
+      }),
+      invalidatesTags: (result, error, { bookmarkId }) => [
+        { type: "Bookmarks", id: bookmarkId },
+      ],
+    }),
+
+    /**
+     * DELETE /learn/bookmarks/:bookmarkId
+     * Delete a bookmark
+     */
+    deleteBookmark: builder.mutation<
+      ApiResponse<void>,
+      string
+    >({
+      query: (bookmarkId) => ({
+        url: `/learn/bookmarks/${bookmarkId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, bookmarkId) => [
+        { type: "Bookmarks", id: bookmarkId },
+      ],
     }),
   }),
 });
 
 export const {
+  // Existing hooks
   useListLearnModulesQuery,
   useGetLearnModuleBySlugQuery,
   useGetLearnTopicBySlugQuery,
@@ -377,4 +566,17 @@ export const {
   useEnrolInModuleMutation,
   useMarkTopicCompleteMutation,
   useSaveVideoProgressMutation,
+
+  // Subtopic interaction hooks
+  useToggleLikeSubtopicMutation,
+  useToggleCompleteSubtopicMutation,
+  useGetSubtopicStateQuery,
+
+  // Bookmark hooks
+  useCreateBookmarkMutation,
+  useListBookmarksForSubtopicQuery,
+  useListMyBookmarksQuery,
+  useGetBookmarkByIdQuery,
+  useUpdateBookmarkMutation,
+  useDeleteBookmarkMutation,
 } = learnApi;

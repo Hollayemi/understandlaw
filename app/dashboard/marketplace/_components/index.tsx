@@ -17,7 +17,7 @@ import { getUrgencyDeadline } from "@/utils/function"
 
 export function VerificationSteps() {
   const steps = [
-    { n: "01", title: "NBA Check", desc: "Bar membership confirmed" },
+    { n: "01", title: "SCN Check", desc: "Bar membership confirmed" },
     { n: "02", title: "Document Review", desc: "Credentials validated" },
     { n: "03", title: "Platform Training", desc: "Standards orientation" },
     { n: "04", title: "Assessment", desc: "Competency verified" },

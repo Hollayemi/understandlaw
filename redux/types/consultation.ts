@@ -11,7 +11,7 @@ export type ConsultStatus =
   | "cancelled"
   | "refunded";
 
-export type ConsultMode = "message" | "call" | "video";
+export type ConsultMode = "sms" | "message" | "call" | "video";
 export type MatchStatus = "pending" | "unassigned" | "in_review" | "ready_for_call" | "matching" | "recommended" | "matched" | "expired";
 
 export interface Message {

@@ -77,3 +77,20 @@ export function getUrgencyDeadline(maxDays: number | null) {
   const deadline = new Date();
   return new Date(deadline.setDate(deadline.getDate() + maxDays)).toISOString()
 }
+
+interface SubstringOptions {
+   
+    addEllipsis?: boolean;
+    ellipsis?: string;
+}
+
+export function substringWithMax(text: string,  maxLength: number, options?: SubstringOptions): string {
+    const { addEllipsis = true, ellipsis = '...' } = options || {};
+    
+    if (!text) return '';
+    if (maxLength <= 0) return '';
+    if (text.length <= maxLength) return text;
+    
+    const substring = text.substring(0, maxLength);
+    return addEllipsis ? substring + ellipsis : substring;
+}

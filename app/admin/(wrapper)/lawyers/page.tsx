@@ -93,7 +93,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => 
               { icon: Mail,     label: "Email",        value: lawyer.email },
               { icon: MapPin,   label: "State",        value: lawyer.state },
               { icon: Calendar, label: "Joined",       value: formatTime(lawyer.createdAt) },
-              { icon: BadgeCheck, label: "NBA Number", value: lawyer.nbaNumber },
+              { icon: BadgeCheck, label: "SCN Number", value: lawyer.nbaNumber },
               { icon: Award,    label: "Year of Call", value: `${lawyer.yearOfCall} years` },
               { icon: Clock,    label: "Response",     value: lawyer.responseTimeLabel },
             ].map(({ icon: Icon, label, value }) => (
@@ -257,7 +257,7 @@ console.log(lawyers)
       <div className="p-6 xl:p-8 max-w-7xl mx-auto">
         <PageHeader
           title="Lawyers"
-          subtitle="NBA-verified legal professionals on the LawTicha marketplace."
+          subtitle="SCN-verified legal professionals on the LawTicha marketplace."
           action={
             <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
               <Download size={13} /> Export CSV
@@ -276,7 +276,7 @@ console.log(lawyers)
           ]}
           value={tab}
           onChange={setTab}
-          searchPlaceholder="Search by name, NBA number, or state…"
+          searchPlaceholder="Search by name, SCN number, or state…"
           searchValue={search}
           onSearchChange={setSearch}
           rightSlot={

@@ -577,7 +577,7 @@ export default function LawyerProfilePage() {
                       <Shield size={18} className="text-[#10B981]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold text-[#111827]">NBA Verified</p>
+                      <p className="text-[13px] font-bold text-[#111827]">SCN Verified</p>
                       <p className="text-[11px] text-[#9CA3AF] font-mono">{lawyer.nbaNumber}</p>
                     </div>
                     <span className="text-[10px] font-bold bg-[#ECFDF5] text-[#065F46] border border-[#6EE7B7] px-2 py-0.5 rounded-full">

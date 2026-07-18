@@ -17,6 +17,7 @@ import {
   useSaveVideoProgressMutation,
 } from "@/redux/slices/learn.slice";
 import AskQuestionButton from "@/app/dashboard/community/_components/AskQuestionButton";
+import ReadAloudButton from "@/app/components/ui/ReadAloudButton";
 
 // Subtopic Component for rendering individual subtopic content
 const SubtopicContent = ({
@@ -46,7 +47,7 @@ const SubtopicContent = ({
         }`}
     >
       <button
-        onClick={() => setExpanded(!expanded)}
+
         className="w-full flex items-center justify-between p-4 text-left"
       >
         <div className="flex items-center gap-3 flex-1">
@@ -80,11 +81,27 @@ const SubtopicContent = ({
               </span>
             </div>
           </div>
-          {expanded ? (
-            <ChevronUp size={16} className="text-gray-400" />
-          ) : (
-            <ChevronDown size={16} className="text-gray-400" />
-          )}
+          <div className="flex items-center">
+
+            <ReadAloudButton
+              text={`
+                  ${subtopic.title}.
+                  ${subtopic.notes}.
+              `}
+            />
+
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="flex items-center ml-3 justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8317A] focus:ring-offset-2"
+              aria-label="Voice settings"
+            >
+              {expanded ? (
+                <ChevronUp size={16} className="text-gray-400" />
+              ) : (
+                <ChevronDown size={16} className="text-gray-400" />
+              )}
+            </button>
+          </div>
         </div>
       </button>
 
@@ -175,11 +192,11 @@ export default function TopicDetailPage() {
   const subtopics = topic?.subtopics || [];
 
   // Set first subtopic as active by default
-  useEffect(() => {
-    if (subtopics.length > 0 && !activeSubtopicId) {
-      setActiveSubtopicId(subtopics[0]._id);
-    }
-  }, [subtopics]);
+  // useEffect(() => {
+  //   if (subtopics.length > 0 && !activeSubtopicId) {
+  //     setActiveSubtopicId(subtopics[0]._id);
+  //   }
+  // }, [subtopics]);
 
   // Find current topic index and next/prev topics
   const currentIndex = topics.findIndex((t: any) => t.slug === topicSlug);
@@ -473,7 +490,6 @@ export default function TopicDetailPage() {
                   <div>
                     <div>
                       {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm !text-right underline text-[#E8317A]">Open Lesson</Link>}
-
                       <div className="flex items-center gap-2">
                         <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                           <div

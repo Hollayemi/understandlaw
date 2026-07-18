@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation"
 import Link from "next/link";
 import {
   Play, Pause, BookOpen, Flame, Trophy, Clock, ChevronRight,
@@ -25,6 +26,8 @@ import {
   useGetNextGoalQuery,
   useSubmitQuizAnswerMutation,
 } from "@/redux/slices/dashboard.slice";
+import { useListBookmarksForSubtopicQuery } from "@/redux/slices/learn.slice";
+import { formatTime, substringWithMax } from "@/utils/function";
 
 // Helper to get icons based on slug or type
 const getIconForTopic = (slug: string = '') => {
@@ -48,12 +51,12 @@ const getTagColor = (tag: string) => {
 };
 
 // Quiz component with local state
-function DailyQuiz({ 
-  challenge, 
-  onQuizComplete 
-}: { 
-  challenge: any; 
-  onQuizComplete?: () => void 
+function DailyQuiz({
+  challenge,
+  onQuizComplete
+}: {
+  challenge: any;
+  onQuizComplete?: () => void
 }) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -69,13 +72,13 @@ function DailyQuiz({
   const handleSubmit = async () => {
     if (selectedOption !== null && !revealed) {
       setRevealed(true);
-      
+
       try {
         const result = await submitQuiz({
           questionId: challenge?.id || "daily",
           answer: selectedOption
         }).unwrap();
-        
+
         if (result.data?.correct) {
           setCompleted(true);
           if (onQuizComplete) onQuizComplete();
@@ -137,14 +140,13 @@ function DailyQuiz({
           Submit Answer
         </button>
       )}
-      
+
       {(revealed || completed) && (
         <div className="mt-3">
-          <div className={`text-xs font-semibold text-center py-2 rounded-xl ${
-            selectedOption === challenge.correct ? "bg-[#10B981]/15 text-[#10B981]" : "bg-red-400/10 text-red-400"
-          }`}>
-            {selectedOption === challenge.correct 
-              ? `✓ Correct! +${challenge.xpReward} XP earned` 
+          <div className={`text-xs font-semibold text-center py-2 rounded-xl ${selectedOption === challenge.correct ? "bg-[#10B981]/15 text-[#10B981]" : "bg-red-400/10 text-red-400"
+            }`}>
+            {selectedOption === challenge.correct
+              ? `✓ Correct! +${challenge.xpReward} XP earned`
               : `✗ Correct answer: ${challenge.options[challenge.correct]}`
             }
           </div>
@@ -239,7 +241,7 @@ function AutoSlideCarousel({ items, onSlideChange }: { items: any[], onSlideChan
   const currentItems = items.slice(currentIndex, currentIndex + itemsPerPage);
 
   return (
-    <div 
+    <div
       className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -258,39 +260,36 @@ function AutoSlideCarousel({ items, onSlideChange }: { items: any[], onSlideChan
             {isPlaying ? "Auto-sliding" : "Paused"}
           </span>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <button
             onClick={prevSlide}
             disabled={currentIndex === 0}
-            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${
-              currentIndex === 0 ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
-            }`}
+            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${currentIndex === 0 ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
+              }`}
             aria-label="Previous slide"
           >
             <ChevronLeft size={14} className="text-gray-600" />
           </button>
-          
+
           {/* Page indicators */}
           <div className="flex gap-1.5 px-2">
             {Array.from({ length: totalPages }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => goToSlide(idx * itemsPerPage)}
-                className={`h-1.5 rounded-full transition-all ${
-                  idx === currentPage ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
-                }`}
+                className={`h-1.5 rounded-full transition-all ${idx === currentPage ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                  }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
           </div>
-          
+
           <button
             onClick={nextSlide}
             disabled={currentIndex + itemsPerPage >= items.length}
-            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${
-              currentIndex + itemsPerPage >= items.length ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
-            }`}
+            className={`w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center transition-colors shadow-sm ${currentIndex + itemsPerPage >= items.length ? "opacity-40 cursor-not-allowed" : "hover:border-[#E8317A]"
+              }`}
             aria-label="Next slide"
           >
             <ChevronRight size={14} className="text-gray-600" />
@@ -350,8 +349,9 @@ function AutoSlideCarousel({ items, onSlideChange }: { items: any[], onSlideChan
 // Main Component
 export default function UserDashboardOverview() {
   const { userInfo } = useUserData();
+  const router = useRouter()
   const { user, profile } = userInfo as CitizenFull;
-  
+
   // Local state
   const [greeting, setGreeting] = useState("Good Morning");
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -362,7 +362,7 @@ export default function UserDashboardOverview() {
   const { data: readingData, isLoading: readingLoading } = useGetContinueReadingQuery();
   const { data: challengeData, isLoading: challengeLoading } = useGetDailyChallengeQuery();
   const { data: trendingData, isLoading: trendingLoading } = useGetTrendingTopicsQuery({ limit: 4 });
-  const { data: bookmarksData, isLoading: bookmarksLoading } = useGetBookmarksQuery();
+  const { data: bookmarksData, isLoading: bookmarksLoading } = useListBookmarksForSubtopicQuery("all");
   const { data: communityData, isLoading: communityLoading } = useGetCommunityHighlightsQuery({ limit: 2 });
   const { data: goalData, isLoading: goalLoading } = useGetNextGoalQuery();
 
@@ -394,6 +394,8 @@ export default function UserDashboardOverview() {
   const community = communityData?.data || [];
   const goal = goalData?.data || null;
 
+  const sortedBookmarks = [...bookmarks].sort((a, b) => (b.startOffset || 0) - (a.startOffset || 0));
+
   // Stats configuration
   const STATS = [
     { icon: BookOpen, color: "#E8317A", bg: "#FFF0F5", value: stats?.topicsCompletedCount ?? 0, label: "Topics Read" },
@@ -420,8 +422,8 @@ export default function UserDashboardOverview() {
       <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
         <div className="text-center">
           <p className="text-red-500 mb-2">Failed to load dashboard</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="text-[#E8317A] hover:underline text-sm"
           >
             Retry
@@ -612,26 +614,51 @@ export default function UserDashboardOverview() {
               </div>
               <Link href="/dashboard/bookmarks" className="text-[10px] text-[#E8317A] font-semibold hover:underline">View all</Link>
             </div>
-            <div className="flex flex-col gap-2.5">
-              {bookmarks.length > 0 ? (
-                bookmarks.slice(0, 3).map((b) => (
-                  <div key={b.title} className="flex items-start gap-3 group cursor-pointer">
-                    <div className="w-1 h-8 rounded-full flex-shrink-0 mt-0.5" style={{ background: b.color || "#E8317A" }} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-gray-900 group-hover:text-[#E8317A] transition-colors leading-snug line-clamp-1">{b.title}</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">{b.law}</p>
-                    </div>
-                    <ChevronRight size={12} className="text-gray-300 group-hover:text-[#E8317A] flex-shrink-0 mt-1 transition-colors" />
+            <div className="flex flex-col h-full">
+              {/* Bookmark List */}
+              <div className="flex-1 overflow-y-auto min-h-0">
+                {bookmarks.length > 0 ? (
+                  <div className="space-y-3 pr-1">
+                    {bookmarks.map((bookmark) => (
+                      <div
+                        onClick={()=> router.push(bookmark.url)}
+                        key={bookmark.id}
+                        className="bg-gray-50 rounded-xl p-3 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-200 group"
+                      >
+                        <p className="text-sm text-gray-800 font-medium line-clamp-2">
+                          "{substringWithMax(bookmark.highlightedText, 20)}"
+                        </p>
+
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                          <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                            <Calendar size={10} className="flex-shrink-0" />
+                            {formatTime(bookmark.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500 text-center py-4">No bookmarks yet</p>
-              )}
-              <Link href="/dashboard/learn"
-                className="flex items-center gap-2 text-[11px] text-[#E8317A] font-semibold mt-1 hover:gap-3 transition-all">
-                <span>Start reading to add more</span>
-                <ArrowRight size={11} />
-              </Link>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full py-8">
+                    <Bookmark size={40} className="text-gray-300 mb-3" />
+                    <p className="text-sm text-gray-500 text-center">No bookmarks yet</p>
+                    <p className="text-xs text-gray-400 text-center mt-1">
+                      Highlight text in the article to save it
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer Link */}
+              <div className="flex-shrink-0 pt-3 border-t border-gray-100 mt-2">
+                <Link
+                  href="/dashboard/learn"
+                  className="inline-flex items-center gap-2 text-[11px] text-[#E8317A] font-semibold hover:gap-3 transition-all duration-200 group"
+                >
+                  <span>Start reading to add more</span>
+                  <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

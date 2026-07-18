@@ -34,13 +34,6 @@ const MATCH_STATUS_CFG: Record<MatchStatus, { label: string; sub: string; bg: st
   expired: { label: "Expired", sub: "This request has expired. You can start a new one anytime.", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
 };
 
-const STEPS: { key: MatchStatus[]; label: string }[] = [
-  { key: ["pending", "unassigned"], label: "Submitted" },
-  { key: ["in_review", "matching"], label: "Being Reviewed" },
-  { key: ['ready_for_call'], label: "Ready For Call" },
-  { key: ["recommended"], label: "Lawyers Ready" },
-  { key: ["matched"], label: "Matched" },
-];
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -62,6 +55,15 @@ export default function MatchRequestDetailPage() {
   const request = data?.data;
   const [selectLawyer, { isLoading: isSelectingLawyer }] = useSelectRecommendedLawyerMutation();
   const [errorMsg, setErrorMsg] = useState("");
+
+  const STEPS: { key: MatchStatus[]; label: string }[] = [
+    { key: ["pending", "unassigned"] as MatchStatus[], label: "Submitted" },
+    { key: ["in_review", "matching"] as MatchStatus[], label: "Being Reviewed" },
+    ...(request?.mode === "message" ? [] : [{ key: ["ready_for_call"] as MatchStatus[], label: "Ready For Call" }]),
+    { key: ["recommended"] as MatchStatus[], label: "Lawyers Ready" },
+    { key: ["matched"] as MatchStatus[], label: "Matched" },
+  ];
+ 
 
   if (isLoading) {
     return (

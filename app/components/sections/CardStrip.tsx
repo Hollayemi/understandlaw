@@ -51,7 +51,7 @@ const CARDS = [
   {
     type: "stat" as const,
     gradient: "linear-gradient(160deg,#F472B6 0%,#DB2777 40%,#831843 100%)",
-    label: "NBA-VERIFIED LAWYERS ON THE PLATFORM",
+    label: "SCN-VERIFIED LAWYERS ON THE PLATFORM",
     number: "200+",
     image: "/images/tenancy_law.jpg",
     id: "c6",

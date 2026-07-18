@@ -48,6 +48,7 @@ export interface LawyerUser {
 }
 
 export interface LawyerFees {
+    sms: number;
     message: number;
     call: number;
     video: number;
@@ -298,7 +299,7 @@ export interface MarketplaceStats {
 // Booking Consultation
 export interface BookConsultationPayload {
   lawyerNbaNumber: string;
-  mode: "message" | "call" | "video";
+  mode: "message" | "call" | "video" | "sms";
   topic: string;
   description?: string;
   preferredTimeSlot?: string; // for call/video
@@ -331,8 +332,10 @@ export interface RequestMatchPayload {
   specialism: string;
   urgency: string | null;
   topic: string;
-  location?: string;
-  budgetRange: string;
+  location: string;
+  waiver: boolean;
+  waiverReason: string;
+  whenHappened: Date;
   description: string;
   mode: "message" | "call" | "video";
   notes?: string;

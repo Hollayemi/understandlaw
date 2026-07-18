@@ -296,7 +296,7 @@ function TopLawyersTable({ lawyers }: { lawyers: TopLawyerRow[] }) {
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500">Lawyer</th>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500">NBA#</th>
+              <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500">SCN#</th>
               <th className="text-left py-3 px-2 text-xs font-semibold text-gray-500">Specialisms</th>
               <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500">Sessions</th>
               <th className="text-right py-3 px-2 text-xs font-semibold text-gray-500">Rating</th>

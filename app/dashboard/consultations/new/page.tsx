@@ -18,22 +18,8 @@ import {
   useRequestLawyerMatchMutation,
 } from "@/redux/slices/lawyers.slice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
-import { getUrgencyDeadline } from "@/utils/function";
+import { CONSULT_MODES } from "@/app/components/config";
 
-const URGENCIES = [
-  { label: "Immediately (Today)", sub: "Something needs action right now", value: 0 },
-  { label: "Within 3 days", sub: "Time-sensitive, but not on fire", value: 3 },
-  { label: "Within 1 week", sub: "Needs sorting out soon", value: 7 },
-  { label: "Within 2 weeks", sub: "Getting ahead of a deadline", value: 14 },
-  { label: "Within 1 month", sub: "Planning ahead", value: 30 },
-  { label: "Flexible / No rush", sub: "Just exploring my options", value: 60 },
-];
-
-const CONSULT_MODES: { id: ConsultMode; label: string; icon: React.ElementType; desc: string }[] = [
-  { id: "message", label: "Written Message", icon: MessageSquare, desc: "Async — reply within response time" },
-  { id: "call", label: "Scheduled Call", icon: Phone, desc: "Audio call, you pick the time slot" },
-  { id: "video", label: "Video Session", icon: Video, desc: "Face-to-face via secure video link" },
-];
 
 const MAX_FILE_MB = 10;
 const MAX_FILES = 6;
@@ -152,7 +138,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
   return (
     <div>
       <div className="mb-7">
-        <h1 className="text-xl font-bold text-[#111827]">How would you like to get legal help?</h1>
+        <h1 className="text-xl font-bold text-[#111827]">Find a Lawyer?</h1>
         <p className="text-[13px] text-[#6B7280] mt-1 max-w-lg">
           Pick whichever feels right. Either way, only verified lawyers ever handle your case.
         </p>
@@ -173,7 +159,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           >
             <Sparkles size={18} className="text-white" />
           </div>
-          <h3 className="text-[15px] font-bold text-gray-900 mb-1">Let Our Team Match You</h3>
+          <h3 className="text-[15px] font-bold text-gray-900 mb-1">Help me choose</h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-4">
             Tell us what's going on. Our team reviews your case first, then recommends a short list of
             lawyers who genuinely fit — you pick who you want to work with.
@@ -203,7 +189,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           <div className="w-11 h-11 rounded-xl bg-gray-900 flex items-center justify-center mb-4">
             <UserSearch size={18} className="text-white" />
           </div>
-          <h3 className="text-[15px] font-bold text-gray-900 mb-1">Choose a Lawyer Yourself</h3>
+          <h3 className="text-[15px] font-bold text-gray-900 mb-1">Choose Myself</h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-4">
             Prefer to pick directly? Browse profiles and book instantly with any of our subscribed,
             verified lawyers — no waiting on a referral.
@@ -211,7 +197,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           <ul className="space-y-2 mb-1">
             {[
               "See full profiles, ratings and response times upfront",
-              "Only subscribed, NBA-verified lawyers are listed",
+              "Only subscribed, SCN-verified lawyers are listed",
               "Book and message directly, on your terms",
             ].map(t => (
               <li key={t} className="flex items-start gap-2 text-[11px] text-gray-600">
@@ -235,7 +221,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           <p className="text-[12px] font-bold text-[#111827]">How matching stays fair</p>
           <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
             Recommendations are based on specialism fit, response speed and track record — never on who
-            pays the most. Every lawyer on LawTicha, matched or self-selected, is NBA-verified.
+            pays the most. Every lawyer on LawTicha, matched or self-selected, is SCN-verified.
           </p>
         </div>
       </div>
@@ -256,17 +242,23 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
   const [budget, setBudget] = useState("");
   const [specialism, setSpecialism] = useState("");
   const [topic, setTopic] = useState("");
-  const [urgency, setUrgency] = useState<number>(7);
+  const [urgency, setUrgency] = useState<string>("");
   const [mode, setMode] = useState<ConsultMode>("message");
   const [summary, setSummary] = useState("");
   const [notes, setNotes] = useState("");
   const [docs, setDocs] = useState<LocalDoc[]>([]);
   const [agreed, setAgreed] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [whenHappened, setWhenHappened] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [waiver, setWaiver] = useState(false);
+  const [waiverReason, setWaiverReason] = useState("");
+
+const prices = ["100", "250", "500", "1000"]; 
 
   const specialismLabel = SPECIALISMS.find((s: any) => s._id === specialism)?.displayName || "";
-  const urgencyLabel = URGENCIES.find(u => u.value === urgency)?.label || "";
+
+  const Safeties = ["Moderately", "Very Safe", "Not Safe"]
 
   const addFiles = useCallback((fileList: FileList | null) => {
     if (!fileList) return;
@@ -302,8 +294,11 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
         mode,
         topic,
         location,
-        urgency: getUrgencyDeadline(urgency),
+        urgency,
+        waiver,
+        waiverReason,
         budgetRange: budget,
+        whenHappened,
         description: summary,
         notes: notes || undefined,
         documents: docs.map(d => ({ name: d.file.name, sizeBytes: d.file.size })),
@@ -328,10 +323,10 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
         </p>
         <div className="bg-gray-50 rounded-xl p-4 text-left mb-6 space-y-1">
           <SummaryRow label="Legal issue" value={specialismLabel || "—"} />
-          <SummaryRow label="Urgency" value={urgencyLabel} />
+          <SummaryRow label="Safety" value={urgency} />
           <SummaryRow label="Location" value={location} />
-          <SummaryRow label="Budget" value={budget} />
-          <SummaryRow label="Format" value={CONSULT_MODES.find(m => m.id === mode)?.label} />
+          <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
+          <SummaryRow label="Format" value={CONSULT_MODES.find(m => m.label === mode)?.label} />
           <SummaryRow label="Documents attached" value={`${docs.length} file${docs.length === 1 ? "" : "s"}`} />
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -360,7 +355,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
       <div className="bg-white rounded-2xl border border-[#F3F4F6] p-6">
         {step === 1 && (
           <div className="space-y-5">
-            <div>
+            {/* <div>
               <SectionLabel>Area of Law</SectionLabel>
               <div className="grid grid-cols-2 gap-2">
                 {SPECIALISMS.map((s: any) => (
@@ -377,10 +372,20 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
                   </button>
                 ))}
               </div>
+            </div> */}
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
+              <select value={specialism} onChange={(e) => setSpecialism(e.target.value)}
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              >
+                <option value="">Select Area of Law</option>
+                {SPECIALISMS.map((e: any, i: number) => <option key={i} value={e._id}>{e.displayName}</option>)}
+              </select>
             </div>
 
             <div>
-              <SectionLabel>In one line, what's the issue?</SectionLabel>
+              <SectionLabel>What's the issue?</SectionLabel>
               <input
                 value={topic}
                 onChange={e => setTopic(e.target.value)}
@@ -388,22 +393,25 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
                 className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               />
             </div>
+            <div>
+              <SectionLabel>When did this happen?</SectionLabel>
+              <input
+                value={whenHappened}
+                type="date"
+                onChange={e => setWhenHappened(e.target.value)}
+                placeholder="e.g. My landlord is trying to evict me without notice"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              />
+            </div>
 
             <div>
-              <SectionLabel>How urgent is this?</SectionLabel>
-              <div className="grid grid-cols-2 gap-2">
-                {URGENCIES.map(u => (
-                  <button
-                    key={u.label}
-                    onClick={() => setUrgency(u.value)}
-                    className={`py-2.5 px-3 rounded-xl border-[1.5px] text-left transition-all ${urgency === u.value ? "border-[#E8317A] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
-                      }`}
-                  >
-                    <p className={`text-xs font-semibold ${urgency === u.value ? "text-[#E8317A]" : "text-gray-800"}`}>{u.label}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{u.sub}</p>
-                  </button>
-                ))}
-              </div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
+              <select value={urgency} onChange={(s) => setUrgency(s.target.value)}
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              >
+                <option value="">Are you safe ?</option>
+                {Safeties.map((e: any, i: number) => <option key={i} value={e}>{e}</option>)}
+              </select>
             </div>
 
             <button
@@ -420,7 +428,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
         {step === 2 && (
           <div className="space-y-5">
             <div>
-              <SectionLabel>Consultation Summary</SectionLabel>
+              <SectionLabel>Tell us your story</SectionLabel>
               <p className="text-[11px] text-gray-400 -mt-1.5 mb-2">
                 This is what your matched lawyer will read first — the more context, the better prepared they'll be.
               </p>
@@ -434,7 +442,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
 
             <div>
               <SectionLabel>
-                Consultation Notes <span className="font-normal text-gray-400">(optional)</span>
+                Additional Notes <span className="font-normal text-gray-400">(optional)</span>
               </SectionLabel>
               <p className="text-[11px] text-gray-400 -mt-1.5 mb-2">
                 Anything else your lawyer should know — deadlines, other parties involved, prior legal advice.
@@ -448,27 +456,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
             </div>
 
             <div>
-              <SectionLabel>Preferred Communication Mode</SectionLabel>
-              <div className="grid grid-cols-3 gap-2">
-                {CONSULT_MODES.map(m => {
-                  const Icon = m.icon;
-                  return (
-                    <button
-                      key={m.id}
-                      onClick={() => setMode(m.id)}
-                      className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-[1.5px] transition-all ${mode === m.id ? "border-[#E8317A] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
-                        }`}
-                    >
-                      <Icon size={15} className={mode === m.id ? "text-[#E8317A]" : "text-gray-500"} />
-                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-[#E8317A]" : "text-gray-700"}`}>{m.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Preferred State / Location <span className="font-normal text-gray-400">(optional)</span></label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={location} onChange={e => setLocation(e.target.value)}
                 // placeholder="e.g. Lagos, Abuja, Port Harcourt"
                 className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
@@ -479,16 +467,55 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-2">Budget Range</label>
-              <div className="grid grid-cols-2 gap-2">
-                {budgets.map(b => (
-                  <button key={b} onClick={() => setBudget(b)}
-                    className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${budget === b ? "border-[#E8317A] bg-pink-50/60 text-[#E8317A]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
-                    {b}
-                  </button>
-                ))}
+              <SectionLabel>Preferred Communication Mode</SectionLabel>
+              <div className="grid  grid-cols-2  md:grid-cols-4 gap-2">
+                {CONSULT_MODES.map((m, i) => {
+                  const Icon = m.icon;
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => setMode(m.id)}
+                      className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-[1.5px] transition-all ${mode === m.id ? "border-[#E8317A] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
+                        }`}
+                    >
+                      <Icon size={15} className={mode === m.id ? "text-[#E8317A]" : "text-gray-500"} />
+                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-[#E8317A]" : "text-gray-700"}`}>{m.label}</span>
+                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-[#E8317A]" : "text-gray-700"}`}>NGN {1000 * (i + 1)}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
+            {/* Waiver Toggle */}
+            <div className="mt-4">
+              <label className="flex items-center gap-2 text-xs font-semibold text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={waiver}
+                  onChange={(e) => setWaiver(e.target.checked)}
+                  className="w-4 h-4 text-[#E8317A] border-gray-300 rounded focus:ring-[#E8317A]"
+                />
+                Cannot Pay? Request Waiver
+              </label>
+            </div>
+
+            {/* Waiver Reason (shown when waiver is selected) */}
+            {waiver && (
+              <div className="mt-3">
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Reason for Waiver <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={waiverReason}
+                  onChange={(e) => setWaiverReason(e.target.value)}
+                  placeholder="Please explain why you're requesting a waiver..."
+                  className="w-full px-3 py-2 text-sm border-[1.5px] border-gray-200 rounded-xl focus:border-[#E8317A] focus:ring-2 focus:ring-pink-100 outline-none transition-all resize-none"
+                  rows={3}
+                  required
+                />
+              </div>
+            )}
 
             <div className="flex items-center justify-between pt-1">
               <button onClick={() => setStep(1)} className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 transition-colors">
@@ -568,8 +595,9 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
               <div className="p-4 space-y-0.5">
                 <SummaryRow label="Legal issue" value={specialismLabel || "—"} />
                 <SummaryRow label="Topic" value={topic || "—"} />
-                <SummaryRow label="Urgency" value={urgencyLabel} />
-                <SummaryRow label="Preferred format" value={CONSULT_MODES.find(m => m.id === mode)?.label} />
+                <SummaryRow label="Safety" value={urgency} />
+                <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
+                <SummaryRow label="Preferred mode" value={CONSULT_MODES.find(m => m.id === mode)?.label} />
                 <SummaryRow label="Documents" value={docs.length ? `${docs.length} attached` : "None"} />
               </div>
               <div className="p-4 bg-gray-50">
@@ -710,7 +738,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
         </h1>
         <p className="text-[13px] text-[#6B7280] mt-1">
           {step === 1
-            ? "Only subscribed, NBA-verified lawyers are listed here."
+            ? "Only subscribed, SCN-verified lawyers are listed here."
             : `You're booking directly with ${chosen?.fullName}.`}
         </p>
       </div>
@@ -863,6 +891,8 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
   const [search, setSearch] = useState("");
   const [filterSpecialism, setFilterSpecialism] = useState("all");
   const { data: loadSpecialism } = useListSpecialismsQuery();
+
+  const [location, setLocation] = useState("");
   const SPECIALISMS = loadSpecialism?.data || [];
 
   const queryParams = {
@@ -870,6 +900,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
     search: search || undefined,
     subscribedOnly: true,
     sortBy: "rating" as const,
+    location,
     page: 1,
     pageSize: 30,
   };
@@ -888,7 +919,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
         <div>
           <p className="text-[12px] font-bold text-[#111827]">Subscribed & verified only</p>
           <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
-            Everyone below has passed NBA verification and actively subscribes to take direct bookings —
+            Everyone below has passed SCN verification and actively subscribes to take direct bookings —
             so you know they're set up to respond.
           </p>
         </div>
@@ -903,6 +934,14 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
             placeholder="Search by name..."
             className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
           />
+        </div>
+        <div>
+          <select value={location} onChange={e => setLocation(e.target.value)}
+            className="h-10 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-[#E8317A] transition-colors font-medium"
+          >
+            <option value="">Any State</option>
+            {NIGERIAN_STATES.map((e: any, i: number) => <option key={i} value={e.code}>{e.label}</option>)}
+          </select>
         </div>
         <select
           value={filterSpecialism}

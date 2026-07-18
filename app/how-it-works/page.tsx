@@ -49,7 +49,7 @@ const LAWYER_STEPS = [
     num: "01",
     icon: <FileText />,
     title: "Register & Submit Credentials",
-    desc: "Fill out your profile with your NBA number, year of call, and practice areas. Upload supporting documents.",
+    desc: "Fill out your profile with your SCN number, year of call, and practice areas. Upload supporting documents.",
     color: "#E8317A",
   },
   {
@@ -89,7 +89,7 @@ const FAQS = [
   },
   {
     q: "How do I know the lawyers are qualified?",
-    a: "Every lawyer on LawTicha goes through a multi-step verification process: NBA membership check, credential review, platform orientation, and a competency assessment. Only approved lawyers receive a Verified Lawyer badge and can accept consultations.",
+    a: "Every lawyer on LawTicha goes through a multi-step verification process: SCN membership check, credential review, platform orientation, and a competency assessment. Only approved lawyers receive a Verified Lawyer badge and can accept consultations.",
   },
   {
     q: "Is the platform really free?",

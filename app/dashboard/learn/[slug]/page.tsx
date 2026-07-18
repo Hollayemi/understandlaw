@@ -12,6 +12,7 @@ import {
   useEnrolInModuleMutation,
   useToggleSaveModuleMutation,
 } from "@/redux/slices/learn.slice";
+import { substringWithMax } from "@/utils/function";
 
 export default function ModuleDetailPage() {
   const params = useParams();
@@ -94,7 +95,7 @@ export default function ModuleDetailPage() {
         <nav className="flex items-center gap-1.5 text-xs text-gray-500">
           <Link href="/dashboard/learn" className="hover:text-gray-900 transition-colors">Learn</Link>
           <ChevronRight size={12} className="text-gray-300" />
-          <span className="text-gray-900 font-semibold truncate max-w-[300px]">{module.title}</span>
+          <span className="text-gray-900 font-semibold truncate max-w-[300px]">{substringWithMax(module.title, 20)}</span>
         </nav>
         <div className="flex items-center gap-2">
           <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors">
@@ -347,12 +348,17 @@ export default function ModuleDetailPage() {
                       Start Lesson
                     </button>
                   )}
-                  
+
                   {isEnrolled && topic.completed && (
-                    <div className="flex-shrink-0 text-green-600 text-xs font-medium flex items-center gap-1">
-                      <Check size={14} /> Completed
-                    </div>
+                    <button
+                      onClick={() => handleStartTopic(topic.slug)}
+                      className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all hover:-translate-y-0.5"
+                      style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                    >
+                      Open
+                    </button>
                   )}
+                
                   
                   {!isEnrolled && (
                     <div className="flex-shrink-0 text-gray-400 text-xs font-medium">
@@ -376,10 +382,10 @@ export default function ModuleDetailPage() {
                   <p className="text-sm text-gray-600">You've completed all lessons in this module</p>
                 </div>
               </div>
-              <button className="px-5 py-2 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5"
+              {/* <button className="px-5 py-2 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5"
                 style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
                 Download Certificate
-              </button>
+              </button> */}
             </div>
           </div>
         )}

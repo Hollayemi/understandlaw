@@ -432,7 +432,7 @@ export default function MarketplacePage() {
               <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
                 {[
                   { icon: Lock, t: "Secure payments via Paystack" },
-                  { icon: Shield, t: "NBA-verified credentials" },
+                  { icon: Shield, t: "SCN-verified credentials" },
                   { icon: FileText, t: "Transparent pricing before booking" },
                   { icon: AlertCircle, t: "Refund policy for unsatisfactory sessions" },
                 ].map(({ icon: Icon, t }) => (

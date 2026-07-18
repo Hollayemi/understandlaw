@@ -177,7 +177,7 @@ function LawyerCard({
                     </div>
                 </div>
 
-                {/* NBA Number and Fee */}
+                {/* SCN Number and Fee */}
                 <div className="mt-3 flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
                         <Scale size={12} />
@@ -398,7 +398,7 @@ function LawyerProfileSidebar({
 
                         {lawyer.nbaNumber && (
                             <div>
-                                <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">NBA Number</h4>
+                                <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SCN Number</h4>
                                 <p className="text-sm text-gray-600">{lawyer.nbaNumber}</p>
                             </div>
                         )}

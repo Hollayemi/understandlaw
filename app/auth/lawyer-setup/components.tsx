@@ -33,7 +33,7 @@ export const REQUIRED_DOCUMENTS = [
 ];
 
 export const STEPS = [
-  { id: "professional", label: "Professional ID", icon: BadgeCheck, description: "NBA credentials & details" },
+  { id: "professional", label: "Professional ID", icon: BadgeCheck, description: "SCN credentials & details" },
   { id: "specialisms", label: "Specialisms", icon: Scale, description: "Practice areas & languages" },
   { id: "story", label: "Your Story", icon: BookOpen, description: "Bio & achievements" },
   { id: "consultation", label: "Consultation", icon: DollarSign, description: "Fees & availability" },
@@ -46,15 +46,15 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[#F3F4F6] pb-4">
         <h2 className="text-xl font-bold text-[#111827]">Professional Identity</h2>
-        <p className="text-[13px] text-[#6B7280] mt-1">Your NBA credentials and primary practice details.</p>
+        <p className="text-[13px] text-[#6B7280] mt-1">Your SCN credentials and primary practice details.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
-          label="NBA Bar Number"
+          label="SCN Bar Number"
           value={form.nbaNumber}
           onChange={(e: any) => updateForm("nbaNumber", e.target.value)}
-          placeholder="e.g. NBA/LAG/2014/01847"
+          placeholder="e.g. SCN/LAG/2014/01847"
           required
           error={errors.nbaNumber}
           icon={BadgeCheck}
@@ -117,7 +117,7 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
           <div>
             <p className="text-[13px] font-semibold text-amber-800 mb-1">Verification Process</p>
             <p className="text-[12px] text-amber-700 leading-relaxed">
-              LawTicha will verify your NBA number and credentials within 48 hours. 
+              LawTicha will verify your SCN number and credentials within 48 hours. 
               You'll be notified via email once approved.
             </p>
           </div>
@@ -598,7 +598,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
           </div>
           <div className="p-5 space-y-3">
             <div className="grid grid-cols-2 gap-3 text-[13px]">
-              <span className="text-[#6B7280]">NBA Number:</span>
+              <span className="text-[#6B7280]">SCN Number:</span>
               <span className="font-medium text-[#111827]">{form.nbaNumber || "—"}</span>
               <span className="text-[#6B7280]">Year of Call:</span>
               <span className="font-medium text-[#111827]">{form.yearOfCall || "—"}</span>

@@ -635,7 +635,7 @@ export default function VerificationsPage() {
           ]}
           value={tab}
           onChange={setTab}
-          searchPlaceholder="Search by name, NBA number, or state…"
+          searchPlaceholder="Search by name, SCN number, or state…"
           searchValue={search}
           onSearchChange={setSearch}
         />

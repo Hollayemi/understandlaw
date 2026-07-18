@@ -21,10 +21,19 @@ export const STATUS_CFG: Record<
 };
 
 export const MODE_CFG: Record<ConsultMode, { label: string; icon: React.ElementType; color: string; bg: string }> = {
-  message: { label: "Written reply", icon: MessageSquare, color: "#6B7280", bg: "#F9FAFB" },
-  call: { label: "Scheduled call", icon: Phone, color: "#3B82F6", bg: "#EFF6FF" },
+  sms: { label: "SMS", icon: MessageCircle, color: "#6B7280", bg: "#F9FAFB" },
+  message: { label: "In-App Chat", icon: MessageSquare, color: "#6B7280", bg: "#F9FAFB" },
+  call: { label: "Scheduled Phone call", icon: Phone, color: "#3B82F6", bg: "#EFF6FF" },
   video: { label: "Video session", icon: Video, color: "#8B5CF6", bg: "#F5F3FF" },
 };
+
+
+export const CONSULT_MODES: { id: ConsultMode; label: string; icon: React.ElementType; desc: string }[] = [
+  { id: "sms", label: "SMS", icon: MessageCircle, desc: "Async — reply within response time" },
+  { id: "message", label: "Written Message", icon: MessageSquare, desc: "Async — reply within response time" },
+  { id: "call", label: "Scheduled Call", icon: Phone, desc: "Audio call, you pick the time slot" },
+  { id: "video", label: "Video Session", icon: Video, desc: "Face-to-face via secure video link" },
+];
 
 // Journey steps shown inside each card
 export const JOURNEY_STEPS: { key: ConsultStatus[]; label: string }[] = [
