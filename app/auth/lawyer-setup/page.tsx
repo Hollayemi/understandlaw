@@ -2,13 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  BadgeCheck, Scale, BookOpen, 
-  
-  ChevronRight, ChevronLeft, Check, 
-  AlertCircle, Loader2,
-  CheckCircle, FileText, DollarSign
-  
-  ,
+  BadgeCheck, Scale, BookOpen, ChevronRight, ChevronLeft, Check,
+  AlertCircle, Loader2, CheckCircle, FileText, DollarSign
 } from "lucide-react";
 
 // Import from your slice
@@ -18,7 +13,7 @@ import {
   NIGERIAN_STATES,
 } from "@/redux/slices/lawyers.slice";
 
-import {  ProfessionalStep, SpecialismsStep, StoryStep, ConsultationStep, DocumentsStep, ReviewStep }from "./components"
+import { ProfessionalStep, SpecialismsStep, StoryStep, ConsultationStep, DocumentsStep, ReviewStep } from "./components"
 import { UploadedDocument, FormData } from "@/redux/types/lawyer";
 import { REQUIRED_DOCUMENTS, STEPS } from "./components"
 import { showSuccess } from "@/app/components/ui/sonner";
@@ -27,23 +22,22 @@ import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 
 
 export default function LawyerOnboardingPage() {
-    const { data:getSpecialisms, isLoading } = useListSpecialismsQuery()
-    console.log(getSpecialisms)
-    const specialisms = getSpecialisms?.data || []
-    
-    console.log({specialisms})
+  const { data: getSpecialisms, isLoading } = useListSpecialismsQuery()
+  console.log(getSpecialisms)
+  const specialisms = getSpecialisms?.data || []
+
+  console.log({ specialisms })
 
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState<FormData>({
     nbaNumber: "",
     yearOfCall: "",
-    title: "",
     state: "",
     location: "",
     phone: "",
     specialisms: [],
-    languages: ["English"],
+    languages: ["English", "French"],
     bio: "",
     education: [],
     notableWork: [],
@@ -51,7 +45,7 @@ export default function LawyerOnboardingPage() {
     responseTime: "",
     available: true,
   });
-  
+
   const [documents, setDocuments] = useState<UploadedDocument[]>(
     REQUIRED_DOCUMENTS.map(doc => ({
       id: doc.id,
@@ -64,10 +58,10 @@ export default function LawyerOnboardingPage() {
       progress: 0,
     }))
   );
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  
+
   const [submitVerification, { isLoading: isSubmitting }] = useSubmitVerificationMutation();
   const [uploadDocument] = useUploadDocumentMutation();
 
@@ -89,17 +83,16 @@ export default function LawyerOnboardingPage() {
 
   const validateStep = (step: number): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (step === 0) { // Professional
       if (!form.nbaNumber) newErrors.nbaNumber = "SCN number is required";
-      else if (!/^SCN\/[A-Z]{3}\/\d{4}\/\d{5}$/i.test(form.nbaNumber)) {
-        newErrors.nbaNumber = "Format: SCN/STATE/YYYY/12345";
+      else if (!/^SCN\d+$/i.test(form.nbaNumber)) {
+        newErrors.nbaNumber = "Format: SCN12345 (SCN followed by at least 1 digit)";
       }
       if (!form.yearOfCall) newErrors.yearOfCall = "Year of call is required";
       else if (parseInt(form.yearOfCall) < 1960 || parseInt(form.yearOfCall) > new Date().getFullYear()) {
         newErrors.yearOfCall = "Enter a valid year";
       }
-      if (!form.title) newErrors.title = "Professional title is required";
       if (!form.state) newErrors.state = "State is required";
       if (!form.phone) newErrors.phone = "Phone number is required";
       else if (!/^(\+234|0)[789][01]\d{8}$/.test(form.phone.replace(/\s/g, ""))) {
@@ -117,7 +110,7 @@ export default function LawyerOnboardingPage() {
       if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
       if (!form.responseTime) newErrors.responseTime = "Select a response time";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -137,12 +130,12 @@ export default function LawyerOnboardingPage() {
   const handleDocumentUpload = async (docLabel: string, formData: FormData) => {
     const docIndex = documents.findIndex(d => d.label === docLabel);
     if (docIndex === -1) return;
-    
+
     // Set uploading state
-    setDocuments(prev => prev.map((doc, idx) => 
+    setDocuments(prev => prev.map((doc, idx) =>
       idx === docIndex ? { ...doc, uploading: true, progress: 0, error: undefined } : doc
     ));
-    
+
     try {
       // const result = await uploadDocument(formData).unwrap();
       // if (result.data) {
@@ -159,7 +152,7 @@ export default function LawyerOnboardingPage() {
       //   ));
       // }
     } catch (error: any) {
-      setDocuments(prev => prev.map((doc, idx) => 
+      setDocuments(prev => prev.map((doc, idx) =>
         idx === docIndex ? {
           ...doc,
           uploading: false,
@@ -170,7 +163,7 @@ export default function LawyerOnboardingPage() {
   };
 
   const handleDocumentRemove = (docLabel: string) => {
-    setDocuments(prev => prev.map(doc => 
+    setDocuments(prev => prev.map(doc =>
       doc.label === docLabel ? {
         ...doc,
         fileUrl: "",
@@ -186,25 +179,24 @@ export default function LawyerOnboardingPage() {
 
   const handleSubmit = async () => {
     setSubmitError(null);
-    
+
     // Final validation
     const requiredDocs = REQUIRED_DOCUMENTS.filter(d => d.required);
     const uploadedDocs = documents.filter(d => d.uploaded);
-    const allDocsUploaded = requiredDocs.every(required => 
+    const allDocsUploaded = requiredDocs.every(required =>
       uploadedDocs.some(uploaded => uploaded.label === required.label)
     );
-    
+
     // if (!allDocsUploaded) {
     //   setSubmitError("Please upload all required documents before submitting");
     //   setCurrentStep(4); // Go to documents step
     //   return;
     // }
-    
+
     const payload = {
       nbaNumber: form.nbaNumber.trim().toUpperCase(),
       yearOfCall: parseInt(form.yearOfCall),
       calledAt: form.yearOfCall,
-      title: form.title.trim(),
       bio: form.bio.trim(),
       location: form.location.trim(),
       state: NIGERIAN_STATES.find(s => s.code === form.state)?.label || form.state,
@@ -219,11 +211,11 @@ export default function LawyerOnboardingPage() {
         sizeBytes: d.sizeBytes,
       })),
     };
-    
+
     try {
       const result = await submitVerification(payload).unwrap();
       if (result.success) {
-         showSuccess("Profile submitted successfully!", "We'll review your application within 48 hours.");
+        showSuccess("Profile submitted successfully!", "We'll review your application within 48 hours.");
         // alert("Profile submitted successfully! We'll review your application within 48 hours.");
         router.push("/dashboard");
       }
@@ -237,7 +229,7 @@ export default function LawyerOnboardingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F2EE] via-white to-[#F5F2EE]">
       <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
-        
+
         {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <Link href="/" className="inline-flex items-center gap-2 mb-6 group">
@@ -255,7 +247,7 @@ export default function LawyerOnboardingPage() {
               Law<span className="text-[#E8317A]">Ticha</span>
             </span>
           </Link>
-          
+
           <h1 className="text-2xl md:text-3xl font-bold text-[#111827] mb-2">Complete Your Lawyer Profile</h1>
           <p className="text-[#6B7280] text-sm md:text-base max-w-md mx-auto">
             Join Nigeria's trusted legal marketplace and connect with clients seeking expert legal counsel.
@@ -271,7 +263,7 @@ export default function LawyerOnboardingPage() {
             <span className="text-[11px] text-[#9CA3AF]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] transition-all duration-500 rounded-full"
               style={{ width: `${progress}%` }}
             />
@@ -284,13 +276,13 @@ export default function LawyerOnboardingPage() {
             const isActive = currentStep === idx;
             const isCompleted = currentStep > idx;
             const Icon = step.icon;
-            
+
             return (
               <React.Fragment key={step.id}>
                 <div className="flex flex-col items-center gap-2 flex-1">
                   <div className="relative">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all
-                      ${isActive ? 'bg-[#E8317A] shadow-lg scale-110' : 
+                      ${isActive ? 'bg-[#E8317A] shadow-lg scale-110' :
                         isCompleted ? 'bg-[#10B981]' : 'bg-white border-2 border-[#E5E7EB]'}`}
                     >
                       {isCompleted ? (
@@ -322,14 +314,14 @@ export default function LawyerOnboardingPage() {
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-[#F3F4F6] overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-[#E8317A] to-[#ff6fa8]" />
-          
+
           <div className="p-6 md:p-8">
             {currentStep === 0 && <ProfessionalStep form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 1 && <SpecialismsStep specialisms={specialisms} form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 2 && <StoryStep form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 3 && <ConsultationStep form={form} updateForm={updateForm} errors={errors} />}
             {currentStep === 4 && (
-              <DocumentsStep 
+              <DocumentsStep
                 documents={documents}
                 onUpload={handleDocumentUpload}
                 onRemove={handleDocumentRemove}
@@ -348,9 +340,9 @@ export default function LawyerOnboardingPage() {
                 <ChevronLeft size={14} /> Back
               </button>
             )}
-            
+
             <div className="flex-1" />
-            
+
             {currentStep < STEPS.length - 1 ? (
               <button
                 onClick={handleNext}

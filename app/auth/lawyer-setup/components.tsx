@@ -10,11 +10,9 @@ import {
 } from "lucide-react";
 
 import {  Input, TextArea, Select } from "@/app/components/ui/form";
-import { UploadedDocument, EducationEntry } from "@/redux/types/lawyer";
+import { EducationEntry } from "@/redux/types/lawyer";
 
 import {
-  useSubmitVerificationMutation,
-  useUploadDocumentMutation,
   NIGERIAN_STATES,
   LANGUAGES,
 } from "@/redux/slices/lawyers.slice";
@@ -54,7 +52,7 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
           label="SCN Bar Number"
           value={form.nbaNumber}
           onChange={(e: any) => updateForm("nbaNumber", e.target.value)}
-          placeholder="e.g. SCN/LAG/2014/01847"
+          placeholder="e.g. SCN018472342"
           required
           error={errors.nbaNumber}
           icon={BadgeCheck}
@@ -72,15 +70,6 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
           error={errors.yearOfCall}
         />
       </div>
-
-      <Input
-        label="Professional Title"
-        value={form.title}
-        onChange={(e: any) => updateForm("title", e.target.value)}
-        placeholder="e.g. Criminal & Civil Rights Lawyer"
-        required
-        error={errors.title}
-      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Select
@@ -257,7 +246,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
       </div>
 
       <TextArea
-        label="Professional Bio"
+        label="Professional Bio (This will show on your page)"
         value={form.bio}
         onChange={(e: any) => updateForm("bio", e.target.value)}
         placeholder={`Called to the Nigerian Bar in ${form.yearOfCall || '20XX'}, I specialise in...`}
@@ -321,7 +310,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
 
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="text-[12px] font-semibold text-[#374151]">Notable Work & Achievements</label>
+          <label className="text-[12px] font-semibold text-[#374151]">Notable Work & Achievements / Experience</label>
           <button
             type="button"
             onClick={addWork}
@@ -338,7 +327,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
                 value={work}
                 onChange={(e) => updateWork(index, e.target.value)}
                 placeholder="e.g. Represented clients in landmark constitutional case (2022)"
-                className="flex-1 h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                className="flex-1 h-10! px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
               />
               <button
                 type="button"
@@ -365,7 +354,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[#F3F4F6] pb-4">
-        <h2 className="text-xl font-bold text-[#111827]">Consultation Setup</h2>
+        <h2 className="text-xl font-bold text-[#111827]">Minimum Consultation Fee Setup</h2>
         <p className="text-[13px] text-[#6B7280] mt-1">Set your consultation fees and availability.</p>
       </div>
 
@@ -602,8 +591,6 @@ export function ReviewStep({ form, documents, specialisms }: any) {
               <span className="font-medium text-[#111827]">{form.nbaNumber || "—"}</span>
               <span className="text-[#6B7280]">Year of Call:</span>
               <span className="font-medium text-[#111827]">{form.yearOfCall || "—"}</span>
-              <span className="text-[#6B7280]">Title:</span>
-              <span className="font-medium text-[#111827]">{form.title || "—"}</span>
               <span className="text-[#6B7280]">Location:</span>
               <span className="font-medium text-[#111827]">{form.location ? `${form.location}, ` : ""}{getStateLabel() || "—"}</span>
             </div>
@@ -640,7 +627,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
         <div className="bg-white rounded-xl border border-[#F3F4F6] overflow-hidden">
           <div className="px-5 py-3 bg-gradient-to-r from-pink-50 to-transparent border-b border-[#F3F4F6]">
             <div className="flex items-center gap-2">
-              <DollarSign size={16} className="text-[#E8317A]" />
+              <span className="text-[#E8317A]">₦</span>
               <h3 className="text-[13px] font-bold text-[#111827] uppercase tracking-wide">Consultation Setup</h3>
             </div>
           </div>

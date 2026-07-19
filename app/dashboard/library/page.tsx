@@ -14,6 +14,7 @@ import { useListBooksQuery, useGetLibraryStatsQuery, useDownloadBookMutation, us
 import { Book, BookCategory, BookFormat, BookOrder } from "@/redux/types/library";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { NIGERIAN_STATES } from "@/redux/slices/lawyers.slice";
 
 // Category Config
 const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: string; icon: React.ElementType }> = {
@@ -28,12 +29,7 @@ const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: 
   constitutional: { label: "Constitutional", color: "#7C3AED", bg: "#F5F3FF", icon: Shield },
 };
 
-const NIGERIAN_STATES = [
-  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
-  "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT", "Gombe", "Imo",
-  "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa",
-  "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
-];
+
 
 // Download Modal Component
 function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
@@ -137,8 +133,8 @@ function DownloadModal({ book, onClose }: { book: Book; onClose: () => void }) {
 }
 
 // success Modal 
-function SuccessModal({ orderId, }: { orderId: string; }){
-  const { data:getBook, isLoading } = useGetUserOrderByIdQuery(orderId)
+function SuccessModal({ orderId, }: { orderId: string; }) {
+  const { data: getBook, isLoading } = useGetUserOrderByIdQuery(orderId)
   const order = getBook?.data || {} as BookOrder
 
   console.log(order)
@@ -153,8 +149,8 @@ function SuccessModal({ orderId, }: { orderId: string; }){
           <div>
             <h3 className="font-bold text-[#111827] text-sm">Order Physical Copy</h3>
           </div>
-    
-          <button onClick={()=>router.push('/dashboard/library')} className="text-[#9CA3AF] hover:text-[#111827] transition-colors">
+
+          <button onClick={() => router.push('/dashboard/library')} className="text-[#9CA3AF] hover:text-[#111827] transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -184,7 +180,7 @@ function SuccessModal({ orderId, }: { orderId: string; }){
             <p className="text-[11px] text-[#9CA3AF] mb-5">
               A confirmation and tracking number will be sent to <strong>{order.userEmail}</strong> once your order is dispatched.
             </p>
-            <button onClick={()=>router.push('/dashboard/library')}
+            <button onClick={() => router.push('/dashboard/library')}
               className="w-full py-2.5 rounded-xl bg-[#111827] text-white text-[13px] font-bold hover:bg-[#1F2937] transition-colors">
               Done
             </button>
@@ -302,7 +298,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">State</label>
                   <select value={form.state} onChange={set("state")} className={`${inputCls} bg-white`}>
-                    {NIGERIAN_STATES.map(s => <option key={s}>{s}</option>)}
+                    {NIGERIAN_STATES.map(s => <option key={s.code}>{s.label}</option>)}
                   </select>
                 </div>
                 <div>
@@ -510,6 +506,7 @@ export default function UserLibraryPage({ searchParams }: any) {
   console.log({ payment, orderId })
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [typeFilter, selectTypeFilter] = useState<string>("all");
   const [formatFilter, setFormatFilter] = useState<string>("all");
   const [downloadBook, setDownloadBook] = useState<Book | null>(null);
   const [orderBook, setOrderBook] = useState<Book | null>(null);
@@ -644,6 +641,16 @@ export default function UserLibraryPage({ searchParams }: any) {
                   className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
                 />
               </div>
+              <div>
+                <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className={`w-full h-10 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors bg-white`}>
+                  <option value="">All Categories</option>
+                  {Object.entries(CATEGORY_CONFIG).map(([k, v]) =>
+                    <option key={k} value={k}>
+                      {v.label}
+                    </option>
+                  )}
+                </select>
+              </div>
               <div className="flex gap-2 flex-wrap">
                 <div className="flex bg-gray-100 rounded-xl p-1">
                   {[
@@ -661,17 +668,16 @@ export default function UserLibraryPage({ searchParams }: any) {
             </div>
 
             <div className="flex gap-2 flex-wrap mt-3 pt-3 border-t border-gray-100">
-              <button onClick={() => setCategoryFilter("all")}
-                className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${categoryFilter === "all" ? "bg-gray-900 text-white border-gray-900" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}>
-                All Categories
+              <button onClick={() => selectTypeFilter("all")}
+                className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${typeFilter === "all" ? "bg-gray-900 text-white border-gray-900" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}>
+                All Types
               </button>
-              {Object.entries(CATEGORY_CONFIG).map(([k, v]) => {
-                const Icon = v.icon;
+              {["Journals", "Books", "Laws"].map((k, i) => {
                 return (
-                  <button key={k} onClick={() => setCategoryFilter(k)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${categoryFilter === k ? "text-white border-transparent" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}
-                    style={categoryFilter === k ? { background: v.color } : {}}>
-                    <Icon size={11} /> {v.label}
+                  <button key={i} onClick={() => selectTypeFilter(k)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border ${typeFilter === k ? "bg-gray-900 text-white border-gray-900" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}
+                    >   
+                    {k}
                   </button>
                 );
               })}

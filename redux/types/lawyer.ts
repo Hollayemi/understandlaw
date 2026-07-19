@@ -261,7 +261,6 @@ export interface UploadedDocument {
 export interface FormData {
   nbaNumber: string;
   yearOfCall: string;
-  title: string;
   state: string;
   location: string;
   phone: string;

@@ -2,16 +2,16 @@
 import { useGetMeQuery } from "@/redux/authService/authSlice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
-import { ApiResponse, CitizenProfile, LawyerProfile, CitizenFull } from "@/redux/types";
-import { useRef, useEffect, useState, createContext, useCallback } from "react";
+import { CitizenFull } from "@/redux/types";
+import { useState, createContext } from "react";
 
 
-const defaultProvider = {
+const defaultProvider: any = {
     userInfo: {},
     theme: "light",
     notifications: [] as any[],
     loading: false,
-    setLoading: (_: boolean) => {},
+    setLoading: (_: boolean) => { },
 };
 
 const DataContext = createContext(defaultProvider);
@@ -45,7 +45,7 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
                 specialisms: (!specialismsErr && !specialismsIsLoading && (specialisms as any)?.data) || [],
                 loading,
                 setLoading,
-              
+
             } as any}
         >
             {children}

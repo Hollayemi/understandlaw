@@ -283,6 +283,6 @@ export const NIGERIAN_STATES = [
 
 
 export const LANGUAGES = [
-  "English", "Hausa", "Yoruba", "Igbo", "Fulfulde",
+  "English", "French", "Hausa", "Yoruba", "Igbo", "Fulfulde",
   "Kanuri", "Ijaw", "Tiv", "Ibibio", "Efik",
 ] as const;
