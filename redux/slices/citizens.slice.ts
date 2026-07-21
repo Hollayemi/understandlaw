@@ -1,9 +1,19 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { axiosBaseQuery } from "../shared/axiosBaseQuery";
-import { ApiResponse, CitizenFull, UpdateCitizenProfilePayload, CitizenProfile, Pagination, UpdateNotificationsPayload, UpdatePrivacyPayload, AwardXPPayload } from "@/redux/types";
-
-
+import { 
+  ApiResponse, 
+  CitizenFull, 
+  UpdateCitizenProfilePayload, 
+  CitizenProfile, 
+  Pagination, 
+  UpdateNotificationsPayload, 
+  UpdatePrivacyPayload, 
+  AwardXPPayload,
+} from "@/redux/types";
+import { SubscriptionPlan,   Subscription,
+  BillingHistory,
+  SubscriptionPayload } from "@/app/dashboard/settings/_components/types";
 
 export interface ListCitizensParams {
   search?: string;
@@ -12,7 +22,6 @@ export interface ListCitizensParams {
   isActive?: boolean;
 }
 
-
 export interface CitizenStats {
   total: number;
   active: number;
@@ -20,13 +29,20 @@ export interface CitizenStats {
   avgXP: number;
   totalStudyHours: number;
 }
+
 export const citizenApi = createApi({
   reducerPath: "citizenApi",
   baseQuery: axiosBaseQuery({ defaultActor: "admin" }),
-  tagTypes: ["CitizenMe", "CitizenProfile", "CitizenList", "CitizenStats"],
+  tagTypes: [
+    "CitizenMe", 
+    "CitizenProfile", 
+    "CitizenList", 
+    "CitizenStats", 
+    "Subscription", 
+    "BillingHistory"
+  ],
 
   endpoints: (builder) => ({
-
 
     /**
      * GET /api/v1/citizens/me
@@ -72,6 +88,135 @@ export const citizenApi = createApi({
       query: (data) => ({ url: "/citizens/me/xp", method: "POST", data }),
       invalidatesTags: ["CitizenMe"],
     }),
+
+
+    // ============================================================
+    // SUBSCRIPTION & BILLING ENDPOINTS (Lawyer Only)
+    // ============================================================
+
+    /**
+     * GET /api/v1/citizens/subscription
+     * Get current subscription details
+     */
+    getMySubscription: builder.query<ApiResponse<Subscription>, void>({
+      query: () => ({ 
+        url: "/citizens/subscription", 
+        method: "GET" 
+      }),
+      providesTags: ["Subscription"],
+    }),
+
+    /**
+     * GET /api/v1/citizens/billing-history
+     * Get billing history with pagination
+     */
+    getBillingHistory: builder.query<ApiResponse<BillingHistory[]>, { limit?: number; offset?: number }>({
+      query: (params) => ({
+        url: "/citizens/billing-history",
+        method: "GET",
+        params: {
+          ...(params.limit && { limit: params.limit }),
+          ...(params.offset && { offset: params.offset }),
+        },
+      }),
+      providesTags: ["BillingHistory"],
+    }),
+
+    /**
+     * GET /api/v1/citizens/subscription/plans
+     * Get available subscription plans
+     */
+    getSubscriptionPlans: builder.query<ApiResponse<SubscriptionPlan[]>, void>({
+      query: () => ({ 
+        url: "/citizens/subscription/plans", 
+        method: "GET" 
+      }),
+      providesTags: ["Subscription"],
+    }),
+
+    /**
+     * POST /api/v1/citizens/subscription/subscribe
+     * Subscribe to a plan
+     */
+    subscribeToPlan: builder.mutation<
+      ApiResponse<{ subscriptionId: string; paymentUrl?: string }>, 
+      SubscriptionPayload
+    >({
+      query: (data) => ({
+        url: "/citizens/subscription/subscribe",
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: ["Subscription", "BillingHistory"],
+    }),
+
+    /**
+     * POST /api/v1/citizens/subscription/cancel
+     * Cancel current subscription
+     */
+    cancelSubscription: builder.mutation<ApiResponse<{ message: string }>, void>({
+      query: () => ({
+        url: "/citizens/subscription/cancel",
+        method: "POST",
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
+
+    /**
+     * POST /api/v1/citizens/subscription/reactivate
+     * Reactivate a cancelled subscription
+     */
+    reactivateSubscription: builder.mutation<ApiResponse<{ message: string }>, void>({
+      query: () => ({
+        url: "/citizens/subscription/reactivate",
+        method: "POST",
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
+
+    /**
+     * PUT /api/v1/citizens/subscription/auto-renew
+     * Update auto-renew setting
+     */
+    updateAutoRenew: builder.mutation<
+      ApiResponse<{ autoRenew: boolean }>, 
+      { autoRenew: boolean }
+    >({
+      query: (data) => ({
+        url: "/citizens/subscription/auto-renew",
+        method: "PUT",
+        data,
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
+
+    /**
+     * GET /api/v1/citizens/subscription/invoice/:invoiceId
+     * Get invoice URL for a specific billing entry
+     */
+    getInvoice: builder.query<ApiResponse<{ invoiceUrl: string }>, string>({
+      query: (invoiceId) => ({
+        url: `/citizens/subscription/invoice/${invoiceId}`,
+        method: "GET",
+      }),
+    }),
+
+    /**
+     * POST /api/v1/citizens/subscription/change-plan
+     * Change to a different subscription plan
+     */
+    changePlan: builder.mutation<
+      ApiResponse<{ subscriptionId: string; paymentUrl?: string }>,
+      { planId: string; interval: 'monthly' | 'yearly' }
+    >({
+      query: (data) => ({
+        url: "/citizens/subscription/change-plan",
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: ["Subscription", "BillingHistory"],
+    }),
+
     /**
      * GET /api/v1/admin/citizens
      * Admin: paginated list of citizens with optional filters.
@@ -154,72 +299,22 @@ export const {
   useUpdateNotificationsMutation,
   useUpdatePrivacyMutation,
   useAwardXPMutation,
+  
   // Admin-facing
   useListCitizensQuery,
   useGetCitizenStatsQuery,
   useGetCitizenByIdQuery,
   useUpdateCitizenStatusMutation,
   useEmailCitizenMutation,
+  
+  // Subscription & Billing
+  useGetMySubscriptionQuery,
+  useGetBillingHistoryQuery,
+  useGetSubscriptionPlansQuery,
+  useSubscribeToPlanMutation,
+  useCancelSubscriptionMutation,
+  useReactivateSubscriptionMutation,
+  useUpdateAutoRenewMutation,
+  useGetInvoiceQuery,
+  useChangePlanMutation,
 } = citizenApi;
-
-// ─── Local UI slice ───────────────────────────────────────────────────────────
-
-interface CitizenUiState {
-  // Profile edit
-  profileDirty: boolean;
-  activeSettingsTab: "profile" | "notifications" | "privacy" | "appearance" | "security" | "legal";
-  // Admin list
-  adminSearch: string;
-  adminPage: number;
-  adminFilter: "all" | "active" | "inactive";
-  adminSelectedId: string | null;
-}
-
-const initialUiState: CitizenUiState = {
-  profileDirty: false,
-  activeSettingsTab: "profile",
-  adminSearch: "",
-  adminPage: 1,
-  adminFilter: "all",
-  adminSelectedId: null,
-};
-
-export const citizenUiSlice = createSlice({
-  name: "citizenUi",
-  initialState: initialUiState,
-  reducers: {
-    setProfileDirty(state, action: PayloadAction<boolean>) {
-      state.profileDirty = action.payload;
-    },
-    setActiveSettingsTab(state, action: PayloadAction<CitizenUiState["activeSettingsTab"]>) {
-      state.activeSettingsTab = action.payload;
-    },
-    setAdminSearch(state, action: PayloadAction<string>) {
-      state.adminSearch = action.payload;
-      state.adminPage = 1;
-    },
-    setAdminPage(state, action: PayloadAction<number>) {
-      state.adminPage = action.payload;
-    },
-    setAdminFilter(state, action: PayloadAction<CitizenUiState["adminFilter"]>) {
-      state.adminFilter = action.payload;
-      state.adminPage = 1;
-    },
-    setAdminSelectedId(state, action: PayloadAction<string | null>) {
-      state.adminSelectedId = action.payload;
-    },
-  },
-});
-
-export const citizenUiActions = citizenUiSlice.actions;
-
-// ─── Selectors ────────────────────────────────────────────────────────────────
-
-export const selectCitizenUi        = (s: any) => s.citizenUi as CitizenUiState;
-export const selectActiveSettingsTab = (s: any) => (s.citizenUi as CitizenUiState).activeSettingsTab;
-export const selectAdminCitizenFilter = (s: any) => ({
-  search:   (s.citizenUi as CitizenUiState).adminSearch,
-  page:     (s.citizenUi as CitizenUiState).adminPage,
-  filter:   (s.citizenUi as CitizenUiState).adminFilter,
-  selected: (s.citizenUi as CitizenUiState).adminSelectedId,
-});

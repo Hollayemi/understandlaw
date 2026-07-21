@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useSignInMutation } from "@/redux/authService/authSlice";
+import { setAuthToken } from "@/redux/shared/axiosBaseQuery";
 import { showError, showSuccess } from "@/app/components/ui/sonner";
 import AuthCard from "../auth_components/AuthCard";
 import SocialButtons from "../auth_components/SocialButtons";
@@ -24,7 +25,7 @@ export default function LoginPage() {
       const result = await signIn({ email, password }).unwrap();
 
       if (result.success) {
-        localStorage.setItem("accessToken", result.data.accessToken);
+        setAuthToken(result.data.accessToken);
         showSuccess("Welcome Back!", result.message || "Welcome back!");
         router.replace("/dashboard");
       } else {

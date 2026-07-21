@@ -5,17 +5,23 @@ import React, { useState } from "react";
 interface PasswordInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   minLength?: number;
+  name?: string;
+  error?: boolean;
 }
 
 export default function PasswordInput({
   value,
   onChange,
+  onBlur,
   placeholder = "Enter your password",
   required = false,
   minLength,
+  name,
+  error,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,12 +29,17 @@ export default function PasswordInput({
     <div className="relative">
       <input
         type={showPassword ? "text" : "password"}
+        name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         required={required}
         minLength={minLength}
-        className="w-full h-11 px-4 pr-11 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#E8317A] placeholder:text-gray-300 transition-colors"
+        aria-invalid={error}
+        className={`w-full h-11 px-4 pr-11 rounded-xl border-[1.5px] text-sm text-gray-900 bg-white outline-none placeholder:text-gray-300 transition-colors ${
+          error ? "border-red-300 focus:border-red-400" : "border-gray-200 focus:border-[#E8317A]"
+        }`}
       />
       <button
         type="button"

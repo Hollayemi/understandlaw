@@ -2,8 +2,9 @@
 import { useGetMeQuery } from "@/redux/authService/authSlice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
+import { onAuthLogin, onAuthExpired } from "@/redux/shared/authEvents";
 import { CitizenFull } from "@/redux/types";
-import { useState, createContext } from "react";
+import { useState, useEffect, createContext } from "react";
 
 
 const defaultProvider: any = {
@@ -21,12 +22,29 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const [notifications, setNotification] = useState<any[]>([]);
 
+    // Tracked in state (not just read once) so that logging in / registering /
+    // completing lawyer setup during this session immediately unlocks the
+    // getMe query below, instead of only working after a hard refresh.
+    const [authed, setAuthed] = useState(() => isAuthenticated("user"));
+
+    useEffect(() => {
+        const unsubLogin = onAuthLogin((actor) => {
+            if (actor === "user") setAuthed(isAuthenticated("user"));
+        });
+        const unsubExpired = onAuthExpired(() => setAuthed(isAuthenticated("user")));
+
+        return () => {
+            unsubLogin();
+            unsubExpired();
+        };
+    }, []);
+
     const {
         data: userInfo,
         error: userErr,
         isLoading: userIsLoading,
     } = useGetMeQuery(undefined, {
-        skip: !isAuthenticated("user")
+        skip: !authed
     });
 
     const {

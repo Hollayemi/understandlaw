@@ -8,6 +8,7 @@ import {
   BookOpen, MessageSquare, Heart, 
   Save, Image as ImageIcon,
   Layers, Target, Award, SlidersHorizontal,
+  Sparkles, Eye, RefreshCw, X,
 } from "lucide-react";
 import { StatusBadge } from "../../_components";
 import {
@@ -20,6 +21,7 @@ import {
   useGetModuleAnalyticsQuery,
   useUpdateModuleMutation,
   useDeleteModuleMutation,
+  useGenerateMaterialSummaryMutation,
 } from "@/redux/slices/admin/modules.slice";
 import type { 
   TopicStatus, 
@@ -28,6 +30,172 @@ import type {
 import { CATEGORY_CONFIG } from "../_components";
 import { TOPIC_STATUS_CFG, TopicCard } from "../_components/subtopic";
 
+// Types for the summary response
+interface SubtopicSummary {
+  title: string;
+  slug: string;
+  summary: string;
+  original_word_count: number;
+  summary_word_count: number;
+}
+
+interface TopicSummary {
+  title: string;
+  slug: string;
+  classification: string | null;
+  subtopics: SubtopicSummary[];
+  combined_word_count: number;
+}
+
+interface SummaryResponse {
+  success: boolean;
+  module_title: string;
+  module_description: string;
+  topics: TopicSummary[];
+  total_word_count: number;
+  summary_word_count: number;
+  error: string | null;
+}
+
+// Preview Sidebar Component
+function SummaryPreviewSidebar({ 
+  isOpen, 
+  onClose, 
+  summary, 
+  isLoading,
+  onRegenerate,
+  isRegenerating,
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  summary: SummaryResponse | null; 
+  isLoading: boolean;
+  onRegenerate: () => void;
+  isRegenerating: boolean;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/40 z-40 transition-opacity"
+        onClick={onClose}
+      />
+      
+      {/* Sidebar */}
+      <div className="fixed right-0 top-0 h-full w-[480px] max-w-[90vw] bg-white z-50 shadow-2xl transition-transform duration-300 ease-in-out overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-[#F3F4F6] flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <BookOpen size={18} className="text-[#E8317A]" />
+            <div>
+              <h3 className="text-[15px] font-bold text-[#111827]">Summary Preview</h3>
+              <p className="text-[11px] text-[#9CA3AF]">
+                {summary?.total_word_count || 0} words • {summary?.topics?.length || 0} topics
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {summary && (
+              <button
+                onClick={onRegenerate}
+                disabled={isRegenerating}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-[#6B7280] hover:text-[#111827] hover:bg-[#F9FAFB] transition-colors disabled:opacity-50"
+              >
+                <RefreshCw size={13} className={isRegenerating ? "animate-spin" : ""} />
+                {isRegenerating ? "Regenerating..." : "Regenerate"}
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg hover:bg-[#F3F4F6] transition-colors"
+            >
+              <X size={18} className="text-[#6B7280]" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-5">
+          {isLoading ? (
+            <div className="space-y-4 animate-pulse">
+              <div className="h-6 bg-gray-200 rounded w-3/4" />
+              <div className="h-4 bg-gray-100 rounded w-full" />
+              <div className="h-4 bg-gray-100 rounded w-5/6" />
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="mt-6">
+                  <div className="h-5 bg-gray-200 rounded w-1/3 mb-3" />
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-100 rounded w-full" />
+                    <div className="h-3 bg-gray-100 rounded w-5/6" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : summary ? (
+            <div className="space-y-6">
+              {/* Module Title */}
+              <div>
+                <h2 className="text-[17px] font-bold text-[#111827]">{summary.module_title}</h2>
+                <p className="text-[12px] text-[#6B7280] mt-1 leading-relaxed">
+                  {summary.module_description}
+                </p>
+              </div>
+
+              {/* Topics */}
+              {summary.topics.map((topic, idx) => (
+                <div key={idx} className="border-t border-[#F3F4F6] pt-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <h4 className="text-[14px] font-bold text-[#111827]">{topic.title}</h4>
+                    {topic.classification && (
+                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#F3F4F6] text-[#6B7280]">
+                        {topic.classification}
+                      </span>
+                    )}
+                    <span className="text-[10px] text-[#9CA3AF] ml-auto">
+                      {topic.combined_word_count} words
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {topic.subtopics.map((subtopic, subIdx) => (
+                      <div key={subIdx} className="bg-[#F9FAFB] rounded-xl p-3 border border-[#F3F4F6]">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[12px] font-semibold text-[#111827]">
+                            {subtopic.title}
+                          </span>
+                          <span className="text-[9px] text-[#9CA3AF]">
+                            {subtopic.summary_word_count} / {subtopic.original_word_count} words
+                          </span>
+                        </div>
+                        <p className="text-[12px] text-[#6B7280] leading-relaxed">
+                          {subtopic.summary}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Footer Stats */}
+              <div className="border-t border-[#F3F4F6] pt-4 flex items-center justify-between text-[11px] text-[#9CA3AF]">
+                <span>Total: {summary.total_word_count} words</span>
+                <span>Generated by AI</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <Sparkles size={40} className="text-[#E5E7EB] mb-3" />
+              <p className="text-[13px] text-[#6B7280]">No summary available</p>
+              <p className="text-[11px] text-[#9CA3AF] mt-1">Generate a summary to preview it here</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 
 // Main Page
 export default function ModuleDetailPage() {
@@ -37,6 +205,10 @@ export default function ModuleDetailPage() {
   
   const [activeSection, setActiveSection] = useState<"topics" | "activity" | "settings">("topics");
   const [topics, setTopics] = useState<TopicWithSubTopics[]>([]);
+  const [maxWords, setMaxWords] = useState<number>(500);
+  const [summaryData, setSummaryData] = useState<SummaryResponse | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
   
   // RTK Query hooks
   const { data: moduleData, isLoading: moduleLoading, refetch: refetchModule } = useGetModuleByIdQuery(moduleId);
@@ -48,6 +220,7 @@ export default function ModuleDetailPage() {
   });
   
   const [createTopic] = useCreateTopicMutation();
+  const [generateSummary] = useGenerateMaterialSummaryMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const [updateModule] = useUpdateModuleMutation();
   const [deleteModule] = useDeleteModuleMutation();
@@ -61,6 +234,91 @@ export default function ModuleDetailPage() {
       setTopics(topicsData.data);
     }
   }, [topicsData]);
+
+  // Load existing summary if available
+  useEffect(() => {
+    if (module?.materialSummary) {
+      try {
+        // If materialSummary is stored as JSON string, parse it
+        const parsed = typeof module.materialSummary === 'string' 
+          ? JSON.parse(module.materialSummary) 
+          : module.materialSummary;
+        setSummaryData(parsed);
+      } catch (e) {
+        console.error('Failed to parse existing summary:', e);
+      }
+    }
+  }, [module?.materialSummary]);
+
+  const handleGenerateSummary = async () => {
+    if (!module) return;
+    
+    setIsGenerating(true);
+    try {
+      const response = await generateSummary({ 
+        slug: module.slug, 
+        max_words: maxWords 
+      }).unwrap();
+      const summary = response.data;
+      if (!summary) {
+        throw new Error("No summary returned");
+      }
+      
+      setSummaryData(summary);
+      setIsPreviewOpen(true);
+      
+      // Optionally update the module with the new summary
+      await updateModule({
+        id: moduleId,
+        data: { materialSummary: summary }
+      }).unwrap();
+      refetchModule();
+      
+    } catch (error) {
+      console.error("Failed to generate summary:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRegenerateSummary = async () => {
+    if (!module) return;
+    
+    setIsGenerating(true);
+    try {
+      const response = await generateSummary({ 
+        slug: module.slug, 
+        max_words: maxWords 
+      }).unwrap();
+      const summary = response.data;
+      if (!summary) {
+        throw new Error("No summary returned");
+      }
+      
+      setSummaryData(summary);
+      
+      // Update the module with the new summary
+      await updateModule({
+        id: moduleId,
+        data: { materialSummary: summary }
+      }).unwrap();
+      refetchModule();
+      
+    } catch (error) {
+      console.error("Failed to regenerate summary:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleOpenPreview = () => {
+    if (summaryData) {
+      setIsPreviewOpen(true);
+    } else {
+      // If no summary exists, generate one first
+      handleGenerateSummary();
+    }
+  };
 
   const addTopic = async () => {
     try {
@@ -162,6 +420,8 @@ export default function ModuleDetailPage() {
         <span className="text-[#111827] font-semibold">{module.title}</span>
       </div>
 
+      <></>
+
       {/* Module header */}
       <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden mb-6">
         <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${categoryConfig.color}, ${categoryConfig.color}60)` }} />
@@ -244,10 +504,38 @@ export default function ModuleDetailPage() {
               <h2 className="text-[15px] font-bold text-[#111827]">Topics ({topics.length})</h2>
               <p className="text-[12px] text-[#9CA3AF] mt-0.5">Click to expand and edit.</p>
             </div>
-            <button onClick={addTopic}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
-              <Plus size={13} /> Add Topic
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Summary Controls */}
+              <div className="flex items-center gap-2 bg-[#F9FAFB] rounded-xl px-3 py-1.5 border border-[#F3F4F6]">
+                <span className="text-[10px] text-[#6B7280] font-medium">Max Words:</span>
+                <input
+                  type="number"
+                  min="100"
+                  max="2000"
+                  value={maxWords}
+                  onChange={(e) => setMaxWords(Math.min(2000, Math.max(100, Number(e.target.value) || 500)))}
+                  className="w-16 h-7 px-2 rounded-lg border-[1.5px] border-[#E5E7EB] text-[11px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors"
+                />
+              </div>
+              
+              <button
+                onClick={handleOpenPreview}
+                disabled={isGenerating}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors disabled:opacity-50"
+              >
+                {isGenerating ? (
+                  <RefreshCw size={13} className="animate-spin" />
+                ) : (
+                  <Sparkles size={13} />
+                )}
+                {summaryData ? "Preview Summary" : "Generate Summary"}
+              </button>
+              
+              <button onClick={addTopic}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+                <Plus size={13} /> Add Topic
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-3">
@@ -489,6 +777,16 @@ export default function ModuleDetailPage() {
           </form>
         </div>
       )}
+
+      {/* Summary Preview Sidebar */}
+      <SummaryPreviewSidebar
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        summary={summaryData}
+        isLoading={isGenerating}
+        onRegenerate={handleRegenerateSummary}
+        isRegenerating={isGenerating}
+      />
     </div>
   );
 }

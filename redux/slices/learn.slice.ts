@@ -24,6 +24,7 @@ export interface LearnModule {
   categoryLabel: string;
   categoryColor: string;
   categoryBg: string;
+  materialSummary: any
   status: LearnModuleStatus;
   thumbnailUrl: string | null;
   gradient: string;

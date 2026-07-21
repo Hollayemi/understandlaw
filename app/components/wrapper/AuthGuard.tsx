@@ -64,7 +64,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           }, 500);
         } else {
           setTimeout(() => {
-            router.push(`/auth?from=${encodeURIComponent(pathname)}#login`);
+            router.push(`/auth/login?from=${encodeURIComponent(pathname)}`);
           }, 500);
         }
       } else if (reason === "forbidden") {

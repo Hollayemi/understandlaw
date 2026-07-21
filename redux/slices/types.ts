@@ -59,6 +59,8 @@ export interface Module {
   status: ModuleStatus;
   thumbnail: string | null;
   description: string;
+  materialSummary: any;
+  slug: string;
   topicCount: number;
   enrolledCount: number;
   completionRate: number; // 0–100
@@ -88,6 +90,7 @@ export interface CreateModulePayload {
 export interface UpdateModulePayload {
   title?: string;
   category?: ModuleCategory;
+  materialSummary? :any;
   description?: string;
   instructorId?: string;
   thumbnailUrl?: string;
@@ -437,4 +440,39 @@ export interface UploadVideoPayload {
   file: File;
   moduleId: string;
   topicId: string;
+}
+
+// Subtopic summary
+export interface SubtopicSummary {
+    title: string;
+    slug: string;
+    summary: string;
+    original_word_count: number;
+    summary_word_count: number;
+}
+
+// Topic summary
+export interface TopicSummary {
+    title: string;
+    slug: string;
+    classification: string | null;
+    subtopics: SubtopicSummary[];
+    combined_word_count: number;
+}
+
+// Main API response
+export interface SummaryResponse {
+    success: boolean;
+    module_title: string;
+    module_description: string;
+    topics: TopicSummary[];
+    total_word_count: number;
+    summary_word_count: number;
+    error: string | null;
+}
+
+// Optional: Request type (for the POST body)
+export interface SummaryRequest {
+    slug: string;
+    max_words: number;
 }

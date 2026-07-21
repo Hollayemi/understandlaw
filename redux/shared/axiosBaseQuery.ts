@@ -3,7 +3,7 @@
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
-import { emitAuthExpired } from "./authEvents";
+import { emitAuthExpired, emitAuthLogin } from "./authEvents";
 
 export const server =
   process.env.NODE_ENV === "production"
@@ -227,6 +227,17 @@ export function checkTokenStatus(actor: ActorType = "user"): TokenStatus {
 
 export const isAuthenticated = (actor: ActorType = "user") =>
   checkTokenStatus(actor).isValid;
+
+/**
+ * Store an access token and immediately notify listeners (e.g. UserDataProvider)
+ * so the app picks up the logged-in state without needing a page refresh.
+ * Always use this instead of calling localStorage.setItem(...) directly.
+ */
+export function setAuthToken(token: string, actor: ActorType = "user"): void {
+  if (typeof window === "undefined" || !token) return;
+  localStorage.setItem(TOKEN_KEYS[actor], token);
+  emitAuthLogin(actor);
+}
 
 export const needsTokenRefresh = (actor: ActorType = "user") =>
   checkTokenStatus(actor).needsRefresh;

@@ -36,7 +36,7 @@ export const lawyerApi = createApi({
 
   endpoints: (builder) => ({
     // Existing endpoints
-    getMyLawyerProfile: builder.query<ApiResponse<LawyerFull>, void>({
+    getMyLawyerProfile: builder.query<ApiResponse<any>, void>({
       query: () => ({ url: "/lawyers/me/profile", method: "GET" }),
       providesTags: ["LawyerMe"],
     }),

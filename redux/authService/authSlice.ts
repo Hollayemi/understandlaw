@@ -13,7 +13,7 @@ import {
     CitizenFull
 } from '../types';
 import { showError, showSuccess } from '@/app/components/ui/sonner';
-import { axiosBaseQuery } from '../shared/axiosBaseQuery';
+import { axiosBaseQuery, setAuthToken } from '../shared/axiosBaseQuery';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/v1/auth`,
@@ -63,7 +63,7 @@ export const authApi = createApi({
               async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    localStorage.setItem('accessToken', data.data.accessToken);
+                    setAuthToken(data.data.accessToken);
 
                     if(data.success) {
                         showSuccess("Account created successfully!", data.message || "Welcome back!");
@@ -107,7 +107,7 @@ export const authApi = createApi({
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    localStorage.setItem('accessToken', data.data.accessToken);
+                    setAuthToken(data.data.accessToken);
                 } catch (error) {
                     // console.error('Token refresh failed:', error);
                 }

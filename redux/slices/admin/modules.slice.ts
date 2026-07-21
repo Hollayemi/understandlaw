@@ -42,6 +42,8 @@ import {
     UploadVideoPayload,
     ModuleDetailSection,
     TopicDetailTab,
+    SummaryRequest,
+    SummaryResponse
 } from "../types";
 import { axiosBaseQuery } from "@/redux/shared/axiosBaseQuery";
 
@@ -51,6 +53,7 @@ export const modulesApi = createApi({
     baseQuery: axiosBaseQuery({ defaultActor: "admin" }),
     tagTypes: [
         "Module",
+        "MATERIAL",
         "ModuleList",
         "ModuleStats",
         "DailyStats",
@@ -92,6 +95,8 @@ export const modulesApi = createApi({
             }),
             providesTags: [{ type: "ModuleList" }],
         }),
+
+
 
         /**
          * GET /admin/modules/stats
@@ -137,6 +142,15 @@ export const modulesApi = createApi({
                 data,
             }),
             invalidatesTags: ["ModuleList", "ModuleStats"],
+        }),
+
+         generateMaterialSummary: builder.mutation<ApiResponse<SummaryResponse>, SummaryRequest>({
+            query: (data) => ({
+                url: "/admin/modules/material",
+                method: "POST",
+                data,
+            }),
+            invalidatesTags: ["MATERIAL"],
         }),
 
         /**
@@ -573,6 +587,7 @@ export const {
     useGetDailyActivityStatsQuery,
     useGetModuleByIdQuery,
     useCreateModuleMutation,
+    useGenerateMaterialSummaryMutation,
     useUpdateModuleMutation,
     useDeleteModuleMutation,
 } = modulesApi;

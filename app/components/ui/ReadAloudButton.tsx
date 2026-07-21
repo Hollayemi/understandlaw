@@ -87,7 +87,7 @@ export default function ReadAloudButton({ text, className = "" }: Props) {
       {/* Settings Dropdown Button */}
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="absolute -bottom-1 -right-1 p-0.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors focus:outline-none"
+        className="absolute -bottom-1 -right-1 p-0.5 w-2 h-2 md:w-auto md:h-auto rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors focus:outline-none"
         aria-label="Voice settings"
       >
         <ChevronDown size={12} className="text-gray-500" />

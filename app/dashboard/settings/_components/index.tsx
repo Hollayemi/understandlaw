@@ -8,12 +8,33 @@ import {
   Trash2, Download, AlertTriangle, Loader2, Save,
   ExternalLink,
   X,
+  CreditCard,
+  Calendar,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import { Toggle } from "./types";
 import { CitizenUser, CitizenProfile } from "@/redux/types";
 import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
-import { useUpdateMyProfileMutation } from "@/redux/slices/citizens.slice";
+import { 
+  useUpdateMyProfileMutation,
+} from "@/redux/slices/citizens.slice";
+
+import {
+  useListPublicPlansQuery,
+  useGetMySubscriptionQuery,
+  useSubscribeMutation,
+  useChangePlanMutation,
+  useCancelSubscriptionMutation,
+  useReactivateSubscriptionMutation,
+  useUpdateAutoRenewMutation,
+  useGetMyBillingHistoryQuery,
+} from "@/redux/slices/subscription.slice";
+
 
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
@@ -48,34 +69,62 @@ export function ToggleSwitch({
     <button
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
-      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${value ? "bg-[#E8317A]" : "bg-gray-200"
-        } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${
+        value ? "bg-[#E8317A]" : "bg-gray-200"
+      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
-      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${value ? "translate-x-5" : "translate-x-0"}`} />
+      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
+        value ? "translate-x-5" : "translate-x-0"
+      }`} />
     </button>
   );
 }
 
 export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: string, v: boolean) => void }) {
-   const [updateProfile, {isLoading}] = useUpdateMyProfileMutation()
+  const [updateProfile, { isLoading }] = useUpdateMyProfileMutation();
+  const [localValue, setLocalValue] = useState(item.value);
+
+  // Sync local value when prop changes
+  useEffect(() => {
+    setLocalValue(item.value);
+  }, [item.value]);
+
+  const handleToggle = async (newValue: boolean) => {
+    setLocalValue(newValue); // Optimistic update
+    try {
+      await updateProfile({ [item.key]: newValue }).unwrap();
+      onChange(item.id, newValue);
+    } catch (error) {
+      setLocalValue(!newValue); // Rollback on error
+      console.error("Failed to update:", error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
       <div className="flex-1 pr-4">
         <p className="text-xs font-semibold text-gray-800">{item.label}</p>
         <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
       </div>
-      <ToggleSwitch value={item.value} onChange={(v) =>  updateProfile({ [item.key]: !Boolean(item.value) }).unwrap()} />
+      <div className="flex items-center gap-2">
+        {isLoading && <Loader2 size={14} className="animate-spin text-gray-400" />}
+        <ToggleSwitch 
+          value={localValue} 
+          onChange={handleToggle}
+          disabled={isLoading}
+        />
+      </div>
     </div>
   );
 }
 
-//  Profile tab 
+// Profile tab 
 export function ProfileSettings({ user, profile }: { user: CitizenUser, profile: CitizenProfile }) {
-  const { userInfo, } = useUserData()
+  const { userInfo, refetch } = useUserData();
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [images, setImages] = useState<UploadedImage[]>([]);
-    const [form, setForm] = useState({
+  const [form, setForm] = useState({
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     email: user.email || "",
@@ -84,16 +133,29 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
     bio: profile.bio || "",
   });
 
-  const [updateProfile, {isLoading}] = useUpdateMyProfileMutation()
+  const [updateProfile, { isLoading }] = useUpdateMyProfileMutation();
 
-  const handleUpdate = () => {
-    updateProfile({
-      ...form,
-      avatarUrl: images[0]?.base64 || undefined
-    }).unwrap()
-  }
-
-
+  const handleUpdate = async () => {
+    try {
+      const result = await updateProfile({
+        ...form,
+        avatarUrl: images[0]?.base64 || undefined
+      }).unwrap();
+      
+      // Refetch user data to get updated avatar
+      await refetch();
+      
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      
+      // Clear images after successful upload
+      if (images.length > 0) {
+        setImages([]);
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+    }
+  };
 
   useEffect(() => {
     setForm({
@@ -117,7 +179,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors";
+  const inputCls = "w-full h-11! px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors";
 
   const STATES = ["Lagos", "Abuja", "Rivers", "Kano", "Kaduna", "Oyo", "Anambra", "Enugu", "Delta", "Kwara", "Ondo", "Ogun", "Edo", "Cross River", "Akwa Ibom"];
 
@@ -130,9 +192,6 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
             {user.avatarUrl ? <img src={user.avatarUrl} alt="image" className="w-16 h-16 rounded-2xl" /> : <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E8317A] to-[#ff6fa8] flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
               AO
             </div>}
-            {/* <button className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gray-900 border-2 border-white flex items-center justify-center">
-              <Camera size={11} className="text-white" />
-            </button> */}
             <button className="px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors">
               Remove
             </button>
@@ -147,10 +206,12 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
                 </div>
               </div>
             </ThumbnailUpload>
-            {images.length > 0 && <button onClick={handleUpdate} disabled={isLoading}
-              className="flex-1 py-2.5 px-5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
-              {isLoading ? "Saving..." : "Save Changes"}
-            </button>}
+            {images.length > 0 && (
+              <button onClick={handleUpdate} disabled={isLoading}
+                className="mt-2 flex-1 py-2.5 px-5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
+                {isLoading ? "Saving..." : "Save Changes"}
+              </button>
+            )}
           </div>
         </div>
       </Section>
@@ -184,7 +245,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
             {STATES.map(s => <option key={s}>{s}</option>)}
           </select>
         </Field>
-        <Field label="Bio" desc="Optional,  appears on community posts if you make them public">
+        <Field label="Bio" desc="Optional, appears on community posts if you make them public">
           <textarea value={form.bio} onChange={set("bio")} placeholder="A brief note about yourself..."
             className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
           />
@@ -205,7 +266,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
   );
 }
 
-//  Notifications tab 
+// Notifications tab 
 export function NotificationSettings({ user }: { user: CitizenUser }) {
   const [items, setItems] = useState<Toggle[]>([
     { id: "n1", label: "Lawyer response notifications", key: "notifLawyerResponse", desc: "Get notified when a lawyer accepts or declines your consultation request.", value: user.notifLawyerResponse },
@@ -218,14 +279,14 @@ export function NotificationSettings({ user }: { user: CitizenUser }) {
     { id: "n8", label: "Platform updates", key: "notifPlatformUpdates", desc: "News about new features, lawyers, and content releases.", value: user.notifPlatformUpdates },
     { id: "n9", label: "Legal news alerts", key: "notifLegalNews", desc: "Notify me of major Nigerian legal developments relevant to my saved topics.", value: user.notifLegalNews },
     { id: "n10", label: "Promotional emails", key: "notifPromotional", desc: "Offers, referral rewards, and premium feature announcements.", value: user.notifPromotional },
-]);
+  ]);
 
   const [channels, setChannels] = useState<Toggle[]>([
-    { id: "ch1", label: "Email", key: "notifEmail", desc: "Send notifications to adaeze.okonkwo@gmail.com", value: user.notifEmail },
-    { id: "ch2", label: "SMS", key: "notifSms", desc: "Send critical alerts to +234 801 234 5678", value: user.notifSms },
+    { id: "ch1", label: "Email", key: "notifEmail", desc: `Send notifications to ${user.email}`, value: user.notifEmail },
+    { id: "ch2", label: "SMS", key: "notifSms", desc: `Send critical alerts to ${user.phone}`, value: user.notifSms },
     { id: "ch3", label: "Push (browser)", key: "notifPush", desc: "Browser push notifications when on the platform.", value: user.notifPush },
     { id: "ch4", label: "In-app badge", key: "notifInAppBadge", desc: "Show unread count badges in the sidebar.", value: user.notifInAppBadge },
-]);
+  ]);
 
   const toggle = (setter: React.Dispatch<React.SetStateAction<Toggle[]>>) => (id: string, v: boolean) =>
     setter(prev => prev.map(x => x.id === id ? { ...x, value: v } : x));
@@ -247,14 +308,14 @@ export function NotificationSettings({ user }: { user: CitizenUser }) {
   );
 }
 
-//  Privacy tab 
+// Privacy tab 
 export function PrivacySettings({ user }: { user: CitizenUser }) {
- const [items, setItems] = useState<Toggle[]>([
+  const [items, setItems] = useState<Toggle[]>([
     { id: "p1", label: "Show my reading activity to the community", key: "showActivityPublic", desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: user.showActivityPublic },
     { id: "p2", label: "Allow anonymous analytics", key: "allowAnonymousAnalytics", desc: "Help us improve content quality with anonymous usage data. No personal info is shared.", value: user.allowAnonymousAnalytics },
     { id: "p3", label: "Personalised content recommendations", key: "personalizedRecommend", desc: "Use my reading history to suggest relevant topics and library entries.", value: user.personalizedRecommend },
     { id: "p4", label: "Show profile in community discussions", key: "showProfileInCommunity", desc: "Your name and avatar may appear when you comment or like community posts.", value: user.showProfileInCommunity },
-]);
+  ]);
 
   const toggle = (id: string, v: boolean) => setItems(prev => prev.map(x => x.id === id ? { ...x, value: v } : x));
 
@@ -300,7 +361,7 @@ export function PrivacySettings({ user }: { user: CitizenUser }) {
   );
 }
 
-//  Security tab 
+// Security tab 
 export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -422,7 +483,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
   );
 }
 
-//  Appearance tab 
+// Appearance tab 
 export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [fontSize, setFontSize] = useState<"small" | "medium" | "large">("medium");
@@ -500,8 +561,8 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   );
 }
 
-//  Legal Preferences tab 
-export function LegalSettings({ profile }: { profile: CitizenProfile }) {
+// Legal Preferences tab 
+export function LegalSettings({ profile, user }: { profile: CitizenProfile, user: any }) {
   const [interests, setInterests] = useState<string[]>(["criminal", "employment", "tenancy"]);
   const [lang, setLang] = useState("en");
   const [jurisdiction, setJurisdiction] = useState("federal");
@@ -523,7 +584,7 @@ export function LegalSettings({ profile }: { profile: CitizenProfile }) {
 
   return (
     <div>
-      <Section title="Areas of Interest" desc="We use these to personalise your content feed, topic recommendations, and lawyer suggestions.">
+      {user?.role !== "lawyer" &&<Section title="Areas of Interest" desc="We use these to personalise your content feed, topic recommendations, and lawyer suggestions.">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {AREAS.map(a => {
             const on = interests.includes(a.id);
@@ -538,7 +599,7 @@ export function LegalSettings({ profile }: { profile: CitizenProfile }) {
             );
           })}
         </div>
-      </Section>
+      </Section>}
 
       <Section title="Content Language" desc="Language used for legal summaries and educational content.">
         <Field label="Preferred Language">
@@ -579,6 +640,494 @@ export function LegalSettings({ profile }: { profile: CitizenProfile }) {
             </Link>
           </div>
         </div>
+      </Section>
+    </div>
+  );
+}
+
+// Update the SubscriptionSettings component
+export function SubscriptionSettings({ user }: { user: any }) {
+  // Use the new subscription hooks
+  const { data: subscriptionData, refetch: refetchSubscription } = useGetMySubscriptionQuery(undefined, {
+    skip: user?.role !== "lawyer",
+  });
+  
+  const { data: billingData, refetch: refetchBilling } = useGetMyBillingHistoryQuery(
+    { page: 1, pageSize: 10 },
+    {
+      skip: user?.role !== "lawyer",
+    }
+  );
+  
+  const { data: plansData } = useListPublicPlansQuery(
+    {},
+    {
+      skip: user?.role !== "lawyer",
+    }
+  );
+  
+  // Use the new mutation hooks
+  const [subscribe] = useSubscribeMutation();
+  const [changePlan] = useChangePlanMutation();
+  const [cancelSubscription] = useCancelSubscriptionMutation();
+  const [reactivate] = useReactivateSubscriptionMutation();
+  const [updateAutoRenew] = useUpdateAutoRenewMutation();
+  
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState<'monthly' | 'yearly'>('monthly');
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showChangePlan, setShowChangePlan] = useState(false);
+  
+  const subscription = subscriptionData?.data;
+  const billingHistory = billingData?.data || [];
+  const plans = plansData?.data || [];
+
+  const handleSubscribe = async (planId: string) => {
+    setProcessing(true);
+    setError(null);
+    try {
+      const result = await subscribe({
+        planId,
+        interval: selectedInterval,
+        autoRenew: true,
+      }).unwrap();
+      
+      setSuccess("Subscription initiated! Redirecting to payment...");
+      
+      // Check if payment URL is returned
+      if (result.data?.payment?.authorization_url) {
+        window.location.href = result.data.payment.authorization_url;
+      } else if (result.data?.payment?.authorization_url) {
+        window.location.href = result.data.payment.authorization_url;
+      } else {
+        // If no payment URL, subscription was successful without payment
+        setSuccess("Subscription successful!");
+        await refetchSubscription();
+        await refetchBilling();
+        setSelectedPlan(null);
+        setTimeout(() => setSuccess(null), 5000);
+      }
+    } catch (err: any) {
+      setError(err.data?.message || err.message || "Failed to subscribe. Please try again.");
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleChangePlan = async (planId: string) => {
+    setProcessing(true);
+    setError(null);
+    try {
+      const result = await changePlan({
+        planId,
+        interval: selectedInterval,
+      }).unwrap();
+      
+      setSuccess("Plan change initiated! Redirecting to payment...");
+      
+      if (result.data?.payment?.authorization_url) {
+        window.location.href = result.data.payment.authorization_url;
+      } else {
+        setSuccess("Plan changed successfully!");
+        await refetchSubscription();
+        await refetchBilling();
+        setShowChangePlan(false);
+        setSelectedPlan(null);
+        setTimeout(() => setSuccess(null), 5000);
+      }
+    } catch (err: any) {
+      setError(err.data?.message || err.message || "Failed to change plan. Please try again.");
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Are you sure you want to cancel your subscription?")) return;
+    setProcessing(true);
+    try {
+      await cancelSubscription({ 
+        reason: "Cancelled by user",
+        immediate: false // Cancel at period end
+      }).unwrap();
+      setSuccess("Subscription cancelled successfully. You'll have access until the end of your billing period.");
+      await refetchSubscription();
+      setTimeout(() => setSuccess(null), 5000);
+    } catch (err: any) {
+      setError(err.data?.message || err.message || "Failed to cancel subscription.");
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleReactivate = async () => {
+    setProcessing(true);
+    try {
+      await reactivate().unwrap();
+      setSuccess("Subscription reactivated successfully.");
+      await refetchSubscription();
+      setTimeout(() => setSuccess(null), 5000);
+    } catch (err: any) {
+      setError(err.data?.message || err.message || "Failed to reactivate subscription.");
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleToggleAutoRenew = async () => {
+    if (!subscription) return;
+    setProcessing(true);
+    try {
+      await updateAutoRenew({ autoRenew: !subscription.autoRenew }).unwrap();
+      await refetchSubscription();
+      setSuccess(`Auto-renew ${!subscription.autoRenew ? 'enabled' : 'disabled'} successfully.`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err: any) {
+      setError(err.data?.message || err.message || "Failed to update auto-renew setting.");
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'text-green-700 bg-green-50 border-green-200';
+      case 'cancelled': return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+      case 'expired': return 'text-red-700 bg-red-50 border-red-200';
+      case 'pending': return 'text-blue-700 bg-blue-50 border-blue-200';
+      case 'inactive': return 'text-gray-700 bg-gray-50 border-gray-200';
+      default: return 'text-gray-700 bg-gray-50 border-gray-200';
+    }
+  };
+
+  const getBillingStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'paid': return 'text-green-700 bg-green-50 border-green-200';
+      case 'pending': return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+      case 'failed': return 'text-red-700 bg-red-50 border-red-200';
+      case 'refunded': return 'text-purple-700 bg-purple-50 border-purple-200';
+      default: return 'text-gray-700 bg-gray-50 border-gray-200';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  return (
+    <div>
+      {/* Error/Success Messages */}
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+          <AlertCircle size={16} className="text-red-600 flex-shrink-0" />
+          <p className="text-sm text-red-700">{error}</p>
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+      {success && (
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+          <CheckCircle size={16} className="text-green-600 flex-shrink-0" />
+          <p className="text-sm text-green-700">{success}</p>
+          <button onClick={() => setSuccess(null)} className="ml-auto text-green-400 hover:text-green-600">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Active Subscription Section */}
+      <Section title="Current Subscription" desc="Manage your subscription plan and billing details.">
+        {subscription ? (
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h4 className="text-sm font-bold text-gray-900">{subscription.planName}</h4>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${getStatusColor(subscription.status)}`}>
+                    {subscription.status?.toUpperCase() || 'UNKNOWN'}
+                  </span>
+                  {subscription.cancelAtPeriodEnd && (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border text-amber-700 bg-amber-50 border-amber-200">
+                      Cancels at period end
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <Calendar size={12} />
+                    <span>Started: {formatDate(subscription.startDate)}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <Clock size={12} />
+                    <span>
+                      {subscription.status === 'active' ? 'Renews' : 'Ended'}: {formatDate(subscription.endDate)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CreditCard size={12} />
+                    <span>₦{subscription.price?.toLocaleString() || 0}/{subscription.interval || 'month'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <RefreshCw size={12} />
+                    <span>Auto-renew: {subscription.autoRenew ? 'On' : 'Off'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              {subscription.status === 'active' && (
+                <>
+                  <button
+                    onClick={() => setShowChangePlan(!showChangePlan)}
+                    disabled={processing}
+                    className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50"
+                  >
+                    <RefreshCw size={13} />
+                    Change Plan
+                  </button>
+                  <button
+                    onClick={handleToggleAutoRenew}
+                    disabled={processing}
+                    className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50"
+                  >
+                    <RefreshCw size={13} className={processing ? "animate-spin" : ""} />
+                    {subscription.autoRenew ? "Disable Auto-Renew" : "Enable Auto-Renew"}
+                  </button>
+                  <button
+                    onClick={handleCancelSubscription}
+                    disabled={processing}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-[1.5px] border-red-200 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all disabled:opacity-50"
+                  >
+                    Cancel Subscription
+                  </button>
+                </>
+              )}
+              {(subscription.status === 'cancelled' || subscription.status === 'inactive') && (
+                <button
+                  onClick={handleReactivate}
+                  disabled={processing}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#E8317A] text-xs font-semibold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                >
+                  <RefreshCw size={13} className={processing ? "animate-spin" : ""} />
+                  Reactivate Subscription
+                </button>
+              )}
+            </div>
+
+            {/* Change Plan Section */}
+            {showChangePlan && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <h5 className="text-sm font-semibold text-gray-900 mb-3">Change Plan</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {plans
+                    .filter(p => p.id !== subscription.planId.id)
+                    .map((plan) => (
+                      <div
+                        key={plan.id}
+                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                          selectedPlan === plan.id
+                            ? "border-[#E8317A] bg-pink-50/30"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                        onClick={() => setSelectedPlan(plan.id)}
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
+                            {plan.isPopular && (
+                              <span className="text-[10px] font-semibold text-[#E8317A] bg-pink-50 px-2 py-0.5 rounded-full">
+                                Popular
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-bold text-gray-900">₦{plan.price}</p>
+                            <p className="text-[10px] text-gray-500">/{plan.interval}</p>
+                          </div>
+                        </div>
+                        <ul className="space-y-1 mb-3">
+                          {plan.features?.slice(0, 3).map((feature, idx) => (
+                            <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
+                              <CheckCircle size={11} className="text-green-500 flex-shrink-0" />
+                              {feature}
+                            </li>
+                          ))}
+                          {plan.features?.length > 3 && (
+                            <li className="text-xs text-gray-400">+{plan.features.length - 3} more features</li>
+                          )}
+                        </ul>
+                      </div>
+                    ))}
+                </div>
+                {selectedPlan && (
+                  <div className="mt-4 flex shadow gap-3">
+                    <button
+                      onClick={() => handleChangePlan(selectedPlan)}
+                      disabled={processing}
+                      className="flex-1 py-2.5 rounded-lg bg-[#E8317A] text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                    >
+                      {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Confirm Change"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowChangePlan(false);
+                        setSelectedPlan(null);
+                      }}
+                      className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <CreditCard size={32} className="text-gray-300 mx-auto mb-3" />
+            <p className="text-sm text-gray-600">No active subscription</p>
+            <p className="text-xs text-gray-400 mt-1">Choose a plan below to get started</p>
+          </div>
+        )}
+      </Section>
+
+      {/* Subscription Plans - Only show if no subscription or cancelled/expired */}
+      {(!subscription || subscription.status === 'cancelled' || subscription.status === 'expired' || subscription.status === 'inactive') && (
+        <Section title="Choose a Plan" desc="Select the plan that works best for you.">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={`p-4 rounded-xl border-2 transition-all ${
+                  selectedPlan === plan.id 
+                    ? "border-[#E8317A] bg-pink-50/30" 
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
+                    {plan.isPopular && (
+                      <span className="text-[10px] font-semibold text-[#E8317A] bg-pink-50 px-2 py-0.5 rounded-full">
+                        Popular
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900">₦{plan.price?.toLocaleString() || 0}</p>
+                    <p className="text-[10px] text-gray-500">/{plan.interval}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">{plan.description}</p>
+                <ul className="space-y-1.5 mb-4">
+                  {plan.features?.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
+                      <CheckCircle size={11} className="text-green-500 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setSelectedPlan(plan.id)}
+                  disabled={processing}
+                  className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
+                    selectedPlan === plan.id
+                      ? "bg-[#E8317A] text-white hover:bg-[#d02a6e]"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  } disabled:opacity-50`}
+                >
+                  {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Select Plan"}
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          {selectedPlan && (
+            <div className="mt-4 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+              <p className="text-xs text-gray-600 mb-3">
+                Selected plan: <span className="font-semibold">{plans.find(p => p.id === selectedPlan)?.name}</span>
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => handleSubscribe(selectedPlan)}
+                  disabled={processing}
+                  className="flex-1 py-2.5 rounded-lg bg-[#E8317A] text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                >
+                  {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Subscribe Now"}
+                </button>
+                <button
+                  onClick={() => setSelectedPlan(null)}
+                  className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </Section>
+      )}
+
+      {/* Billing History */}
+      <Section title="Billing History" desc="View your payment history and download invoices.">
+        {billingHistory.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Date</th>
+                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Description</th>
+                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Amount</th>
+                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Status</th>
+                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Method</th>
+                  <th className="text-right py-2.5 px-3 font-semibold text-gray-500">Invoice</th>
+                </tr>
+              </thead>
+              <tbody>
+                {billingHistory.map((item) => (
+                  <tr key={item.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+                    <td className="py-2.5 px-3 text-gray-600">{formatDate(item.date)}</td>
+                    <td className="py-2.5 px-3 text-gray-700">{item.description}</td>
+                    <td className="py-2.5 px-3 font-semibold text-gray-900">₦{item.amount?.toLocaleString() || 0}</td>
+                    <td className="py-2.5 px-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getBillingStatusColor(item.status)}`}>
+                        {item.status?.toUpperCase() || 'UNKNOWN'}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-gray-600">{item.paymentMethod || 'N/A'}</td>
+                    <td className="py-2.5 px-3 text-right">
+                      {item.invoiceUrl ? (
+                        <a href={item.invoiceUrl} target="_blank" rel="noopener noreferrer" 
+                           className="text-[#E8317A] hover:text-[#d02a6e] font-semibold transition-colors">
+                          Download
+                        </a>
+                      ) : (
+                        <span className="text-gray-300">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-6">
+            <p className="text-sm text-gray-500">No billing history yet</p>
+          </div>
+        )}
       </Section>
     </div>
   );

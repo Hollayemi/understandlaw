@@ -2,50 +2,88 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  ChevronRight, User, Bell, Lock, Shield, Palette,
-  Scale, LogOut, Camera, Check, Eye, EyeOff,
-  Smartphone, Moon, Sun, Monitor,
-  Trash2, Download, AlertTriangle, Loader2, Save,
+  ChevronRight,
+  User,
+  Bell,
+  Lock,
+  Shield,
+  Palette,
+  Scale,
+  LogOut,
+  Camera,
+  Check,
+  Eye,
+  EyeOff,
+  Smartphone,
+  Moon,
+  Sun,
+  Monitor,
+  Trash2,
+  Download,
+  AlertTriangle,
+  Loader2,
+  Save,
   ExternalLink,
   X,
+  CreditCard,
+  Briefcase,
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
-import { Section,
-Field,
-ToggleSwitch,
-ToggleRow,
-ProfileSettings,
-NotificationSettings,
-PrivacySettings,
-SecuritySettings,
-AppearanceSettings,
-LegalSettings } from "./_components";
+import {
+  Section,
+  Field,
+  ToggleSwitch,
+  ToggleRow,
+  ProfileSettings,
+  NotificationSettings,
+  PrivacySettings,
+  SecuritySettings,
+  AppearanceSettings,
+  LegalSettings,
+  SubscriptionSettings,
+} from "./_components";
 import { SettingsTab } from "./_components/types";
 
-
+import { LawyerProfileUpdate } from "./_components/lawyer_update"
 
 export default function SettingsPage() {
-  const { userInfo } = useUserData()
-    const user = (userInfo as any)?.user ?? {};
-    const profile = (userInfo as any)?.profile ?? {};
+  const { userInfo } = useUserData();
+  const user = (userInfo as any)?.user ?? {};
+  const profile = (userInfo as any)?.profile ?? {};
   const [tab, setTab] = useState<SettingsTab>("profile");
 
+  // Define tabs based on user role
   const tabs: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
-    { id: "profile",       label: "Profile",        icon: User          },
-    { id: "notifications", label: "Notifications",  icon: Bell          },
-    { id: "privacy",       label: "Privacy & Data", icon: Shield        },
-    { id: "security",      label: "Security",       icon: Lock          },
-    { id: "appearance",    label: "Appearance",     icon: Palette       },
-    { id: "legal",         label: "Legal Prefs",    icon: Scale         },
+    { id: "profile", label: "Profile", icon: User },
+    { id: "notifications", label: "Notifications", icon: Bell },
+    { id: "privacy", label: "Privacy & Data", icon: Shield },
+    { id: "security", label: "Security", icon: Lock },
+    // Only show subscription tab for lawyers
+    ...(user?.role === "lawyer"
+      ? [
+          { id: "subscription" as SettingsTab, label: "Subscription", icon: CreditCard },
+          { id: "lawyer-profile" as SettingsTab, label: "Lawyer Profile", icon: Briefcase },
+        ]
+      : []),
+    // { id: "appearance", label: "Appearance", icon: Palette },
+    { id: "legal", label: "Legal Prefs", icon: Scale },
   ];
+
+  // If current tab is lawyer-specific but user is not a lawyer, redirect to profile
+  useEffect(() => {
+    if ((tab === "subscription" || tab === "lawyer-profile") && user?.role !== "lawyer") {
+      setTab("profile");
+    }
+  }, [user?.role, tab]);
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
-
       {/* Top bar */}
       <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-gray-500">
-          <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
+          <Link href="/dashboard" className="hover:text-gray-800 transition-colors">
+            Dashboard
+          </Link>
           <ChevronRight size={11} className="text-gray-300" />
           <span className="font-semibold text-gray-800">Settings</span>
         </div>
@@ -57,19 +95,27 @@ export default function SettingsPage() {
       <div className="max-w-6xl mx-auto px-5 xl:px-8 py-7">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Settings</h1>
-          <p className="text-sm text-gray-500">Manage your account, preferences, and privacy.</p>
+          <p className="text-sm text-gray-500">
+            Manage your account, preferences, and privacy.
+          </p>
         </div>
 
         <div className="grid xl:grid-cols-[220px_1fr] gap-6">
-
-          {/*  Sidebar nav  */}
+          {/* Sidebar nav */}
           <div className="hidden xl:flex flex-col gap-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-3 self-start sticky top-24">
-            {tabs.map(t => {
+            {tabs.map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
               return (
-                <button key={t.id} onClick={() => setTab(t.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left transition-all ${active ? "bg-gray-900 text-white font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left transition-all ${
+                    active
+                      ? "bg-gray-900 text-white font-semibold"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+                >
                   <Icon size={15} className={active ? "text-white" : "text-gray-400"} />
                   {t.label}
                 </button>
@@ -86,12 +132,19 @@ export default function SettingsPage() {
 
           {/* Mobile tab scroll */}
           <div className="xl:hidden flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-2">
-            {tabs.map(t => {
+            {tabs.map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
               return (
-                <button key={t.id} onClick={() => setTab(t.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold flex-shrink-0 whitespace-nowrap transition-all border ${active ? "bg-gray-900 text-white border-gray-900" : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"}`}>
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold flex-shrink-0 whitespace-nowrap transition-all border ${
+                    active
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                  }`}
+                >
                   <Icon size={12} />
                   {t.label}
                 </button>
@@ -99,14 +152,16 @@ export default function SettingsPage() {
             })}
           </div>
 
-          {/*  Content  */}
+          {/* Content */}
           <div>
-            {tab === "profile"       && <ProfileSettings user={user} profile={profile} />}
+            {tab === "profile" && <ProfileSettings user={user} profile={profile} />}
             {tab === "notifications" && <NotificationSettings user={user} />}
-            {tab === "privacy"       && <PrivacySettings user={user}  />}
-            {tab === "security"      && <SecuritySettings profile={profile}  />}
-            {tab === "appearance"    && <AppearanceSettings profile={profile}  />}
-            {tab === "legal"         && <LegalSettings profile={profile}  />}
+            {tab === "privacy" && <PrivacySettings user={user} />}
+            {tab === "security" && <SecuritySettings profile={profile} />}
+            {tab === "appearance" && <AppearanceSettings profile={profile} />}
+            {tab === "legal" && <LegalSettings user={user} profile={profile} />}
+            {tab === "subscription" && <SubscriptionSettings user={user} />}
+            {tab === "lawyer-profile" && <LawyerProfileUpdate />}
           </div>
         </div>
       </div>

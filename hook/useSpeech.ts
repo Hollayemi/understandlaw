@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS: VoiceSettings = {
   rate: 1,
   pitch: 1,
   volume: 1,
-  lang: "en-NG",
+  lang: "en-US",
   voice: null,
 };
 
@@ -47,7 +47,7 @@ export function useSpeech() {
     setState((prev) => ({
       ...prev,
       availableVoices: voices,
-      selectedVoice: prev.selectedVoice || voices.find(v => v.lang === "en-NG") || voices[0] || null,
+      selectedVoice: prev.selectedVoice || voices.find(v => v.lang === "en-US") || voices[0] || null,
     }));
     return voices;
   }, [state.isSupported]);
@@ -195,7 +195,7 @@ export function useSpeech() {
     settingsRef.current = DEFAULT_SETTINGS;
     setState((prev) => ({
       ...prev,
-      selectedVoice: prev.availableVoices.find(v => v.lang === "en-NG") || prev.availableVoices[0] || null,
+      selectedVoice: prev.availableVoices.find(v => v.lang === "en-US") || prev.availableVoices[0] || null,
     }));
   }, [state.availableVoices]);
 
