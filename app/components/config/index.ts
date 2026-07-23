@@ -27,10 +27,9 @@ export const MODE_CFG: Record<ConsultMode, { label: string; icon: React.ElementT
   video: { label: "Video session", icon: Video, color: "#8B5CF6", bg: "#F5F3FF" },
 };
 
-
 export const CONSULT_MODES: { id: ConsultMode; label: string; icon: React.ElementType; desc: string }[] = [
   { id: "sms", label: "SMS", icon: MessageCircle, desc: "Async — reply within response time" },
-  { id: "message", label: "Written Message", icon: MessageSquare, desc: "Async — reply within response time" },
+  { id: "message", label: "In-App Chat", icon: MessageSquare, desc: "Async — reply within response time" },
   { id: "call", label: "Scheduled Call", icon: Phone, desc: "Audio call, you pick the time slot" },
   { id: "video", label: "Video Session", icon: Video, desc: "Face-to-face via secure video link" },
 ];

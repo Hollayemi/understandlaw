@@ -159,7 +159,7 @@ export default function LawyerConsultationsPage() {
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
             <ChevronRight size={11} className="text-gray-300" />
-            <span className="font-semibold text-gray-800">My Consultations</span>
+            <span className="font-semibold text-gray-800">My Briefs</span>
           </div>
           <div className="flex items-center gap-2">
             {stats.awaitingLawyer > 0 && (
@@ -177,9 +177,9 @@ export default function LawyerConsultationsPage() {
         <div className="max-w-6xl mx-auto px-5 xl:px-8 py-7">
           {/* Page header */}
           <div className="mb-7">
-            <h1 className="text-xl font-bold text-[#111827]">My Consultations</h1>
+            <h1 className="text-xl font-bold text-[#111827]">My Briefs</h1>
             <p className="text-[13px] text-[#6B7280] mt-0.5">
-              Manage consultation requests, track active sessions, and review your earnings.
+              Manage briefing requests, track active sessions, and review your earnings.
             </p>
           </div>
 
@@ -265,8 +265,8 @@ export default function LawyerConsultationsPage() {
           {/* Section tabs */}
           <div className="flex gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1 mb-5 w-fit">
             {([
-              { id: "consultations" as const, label: "Consultations", icon: MessageSquare, count: consultations.length },
-              { id: "matches" as const, label: "Match Requests", icon: Zap, count: pendingMatches.length },
+              { id: "consultations" as const, label: "Briefs", icon: MessageSquare, count: consultations.length },
+              // { id: "matches" as const, label: "Matched Requests", icon: Zap, count: pendingMatches.length },
             ]).map(s => {
               const Icon = s.icon;
               return (
@@ -340,7 +340,7 @@ export default function LawyerConsultationsPage() {
                         <tr>
                           <td colSpan={7} className="px-5 py-16 text-center">
                             <Inbox size={32} className="text-[#E5E7EB] mx-auto mb-3" />
-                            <p className="text-sm text-[#9CA3AF]">No consultations match your filters.</p>
+                            <p className="text-sm text-[#9CA3AF]">No briefs match your filters.</p>
                           </td>
                         </tr>
                       ) : filtered.map(c => {
@@ -435,7 +435,7 @@ export default function LawyerConsultationsPage() {
                   <span className="text-[11px] text-[#9CA3AF]">{pendingMatches.length} pending your response</span>
                 </div>
                 <p className="text-[12px] text-[#9CA3AF]">
-                  Citizens who requested a lawyer matching your specialisms. Accept to proceed with a consultation.
+                  Citizens who requested a lawyer matching your specialisms. Accept to proceed with a brief.
                 </p>
               </div>
 

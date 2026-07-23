@@ -32,16 +32,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const user = userInfo.user || {}
   
   const NAV_ITEMS = [
-    { icon: LayoutDashboard, label: "Overview",    href: "/dashboard" },
+    { icon: LayoutDashboard, label: "Dashboard",    href: "/dashboard" },
     { icon: BookOpen,        label: "Learn",        href: "/dashboard/learn" },
     { icon: BookMarked,      label: "Library",      href: "/dashboard/library" },
-    { icon: Gavel,      label: user.role === "lawyer" ? "My Briefings" : "Get a Lawyer",      href: "/dashboard/consultations" },
+    { icon: Gavel,      label: user.role === "lawyer" ? "My Briefs" : "Get a Lawyer",      href: "/dashboard/consultations" },
     // { icon: Scale,           label: "Marketplace",  href: "/dashboard/marketplace" },
     { icon: MessageSquareText,   label: "Chat",     href: "/dashboard/chat" },
     { icon: MessageSquare,   label: "community",     href: "/dashboard/community" },
     // { icon: Award,           label: "Certificates", href: "/dashboard/certificates" },
     { icon: Settings,        label: "Settings",     href: "/dashboard/settings" },
   ];
+  
   return (
     <div className="min-h-screen flex" style={{ background: "#F5F2EE", fontFamily: "var(--font-dm-sans)" }}>
 

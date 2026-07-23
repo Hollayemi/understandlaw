@@ -356,12 +356,12 @@ export default function ModuleDetailPage() {
       {/* Hero Section */}
       <div 
         className="relative h-64 md:h-80 flex items-center justify-center overflow-hidden"
-        style={{ background: module.gradient }}
+        style={{ background: module.gradient, backgroundRepeat: "no-repeat", backgroundSize:"cover", backgroundAttachment: "fixed" }}
       >
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/80" />
         <div className="relative z-10 text-center px-4">
           <span 
-            className="inline-block text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white mb-3"
+            className="inline-block text-xs  font-bold uppercase tracking-wide px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white mb-3"
           >
             {module.categoryLabel}
           </span>
@@ -661,11 +661,11 @@ export default function ModuleDetailPage() {
                 <p className="text-xs text-gray-400 mt-0.5">Our verified lawyers specialise in this area</p>
               </div>
               <Link
-                href="/dashboard/marketplace"
+                href="/dashboard/consultation"
                 className="flex-shrink-0 px-5 py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
               >
-                Find a Lawyer
+                Find my Lawyer
               </Link>
             </div>
           </>

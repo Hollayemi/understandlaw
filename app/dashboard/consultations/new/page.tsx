@@ -103,9 +103,9 @@ export default function NewConsultationPage() {
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
           <ChevronRight size={11} className="text-gray-300" />
-          <Link href="/dashboard/consultations" className="hover:text-gray-800 transition-colors">My Consultations</Link>
+          <Link href="/dashboard/consultations" className="hover:text-gray-800 transition-colors">My Cases</Link>
           <ChevronRight size={11} className="text-gray-300" />
-          <span className="font-semibold text-gray-800">New Consultation</span>
+          <span className="font-semibold text-gray-800">New Case</span>
         </div>
         {path && (
           <button
@@ -334,7 +334,7 @@ const prices = ["100", "250", "500", "1000"];
             onClick={onDone}
             className="flex-1 py-3 rounded-xl bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors"
           >
-            Go to My Consultations
+            Go to My Cases
           </button>
         </div>
       </div>
@@ -601,12 +601,12 @@ const prices = ["100", "250", "500", "1000"];
                 <SummaryRow label="Documents" value={docs.length ? `${docs.length} attached` : "None"} />
               </div>
               <div className="p-4 bg-gray-50">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Consultation Summary</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Case Summary</p>
                 <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{summary}</p>
               </div>
               {notes && (
                 <div className="p-4">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Consultation Notes</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Case Notes</p>
                   <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{notes}</p>
                 </div>
               )}
@@ -752,7 +752,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
           <ChosenLawyerBanner lawyer={chosen} onChange={() => setStep(1)} />
 
           <div>
-            <SectionLabel>Consultation Format</SectionLabel>
+            <SectionLabel>Case Format</SectionLabel>
             <div className="flex flex-col gap-2">
               {CONSULT_MODES.map(m => {
                 const Icon = m.icon;

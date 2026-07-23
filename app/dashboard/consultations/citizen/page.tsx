@@ -145,7 +145,7 @@ export default function CitizenConsultationsPage() {
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link href="/dashboard" className="hover:text-gray-800 transition-colors">Dashboard</Link>
             <ChevronRight size={11} className="text-gray-300" />
-            <span className="font-semibold text-gray-800">My Briefings</span>
+            <span className="font-semibold text-gray-800">My Cases</span>
           </div>
           <div className="flex items-center gap-2">
             {needsAction > 0 && (
@@ -168,16 +168,16 @@ export default function CitizenConsultationsPage() {
         <div className="max-w-6xl mx-auto px-5 xl:px-8 py-7">
           {/* Header */}
           <div className="mb-5">
-            <h1 className="text-xl font-bold text-[#111827]">My Briefings</h1>
+            <h1 className="text-xl font-bold text-[#111827]">My Cases</h1>
             <p className="text-[13px] text-[#6B7280] mt-0.5">
-              Track requests with our team, and your booked briefings, all in one place.
+              Track requests with our team, and your booked cases, all in one place.
             </p>
           </div>
 
           {/* Main tab switcher */}
           <div className="flex items-center gap-1 bg-white border border-[#F3F4F6] rounded-xl p-1 mb-6 w-fit">
             {([
-              { v: "requests" as const, l: "Briefings", count: activeMatchRequests.length },
+              { v: "requests" as const, l: "Requests", count: activeMatchRequests.length },
               { v: "consultations" as const, l: "Cases", count: consultationsData?.data?.total },
             ]).map(opt => (
               <button
@@ -243,7 +243,7 @@ export default function CitizenConsultationsPage() {
               <Lock size={13} className="text-[#10B981]" />
             </div>
             <div>
-              <p className="text-[12px] font-bold text-[#111827]">Your briefings are confidential</p>
+              <p className="text-[12px] font-bold text-[#111827]">Your cases are confidential</p>
               <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
                 Everything said between you and your lawyer is protected by attorney-client privilege under Nigerian law. LawTicha staff cannot read your conversations.
               </p>
@@ -300,9 +300,9 @@ export default function CitizenConsultationsPage() {
               <div className="w-14 h-14 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-4">
                 <MessageSquare size={24} className="text-[#D1D5DB]" />
               </div>
-              <p className="text-sm font-semibold text-[#9CA3AF] mb-1">No briefings yet</p>
+              <p className="text-sm font-semibold text-[#9CA3AF] mb-1">No cases yet</p>
               <p className="text-[12px] text-[#D1D5DB] mb-5 leading-relaxed max-w-xs mx-auto">
-                When you book a lawyer, your briefings will appear here so you can track it.
+                When you book a lawyer, your cases will appear here so you can track it.
               </p>
               <Link
                 href="/dashboard/consultations/new"

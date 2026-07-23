@@ -6,7 +6,7 @@ import {
   MessageSquare, Phone, Video, 
   CheckCircle, FileText, DollarSign, Clock,
   GraduationCap, Star, Trash2,
-  ExternalLink,
+  ExternalLink, HelpCircle
 } from "lucide-react";
 
 import {  Input, TextArea, Select } from "@/app/components/ui/form";
@@ -346,9 +346,10 @@ export function StoryStep({ form, updateForm, errors }: any) {
 
 export function ConsultationStep({ form, updateForm, errors }: any) {
   const feeTypes = [
-    { key: 'message', label: 'Written Consultation', icon: MessageSquare, color: '#3B82F6', bg: '#EFF6FF', desc: 'Async written advice' },
+    { key: 'message', label: 'In-app Chat', icon: MessageSquare, color: '#3B82F6', bg: '#EFF6FF', desc: 'Async written advice' },
     { key: 'call', label: 'Phone Consultation', icon: Phone, color: '#10B981', bg: '#ECFDF5', desc: 'Audio call session' },
     { key: 'video', label: 'Video Consultation', icon: Video, color: '#8B5CF6', bg: '#F5F3FF', desc: 'Face-to-face video call' },
+    { key: 'probono', label: 'Offer Probono Service', icon: HelpCircle, color: '#8B5CF6', bg: '#F5F3FF', desc: 'Provide free legal service' },
   ];
 
   return (
@@ -365,6 +366,8 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
         <div className="space-y-3">
           {feeTypes.map(fee => {
             const Icon = fee.icon;
+            const isProbono = fee.key === 'probono';
+            
             return (
               <div key={fee.key} className="flex items-center gap-4 p-4 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] hover:border-[#E5E7EB] transition-all">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: fee.bg }}>
@@ -375,15 +378,36 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
                   <p className="text-[11px] text-[#9CA3AF]">{fee.desc}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] font-medium text-[#9CA3AF]">₦</span>
-                  <input
-                    type="number"
-                    value={form.fees[fee.key]}
-                    onChange={(e) => updateForm("fees", { ...form.fees, [fee.key]: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                    min="0"
-                    className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-[#E8317A] transition-colors"
-                  />
+                  {isProbono ? (
+                    <button
+                      type="button"
+                      onClick={() => updateForm("fees", { ...form.fees, probono: !form.fees.probono })}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${
+                        form.fees.probono
+                          ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
+                          : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50'
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                        form.fees.probono ? 'bg-[#E8317A] border-[#E8317A]' : 'border-[#D1D5DB]'
+                      }`}>
+                        {form.fees.probono && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>}
+                      </div>
+                      <span className="text-[13px] font-medium">(Tick if Interested) </span>
+                    </button>
+                  ) : (
+                    <>
+                      <span className="text-[12px] font-medium text-[#9CA3AF]">₦</span>
+                      <input
+                        type="number"
+                        value={form.fees[fee.key]}
+                        onChange={(e) => updateForm("fees", { ...form.fees, [fee.key]: parseInt(e.target.value) || 0 })}
+                        placeholder="0"
+                        min="0"
+                        className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-[#E8317A] transition-colors"
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             );

@@ -9,24 +9,25 @@ import {
   useToggleSaveModuleMutation,
   useEnrolInModuleMutation,
 } from "@/redux/slices/learn.slice";
+import { useUserData } from "@/hook/useData";
 
 type TabKey = "all" | "active" | "complete" | "saved";
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: "all",      label: "All Modules" },
+  { key: "all", label: "All Modules" },
   // { key: "active",   label: "Active" },
   { key: "complete", label: "Complete" },
-  { key: "saved",    label: "Saved" },
+  { key: "saved", label: "Saved" },
 ];
 
 // Auto-sliding carousel component with smooth sliding and responsive items
-function AutoSlideCarousel({ 
-  items, 
-  renderItem, 
+function AutoSlideCarousel({
+  items,
+  renderItem,
   itemsPerView = 3,
-  onSlideChange 
-}: { 
-  items: any[]; 
+  onSlideChange
+}: {
+  items: any[];
   renderItem: (item: any, index: number) => React.ReactNode;
   itemsPerView?: number;
   onSlideChange?: (index: number) => void;
@@ -37,7 +38,7 @@ function AutoSlideCarousel({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Responsive items per view
   const getItemsPerView = () => {
     if (typeof window === 'undefined') return itemsPerView;
@@ -48,13 +49,13 @@ function AutoSlideCarousel({
   };
 
   const [currentItemsPerView, setCurrentItemsPerView] = useState(getItemsPerView());
-  
+
   // Update items per view on resize
   useEffect(() => {
     const handleResize = () => {
       setCurrentItemsPerView(getItemsPerView());
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -73,7 +74,7 @@ function AutoSlideCarousel({
     setIsTransitioning(true);
     setCurrentIndex(index);
     if (onSlideChange) onSlideChange(index);
-    
+
     setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
@@ -126,7 +127,7 @@ function AutoSlideCarousel({
   if (totalItems === 0) return null;
 
   return (
-    <div 
+    <div
       className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -146,7 +147,7 @@ function AutoSlideCarousel({
               {isPlaying ? "Auto-sliding" : "Paused"}
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={prevSlide}
@@ -155,21 +156,20 @@ function AutoSlideCarousel({
             >
               <ChevronLeft size={14} className="text-gray-600" />
             </button>
-            
+
             {/* Slide indicators */}
             <div className="hidden md:flex  gap-1.5 px-2">
               {Array.from({ length: totalSlides }).map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => goToSlide(idx * currentItemsPerView)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentSlide ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                    }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
-            
+
             <button
               onClick={nextSlide}
               className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#E8317A] transition-colors shadow-sm"
@@ -183,17 +183,17 @@ function AutoSlideCarousel({
 
       {/* Slide content with smooth sliding */}
       <div className="overflow-hidden">
-        <div 
+        <div
           ref={containerRef}
           className="flex transition-transform duration-500 ease-in-out"
-          style={{ 
+          style={{
             transform: `translateX(${translateX}%)`,
             transition: isTransitioning ? 'transform 500ms ease-in-out' : 'transform 500ms ease-in-out'
           }}
         >
           {items.map((item, idx) => (
-            <div 
-              key={item._id || item.slug || idx} 
+            <div
+              key={item._id || item.slug || idx}
               className="flex-shrink-0 px-2"
               style={{ width: `${itemWidth}%` }}
             >
@@ -209,17 +209,22 @@ function AutoSlideCarousel({
 }
 
 export default function DashboardLearnPage() {
+  const { userInfo } = useUserData() as any
   const [tab, setTab] = useState<TabKey>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [category, setCategory] = useState<string>("all");
 
+  const user = userInfo.user || {}
+
+
+
   // RTK Query hooks
-  const { 
-    data: modulesData, 
-    isLoading: modulesLoading, 
+  const {
+    data: modulesData,
+    isLoading: modulesLoading,
     error: modulesError,
-    refetch: refetchModules 
+    refetch: refetchModules
   } = useListLearnModulesQuery({
     tab: tab === "all" ? undefined : tab,
     search: searchTerm || undefined,
@@ -228,17 +233,17 @@ export default function DashboardLearnPage() {
     pageSize: 20,
   });
 
-  const { 
-    data: continueReadingData, 
+  const {
+    data: continueReadingData,
     isLoading: continueLoading,
-    refetch: refetchContinue 
+    refetch: refetchContinue
   } = useGetContinueReadingQuery(undefined, {
     skip: tab !== "all", // Only fetch on "all" tab
   });
 
-  const { 
-    data: featuredData, 
-    isLoading: featuredLoading 
+  const {
+    data: featuredData,
+    isLoading: featuredLoading
   } = useGetFeaturedTopicsQuery(undefined);
 
   const [toggleSaveModule, { isLoading: isTogglingSave }] = useToggleSaveModuleMutation();
@@ -292,7 +297,7 @@ export default function DashboardLearnPage() {
           <div className="text-center">
             <p className="text-white text-xs font-medium">{item.progressPercent}% Complete</p>
             <div className="w-32 h-1.5 bg-white/30 rounded-full mt-2 mx-auto">
-              <div 
+              <div
                 className="h-1.5 rounded-full bg-[#E8317A]"
                 style={{ width: `${item.progressPercent}%` }}
               />
@@ -438,25 +443,25 @@ export default function DashboardLearnPage() {
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={() => setShowSearch(true)}
               className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 shadow-sm transition-colors"
             >
               <Search size={16} className="text-gray-500" />
             </button>
           )}
-          
+
           <button className="relative w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 shadow-sm transition-colors">
             <Bell size={16} className="text-gray-500" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E8317A] rounded-full" />
           </button>
-          <Link
-            href="/dashboard/marketplace"
+          {user.role !== "lawyer" && <Link
+            href="/dashboard/consultations"
             className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
             style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
           >
-            Find a Lawyer
-          </Link>
+            Find my Lawyer
+          </Link>}
         </div>
       </div>
 
@@ -468,11 +473,10 @@ export default function DashboardLearnPage() {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex shrink-0 items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
-                tab === t.key
+              className={`flex shrink-0 items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${tab === t.key
                   ? "text-gray-900 border-gray-900"
                   : "text-gray-400 border-transparent hover:text-gray-600"
-              }`}
+                }`}
             >
               {t.label}
               <span className={`text-[11px] font-medium ${tab === t.key ? "text-gray-500" : "text-gray-300"}`}>
@@ -487,7 +491,7 @@ export default function DashboardLearnPage() {
       {tab === "all" && continueReading.length > 0 && (
         <div className="mb-8">
           <h2 className="text-base font-bold text-gray-900 mb-4">Continue Reading</h2>
-          <AutoSlideCarousel 
+          <AutoSlideCarousel
             items={continueReading}
             itemsPerView={3}
             renderItem={renderContinueItem}
@@ -504,7 +508,7 @@ export default function DashboardLearnPage() {
         <div className="text-center py-12">
           <p className="text-gray-500">No modules found</p>
           {tab !== "all" && (
-            <button 
+            <button
               onClick={() => setTab("all")}
               className="mt-2 text-[#E8317A] text-sm font-semibold"
             >
@@ -515,11 +519,11 @@ export default function DashboardLearnPage() {
       ) : (
         <div className="mb-10">
           <h2 className="text-base font-bold text-gray-900 mb-4">
-            {tab === "all" ? "All Modules" : 
-             tab === "active" ? "Active Modules" :
-             tab === "complete" ? "Completed Modules" : "Saved Modules"}
+            {tab === "all" ? "All Modules" :
+              tab === "active" ? "Active Modules" :
+                tab === "complete" ? "Completed Modules" : "Saved Modules"}
           </h2>
-          <AutoSlideCarousel 
+          <AutoSlideCarousel
             items={modules}
             itemsPerView={3}
             renderItem={renderModuleItem}
