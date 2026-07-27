@@ -8,6 +8,7 @@ import { subscriptionApi } from "./slices/subscription.slice";
 import { learnApi } from "./slices/learn.slice";
 import { othersApi } from "./slices/others.slice";
 import { communityApi } from "./slices/community.slice";
+import { notificationApi } from "./slices/notification.slice";
 import { adminCommunityApi } from "./slices/admin/community.slice";
 import { libraryApi } from "./slices/library.slice";
 import { adminLibraryApi } from "./slices/admin/library.slice";
@@ -36,6 +37,7 @@ export const store = configureStore({
     [learnApi.reducerPath]: learnApi.reducer,
     [libraryApi.reducerPath]: libraryApi.reducer,
     [adminLibraryApi.reducerPath]: adminLibraryApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
     [communityApi.reducerPath]: communityApi.reducer,
     [adminCommunityApi.reducerPath]: adminCommunityApi.reducer,
     [adminDashboardApi.reducerPath]: adminDashboardApi.reducer,
@@ -61,6 +63,7 @@ export const store = configureStore({
       .concat(adminLawyerApi.middleware)
       .concat(lawyerApi.middleware)
       .concat(learnApi.middleware)
+      .concat(notificationApi.middleware)
       .concat(communityApi.middleware)
       .concat(libraryApi.middleware)
       .concat(adminLibraryApi.middleware)

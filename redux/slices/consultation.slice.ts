@@ -22,7 +22,7 @@ import {
   MatchRequest,
   RecommendedLawyerRef,
 } from "@/redux/types/consultation";
-import { ApiResponse, ConsultationDocumentMeta } from "@/redux/types/lawyer";
+import { ApiResponse } from "@/redux/types/lawyer";
 
 export const consultationsApi = createApi({
   reducerPath: "consultationsApi",

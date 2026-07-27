@@ -25,6 +25,7 @@ import {
   Star,
 } from "lucide-react";
 import RouteGuard from "@/app/components/wrapper/RouteGuard";
+import { signOut } from "next-auth/react";
 
 const NAV_GROUPS = [
   {
@@ -228,6 +229,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifications, setNotifications] = useState(6);
 
+   const handleLogout = async () => {
+    await signOut({ callbackUrl: "/admin/login" });
+   }
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -383,13 +387,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   admin@lawticha.ng
                 </p>
               </div>
-              <Link
-                href="/admin/logout"
+              <button
+               onClick={handleLogout}
                 className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
                 title="Sign out"
               >
                 <LogOut size={14} style={{ color: "#9CA3AF" }} />
-              </Link>
+              </button>
             </div>
           )}
         </div>

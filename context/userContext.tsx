@@ -1,10 +1,9 @@
 "use client";
 import { useGetMeQuery } from "@/redux/authService/authSlice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
-import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
-import { onAuthLogin, onAuthExpired } from "@/redux/shared/authEvents";
+import { useSession } from "next-auth/react";
 import { CitizenFull } from "@/redux/types";
-import { useState, useEffect, createContext } from "react";
+import { useState, createContext } from "react";
 
 
 const defaultProvider: any = {
@@ -22,22 +21,8 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const [notifications, setNotification] = useState<any[]>([]);
 
-    // Tracked in state (not just read once) so that logging in / registering /
-    // completing lawyer setup during this session immediately unlocks the
-    // getMe query below, instead of only working after a hard refresh.
-    const [authed, setAuthed] = useState(() => isAuthenticated("user"));
-
-    useEffect(() => {
-        const unsubLogin = onAuthLogin((actor) => {
-            if (actor === "user") setAuthed(isAuthenticated("user"));
-        });
-        const unsubExpired = onAuthExpired(() => setAuthed(isAuthenticated("user")));
-
-        return () => {
-            unsubLogin();
-            unsubExpired();
-        };
-    }, []);
+    const { status, data: session } = useSession();
+    const authed = status === "authenticated" && session?.actor === "user";
 
     const {
         data: userInfo,

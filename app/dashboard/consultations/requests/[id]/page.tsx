@@ -63,7 +63,7 @@ export default function MatchRequestDetailPage() {
     { key: ["recommended"] as MatchStatus[], label: "Lawyers Ready" },
     { key: ["matched"] as MatchStatus[], label: "Matched" },
   ];
- 
+
 
   if (isLoading) {
     return (
@@ -198,8 +198,24 @@ export default function MatchRequestDetailPage() {
                 <CheckCircle2 size={18} className="text-[#10B981]" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#111827]">You're matched with {request.matchedLawyer}</p>
-                <p className="text-[11px] text-gray-500">Head to My Consultations to continue the conversation.</p>
+                <div className="relative shrink-0">
+                  <div className="flex items-start gap-4">
+                    {request?.matchedLawyerId?.picture ? (
+                      <img src={request.matchedLawyerId.picture} alt="" className="w-6 h-6 border border-gray-100 rounded-xl object-cover" />
+                    ) : (
+                      <div
+                        className="w-11 h-11 rounded-xl flex capitalise items-center justify-center text-white text-sm font-bold"
+                      >
+                        {request?.matchedLawyerId?.initials}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-base font-bold text-gray-900 capitalize truncate">{request?.matchedLawyerId?.name}</h4>
+                      <BadgeCheck className="text-yellow-500 shrink-0" size={16} />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-500 mt-3">Head to My Cases to continue the conversation.</p>
               </div>
             </div>
             <Link
@@ -207,19 +223,19 @@ export default function MatchRequestDetailPage() {
               className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
               style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
             >
-              Go to My Consultations <ArrowRight size={12} />
+              Open Case <ArrowRight size={12} />
             </Link>
           </div>
         )}
 
         {/* ===== LAWYER RECOMMENDATIONS SECTION ===== */}
         {/* Placed prominently right after status and matched states */}
-        {isRecommended  && (
+        {isRecommended && (
           <div className="mb-5">
             <LawyerRecommendations
               matchRequestId={request.id}
               onSelect={handleSelectLawyer}
-             
+
             />
           </div>
         )}
@@ -234,7 +250,7 @@ export default function MatchRequestDetailPage() {
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-1">Finding the Perfect Lawyer for You</h3>
                 <p className="text-sm text-gray-600">
-                  Our team is carefully reviewing your case and matching you with experienced lawyers 
+                  Our team is carefully reviewing your case and matching you with experienced lawyers
                   who specialize in {request.topic}. We'll notify you as soon as we have recommendations ready.
                 </p>
                 <div className="flex items-center gap-3 mt-3">
@@ -339,7 +355,7 @@ function AddDocumentForm({ matchRequestId }: { matchRequestId: string }) {
       formData.append("sizeBytes", file.size.toString());
       formData.append("file", file);
 
-      await addDocument({matchRequestId, formData}).unwrap();
+      await addDocument({ matchRequestId, formData }).unwrap();
 
       setFile(null);
       setOpen(false);

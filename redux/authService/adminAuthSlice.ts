@@ -1,128 +1,69 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import {
     AdminAuthResponse,
-    SignInRequest,
     UpdateProfileRequest,
     UpdatePasswordRequest,
     ResetPasswordRequest,
     ApiResponse,
     CitizenFull
 } from '../types';
-import { showError, showSuccess } from '@/app/components/ui/sonner';
-import { server } from '../shared/axiosBaseQuery';
+import { axiosBaseQuery } from '../shared/axiosBaseQuery';
 
-const baseQuery = fetchBaseQuery({
-    baseUrl: `${server}/api/v1/auth/admin`,
-    credentials: 'include',
-    prepareHeaders: (headers, { getState }) => {
-        const token = localStorage.getItem('adminAccessToken');
-        if (token) {
-            headers.set('authorization', `Bearer ${token}`);
-        }
-        headers.set('Content-Type', 'application/json');
-        return headers;
-    },
-});
-
-const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
-    let result = await baseQuery(args, api, extraOptions);
-    if (result.error && result.error.status === 401) {
-        const refreshResult = await baseQuery(
-            { url: '/refresh-token', method: 'POST' },
-            api,
-            extraOptions
-        );
-
-        if (refreshResult.data) {
-            const { accessToken } = refreshResult.data as AdminAuthResponse;
-            localStorage.setItem('adminAccessToken', accessToken);
-            result = await baseQuery(args, api, extraOptions);
-        } else {
-            localStorage.removeItem('adminAccessToken');
-        }
-    }
-
-    return result;
-};
+// NOTE: Admin sign-in is handled by NextAuth's "admin-credentials" provider
+// (see /auth.ts and app/admin/login/page.tsx), so the admin access token
+// lives in NextAuth's encrypted session cookie, not localStorage. These
+// endpoints share the same 401-retry logic as the citizen/lawyer API via
+// `axiosBaseQuery({ defaultActor: "admin" })`.
 
 export const adminAuthApi = createApi({
     reducerPath: 'adminAuthApi',
-    baseQuery: baseQueryWithReauth,
+    baseQuery: axiosBaseQuery({ defaultActor: 'admin' }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
-        adminLogin: builder.mutation<ApiResponse<AdminAuthResponse>, SignInRequest>({
-            query: (credentials) => ({
-                url: '/login',
-                method: 'POST',
-                body: credentials,
-            }),
-            async onQueryStarted(_, { queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    localStorage.setItem('adminAccessToken', data.data.accessToken);
-                    if (data.success) {
-                        showSuccess("Welcome Back!", data.message || "Welcome back!");
-                    } else {
-                        showError("Sign in failed", data.message || "An unexpected error occurred. Please try again.");
-                    }
-                } catch (error) {
-
-                }
-            },
-            invalidatesTags: ['User'],
-        }),
-
-
         resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
             query: ({ token, password, confirmPassword }) => ({
-                url: `/reset-password/${token}`,
+                url: `/auth/admin/reset-password/${token}`,
                 method: 'PATCH',
-                body: { password, confirmPassword },
+                data: { password, confirmPassword },
             }),
         }),
 
         getMe: builder.query<ApiResponse<CitizenFull>, void>({
-            query: () => '/me',
+            query: () => ({ url: '/auth/admin/me' }),
             providesTags: ['User'],
         }),
 
         updateProfile: builder.mutation<AdminAuthResponse, UpdateProfileRequest>({
             query: (profileData) => ({
-                url: '/update-profile',
+                url: '/auth/admin/update-profile',
                 method: 'PATCH',
-                body: profileData,
+                data: profileData,
             }),
             invalidatesTags: ['User'],
         }),
 
         updatePassword: builder.mutation<{ message: string }, UpdatePasswordRequest>({
             query: (passwordData) => ({
-                url: '/update-password',
+                url: '/auth/admin/update-password',
                 method: 'PATCH',
-                body: passwordData,
+                data: passwordData,
             }),
         }),
 
-          logout: builder.mutation<{ message: string }, void>({
+        // Still calls the backend to revoke the refresh-token cookie
+        // server-side. Callers should also call `signOut()` from
+        // next-auth/react right after to end the NextAuth session itself.
+        logout: builder.mutation<{ message: string }, void>({
             query: () => ({
-                url: '/logout',
+                url: '/auth/admin/logout',
                 method: 'POST',
             }),
-            async onQueryStarted(_, { queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    localStorage.removeItem('adminAccessToken');
-                } catch (error) {
-                    // console.error('Logout failed:', error);
-                }
-            },
             invalidatesTags: ['User'],
         })
     }),
 });
 
 export const {
-    useAdminLoginMutation,
     useGetMeQuery,
     useLazyGetMeQuery,
     useUpdateProfileMutation,
@@ -132,8 +73,4 @@ export const {
 
 export const selectCurrentUser = (state: any) => {
     return adminAuthApi.endpoints.getMe.select()(state)?.data;
-};
-
-export const selectIsAuthenticated = (state: any) => {
-    return !!localStorage.getItem('adminAccessToken');
 };

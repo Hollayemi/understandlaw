@@ -25,6 +25,7 @@
 import React, { useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
 import { onAuthExpired } from "@/redux/shared/authEvents";
 
 interface AuthGuardProps {
@@ -57,6 +58,10 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           duration: 4000,
         });
 
+        // The backend token is gone — end the NextAuth session too so the
+        // stale cookie doesn't stick around and immediately re-fail.
+        signOut({ redirect: false });
+
         if (isAdminRoute) {
           // Small delay so the toast is visible before navigation
           setTimeout(() => {
@@ -64,7 +69,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           }, 500);
         } else {
           setTimeout(() => {
-            router.push(`/auth/login?from=${encodeURIComponent(pathname)}`);
+            router.push(`/login?from=${encodeURIComponent(pathname)}`);
           }, 500);
         }
       } else if (reason === "forbidden") {

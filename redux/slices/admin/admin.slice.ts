@@ -18,7 +18,7 @@ export const adminsApi = createApi({
 
   endpoints: (builder) => ({
     /**
-     * POST /admin/auth/login
+     * POST /admin/login
      * Login for all admin roles
      */
     login: builder.mutation<

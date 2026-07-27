@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from "next/link";
-import { MessageSquare, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, Download, Eye, FileImage, File as FileIcon, Lock, Sparkles, Paperclip, AlertCircle, } from "lucide-react";
+import { MessageSquare, Check, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, Download, Eye, FileImage, File as FileIcon, Lock, Sparkles, Paperclip, AlertCircle, } from "lucide-react";
 import { Consultation2 as Consultation, ConsultStatus } from "@/redux/types/consultation";
 import { ConsultationDocumentMeta } from "@/redux/types/lawyer";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
@@ -908,5 +909,200 @@ export function ConsultationCard({
         </div>
       </div>
     </button>
+  );
+}
+
+
+
+interface ConfidentialityConsentProps {
+  onAccept?: () => void;
+  onDecline?: () => void;
+}
+
+const CONSENT_STORAGE_KEY = 'lexinova_consultation_consent';
+const CONSENT_DATE_KEY = 'lexinova_consultation_consent_date';
+
+export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityConsentProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if consent was already given today
+    const checkConsent = () => {
+      try {
+        const consentGiven = localStorage.getItem(CONSENT_STORAGE_KEY);
+        const consentDate = localStorage.getItem(CONSENT_DATE_KEY);
+        const today = new Date().toDateString();
+
+        if (consentGiven === 'true' && consentDate === today) {
+          // Consent already given today, don't show
+          setIsOpen(false);
+        } else {
+          // Show consent popup
+          setIsOpen(true);
+        }
+      } catch (error) {
+        // If localStorage fails, show the popup as a fallback
+        setIsOpen(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkConsent();
+  }, []);
+
+  const handleAccept = () => {
+    try {
+      const today = new Date().toDateString();
+      localStorage.setItem(CONSENT_STORAGE_KEY, 'true');
+      localStorage.setItem(CONSENT_DATE_KEY, today);
+    } catch (error) {
+      console.error('Failed to save consent:', error);
+    }
+
+    setIsOpen(false);
+    onAccept?.();
+  };
+
+  const handleDecline = () => {
+    setIsOpen(false);
+    onDecline?.();
+  };
+
+  if (isLoading) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            onClick={handleDecline}
+          />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+          >
+            <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl pointer-events-auto overflow-hidden">
+              {/* Header */}
+              <div className="relative px-6 pt-6 pb-4 border-b border-gray-100">
+                <button
+                  onClick={handleDecline}
+                  className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E8317A]/10 flex items-center justify-center">
+                    <Shield size={20} className="text-[#E8317A]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      Confidentiality & Privacy
+                    </h2>
+                    <p className="text-xs text-gray-500">Please review before proceeding</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="px-6 py-5 max-h-[60vh] overflow-y-auto">
+                <div className="space-y-4 text-sm text-gray-600">
+                  <p className="font-medium text-gray-800">
+                    By continuing with this consultation, you agree to the following:
+                  </p>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                        <Check size={12} className="text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Attorney-Client Privilege</p>
+                        <p className="text-xs text-gray-500">
+                          All communications are protected by attorney-client privilege and will remain confidential.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                        <Check size={12} className="text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Data Protection</p>
+                        <p className="text-xs text-gray-500">
+                          Your personal information and case details are encrypted and stored securely in compliance with data protection regulations.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                        <Check size={12} className="text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">No Legal Advice Without Engagement</p>
+                        <p className="text-xs text-gray-500">
+                          This consultation does not create a formal attorney-client relationship until both parties agree to proceed.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                        <Check size={12} className="text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Confidentiality of Shared Documents</p>
+                        <p className="text-xs text-gray-500">
+                          Any documents, evidence, or information shared during this consultation will be treated with the utmost confidentiality.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-700">
+                        This consent is valid for today. You'll be asked to confirm again tomorrow for your security.
+                      </p>
+                    </div>
+                  </div> */}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleDecline}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={handleAccept}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-[#E8317A] hover:bg-[#d02b6c] rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <Shield size={16} />
+                  I Understand & Agree
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

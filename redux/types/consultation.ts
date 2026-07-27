@@ -145,7 +145,11 @@ export interface MatchRequest {
   createdAt: string;
   expiresAt: string;
   matchedLawyer?: string;
-  matchedLawyerId?: string;
+  matchedLawyerId?: {
+    initials: string;
+    picture: string;
+    name: string;
+  };
   /** How the citizen wants the firm to handle this before a lawyer is picked. */
   mode: ConsultMode;
   /** Additional context the citizen shared at intake. */

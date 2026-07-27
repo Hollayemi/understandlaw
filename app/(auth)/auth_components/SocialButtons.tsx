@@ -2,13 +2,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 export default function SocialButtons() {
   const handleGoogleSignIn = () => {
-    toast.info("Google sign in coming soon", {
-      description: "This feature will be available soon!",
-    });
+    signIn("google", { callbackUrl: "/dashboard" });
   };
 
   return (

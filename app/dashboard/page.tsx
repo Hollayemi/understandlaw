@@ -28,6 +28,7 @@ import {
 } from "@/redux/slices/dashboard.slice";
 import { useListBookmarksForSubtopicQuery } from "@/redux/slices/learn.slice";
 import { formatTime, substringWithMax } from "@/utils/function";
+import { NotificationBell } from "../components/sections/NotificationBell";
 
 // Helper to get icons based on slug or type
 const getIconForTopic = (slug: string = '') => {
@@ -449,10 +450,7 @@ export default function UserDashboardOverview() {
           <button className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 transition-colors shadow-sm">
             <Search size={15} className="text-gray-500" />
           </button>
-          <button className="relative w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-sm">
-            <Bell size={15} className="text-gray-500" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E8317A] rounded-full" />
-          </button>
+            <NotificationBell />
         </div>
       </div>
 
@@ -616,7 +614,7 @@ export default function UserDashboardOverview() {
             </div>
             <div className="flex flex-col h-full">
               {/* Bookmark List */}
-              <div className="flex-1 overflow-y-auto min-h-0">
+              <div className="overflow-y-auto min-h-0">
                 {bookmarks.length > 0 ? (
                   <div className="space-y-3 pr-1">
                     {bookmarks.map((bookmark) => (

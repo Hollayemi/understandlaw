@@ -14,7 +14,7 @@ import { useUserData } from "@/hook/useData";
 type TabKey = "all" | "active" | "complete" | "saved";
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: "all", label: "All Modules" },
+  { key: "all", label: "All Lessons" },
   // { key: "active",   label: "Active" },
   { key: "complete", label: "Complete" },
   { key: "saved", label: "Saved" },
@@ -421,7 +421,7 @@ export default function DashboardLearnPage() {
 
       {/* Header */}
       <div className="flex items-center justify-between mb-7">
-        <h1 className="text-xl font-bold text-gray-900">Our Modules</h1>
+        <h1 className="text-xl font-bold text-gray-900">Our Lessons</h1>
         <div className="flex items-center gap-3">
           {/* Search */}
           {showSearch ? (
@@ -429,7 +429,7 @@ export default function DashboardLearnPage() {
               <Search size={16} className="text-gray-400" />
               <input
                 type="text"
-                placeholder="Search modules..."
+                placeholder="Search lessons..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="text-sm outline-none bg-transparent w-48"
@@ -506,22 +506,22 @@ export default function DashboardLearnPage() {
         </div>
       ) : modules.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">No modules found</p>
+          <p className="text-gray-500">No lessons found</p>
           {tab !== "all" && (
             <button
               onClick={() => setTab("all")}
               className="mt-2 text-[#E8317A] text-sm font-semibold"
             >
-              View all modules
+              View all lessions
             </button>
           )}
         </div>
       ) : (
         <div className="mb-10">
           <h2 className="text-base font-bold text-gray-900 mb-4">
-            {tab === "all" ? "All Modules" :
-              tab === "active" ? "Active Modules" :
-                tab === "complete" ? "Completed Modules" : "Saved Modules"}
+            {tab === "all" ? "All Lessons" :
+              tab === "active" ? "Active Lessons" :
+                tab === "complete" ? "Completed Lessons" : "Saved Lessons"}
           </h2>
           <AutoSlideCarousel
             items={modules}

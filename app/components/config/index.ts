@@ -1,8 +1,8 @@
 import { ConsultMode, ConsultStatus, MatchRequest } from "@/redux/types/consultation";
 import {
   MessageSquare, Phone, Video, MessageCircle, CheckCircle, Gavel, XCircle, RotateCcw, Clock, Clock3,
-  Search, UserSearch, Users, CircleCheckBig, CircleX,
-  LucideIcon
+  Search, UserSearch, Users, CircleCheckBig, CircleX, Bell, X, Eye, Trash2,
+  LucideIcon, 
 } from "lucide-react"
 
 export const STATUS_CFG: Record<
@@ -78,3 +78,48 @@ export const MATCH_STATUS_CFG: Record<
     label: "Expired", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF", icon: CircleX,
   },
 };
+
+
+export const getIconForType = (type: string) => {
+    const icons: any = {
+      welcome: "text-purple-500",
+      profile_update: "text-blue-500",
+      xp_earned: "text-yellow-500",
+      account_status: "text-red-500",
+      consultation_accepted: "text-green-500",
+      consultation_declined: "text-red-500",
+      consultation_completed: "text-green-500",
+      message_received: "text-blue-500",
+      match_accepted: "text-purple-500",
+      lawyer_selected: "text-indigo-500",
+      dispute_raised: "text-red-500",
+      dispute_resolved: "text-green-500",
+      refund_requested: "text-yellow-500",
+      refund_decision: "text-orange-500",
+      verification_submitted: "text-blue-500",
+      verification_approved: "text-green-500",
+      verification_rejected: "text-red-500",
+      review_received: "text-yellow-500",
+      module_enrolled: "text-purple-500",
+      topic_completed: "text-green-500",
+      module_completed: "text-indigo-500",
+      comment_received: "text-blue-500",
+      reply_received: "text-cyan-500",
+      lawyer_responded: "text-purple-500",
+      answer_accepted: "text-green-500",
+      order_placed: "text-blue-500",
+      order_status_updated: "text-indigo-500",
+      payment_confirmed: "text-green-500",
+      payment_failed: "text-red-500",
+      subscription_initiated: "text-blue-500",
+      subscription_activated: "text-green-500",
+      subscription_cancelled: "text-red-500",
+      subscription_reactivated: "text-green-500",
+      plan_changed: "text-purple-500",
+      subtopic_completed: "text-green-500",
+      bookmark_created: "text-yellow-500",
+      subtopic_liked: "text-pink-500",
+      default: "text-gray-500",
+    };
+    return icons[type] || icons.default;
+  };

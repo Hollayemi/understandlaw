@@ -24,9 +24,9 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { isAuthenticated } from "@/redux/shared/axiosBaseQuery";
+import { useSession } from "next-auth/react";
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ interface RouteGuardProps {
 }
 
 const DEFAULT_LOGIN: Record<string, string> = {
-  user: "/auth",
+  user: "/login",
   admin: "/admin/login",
 };
 
@@ -64,31 +64,21 @@ export default function RouteGuard({
 }: RouteGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
-  // "checking" while we verify the token on mount
-  const [status, setStatus] = useState<"checking" | "authorized" | "unauthorized">(
-    "checking",
-  );
+  const authed = status === "authenticated" && session?.actor === actor;
+  const checking = status === "loading";
+
   useEffect(() => {
-    const authed = isAuthenticated(actor);
+    if (checking) return;
+    if (authed) return;
 
-    console.log(authed)
+    const target = loginPath ?? DEFAULT_LOGIN[actor];
+    const redirectUrl = `${target}?from=${encodeURIComponent(pathname)}`;
+    router.replace(redirectUrl);
+  }, [actor, authed, checking, loginPath, pathname, router]);
 
-    if (authed) {
-      setStatus("authorized");
-    } else {
-      setStatus("unauthorized");
-
-      const target = loginPath ?? DEFAULT_LOGIN[actor];
-      const redirectUrl = `${target}?from=${encodeURIComponent(pathname)}${
-        actor === "user" ? "#login" : ""
-      }`;
-
-      router.replace(redirectUrl);
-    }
-  }, [actor, loginPath, pathname, router]);
-
-  if (status === "checking" || status === "unauthorized") {
+  if (checking || !authed) {
     return <>{fallback}</>;
   }
 

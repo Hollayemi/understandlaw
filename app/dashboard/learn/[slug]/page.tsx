@@ -469,7 +469,7 @@ export default function ModuleDetailPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">{module.enrolledCount}</p>
-                    <p className="text-xs text-gray-500">Students enrolled</p>
+                    <p className="text-xs text-gray-500">Users enrolled</p>
                   </div>
                 </div>
               </div>

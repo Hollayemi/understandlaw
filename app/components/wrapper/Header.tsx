@@ -97,10 +97,10 @@ export default function Header() {
 
         {/* Right CTAs */}
         <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-          <Link href="/auth#login" className="text-sm font-medium text-gray-700 hover:text-gray-900 px-3 py-2 transition-colors">
+          <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 px-3 py-2 transition-colors">
             Login
           </Link>
-          <Link href="/auth#register"
+          <Link href="/register"
             className="flex items-center gap-2 bg-white border-[1.5px] border-gray-200 text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all whitespace-nowrap">
             Get Started for Free
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

@@ -6,6 +6,8 @@ import ProviderWrapper from "@/redux/provider";
 import { Toaster } from "./components/ui/sonner";
 import { UserDataProvider } from "@/context/userContext";
 import AuthGuard from "./components/wrapper/AuthGuard";
+import { auth } from "@/auth";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -58,18 +60,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <ProviderWrapper>
+        <ProviderWrapper session={session}>
           <UserDataProvider>
             <AuthGuard>
               <Toaster

@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
-import { useSignInMutation } from "@/redux/authService/authSlice";
-import { setAuthToken } from "@/redux/shared/axiosBaseQuery";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { showError, showSuccess } from "@/app/components/ui/sonner";
 import AuthCard from "../auth_components/AuthCard";
 import SocialButtons from "../auth_components/SocialButtons";
@@ -14,29 +12,53 @@ import PasswordInput from "../auth_components/PasswordInput";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signIn, { isLoading }] = useSignInMutation();
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Google sign-in succeeds at the NextAuth level even if the backend
+  // doesn't know how to handle OAuth users yet (see BACKEND_OAUTH_SPEC.md).
+  // Until that endpoint exists, catch that case here instead of silently
+  // bouncing the person between /dashboard and /login.
+  useEffect(() => {
+    if (session?.error === "OAuthBackendError") {
+      showError(
+        "Google sign-in isn't fully set up yet",
+        "The backend doesn't support Google accounts yet. Please sign in with email and password for now."
+      );
+      signOut({ redirect: false });
+    }
+  }, [session?.error]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const result = await signIn({ email, password }).unwrap();
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-      if (result.success) {
-        setAuthToken(result.data.accessToken);
-        showSuccess("Welcome Back!", result.message || "Welcome back!");
-        router.replace("/dashboard");
-      } else {
-        showError("Sign in failed", result.message || "Invalid credentials");
+      if (result?.error) {
+        showError("Login failed", result.error);
+        return;
       }
+
+      showSuccess("Welcome Back!", "Welcome back!");
+      const from =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("from")
+          : null;
+      router.replace(from || "/dashboard");
+      router.refresh();
     } catch (error: any) {
       console.error("Login error:", error);
-      showError(
-        "Login failed",
-        error?.data?.message || "Please check your credentials and try again."
-      );
+      showError("Login failed", "Please check your credentials and try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -209,7 +231,7 @@ export default function LoginPage() {
           <p className="text-center text-xs text-gray-500 mt-6">
             Don&apos;t have an account?{" "}
             <Link
-              href="/auth/register"
+              href="/register"
               className="text-[#E8317A] font-semibold hover:underline"
             >
               Create one free

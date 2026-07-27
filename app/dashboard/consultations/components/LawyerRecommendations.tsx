@@ -65,6 +65,7 @@ export function LawyerRecommendations({
                                 setSelectedLawyerId(lawyer.nbaNumber);
                                 setSidebarOpen(true);
                             }}
+                            hideFee={true}
                             onSelect={() => handleSelect(lawyer.id)}
                             isSelecting={isLoading && selectedLawyerId === lawyer.nbaNumber}
                         />
@@ -110,12 +111,14 @@ function LawyerCard({
     lawyer,
     onViewProfile,
     onSelect,
-    isSelecting
+    isSelecting,
+    hideFee=false
 }: {
     lawyer: RecommendedLawyerRef;
     onViewProfile: () => void;
     onSelect: () => void;
     isSelecting: boolean;
+    hideFee?: boolean
 }) {
     // Generate star rating display
     const renderStars = (rating: number) => {
@@ -155,7 +158,6 @@ function LawyerCard({
                                 {lawyer.initials}
                             </div>
                         )}
-                        
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -181,12 +183,12 @@ function LawyerCard({
                 <div className="mt-3 flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
                         <Scale size={12} />
-                        <span className="font-medium">#{lawyer.nbaNumber}</span>
+                        <span className="font-medium">{lawyer.nbaNumber}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
+                    {!hideFee ? <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
                         <span className="font-bold text-pink-600">₦{lawyer.fee}</span>
                         <span className="text-gray-400">fee</span>
-                    </div>
+                    </div> : null}
                 </div>
 
                 {/* Action Buttons */}

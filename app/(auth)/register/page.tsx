@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 import { useRegisterMutation } from "@/redux/authService/authSlice";
 import AuthCard from "../auth_components/AuthCard";
 import PasswordInput from "../auth_components/PasswordInput";
@@ -144,14 +145,38 @@ export default function RegisterPage() {
       }).unwrap();
 
       if (result?.success) {
+        // Backend account is created — now establish a real NextAuth
+        // session (instead of a raw token in localStorage) by signing in
+        // with the same credentials the person just chose.
+        const signInResult = await signIn("credentials", {
+          email: formData.email.trim(),
+          password: formData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          // Extremely unlikely right after a successful registration, but
+          // don't strand the person — send them to log in manually.
+          toast.success("Account created!", {
+            description: "Please sign in to continue.",
+          });
+          router.push("/login");
+          return;
+        }
+
         toast.success("Account created successfully!", {
           description: "Welcome to LawTicha!",
         });
+
+        // Citizens land on their dashboard; lawyers complete a short
+        // verification flow (NBA number, documents, etc.) before theirs
+        // unlocks.
         router.push(
           formData.role === "citizen"
             ? "/dashboard"
-            : "/auth/lawyer-setup"
+            : "/lawyer-setup"
         );
+        router.refresh();
       }
     } catch (error: any) {
       console.error("Registration error:", error);
@@ -163,7 +188,7 @@ export default function RegisterPage() {
               "Try signing in instead or use a different email.",
             action: {
               label: "Sign In",
-              onClick: () => router.push("/auth/login"),
+              onClick: () => router.push("/login"),
             },
           });
         } else {
@@ -504,7 +529,7 @@ export default function RegisterPage() {
           {/* Switch to Login */}
           <p className="text-center text-xs text-gray-500 mt-6">
             Already have an account?{" "}
-            <Link href="/auth/login" className="text-[#E8317A] font-semibold hover:underline">
+            <Link href="/login" className="text-[#E8317A] font-semibold hover:underline">
               Sign in
             </Link>
           </p>

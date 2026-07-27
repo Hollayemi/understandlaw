@@ -377,7 +377,7 @@ export default function LawyerOnboardingPage() {
         {/* Footer */}
         <p className="text-center text-[11px] text-[#9CA3AF] mt-6 leading-relaxed">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-[#E8317A] font-semibold hover:underline">
+          <Link href="/login" className="text-[#E8317A] font-semibold hover:underline">
             Sign in
           </Link>
           {" "}· Need help?{" "}

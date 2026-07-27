@@ -1,29 +1,20 @@
 // app/admin/login/page.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { useAdminLoginMutation } from "@/redux/authService/adminAuthSlice";
+import { signIn } from "next-auth/react";
 
 export default function AdminLoginPage() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         rememberMe: false,
     });
-
-    const [adminSignIn, { isLoading }] = useAdminLoginMutation();
-
-    // Check if already logged in as admin
-    // useEffect(() => {
-    //     const adminToken = localStorage.getItem("adminAccessToken");
-    //     if (adminToken) {
-    //         router.push("/admin");
-    //     }
-    // }, [router]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
@@ -42,44 +33,48 @@ export default function AdminLoginPage() {
             return;
         }
 
+        setIsLoading(true);
         try {
-            const result = await adminSignIn({
+            const result = await signIn("admin-credentials", {
                 email: formData.email,
                 password: formData.password,
-            }).unwrap();
+                redirect: false,
+            });
 
-
-            if (result.success) {
-                router.push("/admin");
-            }
-
-        } catch (error: any) {
-            console.error("Admin sign in error:", error);
-
-            // Handle different error scenarios
-            if (error?.data?.message) {
-                if (error.data.message.includes("Invalid credentials")) {
-                    toast.error("Invalid email or password", {
-                        description: "Please check your credentials and try again.",
-                    });
-                } else if (error.data.message.includes("Not authorized as admin")) {
+            if (result?.error) {
+                const message = result.error;
+                if (message.includes("Not authorized as admin")) {
                     toast.error("Access denied", {
                         description: "You don't have admin privileges.",
                     });
-                } else if (error.data.message.includes("Account suspended")) {
+                } else if (message.includes("suspended")) {
                     toast.error("Account suspended", {
                         description: "Your admin account has been suspended. Contact support.",
                     });
-                } else {
-                    toast.error("Sign in failed", {
-                        description: error.data.message,
+                } else if (message.includes("Invalid credentials") || message.includes("Invalid email")) {
+                    toast.error("Invalid email or password", {
+                        description: "Please check your credentials and try again.",
                     });
+                } else {
+                    toast.error("Sign in failed", { description: message });
                 }
-            } else {
-                toast.error("Network error", {
-                    description: "Please check your internet connection.",
-                });
+                return;
             }
+
+            toast.success("Welcome back!");
+            const from =
+                typeof window !== "undefined"
+                    ? new URLSearchParams(window.location.search).get("from")
+                    : null;
+            router.push(from || "/admin");
+            router.refresh();
+        } catch (error: any) {
+            console.error("Admin sign in error:", error);
+            toast.error("Network error", {
+                description: "Please check your internet connection.",
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
 

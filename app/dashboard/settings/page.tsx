@@ -43,14 +43,21 @@ import {
   SubscriptionSettings,
 } from "./_components";
 import { SettingsTab } from "./_components/types";
-
+import { useLogoutMutation } from "@/redux/authService/authSlice";
 import { LawyerProfileUpdate } from "./_components/lawyer_update"
+import { signOut } from "next-auth/react";
 
 export default function SettingsPage() {
   const { userInfo } = useUserData();
   const user = (userInfo as any)?.user ?? {};
   const profile = (userInfo as any)?.profile ?? {};
   const [tab, setTab] = useState<SettingsTab>("profile");
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = async () => {
+  await logout();
+  await signOut({ callbackUrl: "/login" });
+};
 
   // Define tabs based on user role
   const tabs: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
@@ -87,7 +94,7 @@ export default function SettingsPage() {
           <ChevronRight size={11} className="text-gray-300" />
           <span className="font-semibold text-gray-800">Settings</span>
         </div>
-        <button className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+        <button onClick={handleLogout} className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
           <LogOut size={13} /> Sign Out
         </button>
       </div>
@@ -123,7 +130,7 @@ export default function SettingsPage() {
             })}
 
             <div className="mt-3 pt-3 border-t border-gray-100">
-              <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 hover:text-red-700 transition-all w-full text-left">
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 hover:text-red-700 transition-all w-full text-left">
                 <LogOut size={15} />
                 Sign Out
               </button>

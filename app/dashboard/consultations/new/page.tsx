@@ -13,12 +13,14 @@ import { LawyerFull } from "@/redux/types/lawyer";
 import { ConsultMode } from "@/redux/types/consultation";
 import {
   NIGERIAN_STATES,
+  LANGUAGES,
   useGetMarketplaceLawyersQuery,
   useBookConsultationMutation,
   useRequestLawyerMatchMutation,
 } from "@/redux/slices/lawyers.slice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { CONSULT_MODES } from "@/app/components/config";
+import { ConfidentialityConsent } from "../components";
 
 
 const MAX_FILE_MB = 10;
@@ -88,16 +90,27 @@ function SummaryRow({ label, value }: { label: string; value: React.ReactNode })
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────── */
-/*  Page                                                                    */
-/* ─────────────────────────────────────────────────────────────────────── */
-
 export default function NewConsultationPage() {
   const router = useRouter();
   const [path, setPath] = useState<Path>(null);
+  const [consentAccepted, setConsentAccepted] = useState(false);
+
+  const handleConsentAccept = () => {
+    setConsentAccepted(true);
+  };
+
+  const handleConsentDecline = () => {
+    router.back();
+  };
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
+      {/* Confidentiality Consent - Shows on mount */}
+      <ConfidentialityConsent 
+        onAccept={handleConsentAccept}
+        onDecline={handleConsentDecline}
+      />
+
       {/* Top bar */}
       <div className="sticky top-0 z-20 bg-[#F5F2EE]/90 backdrop-blur-sm border-b border-gray-200/60 px-5 xl:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -232,6 +245,8 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
 //  Path A — Firm-assisted intake  
 
 function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
+  const router = useRouter()
+
   const [step, setStep] = useState(1);
   const steps = ["Legal Issue", "Case Details", "Documents", "Review"];
 
@@ -239,6 +254,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
   const SPECIALISMS = loadSpecialism?.data || [];
   const [requestMatch, { isLoading }] = useRequestLawyerMatchMutation();
   const [location, setLocation] = useState("");
+  const [language, setLanguage] = useState("English");
   const [budget, setBudget] = useState("");
   const [specialism, setSpecialism] = useState("");
   const [topic, setTopic] = useState("");
@@ -304,6 +320,15 @@ const prices = ["100", "250", "500", "1000"];
         documents: docs.map(d => ({ name: d.file.name, sizeBytes: d.file.size })),
       };
       const res = await requestMatch(payload as any).unwrap();
+
+      const paymentUrl = (res as any)?.data?.paymentResult?.data?.authorization_url;
+      
+      if (paymentUrl) {
+        router.push(paymentUrl);
+      } else {
+        onDone();
+      }
+
       if (res?.success !== false) setSubmitted(true);
     } catch (err: any) {
       setErrorMsg(err?.data?.message || "Something went wrong sending your request. Please try again.");
@@ -375,7 +400,7 @@ const prices = ["100", "250", "500", "1000"];
             </div> */}
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Area of Law <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={specialism} onChange={(e) => setSpecialism(e.target.value)}
                 className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               >
@@ -405,7 +430,7 @@ const prices = ["100", "250", "500", "1000"];
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Urgency<span className="font-normal text-gray-400">(optional)</span></label>
               <select value={urgency} onChange={(s) => setUrgency(s.target.value)}
                 className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               >
@@ -458,7 +483,6 @@ const prices = ["100", "250", "500", "1000"];
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={location} onChange={e => setLocation(e.target.value)}
-                // placeholder="e.g. Lagos, Abuja, Port Harcourt"
                 className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
               >
                 <option value="">Any State</option>
@@ -467,7 +491,20 @@ const prices = ["100", "250", "500", "1000"];
             </div>
 
             <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Preferred Language <span className="font-normal text-gray-400">(optional)</span></label>
+              <select value={language} onChange={e => setLanguage(e.target.value)}
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              >
+                {/* <option value="">English</option> */}
+                {LANGUAGES.map((e: any, i: number) => <option key={i} value={e}>{e}</option>)}
+              </select>
+            </div>
+
+            <div>
               <SectionLabel>Preferred Communication Mode</SectionLabel>
+               <p className="text-[11px] text-gray-400 -mt-1.5 mb-4">
+                Your selected communication preference will <span className="font-bold text-[#E8317A]! ">expire in 2 hours</span>.
+              </p>
               <div className="grid  grid-cols-2  md:grid-cols-4 gap-2">
                 {CONSULT_MODES.map((m, i) => {
                   const Icon = m.icon;

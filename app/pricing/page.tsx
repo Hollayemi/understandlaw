@@ -22,7 +22,7 @@ const TIERS = [
       { text: "Document templates", included: false },
     ],
     cta: "Get Started Free",
-    href: "/auth/register",
+    href: "/register",
   },
   {
     name: "Marketplace",
