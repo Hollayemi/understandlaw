@@ -198,7 +198,7 @@ List all lawyers with optional filters.
 | Param | Type | Default | Description |
 |-------|------|---------|-------------|
 | `status` | `active \| inactive \| pending \| all` | `all` | Filter by status |
-| `search` | `string` | — | Search by name, NBA number, or state |
+| `search` | `string` | — | Search by name, SCN number, or state |
 | `page` | `number` | `1` | Page number |
 | `pageSize` | `number` | `20` | Items per page |
 
@@ -215,7 +215,7 @@ List all lawyers with optional filters.
       "phone": "08012345678",
       "state": "Lagos",
       "specialisms": ["Criminal", "Employment"],
-      "nbaNumber": "NBA/LAG/2014/01847",
+      "scnNumber": "SCN/LAG/2014/01847",
       "yearsCall": 10,
       "joinedAt": "2025-01-05T00:00:00Z",
       "status": "active",
@@ -251,7 +251,7 @@ Get full profile of a single lawyer.
     "phone": "08012345678",
     "state": "Lagos",
     "specialisms": ["Criminal", "Employment"],
-    "nbaNumber": "NBA/LAG/2014/01847",
+    "scnNumber": "SCN/LAG/2014/01847",
     "yearsCall": 10,
     "joinedAt": "2025-01-05T00:00:00Z",
     "status": "active",
@@ -277,7 +277,7 @@ Suspend or reactivate a lawyer account.
 ```json
 {
   "status": "inactive",
-  "reason": "NBA verification expired"
+  "reason": "SCN verification expired"
 }
 ```
 
@@ -320,7 +320,7 @@ List all lawyer verification requests.
 | Param | Type | Default | Description |
 |-------|------|---------|-------------|
 | `status` | `pending \| approved \| rejected \| info_requested \| all` | `pending` | Filter by status |
-| `search` | `string` | — | Search by name, NBA number, or state |
+| `search` | `string` | — | Search by name, SCN number, or state |
 | `page` | `number` | `1` | Page number |
 | `pageSize` | `number` | `20` | Items per page |
 
@@ -336,7 +336,7 @@ List all lawyer verification requests.
       "email": "obi.n@email.com",
       "phone": "07077665544",
       "state": "Anambra",
-      "nbaNumber": "NBA/AWK/2019/00456",
+      "scnNumber": "SCN/AWK/2019/00456",
       "yearsCall": 5,
       "calledAt": "2019",
       "specialisms": ["Family Law", "Employment"],
@@ -442,7 +442,7 @@ Reject a verification request. Sends rejection email with reason.
 **Request Body:**
 ```json
 {
-  "reason": "NBA registration number could not be verified with the Nigerian Bar Association records."
+  "reason": "SCN registration number could not be verified with the Nigerian Bar Association records."
 }
 ```
 
@@ -2371,7 +2371,7 @@ All error responses follow this structure:
 | `401` | Unauthorized — missing or invalid token |
 | `403` | Forbidden — insufficient role |
 | `404` | Not Found |
-| `409` | Conflict — e.g. duplicate NBA number |
+| `409` | Conflict — e.g. duplicate SCN number |
 | `422` | Unprocessable Entity |
 | `500` | Internal Server Error |
 

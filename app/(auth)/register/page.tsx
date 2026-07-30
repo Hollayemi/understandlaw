@@ -169,7 +169,7 @@ export default function RegisterPage() {
         });
 
         // Citizens land on their dashboard; lawyers complete a short
-        // verification flow (NBA number, documents, etc.) before theirs
+        // verification flow (SCN number, documents, etc.) before theirs
         // unlocks.
         router.push(
           formData.role === "citizen"

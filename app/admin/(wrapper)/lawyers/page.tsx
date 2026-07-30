@@ -24,7 +24,7 @@ interface Lawyer {
   phone: string;
   state: string;
   specialisms: string[];
-  nbaNumber: string;
+  scnNumber: string;
   yearsCall: number;
   joinedAt: string;
   status: LawyerStatus;
@@ -93,7 +93,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => 
               { icon: Mail,     label: "Email",        value: lawyer.email },
               { icon: MapPin,   label: "State",        value: lawyer.state },
               { icon: Calendar, label: "Joined",       value: formatTime(lawyer.createdAt) },
-              { icon: BadgeCheck, label: "SCN Number", value: lawyer.nbaNumber },
+              { icon: BadgeCheck, label: "SCN Number", value: lawyer.scnNumber },
               { icon: Award,    label: "Year of Call", value: `${lawyer.yearOfCall} years` },
               { icon: Clock,    label: "Response",     value: lawyer.responseTimeLabel },
             ].map(({ icon: Icon, label, value }) => (
@@ -178,7 +178,7 @@ console.log(lawyers)
     if (tab === "pending"  && l.verificationStatus !== "pending")  return false;
     if (search) {
       const q = search.toLowerCase();
-      return l.fullName.toLowerCase().includes(q) || l.nbaNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
+      return l.fullName.toLowerCase().includes(q) || l.scnNumber.toLowerCase().includes(q) || l.state.toLowerCase().includes(q);
     }
     return true;
   });
@@ -195,7 +195,7 @@ console.log(lawyers)
           </div>
           <div>
             <p className="text-[13px] font-semibold text-[#111827]">{l.fullName}</p>
-            <p className="text-[11px] text-[#9CA3AF]">{l.nbaNumber}</p>
+            <p className="text-[11px] text-[#9CA3AF]">{l.scnNumber}</p>
           </div>
         </div>
       ),

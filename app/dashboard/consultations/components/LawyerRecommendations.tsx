@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { RecommendedLawyerRef } from "@/redux/types/consultation";
 import { LawyerFull } from "@/redux/types/lawyer";
-import { useGetLawyerByNbaNumberQuery } from "@/redux/slices/lawyers.slice";
+import { useGetLawyerByScnNumberQuery } from "@/redux/slices/lawyers.slice";
 import { useGetRequestSuggestedLawyerQuery } from "@/redux/slices/consultation.slice";
 
 
@@ -32,9 +32,9 @@ export function LawyerRecommendations({
     const [selectedLawyerId, setSelectedLawyerId] = useState<string | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const handleSelect = async (nbaNumber: string) => {
-        setSelectedLawyerId(nbaNumber);
-        await onSelect(nbaNumber);
+    const handleSelect = async (scnNumber: string) => {
+        setSelectedLawyerId(scnNumber);
+        await onSelect(scnNumber);
     };
 
     return (
@@ -62,12 +62,12 @@ export function LawyerRecommendations({
                             key={lawyer.id}
                             lawyer={lawyer}
                             onViewProfile={() => {
-                                setSelectedLawyerId(lawyer.nbaNumber);
+                                setSelectedLawyerId(lawyer.scnNumber);
                                 setSidebarOpen(true);
                             }}
                             hideFee={true}
                             onSelect={() => handleSelect(lawyer.id)}
-                            isSelecting={isLoading && selectedLawyerId === lawyer.nbaNumber}
+                            isSelecting={isLoading && selectedLawyerId === lawyer.scnNumber}
                         />
                     ))}
                 </div>
@@ -93,9 +93,9 @@ export function LawyerRecommendations({
                     lawyerId={selectedLawyerId}
                     onClose={() => setSidebarOpen(false)}
                     onSelect={() => {
-                        const lawyer = lawyers.find(l => l.nbaNumber === selectedLawyerId);
+                        const lawyer = lawyers.find(l => l.scnNumber === selectedLawyerId);
                         if (lawyer) {
-                            handleSelect(lawyer.nbaNumber);
+                            handleSelect(lawyer.scnNumber);
                         }
                     }}
                     isSelecting={isLoading}
@@ -183,7 +183,7 @@ function LawyerCard({
                 <div className="mt-3 flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
                         <Scale size={12} />
-                        <span className="font-medium">{lawyer.nbaNumber}</span>
+                        <span className="font-medium">{lawyer.scnNumber}</span>
                     </div>
                     {!hideFee ? <div className="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
                         <span className="font-bold text-pink-600">₦{lawyer.fee}</span>
@@ -235,7 +235,7 @@ function LawyerProfileSidebar({
     isSelecting: boolean;
 }) {
     // Fetch full lawyer profile using their ID
-    const { data: lawyerResponse, isLoading, error } = useGetLawyerByNbaNumberQuery(lawyerId.replaceAll("/", "-"));
+    const { data: lawyerResponse, isLoading, error } = useGetLawyerByScnNumberQuery(lawyerId.replaceAll("/", "-"));
     const lawyer = lawyerResponse?.data as LawyerFull;
 
     if (isLoading) {
@@ -398,10 +398,10 @@ function LawyerProfileSidebar({
                             </div>
                         </div>
 
-                        {lawyer.nbaNumber && (
+                        {lawyer.scnNumber && (
                             <div>
                                 <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SCN Number</h4>
-                                <p className="text-sm text-gray-600">{lawyer.nbaNumber}</p>
+                                <p className="text-sm text-gray-600">{lawyer.scnNumber}</p>
                             </div>
                         )}
                     </div>

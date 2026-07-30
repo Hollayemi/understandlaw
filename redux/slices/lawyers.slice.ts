@@ -100,12 +100,12 @@ export const lawyerApi = createApi({
 
     // ========== NEW MARKETPLACE ENDPOINTS ==========
 
-    getLawyerByNbaNumber: builder.query<ApiResponse<LawyerFull>, string>({
-      query: (nbaNumber) => ({
-        url: `/marketplace/lawyers/${nbaNumber}`,
+    getLawyerByScnNumber: builder.query<ApiResponse<LawyerFull>, string>({
+      query: (scnNumber) => ({
+        url: `/marketplace/lawyers/${scnNumber}`,
         method: "GET",
       }),
-      providesTags: (result, error, nba) => [{ type: "LawyerProfile", id: nba }],
+      providesTags: (result, error, scn) => [{ type: "LawyerProfile", id: scn }],
     }),
 
     // Get marketplace stats for hero section
@@ -192,24 +192,24 @@ export const lawyerApi = createApi({
     }),
 
     // Get lawyer's available time slots for booking
-    getLawyerAvailability: builder.query<ApiResponse<AvailabilitySlot[]>, { nbaNumber: string; date?: string }>({
-      query: ({ nbaNumber, date }) => ({
-        url: `/marketplace/lawyers/${nbaNumber}/availability`,
+    getLawyerAvailability: builder.query<ApiResponse<AvailabilitySlot[]>, { scnNumber: string; date?: string }>({
+      query: ({ scnNumber, date }) => ({
+        url: `/marketplace/lawyers/${scnNumber}/availability`,
         method: "GET",
         params: date ? { date } : undefined,
       }),
-      providesTags: (result, error, { nbaNumber }) => [{ type: "LawyerAvailability", id: nbaNumber }],
+      providesTags: (result, error, { scnNumber }) => [{ type: "LawyerAvailability", id: scnNumber }],
     }),
 
     // Submit a review after consultation
     submitReview: builder.mutation<ApiResponse<ReviewResponse>, SubmitReviewPayload>({
-      query: ({ nbaNumber, consultationId, rating, comment, tags }) => ({
-        url: `/marketplace/lawyers/${nbaNumber}/reviews`,
+      query: ({ scnNumber, consultationId, rating, comment, tags }) => ({
+        url: `/marketplace/lawyers/${scnNumber}/reviews`,
         method: "POST",
         data: { consultationId, rating, comment, tags },
       }),
-      invalidatesTags: (result, error, { nbaNumber }) => [
-        { type: "LawyerProfile", id: nbaNumber },
+      invalidatesTags: (result, error, { scnNumber }) => [
+        { type: "LawyerProfile", id: scnNumber },
         "LawyerList",
       ],
     }),
@@ -224,7 +224,7 @@ export const {
   useSetAvailabilityMutation,
   useUploadDocumentMutation,
   useGetMarketplaceLawyersQuery,
-  useGetLawyerByNbaNumberQuery,
+  useGetLawyerByScnNumberQuery,
   
   // New hooks
   useGetMarketplaceStatsQuery,

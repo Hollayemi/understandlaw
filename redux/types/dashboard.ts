@@ -71,7 +71,7 @@ export interface TopLawyerRow {
   avatarInitials: string;
   colorA: string;
   colorB: string;
-  nbaNumber: string;
+  scnNumber: string;
   specialisms: string[];
   consultationCount: number;
   rating: number;

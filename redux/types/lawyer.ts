@@ -87,7 +87,7 @@ export interface LawyerFull {
     location: string;
     state: string;
     stateCode: string;
-    nbaNumber: string;
+    scnNumber: string;
     yearOfCall: number;
     calledAt: string; // year as string
     createdAt: string; // ISO date string
@@ -103,7 +103,7 @@ export interface OnboardingPersonal {
 }
 
 export interface OnboardingProfessional {
-  nbaNumber: string;
+  scnNumber: string;
   yearOfCall: number | "";
   calledAt: string;
   title: string;
@@ -144,7 +144,7 @@ export interface OnboardingDocuments {
 // ─── API Payload types ────────────────────────────────────────────────────────
 
 export interface SubmitVerificationPayload {
-  nbaNumber: string;
+  scnNumber: string;
   yearOfCall: number;
   calledAt: string;
   title?: string;
@@ -155,7 +155,7 @@ export interface SubmitVerificationPayload {
   languages?: string[];
   specialisms?: string[];
   fees?: Partial<FeeSchedule>;
-  documents?: {
+  documents: {
     label: string;
     filename: string;
     fileUrl: string;
@@ -261,7 +261,7 @@ export interface UploadedDocument {
 }
 
 export interface FormData {
-  nbaNumber: string;
+  scnNumber: string;
   yearOfCall: string;
   state: string;
   location: string;
@@ -284,6 +284,8 @@ export interface FormData {
   };
   responseTime: string;
   available: boolean;
+
+  profilePicture: string;
 }
 
 
@@ -299,7 +301,7 @@ export interface MarketplaceStats {
 
 // Booking Consultation
 export interface BookConsultationPayload {
-  lawyerNbaNumber: string;
+  lawyerScnNumber: string;
   mode: "message" | "call" | "video" | "sms";
   topic: string;
   description?: string;
@@ -371,7 +373,7 @@ export interface MatchResponse {
   matchedLawyer?: {
     id: string;
     name: string;
-    nbaNumber: string;
+    scnNumber: string;
   };
 }
 
@@ -386,7 +388,7 @@ export interface AvailabilitySlot {
 
 // Submit Review
 export interface SubmitReviewPayload {
-  nbaNumber: string;
+  scnNumber: string;
   consultationId: string;
   rating: number; // 1-5
   comment: string;

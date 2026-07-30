@@ -487,7 +487,7 @@ function DocumentsTab({
           </p>
 
           <div className="flex items-center gap-2">
-            <label className="flex-1 flex items-center gap-2 h-10 px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-500 cursor-pointer hover:border-gray-300 transition-colors">
+            <label className="flex-1 flex items-center gap-2 h-10! px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-500 cursor-pointer hover:border-gray-300 transition-colors">
               <Upload size={13} className="text-gray-400 shrink-0" />
               <span className="truncate">{file ? file.name : "Choose a file…"}</span>
               <input type="file" className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} />
@@ -580,7 +580,7 @@ function RecommendTab({
       picture: l.picture,
       initials: l.avatarInitials,
       color: l.colorA,
-      nbaNumber: l.nbaNumber,
+      scnNumber: l.scnNumber,
       title: l.title,
       fee: String(l.fees[req.mode]),
       ratingAvg: l.ratingAvg,

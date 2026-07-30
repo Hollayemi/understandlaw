@@ -27,7 +27,7 @@ interface VerificationRequest {
   email: string;
   phone: string;
   state: string;
-  nbaNumber: string;
+  scnNumber: string;
   yearsCall: number;
   calledAt: string;
   specialisms: Specialism[];
@@ -212,7 +212,7 @@ function ReviewModal({
             </div>
             <div>
               <h3 className="font-bold text-[#111827] text-sm">{META.title}</h3>
-              <p className="text-[11px] text-[#9CA3AF]">{request.name} · {request.nbaNumber}</p>
+              <p className="text-[11px] text-[#9CA3AF]">{request.name} · {request.scnNumber}</p>
             </div>
             <button onClick={onClose} className="ml-auto text-[#9CA3AF] hover:text-[#111827] transition-colors">
               <X size={16} />
@@ -301,7 +301,7 @@ function RequestCard({
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <div>
                 <p className="text-[14px] font-bold text-[#111827] leading-tight">{req.name}</p>
-                <p className="text-[11px] text-[#9CA3AF] mt-0.5">{req.nbaNumber}</p>
+                <p className="text-[11px] text-[#9CA3AF] mt-0.5">{req.scnNumber}</p>
               </div>
               <StatusChip status={req.status} />
             </div>
@@ -467,7 +467,7 @@ const transformToVerificationRequest = (lawyer: LawyerFull): VerificationRequest
     email: lawyer?.email || "",
     phone: "",
     state: lawyer.state || "",
-    nbaNumber: lawyer.nbaNumber || "",
+    scnNumber: lawyer.scnNumber || "",
     yearsCall: lawyer.yearOfCall ? new Date().getFullYear() - lawyer.yearOfCall : 0,
     calledAt: lawyer.calledAt?.toString() || "",
     specialisms: lawyer.specialisms || [],

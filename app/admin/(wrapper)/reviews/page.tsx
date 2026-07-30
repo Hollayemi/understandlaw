@@ -274,7 +274,7 @@ function ReviewCard({ review, onModerate, onFlag, onDelete }: {
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <p className="text-xs font-semibold text-gray-900">{review.lawyer.fullName}</p>
-              <span className="text-[9px] text-gray-400">{review.lawyer.nbaNumber}</span>
+              <span className="text-[9px] text-gray-400">{review.lawyer.scnNumber}</span>
             </div>
             <div className="flex gap-1 mt-0.5">
               {review.lawyer.specialisms.slice(0, 2).map(s => (
@@ -393,7 +393,7 @@ function LawyerSummaryCard({ lawyer, onView }: {
           </div>
           <div>
             <p className="font-semibold text-gray-900">{lawyer.fullName}</p>
-            <p className="text-[10px] text-gray-400">{lawyer.nbaNumber}</p>
+            <p className="text-[10px] text-gray-400">{lawyer.scnNumber}</p>
           </div>
         </div>
         <div className="flex items-center gap-1">

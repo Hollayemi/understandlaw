@@ -317,7 +317,7 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
               </div>
               <div>
                 <p className="text-xs font-semibold text-[#111827]">{consult.lawyer.name}</p>
-                <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.nbaNumber}</p>
+                <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.scnNumber}</p>
               </div>
             </div>
             <div className="ml-auto flex items-center gap-1.5 flex-shrink-0">
@@ -654,7 +654,7 @@ export function MatchCard({ req, onUpdate, onOpen }: { req: MatchRequest; onUpda
 
 // Lawyer Performance Row ===>
 export function LawyerPerformanceRow({ lawyer, stats }: {
-  lawyer: { id: string; name: string; initials: string; color: string; nbaNumber: string };
+  lawyer: { id: string; name: string; initials: string; color: string; scnNumber: string };
   stats: { total: number; completed: number; disputed: number; avgRating: number; totalRevenue: number };
 }) {
 
@@ -670,7 +670,7 @@ export function LawyerPerformanceRow({ lawyer, stats }: {
           </div>
           <div>
             <p className="text-[12px] font-semibold text-[#111827]">{lawyer.name}</p>
-            <p className="text-[10px] text-[#9CA3AF]">{lawyer.nbaNumber}</p>
+            <p className="text-[10px] text-[#9CA3AF]">{lawyer.scnNumber}</p>
           </div>
         </div>
       </td>

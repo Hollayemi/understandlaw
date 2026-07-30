@@ -748,7 +748,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
     setErrorMsg("");
     try {
       const payload = {
-        lawyerNbaNumber: chosen.nbaNumber,
+        lawyerScnNumber: chosen.scnNumber,
         mode,
         topic,
         description: detail,

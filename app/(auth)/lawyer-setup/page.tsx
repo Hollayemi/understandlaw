@@ -29,9 +29,10 @@ export default function LawyerOnboardingPage() {
   console.log({ specialisms })
 
   const router = useRouter()
+  const [image, setImage] = useState<any>([])
   const [currentStep, setCurrentStep] = useState(4);
   const [form, setForm] = useState<LawyerFormData>({
-    nbaNumber: "",
+    scnNumber: "",
     yearOfCall: "",
     state: "",
     location: "",
@@ -44,6 +45,8 @@ export default function LawyerOnboardingPage() {
     fees: { message: 0, call: 0, video: 0 },
     responseTime: "",
     available: true,
+
+    profilePicture: image[0]?.base64
   });
 
   const [documents, setDocuments] = useState<UploadedDocument[]>(
@@ -84,9 +87,9 @@ export default function LawyerOnboardingPage() {
     const newErrors: Record<string, string> = {};
 
     if (step === 0) { // Professional
-      if (!form.nbaNumber) newErrors.nbaNumber = "SCN number is required";
-      else if (!/^SCN\d+$/i.test(form.nbaNumber)) {
-        newErrors.nbaNumber = "Format: SCN12345 (SCN followed by at least 1 digit)";
+      if (!form.scnNumber) newErrors.scnNumber = "SCN number is required";
+      else if (!/^SCN\d+$/i.test(form.scnNumber)) {
+        newErrors.scnNumber = "Format: SCN12345 (SCN followed by at least 1 digit)";
       }
       if (!form.yearOfCall) newErrors.yearOfCall = "Year of call is required";
       else if (parseInt(form.yearOfCall) < 1960 || parseInt(form.yearOfCall) > new Date().getFullYear()) {
@@ -108,6 +111,8 @@ export default function LawyerOnboardingPage() {
       if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";
       if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
       if (!form.responseTime) newErrors.responseTime = "Select a response time";
+    }  else if(step === 4) {
+      if (!form.profilePicture) newErrors.image = "Please select a profile pictured";
     }
 
     setErrors(newErrors);
@@ -168,14 +173,14 @@ export default function LawyerOnboardingPage() {
       uploadedDocs.some(uploaded => uploaded.label === required.label)
     );
 
-    // if (!allDocsUploaded) {
-    //   setSubmitError("Please upload all required documents before submitting");
-    //   setCurrentStep(4); // Go to documents step
-    //   return;
-    // }
+    if (!allDocsUploaded) {
+      setSubmitError("Please upload all required documents before submitting");
+      setCurrentStep(4);
+      return;
+    }
 
     const payload = {
-      nbaNumber: form.nbaNumber.trim().toUpperCase(),
+      scnNumber: form.scnNumber.trim().toUpperCase(),
       yearOfCall: parseInt(form.yearOfCall),
       calledAt: form.yearOfCall,
       bio: form.bio.trim(),
@@ -308,6 +313,8 @@ export default function LawyerOnboardingPage() {
                 documents={documents}
                 onUpload={handleDocumentUpload}
                 onRemove={handleDocumentRemove}
+                image={image}
+                setImage={setImage}
               />
             )}
             {currentStep === 5 && <ReviewStep form={form} specialisms={specialisms} documents={documents} />}

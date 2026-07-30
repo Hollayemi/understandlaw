@@ -1,11 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import {
-  MessageSquare, 
-  AlertTriangle, DollarSign, TrendingUp, 
-  Eye, Flag, Search, Download,
-  Loader2, 
-  Zap, BarChart3, Activity, Timer, Gavel,
+  MessageSquare, AlertTriangle, DollarSign, TrendingUp, Eye, Flag, Search, Download,Loader2, Zap, BarChart3, Activity, Timer, Gavel,
 } from "lucide-react";
 import {
   StatBar, PageHeader,
@@ -18,7 +14,6 @@ import {
   useAdminBulkAutoMatchMutation,
 } from "@/redux/slices/admin/consultation.slice";
 import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
-
 import {  ConsultStatusBadge, TranscriptDrawer, MatchCard, LawyerPerformanceRow, } from "./components"
 import { MODE_CFG } from "@/app/components/config";
 import { MatchRequestDrawer } from "./matchDrawer";
@@ -73,9 +68,7 @@ export default function ConsultationsPage() {
 
   const filtered = consultations;
 
-  // Refresh effect when tab/search/mode changes
   React.useEffect(() => {
-    // The query will automatically refetch when params change
   }, [tab, modeFilter, search]);
 
   return (
@@ -393,7 +386,7 @@ export default function ConsultationsPage() {
                           name: s.lawyerName,
                           initials: s.lawyerInitials,
                           color: s.lawyerColor,
-                          nbaNumber: s.nbaNumber,
+                          scnNumber: s.scnNumber,
                         }}
                         stats={{
                           total: s.totalSessions,

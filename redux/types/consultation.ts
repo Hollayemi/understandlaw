@@ -39,7 +39,7 @@ export interface LawyerInfo {
   color: string;
   specialisms: Specialism[];
   myPayout?: string;
-  nbaNumber: string;
+  scnNumber: string;
 }
 
 export interface Consultation {
@@ -91,7 +91,7 @@ export interface Consultation2 {
     name: string;
     initials: string;
     color: string;
-    nbaNumber: string;
+    scnNumber: string;
     specialisms: Specialism[];
   };
   conversationId: string;
@@ -128,7 +128,7 @@ export interface RecommendedLawyerRef {
   picture: string;
   name: string;
   initials: string;
-  nbaNumber: string;
+  scnNumber: string;
   title?: string;
   color: string;
   fee: string;
@@ -227,7 +227,7 @@ export interface LawyerPerformanceStats {
   lawyerName: string;
   lawyerInitials: string;
   lawyerColor: string;
-  nbaNumber: string;
+  scnNumber: string;
   totalSessions: number;
   completedSessions: number;
   disputedSessions: number;

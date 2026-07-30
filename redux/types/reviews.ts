@@ -13,7 +13,7 @@ export interface ReviewLawyer {
   fullName: string;
   initials: string;
   colorA: string;
-  nbaNumber: string;
+  scnNumber: string;
   specialisms: string[];
 }
 
@@ -51,7 +51,7 @@ export interface LawyerReviewSummary {
   fullName: string;
   initials: string;
   colorA: string;
-  nbaNumber: string;
+  scnNumber: string;
   specialisms: string[];
   averageRating: number;
   reviewCount: number;

@@ -50,7 +50,7 @@ interface EducationEntry {
 }
 
 interface LawyerProfileForm {
-  nbaNumber: string;
+  scnNumber: string;
   yearOfCall: string;
   state: string;
   stateCode: string;
@@ -81,7 +81,7 @@ export function LawyerProfileUpdate() {
   const profile = profileData?.data?.profile;
 
   const [form, setForm] = useState<LawyerProfileForm>({
-    nbaNumber: "",
+    scnNumber: "",
     yearOfCall: "",
     state: "",
     stateCode: "",
@@ -105,7 +105,7 @@ export function LawyerProfileUpdate() {
   useEffect(() => {
     if (profile) {
       setForm({
-        nbaNumber: profile.nbaNumber || "",
+        scnNumber: profile.scnNumber || "",
         yearOfCall: profile.yearOfCall?.toString() || "",
         state: profile.state || "",
         stateCode: profile.stateCode || "",
@@ -201,7 +201,7 @@ export function LawyerProfileUpdate() {
   };
 
   const copySCN = () => {
-    navigator.clipboard.writeText(form.nbaNumber);
+    navigator.clipboard.writeText(form.scnNumber);
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 3000);
   };
@@ -209,7 +209,7 @@ export function LawyerProfileUpdate() {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!form.nbaNumber) newErrors.nbaNumber = "SCN number is required";
+    if (!form.scnNumber) newErrors.scnNumber = "SCN number is required";
     if (!form.yearOfCall) newErrors.yearOfCall = "Year of call is required";
     if (!form.state) newErrors.state = "State is required";
     if (!form.phone) newErrors.phone = "Phone number is required";
@@ -310,7 +310,7 @@ export function LawyerProfileUpdate() {
         <Field label="SCN Bar Number" desc="This cannot be changed. Contact support for corrections.">
           <div className="relative">
             <input
-              value={form.nbaNumber}
+              value={form.scnNumber}
               disabled
               className={`${inputCls} pr-24`}
             />

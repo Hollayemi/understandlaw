@@ -632,10 +632,10 @@ export function ConsultationDrawer({
                       <p className="text-[13px] font-bold text-[#111827]">{consult.lawyer.name}</p>
                       <BadgeCheck size={12} className="text-amber-500" />
                     </div>
-                    <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.nbaNumber}</p>
+                    <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.scnNumber}</p>
                   </div>
                   <Link
-                    href={`/dashboard/marketplace/${consult.lawyer.nbaNumber.replaceAll("/", "-")}`}
+                    href={`/dashboard/marketplace/${consult.lawyer.scnNumber.replaceAll("/", "-")}`}
                     className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline shrink-0"
                   >
                     Profile <ExternalLink size={10} />

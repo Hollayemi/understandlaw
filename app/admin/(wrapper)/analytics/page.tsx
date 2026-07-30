@@ -269,7 +269,7 @@ function TopLawyersTable({ lawyers }: { lawyers: TopLawyerRow[] }) {
   
   const filtered = lawyers.filter(l => 
     l.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    l.nbaNumber.toLowerCase().includes(search.toLowerCase()) ||
+    l.scnNumber.toLowerCase().includes(search.toLowerCase()) ||
     l.specialisms.some(s => s.toLowerCase().includes(search.toLowerCase()))
   );
 
@@ -318,7 +318,7 @@ function TopLawyersTable({ lawyers }: { lawyers: TopLawyerRow[] }) {
                     <span className="font-medium text-gray-900">{lawyer.fullName}</span>
                   </div>
                 </td>
-                <td className="py-3 px-2 text-gray-600 text-xs">{lawyer.nbaNumber}</td>
+                <td className="py-3 px-2 text-gray-600 text-xs">{lawyer.scnNumber}</td>
                 <td className="py-3 px-2">
                   <div className="flex flex-wrap gap-1">
                     {lawyer.specialisms.slice(0, 2).map(s => (

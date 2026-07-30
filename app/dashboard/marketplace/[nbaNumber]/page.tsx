@@ -10,7 +10,7 @@ import {
   Copy, ExternalLink, XIcon, Link2, AlertCircle,
   Globe, BookOpen, Scale, Briefcase, Heart, Car, Building2, Home
 } from "lucide-react";
-import { useGetLawyerByNbaNumberQuery, useGetLawyerAvailabilityQuery, useBookConsultationMutation } from "@/redux/slices/lawyers.slice";
+import { useGetLawyerByScnNumberQuery, useGetLawyerAvailabilityQuery, useBookConsultationMutation } from "@/redux/slices/lawyers.slice";
 import { Specialism } from "@/redux/types/lawyer";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 
@@ -134,7 +134,7 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
 
   // Fetch availability slots for call/video modes
   const { data: availabilityData, isLoading: isLoadingSlots } = useGetLawyerAvailabilityQuery(
-    { nbaNumber: lawyer.nbaNumber.replaceAll("/", "-"), date: undefined },
+    { scnNumber: lawyer.scnNumber.replaceAll("/", "-"), date: undefined },
     { skip: mode === "message" }
   );
 
@@ -150,7 +150,7 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
     setSubmitting(true);
     try {
       await bookConsultation({
-        lawyerNbaNumber: lawyer.nbaNumber,
+        lawyerScnNumber: lawyer.scnNumber,
         mode: mode,
         topic: topic,
         description: detail,
@@ -350,8 +350,8 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
 export default function LawyerProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const nbaNumber = params.nbaNumber as string;
-  const normalizedNbaNumber = nbaNumber;
+  const scnNumber = params.scnNumber as string;
+  const normalizedScnNumber = scnNumber;
   const {data:loadSpecialism} = useListSpecialismsQuery();
 
   const specialismConfig = loadSpecialism?.data || []
@@ -363,14 +363,14 @@ export default function LawyerProfilePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
 
-  const { data: lawyerResponse, isLoading, error, refetch } = useGetLawyerByNbaNumberQuery(normalizedNbaNumber);
+  const { data: lawyerResponse, isLoading, error, refetch } = useGetLawyerByScnNumberQuery(normalizedScnNumber);
   console.log({lawyerResponse})
   const lawyer = lawyerResponse?.data;
 
 
 
   // Generate dynamic data from API response
-  const colors = getRandomColor(lawyer?.id || nbaNumber);
+  const colors = getRandomColor(lawyer?.id || scnNumber);
   const initials = lawyer?.avatarInitials;
   
   const badges = [];
@@ -578,7 +578,7 @@ export default function LawyerProfilePage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-bold text-[#111827]">SCN Verified</p>
-                      <p className="text-[11px] text-[#9CA3AF] font-mono">{lawyer.nbaNumber}</p>
+                      <p className="text-[11px] text-[#9CA3AF] font-mono">{lawyer.scnNumber}</p>
                     </div>
                     <span className="text-[10px] font-bold bg-[#ECFDF5] text-[#065F46] border border-[#6EE7B7] px-2 py-0.5 rounded-full">
                       ✓ Confirmed

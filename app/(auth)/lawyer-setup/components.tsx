@@ -1,15 +1,15 @@
 "use client";
 import {
-  BadgeCheck, Scale, MapPin, 
+  BadgeCheck, Scale, MapPin,
   Shield, BookOpen,
   Check, Plus, X, Upload,
-  MessageSquare, Phone, Video, 
+  MessageSquare, Phone, Video,
   CheckCircle, FileText, DollarSign, Clock,
   GraduationCap, Star, Trash2,
   ExternalLink, HelpCircle
 } from "lucide-react";
 
-import {  Input, TextArea, Select } from "@/app/components/ui/form";
+import { Input, TextArea, Select } from "@/app/components/ui/form";
 import { EducationEntry } from "@/redux/types/lawyer";
 import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
 import { formatFileSize } from "@/utils/function";
@@ -20,8 +20,8 @@ import {
 } from "@/redux/slices/lawyers.slice";
 
 export const RESPONSE_TIMES = [
- {label: "Under 1 hour", value: 1,}, {label: "Under 2 hours", value: 2}, {label: "Under 3 hours", value: 3}, 
-  {label: "Under 6 hours", value: 6}, {label: "Under 12 hours", value: 12}, {label: "Under 24 hours", value: 24},
+  { label: "Under 1 hour", value: 1, }, { label: "Under 2 hours", value: 2 }, { label: "Under 3 hours", value: 3 },
+  { label: "Under 6 hours", value: 6 }, { label: "Under 12 hours", value: 12 }, { label: "Under 24 hours", value: 24 },
 ];
 
 export const REQUIRED_DOCUMENTS = [
@@ -29,7 +29,6 @@ export const REQUIRED_DOCUMENTS = [
   { id: "lawSchool", label: "Law School Certificate", hint: "Degree certificate from an accredited law faculty", required: true },
   { id: "practicingLicense", label: "Practicing License", hint: "Current Supreme Court practicing certificate", required: true },
   { id: "governmentId", label: "Government-Issued ID", hint: "National ID, International Passport, or Voter's Card", required: true },
-  { id: "profilePhoto", label: "Profile Photo", hint: "Professional headshot for your profile", required: false },
 ];
 
 export const STEPS = [
@@ -52,14 +51,14 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
           label="SCN Bar Number"
-          value={form.nbaNumber}
-          onChange={(e: any) => updateForm("nbaNumber", e.target.value)}
+          value={form.scnNumber}
+          onChange={(e: any) => updateForm("scnNumber", e.target.value)}
           placeholder="e.g. SCN018472342"
           required
-          error={errors.nbaNumber}
+          error={errors.scnNumber}
           icon={BadgeCheck}
         />
-        
+
         <Input
           label="Year of Call"
           type="number"
@@ -82,7 +81,7 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
           required
           error={errors.state}
         />
-        
+
         <Input
           label="District / Area"
           value={form.location}
@@ -108,7 +107,7 @@ export function ProfessionalStep({ form, updateForm, errors }: any) {
           <div>
             <p className="text-[13px] font-semibold text-amber-800 mb-1">Verification Process</p>
             <p className="text-[12px] text-amber-700 leading-relaxed">
-              LawTicha will verify your SCN number and credentials within 48 hours. 
+              LawTicha will verify your SCN number and credentials within 48 hours.
               You'll be notified via email once approved.
             </p>
           </div>
@@ -145,7 +144,7 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
           Areas of Specialisation <span className="text-[#E8317A]">*</span>
         </label>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          {specialisms.map((spec:any) => {
+          {specialisms.map((spec: any) => {
             const isSelected = form.specialisms.includes(spec.id);
             return (
               <button
@@ -153,8 +152,8 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
                 type="button"
                 onClick={() => toggleSpecialism(spec._id)}
                 className={`flex items-center gap-3 p-3 rounded-xl border-[1.5px] text-left transition-all group
-                  ${isSelected 
-                    ? 'border-[#E8317A] bg-pink-50 shadow-sm' 
+                  ${isSelected
+                    ? 'border-[#E8317A] bg-pink-50 shadow-sm'
                     : 'border-[#E5E7EB] bg-white hover:border-[#E8317A]/50 hover:bg-pink-50/30'
                   }`}
               >
@@ -369,7 +368,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
           {feeTypes.map(fee => {
             const Icon = fee.icon;
             const isProbono = fee.key === 'probono';
-            
+
             return (
               <div key={fee.key} className="flex items-center gap-4 p-4 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] hover:border-[#E5E7EB] transition-all">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: fee.bg }}>
@@ -384,15 +383,13 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
                     <button
                       type="button"
                       onClick={() => updateForm("fees", { ...form.fees, probono: !form.fees.probono })}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${
-                        form.fees.probono
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${form.fees.probono
                           ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
                           : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50'
-                      }`}
+                        }`}
                     >
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
-                        form.fees.probono ? 'bg-[#E8317A] border-[#E8317A]' : 'border-[#D1D5DB]'
-                      }`}>
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${form.fees.probono ? 'bg-[#E8317A] border-[#E8317A]' : 'border-[#D1D5DB]'
+                        }`}>
                         {form.fees.probono && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>}
                       </div>
                       <span className="text-[13px] font-medium">(Tick if Interested) </span>
@@ -459,7 +456,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
   );
 }
 
-export function DocumentsStep({ documents, onUpload, onRemove }: any) {
+export function DocumentsStep({ documents, onUpload, onRemove, image, setImage }: any) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[#F3F4F6] pb-4">
@@ -468,6 +465,18 @@ export function DocumentsStep({ documents, onUpload, onRemove }: any) {
       </div>
 
       <div className="space-y-4">
+        <div>
+          <p className="text-sm font-semibold text-gray-900 mb-1">Profile picture</p>
+          <p className="text-xs text-gray-500 mb-3">JPG or PNG, max 2MB.</p>
+          <ThumbnailUpload images={image} title=" " setImages={setImage} maxImages={1}>
+            <div className="flex gap-2 -mt-2">
+              <div className="px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all">
+                Upload photo
+              </div>
+            </div>
+          </ThumbnailUpload>
+
+        </div>
         {REQUIRED_DOCUMENTS.map((doc) => {
           const uploadedDoc = documents.find((d: any) => d.label === doc.label);
           const isUploaded = uploadedDoc?.uploaded;
@@ -566,7 +575,7 @@ export function DocumentsStep({ documents, onUpload, onRemove }: any) {
               {isUploading && (
                 <div className="mt-3">
                   <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] transition-all duration-300 rounded-full"
                       style={{ width: `${progress}%` }}
                     />
@@ -585,7 +594,7 @@ export function DocumentsStep({ documents, onUpload, onRemove }: any) {
 export function ReviewStep({ form, documents, specialisms }: any) {
   const getSpecialismLabels = () => {
     return form.specialisms
-      .map((id:any) => specialisms.find((s:any) => s._id === id)?.displayName)
+      .map((id: any) => specialisms.find((s: any) => s._id === id)?.displayName)
       .filter(Boolean)
       .join(", ");
   };
@@ -618,7 +627,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
           <div className="p-5 space-y-3">
             <div className="grid grid-cols-2 gap-3 text-[13px]">
               <span className="text-[#6B7280]">SCN Number:</span>
-              <span className="font-medium text-[#111827]">{form.nbaNumber || "—"}</span>
+              <span className="font-medium text-[#111827]">{form.scnNumber || "—"}</span>
               <span className="text-[#6B7280]">Year of Call:</span>
               <span className="font-medium text-[#111827]">{form.yearOfCall || "—"}</span>
               <span className="text-[#6B7280]">Location:</span>
@@ -692,8 +701,8 @@ export function ReviewStep({ form, documents, specialisms }: any) {
               </span>
             </div>
             <p className="text-[12px] text-[#6B7280]">
-              {allDocumentsUploaded 
-                ? "All required documents have been uploaded. Ready for verification!" 
+              {allDocumentsUploaded
+                ? "All required documents have been uploaded. Ready for verification!"
                 : "Please upload all required documents before submission."}
             </p>
           </div>
