@@ -11,6 +11,8 @@ import {
 
 import {  Input, TextArea, Select } from "@/app/components/ui/form";
 import { EducationEntry } from "@/redux/types/lawyer";
+import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
+import { formatFileSize } from "@/utils/function";
 
 import {
   NIGERIAN_STATES,
@@ -457,23 +459,12 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
   );
 }
 
-export function DocumentsStep({ documents, onUpload, onRemove, uploadProgress }: any) {
-  const handleFileUpload = async (docId: string, file: File) => {
-    const formData = new FormData();
-    console.log(formData)
-    formData.append("file", file);
-    const doc = REQUIRED_DOCUMENTS.find(d => d.id === docId);
-    if (doc) {
-      formData.append("label", doc.label);
-    }
-    onUpload(docId, formData);
-  };
-
+export function DocumentsStep({ documents, onUpload, onRemove }: any) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[#F3F4F6] pb-4">
         <h2 className="text-xl font-bold text-[#111827]">Verification Documents</h2>
-        <p className="text-[13px] text-[#6B7280] mt-1">Upload required documents for verification.</p>
+        <p className="text-[13px] text-[#6B7280] mt-1">Upload required documents for verification. PDF, Word doc, or image files are all accepted.</p>
       </div>
 
       <div className="space-y-4">
@@ -483,6 +474,21 @@ export function DocumentsStep({ documents, onUpload, onRemove, uploadProgress }:
           const isUploading = uploadedDoc?.uploading;
           const progress = uploadedDoc?.progress || 0;
           const error = uploadedDoc?.error;
+
+          // Profile photo is genuinely an image; every other verification
+          // document can be a PDF, a Word doc, or a scanned/photographed image.
+          const uploadType = doc.id === "profilePhoto" ? "image" : "document";
+
+          // ThumbnailUpload works off a local `images` array — since each of
+          // these is a single-file slot, we bridge its setImages callback
+          // straight into the parent's onUpload(docId, image) handler.
+          const handleNewImages = (
+            next: UploadedImage[] | ((prev: UploadedImage[]) => UploadedImage[])
+          ) => {
+            const resolved = typeof next === "function" ? (next as any)([]) : next;
+            const picked = resolved[resolved.length - 1];
+            if (picked) onUpload(doc.id, picked);
+          };
 
           return (
             <div key={doc.id} className="border border-[#E5E7EB] rounded-xl p-4 hover:border-[#E8317A]/30 transition-all">
@@ -502,25 +508,29 @@ export function DocumentsStep({ documents, onUpload, onRemove, uploadProgress }:
               </div>
 
               {isUploaded && uploadedDoc ? (
-                <div className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <FileText size={16} className="text-[#6B7280]" />
-                    <div>
-                      <p className="text-[13px] font-medium text-[#111827]">{uploadedDoc.filename}</p>
+                <div className="flex items-center justify-between gap-3 p-3 bg-[#F9FAFB] rounded-lg">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center flex-shrink-0">
+                      <FileText size={16} className="text-[#6B7280]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-medium text-[#111827] truncate">{uploadedDoc.filename}</p>
                       <p className="text-[10px] text-[#9CA3AF]">
-                        {(uploadedDoc.sizeBytes / 1024).toFixed(1)} KB
+                        {formatFileSize(uploadedDoc.sizeBytes)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={uploadedDoc.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1.5 rounded-lg text-[#E8317A] hover:bg-pink-50 transition-colors"
-                    >
-                      <ExternalLink size={14} />
-                    </a>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {uploadedDoc.fileUrl && (
+                      <a
+                        href={uploadedDoc.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-lg text-[#E8317A] hover:bg-pink-50 transition-colors"
+                      >
+                        <ExternalLink size={14} />
+                      </a>
+                    )}
                     <button
                       type="button"
                       onClick={() => onRemove(doc.label)}
@@ -531,30 +541,26 @@ export function DocumentsStep({ documents, onUpload, onRemove, uploadProgress }:
                   </div>
                 </div>
               ) : (
-                <label className="block">
+                <ThumbnailUpload
+                  images={[]}
+                  setImages={handleNewImages}
+                  maxImages={1}
+                  maxSizeMB={5}
+                  type={uploadType}
+                  title=" "
+                >
                   <div className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
                     ${error ? 'border-red-300 bg-red-50/30' : 'border-[#E5E7EB] hover:border-[#E8317A] hover:bg-pink-50/20'}`}
                   >
-                    <Upload size={24} className={`mx-auto mb-2 transition-colors ${error ? 'text-red-400' : 'text-[#D1D5DB] group-hover:text-[#E8317A]'}`} />
+                    <Upload size={24} className={`mx-auto mb-2 transition-colors ${error ? 'text-red-400' : 'text-[#D1D5DB]'}`} />
                     <p className={`text-[12px] font-medium transition-colors ${error ? 'text-red-500' : 'text-[#9CA3AF]'}`}>
                       {error || 'Click or drag to upload'}
                     </p>
-                    <p className="text-[10px] text-[#D1D5DB] mt-1">PDF, JPG, PNG (max 5MB)</p>
+                    <p className="text-[10px] text-[#D1D5DB] mt-1">
+                      {uploadType === "image" ? "JPG or PNG (max 5MB)" : "PDF, Word doc, or image (max 5MB)"}
+                    </p>
                   </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file && file.size <= 5 * 1024 * 1024) {
-                        handleFileUpload(doc.id, file);
-                      } else if (file) {
-                        alert("File size must be less than 5MB");
-                      }
-                    }}
-                  />
-                </label>
+                </ThumbnailUpload>
               )}
 
               {isUploading && (

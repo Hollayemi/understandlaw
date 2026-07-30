@@ -227,7 +227,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
 
       {/* Trust footer */}
       <div className="mt-6 flex items-start gap-3 p-4 bg-white border border-[#F3F4F6] rounded-2xl">
-        <div className="w-8 h-8 rounded-xl bg-[#EFF6FF] flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#EFF6FF] flex items-center justify-center shrink-0">
           <Shield size={13} className="text-[#3B82F6]" />
         </div>
         <div>
@@ -950,7 +950,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
   return (
     <div>
       <div className="flex items-start gap-3 p-4 bg-white border border-[#F3F4F6] rounded-2xl mb-5">
-        <div className="w-8 h-8 rounded-xl bg-[#FFF0F5] flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#FFF0F5] flex items-center justify-center shrink-0">
           <BadgeCheck size={13} className="text-[#E8317A]" />
         </div>
         <div>

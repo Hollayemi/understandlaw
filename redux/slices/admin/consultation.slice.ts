@@ -20,6 +20,7 @@ import {
   LawyerPerformanceParams,
   DashboardStats,
   RecommendedLawyerRef,
+  VerifyPaymentProofPayload,
 } from "@/redux/types/consultation";
 import { ConsultationDocumentMeta } from "@/redux/types/lawyer";
 import { PaginatedResponse, ApiResponse } from "../types";
@@ -137,6 +138,21 @@ export const adminConsultationApi = createApi({
       }),
       invalidatesTags: (result, error, { consultationId }) => [
         "ConsultationStats",
+        { type: "Consultation", id: consultationId },
+        { type: "ConsultationList", id: "LIST" },
+      ],
+    }),
+
+    /**
+     * Verify or reject a payment invoice/receipt the lawyer uploaded for a consultation
+     */
+    adminVerifyPaymentProof: builder.mutation<Consultation, VerifyPaymentProofPayload>({
+      query: ({ consultationId, proofId, verified, reason }) => ({
+        url: `/admin/consultations/${consultationId}/payment-proof/verify`,
+        method: "POST",
+        data: { proofId, verified, reason },
+      }),
+      invalidatesTags: (result, error, { consultationId }) => [
         { type: "Consultation", id: consultationId },
         { type: "ConsultationList", id: "LIST" },
       ],
@@ -426,6 +442,7 @@ export const {
   useAdminResolveDisputeMutation,
   useAdminFlagConsultationMutation,
   useAdminApproveRefundMutation,
+  useAdminVerifyPaymentProofMutation,
   useAdminSendLawyerWarningMutation,
   useAdminBulkActionMutation,
   useAdminExportConsultationsQuery,

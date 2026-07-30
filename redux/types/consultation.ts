@@ -1,5 +1,5 @@
 import { Specialism } from './lawyer';
-import { ConsultationDocumentMeta } from './lawyer';
+import { ConsultationDocumentMeta, PaymentProofMeta } from './lawyer';
 export type ConsultStatus =
   | "pending"
   | "paid"
@@ -79,6 +79,8 @@ export interface Consultation {
   notes?: string;
   /** Human-readable urgency, e.g. "Within 3 days". */
   urgencyLabel?: string;
+  /** Payment invoice(s)/receipt(s) the lawyer uploaded, pending admin verification. */
+  paymentProofs?: PaymentProofMeta[];
 }
 
 
@@ -116,6 +118,7 @@ export interface Consultation2 {
   caseBrief?: ConsultationDocumentMeta;
   notes?: string;
   urgencyLabel?: string;
+  paymentProofs?: PaymentProofMeta[];
 }
 
 export interface RecommendedLawyerRef {
@@ -145,11 +148,7 @@ export interface MatchRequest {
   createdAt: string;
   expiresAt: string;
   matchedLawyer?: string;
-  matchedLawyerId?: {
-    initials: string;
-    picture: string;
-    name: string;
-  };
+  matchedLawyerId?: string;
   /** How the citizen wants the firm to handle this before a lawyer is picked. */
   mode: ConsultMode;
   /** Additional context the citizen shared at intake. */
@@ -278,6 +277,13 @@ export interface ApproveRefundPayload {
   consultationId: string;
   approved: boolean;
   adminNote?: string;
+}
+
+export interface VerifyPaymentProofPayload {
+  consultationId: string;
+  proofId: string;
+  verified: boolean;
+  reason?: string;
 }
 
 export interface AssignLawyerToMatchPayload {

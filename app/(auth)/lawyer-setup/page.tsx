@@ -9,12 +9,12 @@ import {
 // Import from your slice
 import {
   useSubmitVerificationMutation,
-  useUploadDocumentMutation,
   NIGERIAN_STATES,
 } from "@/redux/slices/lawyers.slice";
 
 import { ProfessionalStep, SpecialismsStep, StoryStep, ConsultationStep, DocumentsStep, ReviewStep } from "./components"
-import { UploadedDocument, FormData } from "@/redux/types/lawyer";
+import { UploadedDocument, FormData as LawyerFormData } from "@/redux/types/lawyer";
+import { UploadedImage } from "@/app/components/ui/fileUploader";
 import { REQUIRED_DOCUMENTS, STEPS } from "./components"
 import { showSuccess } from "@/app/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -29,8 +29,8 @@ export default function LawyerOnboardingPage() {
   console.log({ specialisms })
 
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(0);
-  const [form, setForm] = useState<FormData>({
+  const [currentStep, setCurrentStep] = useState(4);
+  const [form, setForm] = useState<LawyerFormData>({
     nbaNumber: "",
     yearOfCall: "",
     state: "",
@@ -63,9 +63,8 @@ export default function LawyerOnboardingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [submitVerification, { isLoading: isSubmitting }] = useSubmitVerificationMutation();
-  const [uploadDocument] = useUploadDocumentMutation();
 
-  const updateForm = (field: keyof FormData | string, value: any) => {
+  const updateForm = (field: keyof LawyerFormData | string, value: any) => {
     if (field === "fees") {
       setForm(prev => ({ ...prev, fees: value }));
     } else {
@@ -127,39 +126,21 @@ export default function LawyerOnboardingPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDocumentUpload = async (docLabel: string, formData: FormData) => {
-    const docIndex = documents.findIndex(d => d.label === docLabel);
-    if (docIndex === -1) return;
-
-    // Set uploading state
-    setDocuments(prev => prev.map((doc, idx) =>
-      idx === docIndex ? { ...doc, uploading: true, progress: 0, error: undefined } : doc
+  const handleDocumentUpload = (docId: string, image: UploadedImage) => {
+    setDocuments(prev => prev.map((doc) =>
+      doc.id === docId ? {
+        ...doc,
+        fileUrl: image.preview,
+        filename: image.name,
+        sizeBytes: image.size,
+        base64: image.base64,
+        mimeType: image.type,
+        uploaded: true,
+        uploading: false,
+        progress: 100,
+        error: undefined,
+      } : doc
     ));
-
-    try {
-      // const result = await uploadDocument(formData).unwrap();
-      // if (result.data) {
-      //   setDocuments(prev => prev.map((doc, idx) => 
-      //     idx === docIndex ? {
-      //       ...doc,
-      //       fileUrl: result.data!.fileUrl,
-      //       filename: result.data!.filename,
-      //       sizeBytes: result.data!.sizeBytes,
-      //       uploaded: true,
-      //       uploading: false,
-      //       progress: 100,
-      //     } : doc
-      //   ));
-      // }
-    } catch (error: any) {
-      setDocuments(prev => prev.map((doc, idx) =>
-        idx === docIndex ? {
-          ...doc,
-          uploading: false,
-          error: error.message || "Upload failed",
-        } : doc
-      ));
-    }
   };
 
   const handleDocumentRemove = (docLabel: string) => {
@@ -209,6 +190,8 @@ export default function LawyerOnboardingPage() {
         filename: d.filename,
         fileUrl: d.fileUrl,
         sizeBytes: d.sizeBytes,
+        base64: d?.base64,
+        mimeType: d?.mimeType,
       })),
     };
 
@@ -377,7 +360,7 @@ export default function LawyerOnboardingPage() {
         {/* Footer */}
         <p className="text-center text-[11px] text-[#9CA3AF] mt-6 leading-relaxed">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#E8317A] font-semibold hover:underline">
+          <Link href="/auth/login" className="text-[#E8317A] font-semibold hover:underline">
             Sign in
           </Link>
           {" "}· Need help?{" "}

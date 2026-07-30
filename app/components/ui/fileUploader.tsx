@@ -1,6 +1,5 @@
 import { ImageIcon, Upload, X } from "lucide-react";
-import { ReactNode, useRef, useState } from "react";
-import { toast } from "sonner";
+import { ReactNode, useRef } from "react";
 import { showError } from "./sonner";
 
 export interface UploadedImage {
@@ -12,14 +11,48 @@ export interface UploadedImage {
   preview: string;
 };
 
+// "image"    → JPG/PNG only (profile photos, thumbnails, covers)
+// "pdf"      → PDF only
+// "document" → PDF, Word (.doc/.docx), or image — for verification-style uploads
+export type UploadFileType = "image" | "pdf" | "document";
+
+const TYPE_CONFIG: Record<UploadFileType, { mimes: string[]; extensions: string[]; label: string; buttonLabel: string }> = {
+  image: {
+    mimes: ["image/jpeg", "image/png", "image/webp"],
+    extensions: [".jpg", ".jpeg", ".png", ".webp"],
+    label: "an image (JPG or PNG)",
+    buttonLabel: "Upload Image",
+  },
+  pdf: {
+    mimes: ["application/pdf"],
+    extensions: [".pdf"],
+    label: "a PDF file",
+    buttonLabel: "Upload PDF",
+  },
+  document: {
+    mimes: [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/png",
+    ],
+    extensions: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"],
+    label: "a PDF, Word document, or image",
+    buttonLabel: "Upload File",
+  },
+};
+
 type Props = {
   maxImages?: number;
   images: UploadedImage[];
   title?: string;
-  type?: 'image' | 'pdf';
+  type?: UploadFileType;
   preview?: boolean;
   setImages: any;
-  children?: ReactNode
+  children?: ReactNode;
+  /** Max size per file, in MB. Defaults to 10MB. */
+  maxSizeMB?: number;
 };
 
 export default function ThumbnailUpload({
@@ -30,11 +63,12 @@ export default function ThumbnailUpload({
   type = "image",
   preview = false,
   children,
+  maxSizeMB = 10,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const cfg = TYPE_CONFIG[type];
 
   const triggerUpload = () => {
-    // if (images.length >= maxImages) return;
     inputRef.current?.click();
   };
 
@@ -68,7 +102,12 @@ export default function ThumbnailUpload({
     };
   };
 
-  const allowedTypes = type === "image" ? ["image/jpeg", "image/png"] : ["application/pdf"];
+  // Some browsers/OSes report an empty or unreliable `file.type` for
+  // .doc/.docx, so we fall back to checking the extension too.
+  const isAllowedFile = (file: File) => {
+    const ext = `.${file.name.split(".").pop()?.toLowerCase() || ""}`;
+    return cfg.mimes.includes(file.type) || cfg.extensions.includes(ext);
+  };
 
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -80,7 +119,8 @@ export default function ThumbnailUpload({
     const remainingSlots = maxImages - images.length;
 
     if (remainingSlots <= 0) {
-      alert(`Maximum of ${maxImages} images allowed`);
+      showError(`Maximum of ${maxImages} file${maxImages === 1 ? "" : "s"} allowed`);
+      e.target.value = "";
       return;
     }
 
@@ -89,13 +129,12 @@ export default function ThumbnailUpload({
     const parsedImages: UploadedImage[] = [];
 
     for (const file of selectedFiles) {
-      // Validate file type
-      if (type === 'pdf' && file.type !== 'application/pdf') {
-        showError('Please select a PDF file');
+      if (!isAllowedFile(file)) {
+        showError(`"${file.name}" isn't supported. Please select ${cfg.label}.`);
         continue;
       }
-      if (type === 'image' && !file.type.startsWith('image/')) {
-        showError('Please select an image file (JPG, PNG, etc.)');
+      if (file.size > maxSizeMB * 1024 * 1024) {
+        showError(`"${file.name}" is over ${maxSizeMB}MB.`);
         continue;
       }
       const parsed = await parseFile(file);
@@ -103,23 +142,10 @@ export default function ThumbnailUpload({
       parsedImages.push(parsed);
     }
 
-    const updatedImages = [...images, ...parsedImages];
-
-    setImages(updatedImages);
-
-    /**
-     * Example payload
-     */
-    const payload = {
-      images: updatedImages.map((img) => ({
-        name: img.name,
-        type: img.type,
-        size: img.size,
-        base64: img.base64,
-      })),
-    };
-
-    console.log("PAYLOAD:", payload);
+    if (parsedImages.length) {
+      const updatedImages = [...images, ...parsedImages];
+      setImages(updatedImages);
+    }
 
     // Reset input
     e.target.value = "";
@@ -134,10 +160,12 @@ export default function ThumbnailUpload({
     );
   };
 
+  const acceptAttr = [...cfg.extensions, ...cfg.mimes].join(",");
+
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-5">
-        <h4 className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">{title}</h4>
+        {title.trim() ? <h4 className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">{title}</h4> : <h4 className="mb-3">&nbsp;</h4>}
         <div className="flex items-center gap-3">
           {images.length < 2 && type === "image" && <div className="w-24 h-16 rounded-xl bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center overflow-hidden flex-shrink-0">
             {images.length > 0 ? (
@@ -158,11 +186,11 @@ export default function ThumbnailUpload({
           <div className="flex flex-col gap-1.5 w-full">
             <button
               onClick={triggerUpload}
-              // disabled={images.length >= maxImages}
+              type="button"
               className=""
             >
               {!children ? <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#9CA3AF] transition-colors">
-                <Upload size={11} /> Upload Thumbnail
+                <Upload size={11} /> {cfg.buttonLabel}
               </div> : children}
             </button>
 
@@ -173,7 +201,7 @@ export default function ThumbnailUpload({
               ref={inputRef}
               type="file"
               multiple
-              accept={allowedTypes.join(",")}
+              accept={acceptAttr}
               className="hidden"
               onChange={handleFileChange}
             />

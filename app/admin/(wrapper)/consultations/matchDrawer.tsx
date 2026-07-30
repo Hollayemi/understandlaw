@@ -97,6 +97,16 @@ export function MatchRequestDrawer({ req, onClose, onUpdate }: { req: MatchReque
             </div>
           </div>
 
+          {req.consultationId && (
+            <div className="flex items-center gap-2 mt-4 bg-[#ECFDF5] border border-[#6EE7B7] rounded-xl px-3 py-2.5">
+              <BadgeCheck size={13} className="text-[#059669] shrink-0" />
+              <p className="text-[11px] text-[#065F46] flex-1">
+                Matched — this request became <span className="font-mono font-semibold">{req.consultationId}</span>.
+              </p>
+              <span className="text-[10px] font-bold text-[#065F46] whitespace-nowrap">See Consultations → Payment Proof</span>
+            </div>
+          )}
+
           {(status === "pending" || status === "unassigned") && (
             <button
               onClick={handleAccept}

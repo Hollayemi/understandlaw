@@ -256,6 +256,8 @@ export interface UploadedDocument {
   uploading: boolean;
   progress: number;
   error?: string;
+  base64?: string;
+  mimeType?: string;
 }
 
 export interface FormData {
@@ -316,6 +318,27 @@ export interface ConsultationDocumentMeta {
   /** Optional human label, e.g. "Case Brief", "Tenancy Agreement". */
   label?: string;
   uploadedAt?: string;
+}
+
+// ─── Payment proof (lawyer-uploaded invoice / receipt) ─────────────────────────
+
+export type PaymentProofType = "invoice" | "receipt";
+export type PaymentProofStatus = "pending" | "verified" | "rejected";
+
+/**
+ * A payment invoice or receipt the lawyer uploads for a consultation, so the
+ * admin team can confirm the client's payment was properly documented before
+ * the consultation is closed out as completed.
+ */
+export interface PaymentProofMeta extends ConsultationDocumentMeta {
+  /** Unique id for this proof, used when the admin verifies/rejects it. */
+  id?: string;
+  type: PaymentProofType;
+  status?: PaymentProofStatus;
+  verifiedAt?: string;
+  verifiedBy?: string;
+  /** Reason given by admin when rejecting a proof, so the lawyer knows what to fix. */
+  rejectionReason?: string;
 }
 
 export interface BookingResponse {

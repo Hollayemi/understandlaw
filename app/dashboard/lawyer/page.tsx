@@ -148,7 +148,7 @@ export default function LawyerConsultationsPage() {
           onClose={() => setSelected(null)}
           onAccept={handleAcceptConsultation}
           onReject={handleRejectConsultation}
-          // onComplete={handleCompleteConsultation}
+          onComplete={handleCompleteConsultation}
         />
       )}
 

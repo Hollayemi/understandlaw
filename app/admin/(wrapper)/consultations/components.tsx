@@ -3,19 +3,22 @@ import React, { useState } from "react";
 import {
   MessageSquare, Video, Phone, Clock, CheckCircle, XCircle,
   AlertTriangle, Star, Eye, Flag, ChevronRight, Loader2, X, Check, RotateCcw,
-  Zap, Activity, Timer, Gavel,
+  Zap, Activity, Timer, Gavel, FileText, Download, BadgeCheck, AlertCircle,
+  CheckCircle2, ShieldAlert, Receipt,
 } from "lucide-react";
 import {
   useAdminUpdateConsultationStatusMutation,
   useAdminResolveDisputeMutation,
   useAdminFlagConsultationMutation,
   useAdminApproveRefundMutation,
+  useAdminVerifyPaymentProofMutation,
   useAdminAssignLawyerToMatchMutation,
   useAdminAutoMatchMutation,
 } from "@/redux/slices/admin/consultation.slice";
 import { ConsultStatus, ConsultMode, Consultation, MatchRequest } from "@/redux/types/consultation";
-import { ConversationTab } from "@/app/dashboard/consultations/components";
-import { formatTime, substringWithMax } from "@/utils/function";
+import { PaymentProofMeta, PaymentProofStatus } from "@/redux/types/lawyer";
+import { ConversationTab, DocumentPreviewModal } from "@/app/dashboard/consultations/components";
+import { formatTime, formatFileSize, substringWithMax } from "@/utils/function";
 import { MATCH_STATUS_CFG, MODE_CFG, STATUS_CFG } from "@/app/components/config";
 
 
@@ -44,17 +47,163 @@ export function StarRating({ n }: { n: number }) {
   );
 }
 
+// Payment proof status pill
+function ProofStatusPill({ status }: { status?: PaymentProofStatus }) {
+  if (status === "verified") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#065F46] flex-shrink-0">
+        <BadgeCheck size={9} /> Verified
+      </span>
+    );
+  }
+  if (status === "rejected") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#FEF2F2] text-[#991B1B] flex-shrink-0">
+        <AlertCircle size={9} /> Rejected
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#FFFBEB] text-[#92400E] flex-shrink-0">
+      <Clock size={9} /> Awaiting review
+    </span>
+  );
+}
+
+// Single invoice/receipt row with admin verify/reject controls
+function PaymentProofRow({ consultationId, proof }: { consultationId: string; proof: PaymentProofMeta }) {
+  const [preview, setPreview] = useState(false);
+  const [showRejectForm, setShowRejectForm] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [verifyProof, { isLoading }] = useAdminVerifyPaymentProofMutation();
+
+  const handleVerify = async (verified: boolean, reason?: string) => {
+    try {
+      await verifyProof({ consultationId, proofId: proof.id || proof.name, verified, reason }).unwrap();
+      setShowRejectForm(false);
+      setRejectReason("");
+    } catch (error) {
+      console.error("Failed to verify payment proof:", error);
+    }
+  };
+
+  return (
+    <>
+      {preview && <DocumentPreviewModal doc={proof} onClose={() => setPreview(false)} />}
+      <div className="border-[1.5px] border-[#F3F4F6] rounded-xl p-3.5 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+            <FileText size={14} className="text-[#6B7280]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <p className="text-[12px] font-bold text-[#111827] truncate capitalize">{proof.type}</p>
+              <ProofStatusPill status={proof.status} />
+            </div>
+            <p className="text-[10px] text-[#9CA3AF] truncate">{proof.label || proof.name} · {formatFileSize(proof.sizeBytes)}</p>
+          </div>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button onClick={() => setPreview(true)} title="Preview" className="w-7 h-7 rounded-lg hover:bg-[#F9FAFB] border border-transparent hover:border-[#F3F4F6] flex items-center justify-center transition-colors">
+              <Eye size={12} className="text-[#6B7280]" />
+            </button>
+            {proof.fileUrl && (
+              <a href={proof.fileUrl} download={proof.name} title="Download" className="w-7 h-7 rounded-lg hover:bg-[#F9FAFB] border border-transparent hover:border-[#F3F4F6] flex items-center justify-center transition-colors">
+                <Download size={12} className="text-[#6B7280]" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {proof.status === "rejected" && proof.rejectionReason && (
+          <p className="text-[10px] text-[#991B1B] bg-[#FEF2F2] border border-[#FCA5A5] rounded-lg px-2.5 py-1.5">
+            You rejected this: {proof.rejectionReason}
+          </p>
+        )}
+
+        {proof.status !== "verified" && !showRejectForm && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleVerify(true)}
+              disabled={isLoading}
+              className="flex-1 py-2 rounded-lg text-[11px] font-bold text-white bg-[#10B981] hover:bg-[#059669] disabled:opacity-50 transition-colors flex items-center justify-center gap-1.5"
+            >
+              {isLoading ? <Loader2 size={11} className="animate-spin" /> : <BadgeCheck size={11} />}
+              Verify
+            </button>
+            <button
+              onClick={() => setShowRejectForm(true)}
+              disabled={isLoading}
+              className="flex-1 py-2 rounded-lg text-[11px] font-semibold text-[#EF4444] border border-[#FCA5A5] hover:bg-[#FEF2F2] disabled:opacity-50 transition-colors"
+            >
+              Reject
+            </button>
+          </div>
+        )}
+
+        {showRejectForm && (
+          <div className="space-y-2">
+            <textarea
+              value={rejectReason}
+              onChange={e => setRejectReason(e.target.value)}
+              placeholder="Why doesn't this document work? e.g. Amount doesn't match, blurry image…"
+              className="w-full h-16 px-2.5 py-2 rounded-lg border-[1.5px] border-[#FCA5A5] text-[11px] text-[#111827] resize-none outline-none focus:border-[#EF4444] placeholder:text-[#D1D5DB] transition-colors"
+            />
+            <div className="flex gap-2">
+              <button onClick={() => setShowRejectForm(false)} className="flex-1 py-1.5 rounded-lg text-[10px] font-semibold text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors">
+                Cancel
+              </button>
+              <button
+                onClick={() => handleVerify(false, rejectReason)}
+                disabled={isLoading || !rejectReason.trim()}
+                className="flex-1 py-1.5 rounded-lg text-[10px] font-bold text-white bg-[#EF4444] hover:bg-[#DC2626] disabled:opacity-40 transition-colors flex items-center justify-center gap-1"
+              >
+                {isLoading ? <Loader2 size={10} className="animate-spin" /> : null}
+                Confirm Reject
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 // Transcript Drawer with API mutations
 export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; onClose: () => void }) {
   const [flagNote, setFlagNote] = useState("");
   const [flagging, setFlagging] = useState(false);
   const [flagged, setFlagged] = useState(consult.flagged);
-  const [activeTab, setActiveTab] = useState<"transcript" | "financials" | "dispute">("transcript");
+  const [completing, setCompleting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"transcript" | "financials" | "payment" | "dispute">("transcript");
 
   const [flagConsultation] = useAdminFlagConsultationMutation();
   const [approveRefund] = useAdminApproveRefundMutation();
   const [resolveDispute] = useAdminResolveDisputeMutation();
   const [updateStatus] = useAdminUpdateConsultationStatusMutation();
+
+  const proofs = consult.paymentProofs || [];
+  const invoiceProof = proofs.filter(p => p.type === "invoice").slice(-1)[0];
+  const receiptProof = proofs.filter(p => p.type === "receipt").slice(-1)[0];
+  const bothVerified = invoiceProof?.status === "verified" && receiptProof?.status === "verified";
+  const alreadyCompleted = consult.status === "completed";
+
+  const handleMarkCompleted = async () => {
+    setCompleting(true);
+    try {
+      await updateStatus({
+        consultationId: consult.id,
+        status: "completed",
+        note: bothVerified
+          ? "Payment invoice & receipt verified by admin — consultation closed out."
+          : "Marked completed by admin.",
+      }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to mark consultation completed:", error);
+    } finally {
+      setCompleting(false);
+    }
+  };
 
   const handleFlag = async () => {
     if (!flagNote.trim()) return;
@@ -181,11 +330,15 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
             {([
               { id: "transcript", label: "Transcript" },
               { id: "financials", label: "Financials" },
+              { id: "payment", label: "Payment Proof" },
               { id: "dispute", label: consult.disputed ? "⚠ Dispute" : "Actions" },
             ] as const).map(t => (
               <button key={t.id} onClick={() => setActiveTab(t.id)}
-                className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${activeTab === t.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
+                className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center justify-center gap-1 ${activeTab === t.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
                 {t.label}
+                {t.id === "payment" && proofs.length > 0 && (
+                  <span className={`w-1.5 h-1.5 rounded-full ${bothVerified ? "bg-[#10B981]" : "bg-[#F59E0B]"}`} />
+                )}
               </button>
             ))}
           </div>
@@ -252,6 +405,72 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
             </div>
           )}
 
+          {/* Payment Proof Tab — verify lawyer-uploaded invoice/receipt, then close out the consultation */}
+          {activeTab === "payment" && (
+            <div className="space-y-4">
+              <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-3">
+                <Receipt size={13} className="text-blue-500 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-blue-700 leading-relaxed">
+                  The lawyer uploads an invoice and a payment receipt here once the client has paid. Verify both are legitimate, then mark the consultation completed to round everything up.
+                </p>
+              </div>
+
+              {proofs.length === 0 ? (
+                <div className="text-center py-12 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6]">
+                  <FileText size={22} className="text-[#D1D5DB] mx-auto mb-2" />
+                  <p className="text-[12px] font-semibold text-[#9CA3AF]">Nothing uploaded yet</p>
+                  <p className="text-[11px] text-[#D1D5DB] mt-1 max-w-xs mx-auto">The lawyer hasn&apos;t submitted a payment invoice or receipt for this consultation yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {invoiceProof ? (
+                    <PaymentProofRow consultationId={consult.id} proof={invoiceProof} />
+                  ) : (
+                    <div className="text-center py-6 bg-[#F9FAFB] rounded-xl border border-dashed border-[#E5E7EB]">
+                      <p className="text-[11px] text-[#9CA3AF]">Invoice not uploaded yet</p>
+                    </div>
+                  )}
+                  {receiptProof ? (
+                    <PaymentProofRow consultationId={consult.id} proof={receiptProof} />
+                  ) : (
+                    <div className="text-center py-6 bg-[#F9FAFB] rounded-xl border border-dashed border-[#E5E7EB]">
+                      <p className="text-[11px] text-[#9CA3AF]">Receipt not uploaded yet</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="pt-2 border-t border-[#F3F4F6]">
+                {alreadyCompleted ? (
+                  <div className="flex items-center gap-2 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-3.5">
+                    <CheckCircle2 size={14} className="text-[#9CA3AF] shrink-0" />
+                    <p className="text-[11px] font-semibold text-[#6B7280]">This consultation is already marked completed.</p>
+                  </div>
+                ) : (
+                  <>
+                    {!bothVerified && (
+                      <div className="flex items-start gap-2 mb-3 bg-[#FFFBEB] border border-[#FDE68A] rounded-xl p-3">
+                        <ShieldAlert size={13} className="text-[#F59E0B] shrink-0 mt-0.5" />
+                        <p className="text-[11px] text-[#92400E] leading-relaxed">
+                          Invoice and receipt aren&apos;t both verified yet. You can still mark this completed if you&apos;re satisfied another way — just double-check the transcript first.
+                        </p>
+                      </div>
+                    )}
+                    <button
+                      onClick={handleMarkCompleted}
+                      disabled={completing}
+                      className="w-full py-3 rounded-xl text-[12px] font-bold text-white disabled:opacity-50 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                      style={{ background: bothVerified ? "linear-gradient(135deg, #10B981, #059669)" : "linear-gradient(135deg, #111827, #1E3A5F)" }}
+                    >
+                      {completing ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
+                      {bothVerified ? "Verify & Mark Completed" : "Mark as Completed"}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Dispute/Actions Tab with mutations */}
           {activeTab === "dispute" && (
             <div className="space-y-4">
@@ -303,6 +522,14 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
 
               <div className="space-y-2">
                 <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Admin Actions</p>
+                {!alreadyCompleted && (
+                  <button onClick={() => setActiveTab("payment")}
+                    className="w-full py-2.5 rounded-xl text-[12px] font-semibold border transition-colors text-left px-4 flex items-center justify-between"
+                    style={{ color: "#065F46", borderColor: "#6EE7B7", background: "#ECFDF5" }}>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 size={12} /> Verify Payment &amp; Mark Completed</span>
+                    <ChevronRight size={12} />
+                  </button>
+                )}
                 {[
                   { label: "Send Warning to Lawyer", onClick: handleSendWarning, color: "#F59E0B", border: "#FDE68A", bg: "#FFFBEB" },
                   { label: "Suspend Lawyer Account", onClick: () => { }, color: "#EF4444", border: "#FCA5A5", bg: "#FEF2F2" },

@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from 'framer-motion';
 import Link from "next/link";
-import { MessageSquare, Check, CheckCircle, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, Download, Eye, FileImage, File as FileIcon, Lock, Sparkles, Paperclip, AlertCircle, } from "lucide-react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, CheckCircle, Check, AlertTriangle, Star, Send, Loader2, X, RotateCcw, Gavel, ArrowRight, Shield, FileText, ThumbsUp, HelpCircle, ExternalLink, BadgeCheck, Cog, Download, Eye, FileImage, File as FileIcon, Lock, Sparkles, Paperclip, AlertCircle, } from "lucide-react";
 import { Consultation2 as Consultation, ConsultStatus } from "@/redux/types/consultation";
 import { ConsultationDocumentMeta } from "@/redux/types/lawyer";
 import { STATUS_CFG, MODE_CFG } from "@/app/components/config";
@@ -74,7 +74,7 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
 
         return (
           <React.Fragment key={label}>
-            <div className="flex flex-col items-center gap-1 flex-shrink-0">
+            <div className="flex flex-col items-center gap-1 shrink-0">
               <div
                 className="w-5 h-5 rounded-full flex items-center justify-center transition-all"
                 style={{
@@ -132,9 +132,9 @@ export function DocumentPreviewModal({ doc, onClose }: { doc: ConsultationDocume
         className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#F3F4F6] flex-shrink-0">
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#F3F4F6] shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] flex items-center justify-center shrink-0">
               <DocIcon name={doc.name} className="text-[#6B7280]" />
             </div>
             <div className="min-w-0">
@@ -142,7 +142,7 @@ export function DocumentPreviewModal({ doc, onClose }: { doc: ConsultationDocume
               <p className="text-[10px] text-[#9CA3AF]">{formatFileSize(doc.sizeBytes)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             {doc.fileUrl && (
               <a
                 href={doc.fileUrl}
@@ -193,21 +193,21 @@ function DocRow({ doc, badge }: { doc: ConsultationDocumentMeta; badge?: { label
     <>
       {preview && <DocumentPreviewModal doc={preview} onClose={() => setPreview(null)} />}
       <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl">
-        <div className="w-8 h-8 rounded-lg bg-white border border-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-white border border-[#F3F4F6] flex items-center justify-center shrink-0">
           <DocIcon name={doc.name} className="text-[#6B7280]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap">
             <p className="text-[12px] font-semibold text-[#111827] truncate">{doc.label || doc.name}</p>
             {badge && (
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: badge.bg, color: badge.color }}>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: badge.bg, color: badge.color }}>
                 {badge.label}
               </span>
             )}
           </div>
           <p className="text-[10px] text-[#9CA3AF]">{formatFileSize(doc.sizeBytes)}</p>
         </div>
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => setPreview(doc)}
             title="Preview"
@@ -339,12 +339,21 @@ export function DocumentsPanel({
 
 // ─── Consultation Detail Drawer ───────────────────────────────────────────────
 
-export const ConversationTab = ({ consult, isAdmin = false }: { consult: Consultation; isAdmin?: boolean }) => {
-  console.log({consult})
+export const ConversationTab = ({
+  consult,
+  isAdmin = false,
+  viewerRole = "citizen",
+}: {
+  consult: Consultation;
+  isAdmin?: boolean;
+  /** Whose seat is viewing this — controls which side is labeled "You" and aligned right. */
+  viewerRole?: "citizen" | "lawyer";
+}) => {
   const router = useRouter()
   const { data: rawMessages, isLoading } = useGetMessagesQuery({ conversationId: consult.conversationId, isAdmin })
   const messages = rawMessages?.data?.messages || []
-  console.log({ messages })
+
+  const chatHref = viewerRole === "lawyer" ? "/dashboard/chat/lawyer" : "/dashboard/chat";
 
   return (
     <div className="flex flex-col h-full">
@@ -358,10 +367,12 @@ export const ConversationTab = ({ consult, isAdmin = false }: { consult: Consult
             <p className="text-sm font-semibold text-[#9CA3AF]">No messages yet</p>
             <p className="text-[11px] text-[#D1D5DB] mt-1">
               {consult.status === "awaiting_lawyer"
-                ? "Your lawyer is reviewing your request and will respond shortly."
+                ? (viewerRole === "lawyer"
+                  ? "Accept this brief to start the conversation with your client."
+                  : "Your lawyer is reviewing your request and will respond shortly.")
                 : "The conversation will appear here once it starts."}
             </p>
-            {consult.status === "awaiting_lawyer" && (
+            {consult.status === "awaiting_lawyer" && viewerRole === "citizen" && (
               <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#E8317A] font-semibold">
                 <Loader2 size={11} className="animate-spin" />
                 Awaiting lawyer response…
@@ -369,47 +380,50 @@ export const ConversationTab = ({ consult, isAdmin = false }: { consult: Consult
             )}
           </div>
         ) : (
-          messages.map(msg => (
-            <div
-              key={msg._id}
-              className={`flex gap-2.5 ${msg.senderRole !== "lawyer" ? "flex-row-reverse" : ""}`}
-            >
+          messages.map(msg => {
+            const isSelf = msg.senderRole === viewerRole;
+            return (
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0 mt-0.5"
-                style={{
-                  background:
-                    msg.senderRole === "citizen"
-                      ? "linear-gradient(135deg, #6B7280, #9CA3AF)"
-                      : `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)`,
-                }}
+                key={msg._id}
+                className={`flex gap-2.5 ${isSelf ? "flex-row-reverse" : ""}`}
               >
-                {msg.senderRole === "citizen" ? "You" : consult.lawyer.initials}
-              </div>
-              <div className={`flex max-w-[85%] flex flex-col ${msg.senderRole === "lawyer" ? "items-end" : ""}`}>
-                <div className={`flex items-center gap-2 mb-1 ${msg.senderRole === "lawyer" ? "flex-row-reverse" : ""}`}>
-                  <p className="text-[10px] font-semibold text-[#9CA3AF]">{msg.senderName}</p>
-                  <p className="text-[10px] text-[#D1D5DB]">{formatTime(msg.createdAt)}</p>
-                </div>
                 <div
-                  className={`rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed ${msg.senderRole === "citizen"
-                    ? "bg-[#F3F4F6] text-[#374151] rounded-tl-sm"
-                    : "text-white rounded-tr-sm"
-                    }`}
-                  style={
-                    msg.senderRole === "lawyer"
-                      ? { background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}cc)` }
-                      : {}
-                  }
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5"
+                  style={{
+                    background:
+                      msg.senderRole === "citizen"
+                        ? "linear-gradient(135deg, #6B7280, #9CA3AF)"
+                        : `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)`,
+                  }}
                 >
-                  {msg.content}
+                  {isSelf ? "You" : (msg.senderRole === "lawyer" ? consult.lawyer.initials : msg.senderName?.charAt(0) || "C")}
+                </div>
+                <div className={`flex max-w-[85%]  flex-col ${isSelf ? "items-end" : ""}`}>
+                  <div className={`flex items-center gap-2 mb-1 ${isSelf ? "flex-row-reverse" : ""}`}>
+                    <p className="text-[10px] font-semibold text-[#9CA3AF]">{isSelf ? "You" : msg.senderName}</p>
+                    <p className="text-[10px] text-[#D1D5DB]">{formatTime(msg.createdAt)}</p>
+                  </div>
+                  <div
+                    className={`rounded-2xl px-3.5 py-2.5 text-[12px] leading-relaxed ${msg.senderRole === "lawyer"
+                      ? `text-white ${isSelf ? "rounded-tr-sm" : "rounded-tl-sm"}`
+                      : `bg-[#F3F4F6] text-[#374151] ${isSelf ? "rounded-tr-sm" : "rounded-tl-sm"}`
+                      }`}
+                    style={
+                      msg.senderRole === "lawyer"
+                        ? { background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}cc)` }
+                        : {}
+                    }
+                  >
+                    {msg.content}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
       <div className="p-4">
-        <button onClick={() => router.push("/dashboard/chat")} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+        <button onClick={() => router.push(chatHref)} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
           Open Conversation
         </button>
       </div>
@@ -468,7 +482,7 @@ export function ConsultationDrawer({
       <div className="w-full max-w-lg bg-white h-full flex flex-col shadow-2xl">
         {/* Accent bar */}
         <div
-          className="h-1 w-full flex-shrink-0"
+          className="h-1 w-full shrink-0"
           style={{
             background:
               consult.status === "disputed" ? "#EF4444"
@@ -479,13 +493,13 @@ export function ConsultationDrawer({
         />
 
         {/* Header */}
-        <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
+        <div className="px-6 py-5 border-b border-[#F3F4F6] shrink-0">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex-1 min-w-0">
               {/* <p className="text-[10px] font-mono font-bold text-[#9CA3AF] mb-1">{consult.id}</p> */}
               <h2 className="text-[14px] font-bold text-[#111827] leading-snug line-clamp-2">{consult.topic}</h2>
             </div>
-            <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#111827] transition-colors flex-shrink-0 mt-0.5">
+            <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#111827] transition-colors shrink-0 mt-0.5">
               <X size={16} />
             </button>
           </div>
@@ -493,7 +507,7 @@ export function ConsultationDrawer({
           {/* Lawyer row */}
           <div className="flex items-center gap-3 mb-4">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shrink-0"
               style={{ background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)` }}
             >
               {consult.lawyer.initials}
@@ -501,11 +515,11 @@ export function ConsultationDrawer({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-[12px] font-semibold text-[#111827]">{consult.lawyer.name}</p>
-                <BadgeCheck size={12} className="text-amber-500 flex-shrink-0" />
+                <BadgeCheck size={12} className="text-amber-500 shrink-0" />
               </div>
               <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0].displayName}</p>
             </div>
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
                 style={{ background: cfg.bg, color: cfg.text }}
@@ -608,7 +622,7 @@ export function ConsultationDrawer({
                 <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Your Lawyer</p>
                 <div className="bg-[#F9FAFB] rounded-xl border border-[#F3F4F6] p-4 flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0"
                     style={{ background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)` }}
                   >
                     {consult.lawyer.initials}
@@ -622,7 +636,7 @@ export function ConsultationDrawer({
                   </div>
                   <Link
                     href={`/dashboard/marketplace/${consult.lawyer.nbaNumber.replaceAll("/", "-")}`}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline flex-shrink-0"
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline shrink-0"
                   >
                     Profile <ExternalLink size={10} />
                   </Link>
@@ -770,7 +784,7 @@ export function ConsultationDrawer({
                       href={item.href}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#F3F4F6] hover:bg-[#F9FAFB] hover:border-[#E5E7EB] transition-all group"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] flex items-center justify-center flex-shrink-0 group-hover:bg-white">
+                      <div className="w-7 h-7 rounded-lg bg-[#F9FAFB] flex items-center justify-center shrink-0 group-hover:bg-white">
                         <Icon size={13} className="text-[#9CA3AF]" />
                       </div>
                       <span className="text-[12px] font-medium text-[#374151] flex-1">{item.label}</span>
@@ -832,7 +846,7 @@ export function ConsultationCard({
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shrink-0"
               style={{ background: `linear-gradient(135deg, ${consult.lawyer.color}, ${consult.lawyer.color}80)` }}
             >
               {consult.lawyer.initials}
@@ -840,12 +854,12 @@ export function ConsultationCard({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-[13px] font-bold text-[#111827] truncate">{consult.lawyer.name}</p>
-                <BadgeCheck size={11} className="text-amber-500 flex-shrink-0" />
+                <BadgeCheck size={11} className="text-amber-500 shrink-0" />
               </div>
               <p className="text-[10px] text-[#9CA3AF]">{consult.lawyer.specialisms[0].displayName}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             {hasUnread && (
               <span className="flex items-center gap-1 text-[10px] font-bold text-[#E8317A] bg-[#FFF0F5] border border-[#FBCFE8] px-2 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#E8317A]" />
@@ -856,7 +870,7 @@ export function ConsultationCard({
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
               style={{ background: cfg.bg, color: cfg.text }}
             >
-              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cfg.dot }} />
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.dot }} />
               {cfg.userLabel}
             </span>
             {cfg.action === "pay" && (
@@ -865,7 +879,7 @@ export function ConsultationCard({
                 onClick={handlePayment}
               >
                 {isLoading ? <Cog size={10} className="text-white rotate" /> : <>
-                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-green-800" />
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-green-800" />
                   Pay Now
                 </>}
               </div>
@@ -911,7 +925,6 @@ export function ConsultationCard({
     </button>
   );
 }
-
 
 
 interface ConfidentialityConsentProps {
@@ -1024,7 +1037,7 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
 
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                      <div className="shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-green-600" />
                       </div>
                       <div>
@@ -1036,7 +1049,7 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                      <div className="shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-green-600" />
                       </div>
                       <div>
@@ -1048,7 +1061,7 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                      <div className="shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-green-600" />
                       </div>
                       <div>
@@ -1060,7 +1073,7 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
+                      <div className="shrink-0 w-5 h-5 rounded-full bg-green-50 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-green-600" />
                       </div>
                       <div>
@@ -1072,14 +1085,14 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                     </div>
                   </div>
 
-                  {/* <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                  <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
                     <div className="flex items-start gap-2">
-                      <AlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                      <AlertCircle size={16} className="text-amber-600 shrink-0 mt-0.5" />
                       <p className="text-xs text-amber-700">
                         This consent is valid for today. You'll be asked to confirm again tomorrow for your security.
                       </p>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
 

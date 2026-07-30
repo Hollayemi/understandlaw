@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { MessageSquare, Clock, CheckCircle, ChevronRight, Bell, Search, Plus, ArrowRight, MessageCircle, Zap, Receipt, Lock, Sparkles, FileClock, Users } from "lucide-react";
 import { Consultation, ConsultStatus, MatchStatus, MatchRequest } from "@/redux/types/consultation";
-import { getJourneyStep, StarRating, JourneyTracker, ConsultationCard } from "../components";
+import { ConsultationCard } from "../components";
 import { useGetCitizenConsultationsQuery,  useGetCitizenStatsQuery,  useRaiseDisputeMutation,  useRequestRefundMutation,  useSubmitRatingMutation, useGetCitizenMatchRequestsQuery } from "@/redux/slices/consultation.slice";
 import { ConsultationDrawer } from "../components"
 

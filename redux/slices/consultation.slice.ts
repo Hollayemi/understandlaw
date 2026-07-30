@@ -22,7 +22,7 @@ import {
   MatchRequest,
   RecommendedLawyerRef,
 } from "@/redux/types/consultation";
-import { ApiResponse } from "@/redux/types/lawyer";
+import { ApiResponse, ConsultationDocumentMeta } from "@/redux/types/lawyer";
 
 export const consultationsApi = createApi({
   reducerPath: "consultationsApi",
@@ -343,6 +343,22 @@ export const consultationsApi = createApi({
         { type: "LawyerConsultation", id },
         "LawyerConsultations",
         "LawyerStats",
+      ],
+    }),
+
+    // Upload the client's payment invoice or receipt (lawyer)
+    uploadPaymentProof: builder.mutation<
+      ApiResponse<Consultation>,
+      { consultationId: string; formData: FormData }
+    >({
+      query: ({ consultationId, formData }) => ({
+        url: `/consultations/lawyer/${consultationId}/payment-proof`,
+        method: "POST",
+        data: formData,
+      }),
+      invalidatesTags: (result, error, { consultationId }) => [
+        { type: "LawyerConsultation", id: consultationId },
+        "LawyerConsultations",
       ],
     }),
 
@@ -669,6 +685,7 @@ export const {
   useRejectConsultationMutation,
   useSendLawyerMessageMutation,
   useCompleteConsultationMutation,
+  useUploadPaymentProofMutation,
 } = consultationsApi;
 
 // Match request hooks
