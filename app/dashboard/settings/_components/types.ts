@@ -6,7 +6,8 @@ export type SettingsTab =
   | "appearance" 
   | "legal" 
   | "subscription"
-  | "lawyer-profile";
+  | "lawyer-profile"
+  | "id-card";
 
 export interface Toggle {
   id: string;

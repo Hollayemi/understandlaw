@@ -27,6 +27,7 @@ import {
   X,
   CreditCard,
   Briefcase,
+  IdCard,
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import {
@@ -43,21 +44,15 @@ import {
   SubscriptionSettings,
 } from "./_components";
 import { SettingsTab } from "./_components/types";
-import { useLogoutMutation } from "@/redux/authService/authSlice";
+
 import { LawyerProfileUpdate } from "./_components/lawyer_update"
-import { signOut } from "next-auth/react";
+import { LawyerIdCard } from "./_components/idCard"
 
 export default function SettingsPage() {
   const { userInfo } = useUserData();
   const user = (userInfo as any)?.user ?? {};
   const profile = (userInfo as any)?.profile ?? {};
   const [tab, setTab] = useState<SettingsTab>("profile");
-  const [logout] = useLogoutMutation();
-
-  const handleLogout = async () => {
-  await logout();
-  await signOut({ callbackUrl: "/login" });
-};
 
   // Define tabs based on user role
   const tabs: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
@@ -65,9 +60,10 @@ export default function SettingsPage() {
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "privacy", label: "Privacy & Data", icon: Shield },
     { id: "security", label: "Security", icon: Lock },
-    // Only show subscription tab for lawyers
+    // Only show lawyer-specific tabs for lawyers
     ...(user?.role === "lawyer"
       ? [
+          { id: "id-card" as SettingsTab, label: "ID Card", icon: IdCard },
           { id: "subscription" as SettingsTab, label: "Subscription", icon: CreditCard },
           { id: "lawyer-profile" as SettingsTab, label: "Lawyer Profile", icon: Briefcase },
         ]
@@ -78,7 +74,7 @@ export default function SettingsPage() {
 
   // If current tab is lawyer-specific but user is not a lawyer, redirect to profile
   useEffect(() => {
-    if ((tab === "subscription" || tab === "lawyer-profile") && user?.role !== "lawyer") {
+    if ((tab === "subscription" || tab === "lawyer-profile" || tab === "id-card") && user?.role !== "lawyer") {
       setTab("profile");
     }
   }, [user?.role, tab]);
@@ -94,7 +90,7 @@ export default function SettingsPage() {
           <ChevronRight size={11} className="text-gray-300" />
           <span className="font-semibold text-gray-800">Settings</span>
         </div>
-        <button onClick={handleLogout} className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+        <button className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
           <LogOut size={13} /> Sign Out
         </button>
       </div>
@@ -130,7 +126,7 @@ export default function SettingsPage() {
             })}
 
             <div className="mt-3 pt-3 border-t border-gray-100">
-              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 hover:text-red-700 transition-all w-full text-left">
+              <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 hover:text-red-700 transition-all w-full text-left">
                 <LogOut size={15} />
                 Sign Out
               </button>
@@ -169,6 +165,7 @@ export default function SettingsPage() {
             {tab === "legal" && <LegalSettings user={user} profile={profile} />}
             {tab === "subscription" && <SubscriptionSettings user={user} />}
             {tab === "lawyer-profile" && <LawyerProfileUpdate />}
+            {tab === "id-card" && <LawyerIdCard user={user} profile={profile} />}
           </div>
         </div>
       </div>
