@@ -220,7 +220,7 @@ export function ConsultationDrawer({
                                 <p className="text-[12px] font-bold text-[#065F46]">Consultation in progress</p>
                             </div>
                             <p className="text-[11px] text-[#6B7280] mb-3">Respond within your stated response time to maintain your rating.</p>
-                            <button onClick={() => router.push(consult.conversationId ? `/dashboard/chat?conversationId=${consult.conversationId}` : `/dashboard/chat?consultationId=${consult.id}`)} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
+                            <button onClick={() => router.push("/dashboard/chat")} className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-colors">
                                 Open Conversation
                             </button>
                         </div>

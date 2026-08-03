@@ -481,9 +481,13 @@ export function ConversationHeader({
     return formatTime(otherPresence?.lastSeenAt, 'relative')
   })();
 
-  const name = other?.name ?? conversation.groupName ?? "Chat";
-  const initials = getInitials(name);
-  const color = colorFromString(name);
+  const caseInfo = conversation.caseInfo;
+  const otherName = other?.name ?? conversation.groupName ?? "Chat";
+  // A case chat is titled by the consultation topic; the avatar/initials
+  // still represent the other participant since it's a 1:1 conversation.
+  const name = caseInfo?.title ?? otherName;
+  const initials = getInitials(otherName);
+  const color = colorFromString(otherName);
 
   return (
     <div className="flex !fixed w-full md:relative top-0 items-center gap-3 px-4 py-3.5 border-b border-[#F3F4F6] bg-white flex-shrink-0">
@@ -508,13 +512,14 @@ export function ConversationHeader({
               Admin View
             </span>
           )}
-          {conversation.contextType === "consultation" && (
-            <span className="text-[9px] font-bold text-[#3B82F6] bg-[#EFF6FF] border border-[#BFDBFE] px-1.5 py-0.5 rounded-full">
-              Consultation
+          {caseInfo && (
+            <span className="text-[9px] font-bold text-[#3B82F6] bg-[#EFF6FF] border border-[#BFDBFE] px-1.5 py-0.5 rounded-full whitespace-nowrap">
+              Case
             </span>
           )}
         </div>
-        <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1">
+        <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1 truncate">
+          {caseInfo && <span className="truncate">with {otherName} ·</span>}
           <span
             className="w-1.5 h-1.5 rounded-full flex-shrink-0"
             style={{ background: isOnline ? "#10B981" : "#D1D5DB" }}
@@ -560,11 +565,13 @@ export function ConversationListItem({
   unreadCount: number;
   onClick: () => void;
 }) {
-  console.log(conversation)
   const other = conversation.participants.find(p => p.userId !== currentUserId);
-  console.log(other)
   const isOnline = other ? presence[other.userId]?.isOnline ?? false : false;
-  const name = other?.name ?? conversation.groupName ?? "Chat";
+
+  const caseInfo = conversation.caseInfo;
+  // A case chat is titled by the consultation topic, e.g. "Tenancy Dispute",
+  // not by the other participant's name — that's shown as a subtitle instead.
+  const name = caseInfo?.title ?? other?.name ?? conversation.groupName ?? "Chat";
   const initials = getInitials(name);
   const color = colorFromString(name);
   const last = conversation.lastMessage;
@@ -608,6 +615,9 @@ export function ConversationListItem({
             {last ? formatTime(last.createdAt, 'relative') : ""}
           </span>
         </div>
+        {caseInfo && other?.name && (
+          <p className="text-[10.5px] text-[#9CA3AF] truncate">with {other.name}</p>
+        )}
         <div className="flex items-center justify-between gap-2 mt-0.5">
           <p className={`text-[12px] truncate ${unreadCount > 0 ? "text-[#374151] font-medium" : "text-[#9CA3AF]"}`}>
             {preview}
@@ -618,9 +628,9 @@ export function ConversationListItem({
             </span>
           )}
         </div>
-        {conversation.contextType === "consultation" && (
+        {caseInfo && (
           <span className="text-[9px] text-[#3B82F6] font-semibold mt-0.5 inline-block">
-            Consultation chat
+            Case · {caseInfo.status.replace(/_/g, " ")}
           </span>
         )}
       </div>

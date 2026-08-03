@@ -68,12 +68,25 @@ export interface IConversation {
   metadata?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+  /** Present when contextType === 'consultation' — the linked case's info. */
+  caseInfo?: ICaseInfo | null;
 }
 
 export interface IPresence {
   userId: string;
   isOnline: boolean;
   lastSeenAt: string;
+}
+
+// Attached by the backend when a conversation's contextType === 'consultation'.
+// Lets the UI render "Open <title> case" instead of a generic person-name chat.
+export interface ICaseInfo {
+  consultationId: string;
+  title: string;
+  status: string;
+  mode: string;
+  receiptId?: string;
+  detail?: string;
 }
 
 // ─── API Response wrappers ────────────────────────────────────────────────────
@@ -132,6 +145,20 @@ export const chatApi = createApi({
       providesTags: (r, e, id) => [{ type: "Conversation", id }],
     }),
 
+    // GET /chat/conversations/context/:contextType/:contextId
+    // Look up a case's chat directly from its consultationId, without
+    // needing to already know the conversationId.
+    getConversationByContext: builder.query<
+      ApiOk<{ conversation: IConversation }>,
+      { contextType: string; contextId: string }
+    >({
+      query: ({ contextType, contextId }) => ({
+        url: `/chat/conversations/context/${contextType}/${contextId}`,
+        method: "GET",
+      }),
+      providesTags: (r, e, { contextId }) => [{ type: "Conversation", id: contextId }],
+    }),
+
     // GET /chat/conversations/:id/messages
     getMessages: builder.query<
       ApiOk<{ messages: IMessage[] }>,
@@ -187,6 +214,8 @@ export const {
   useGetConversationsQuery,
   useCreateConversationMutation,
   useGetConversationQuery,
+  useGetConversationByContextQuery,
+  useLazyGetConversationByContextQuery,
   useGetMessagesQuery,
   useGetConversationPresenceQuery,
   useGetPresenceQuery,

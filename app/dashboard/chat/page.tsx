@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import {
   ChevronRight, Plus, Search, MessageSquare, Loader2, X, RefreshCw,
@@ -9,10 +10,13 @@ import {
 } from "lucide-react";
 import {
   useGetConversationsQuery,
+  useGetConversationQuery,
+  useGetConversationByContextQuery,
   selectSocketConnected,
   IConversation,
   ConversationStatus,
 } from "@/redux/slices/chat.slice";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useDispatch } from "react-redux";
 import { useChatSocket } from "@/hook/useChatSocket";
 import { useChatRoom } from "@/hook/useChatRoom";
@@ -36,9 +40,20 @@ const CONV_STATUS: Record<ConversationStatus, { label: string; color: string; bg
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function ConversationsPage() {
+function ConversationsPageContent() {
   const dispatch = useDispatch();
-  const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Deep-link support: navigating from a consultation's "Open Conversation"
+  // button passes ?conversationId=... (preferred) or ?consultationId=...
+  // (fallback, resolved via contextType/contextId) so each case opens its
+  // own chat directly instead of landing on the generic inbox.
+  const deepLinkConversationId = searchParams.get("conversationId");
+  const deepLinkConsultationId = searchParams.get("consultationId");
+  const deepLinkConsumed = useRef(false);
+
+  const [activeConvId, setActiveConvId] = useState<string | null>(deepLinkConversationId);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<ConversationStatus | "all">("all");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -62,10 +77,41 @@ export default function ConversationsPage() {
   });
   const conversations: IConversation[] = convsData?.data?.conversations ?? [];
 
+  // Resolve a ?consultationId= deep link to its conversation (used as a
+  // fallback for older consultations, or when the linked chat's status
+  // doesn't match the current status filter and so isn't in `conversations`).
+  const { data: contextConvData } = useGetConversationByContextQuery(
+    deepLinkConsultationId && !deepLinkConversationId
+      ? { contextType: "consultation", contextId: deepLinkConsultationId }
+      : skipToken
+  );
+
+  // Fallback fetch for a deep-linked conversation that isn't present in the
+  // currently-filtered list (e.g. a closed case while viewing "Active").
+  const needsFallbackFetch =
+    !!activeConvId && !conversations.some(c => c._id === activeConvId);
+  const { data: fallbackConvData } = useGetConversationQuery(
+    needsFallbackFetch ? activeConvId! : skipToken
+  );
+
+  useEffect(() => {
+    if (deepLinkConsumed.current) return;
+    if (deepLinkConversationId) {
+      setActiveConvId(deepLinkConversationId);
+      deepLinkConsumed.current = true;
+      router.replace("/dashboard/chat");
+    } else if (deepLinkConsultationId && contextConvData?.data?.conversation) {
+      setActiveConvId(contextConvData.data.conversation._id);
+      deepLinkConsumed.current = true;
+      router.replace("/dashboard/chat");
+    }
+  }, [deepLinkConversationId, deepLinkConsultationId, contextConvData, router]);
+
   const filtered = conversations.filter(c => {
     if (!search) return true;
     const other = c.participants.find(p => p.userId !== currentUserId);
-    return other?.name?.toLowerCase().includes(search.toLowerCase());
+    const haystack = `${c.caseInfo?.title ?? ""} ${other?.name ?? ""}`.toLowerCase();
+    return haystack.includes(search.toLowerCase());
   });
 
   // Stats
@@ -74,8 +120,11 @@ export default function ConversationsPage() {
     return n + (c.participants.find(p => p.userId !== currentUserId)?.unreadCount ?? 0);
   }, 0);
 
-  // Active conversation
-  const activeConversation = conversations.find(c => c._id === activeConvId) ?? null;
+  // Active conversation — prefer the list (has live presence/unread context),
+  // fall back to a direct fetch for deep-linked chats outside the current filter.
+  const activeConversation =
+    conversations.find(c => c._id === activeConvId) ??
+    (activeConvId ? fallbackConvData?.data?.conversation ?? contextConvData?.data?.conversation ?? null : null);
 
   // Handle responsive
   useEffect(() => {
@@ -336,6 +385,22 @@ export default function ConversationsPage() {
   );
 }
 
+// ─── Default export (Suspense boundary for useSearchParams) ──────────────────
+
+export default function ConversationsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen bg-gray-50">
+          <Loader2 className="w-8 h-8 animate-spin text-[#E8317A]" />
+        </div>
+      }
+    >
+      <ConversationsPageContent />
+    </Suspense>
+  );
+}
+
 // ─── ChatPanel ────────────────────────────────────────────────────────────────
 
 function ChatPanel({
@@ -390,14 +455,15 @@ function ChatPanel({
         />
       </div>
 
-      {/* Consultation context banner - Lawyer only */}
-      {isLawyer && conversation.contextType === "consultation" && (
+      {/* Case context banner */}
+      {conversation.caseInfo && (
         <div className="flex items-center gap-2.5 px-4 py-2 bg-[#EFF6FF] border-b border-[#BFDBFE] flex-shrink-0">
           <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] flex-shrink-0" />
-          <p className="text-[11px] text-[#1E40AF] font-semibold flex-1 min-w-0">
-            Consultation chat
-            {meta?.mode && ` · ${meta.mode} mode`}
-            {meta?.feePaid && ` · NGN ${Number(meta.feePaid).toLocaleString()}`}
+          <p className="text-[11px] text-[#1E40AF] font-semibold flex-1 min-w-0 truncate">
+            {conversation.caseInfo.title}
+            {conversation.caseInfo.mode && ` · ${conversation.caseInfo.mode} mode`}
+            {conversation.caseInfo.receiptId && ` · ${conversation.caseInfo.receiptId}`}
+            {!conversation.caseInfo.receiptId && meta?.feePaid && ` · NGN ${Number(meta.feePaid).toLocaleString()}`}
           </p>
           {isClosed && (
             <span className="text-[9px] font-bold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">

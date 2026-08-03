@@ -137,6 +137,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
 
   const handleUpdate = async () => {
     try {
+      setSaving(true);
       const result = await updateProfile({
         ...form,
         avatarUrl: images[0]?.base64 || undefined
@@ -144,6 +145,8 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
       
       // Refetch user data to get updated avatar
       await refetch();
+
+      setSaving(true);
       
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -170,14 +173,6 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
-
-  const save = async () => {
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
 
   const inputCls = "w-full h-11! px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors";
 
@@ -254,7 +249,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
 
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-400">Changes take effect immediately after saving.</p>
-        <button onClick={save} disabled={saving}
+        <button onClick={handleUpdate} disabled={saving}
           className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
           {saving ? <><Loader2 size={13} className="animate-spin" /> Saving...</>

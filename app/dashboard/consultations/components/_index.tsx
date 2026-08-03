@@ -353,9 +353,7 @@ export const ConversationTab = ({
   const { data: rawMessages, isLoading } = useGetMessagesQuery({ conversationId: consult.conversationId, isAdmin })
   const messages = rawMessages?.data?.messages || []
 
-  const chatHref = consult.conversationId
-    ? `/dashboard/chat?conversationId=${consult.conversationId}`
-    : `/dashboard/chat?consultationId=${consult.id}`;
+  const chatHref = viewerRole === "lawyer" ? "/dashboard/chat/lawyer" : "/dashboard/chat";
 
   return (
     <div className="flex flex-col h-full">
