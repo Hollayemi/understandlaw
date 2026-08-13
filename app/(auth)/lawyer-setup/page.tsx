@@ -30,7 +30,7 @@ export default function LawyerOnboardingPage() {
 
   const router = useRouter()
   const [image, setImage] = useState<any>([])
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState<LawyerFormData>({
     scnNumber: "",
     yearOfCall: "",
@@ -111,8 +111,8 @@ export default function LawyerOnboardingPage() {
       if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";
       if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
       if (!form.responseTime) newErrors.responseTime = "Select a response time";
-    }  else if(step === 4) {
-      if (!form.profilePicture) newErrors.image = "Please select a profile pictured";
+    } else if (step === 4) {
+      // if (!form.profilePicture) newErrors.image = "Please select a profile pictured";
     }
 
     setErrors(newErrors);
@@ -179,6 +179,41 @@ export default function LawyerOnboardingPage() {
       return;
     }
 
+    // Helper function to extract base64 data from a data URL
+    const extractBase64 = (dataUrl: string): string => {
+      if (!dataUrl) return '';
+      // If it already starts with data:image/..., extract the base64 part
+      if (dataUrl.includes(',')) {
+        return dataUrl.split(',')[1];
+      }
+      // Otherwise, assume it's already raw base64
+      return dataUrl;
+    };
+
+    // Helper function to convert base64 to Blob
+    const base64ToBlob = (base64: string, mimeType: string = 'application/octet-stream'): Blob => {
+      try {
+        // Extract the raw base64 data if it's a data URL
+        const rawBase64 = extractBase64(base64);
+
+        // Decode base64 to binary
+        const byteCharacters = atob(rawBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
+      } catch (error) {
+        console.error('Error converting base64 to blob:', error);
+        throw new Error('Invalid base64 data');
+      }
+    };
+
+    // Create FormData object
+    const formData = new FormData();
+
+    // Prepare the payload
     const payload = {
       scnNumber: form.scnNumber.trim().toUpperCase(),
       yearOfCall: parseInt(form.yearOfCall),
@@ -189,27 +224,82 @@ export default function LawyerOnboardingPage() {
       stateCode: form.state,
       languages: form.languages,
       specialisms: form.specialisms,
-      fees: form.fees,
-      documents: documents.filter(d => d.uploaded).map(d => ({
+      fees: {
+        message: form.fees.message,
+        call: form.fees.call,
+        video: form.fees.video,
+      },
+      responseTime: form.responseTime,
+      // Documents metadata
+      documents: uploadedDocs.map(d => ({
         label: d.label,
         filename: d.filename,
         fileUrl: d.fileUrl,
         sizeBytes: d.sizeBytes,
-        base64: d?.base64,
-        mimeType: d?.mimeType,
+        mimeType: d.mimeType,
       })),
     };
 
+    // Append the main payload as a JSON string
+    formData.append('payload', JSON.stringify(payload));
+
+    // Append each document's file
+    uploadedDocs.forEach((doc) => {
+      if (doc.base64) {
+        try {
+          // Determine MIME type from filename or use default
+          const mimeType = doc.mimeType || getMimeTypeFromFilename(doc.filename);
+          const blob = base64ToBlob(doc.base64, mimeType);
+          const labeledFilename = `${doc.label}_${doc.filename}`;
+          formData.append('documents', blob, labeledFilename);
+        } catch (error) {
+          console.error(`Error processing document ${doc.filename}:`, error);
+        }
+      }
+    });
+
+    // Append profile picture if available
+    if (form.profilePicture) {
+      try {
+        const mimeType = form.profilePicture.startsWith('data:')
+          ? form.profilePicture.split(';')[0].split(':')[1]
+          : 'image/jpeg';
+        const blob = base64ToBlob(form.profilePicture, mimeType);
+        formData.append('profilePicture', blob, 'profile-picture.jpg');
+      } catch (error) {
+        console.error('Error processing profile picture:', error);
+      }
+    }
+
+    console.log('Submitting form data...');
+
     try {
-      const result = await submitVerification(payload).unwrap();
+      const result = await submitVerification(formData).unwrap();
       if (result.success) {
         showSuccess("Profile submitted successfully!", "We'll review your application within 48 hours.");
-        // alert("Profile submitted successfully! We'll review your application within 48 hours.");
         router.push("/dashboard");
       }
     } catch (error: any) {
-      setSubmitError(error.message || "Submission failed. Please try again.");
+      console.error('Submission error:', error);
+      setSubmitError(error.data?.message || error.message || "Submission failed. Please try again.");
     }
+  };
+
+  // Helper function to determine MIME type from filename
+  const getMimeTypeFromFilename = (filename: string): string => {
+    const extension = filename.split('.').pop()?.toLowerCase() || '';
+    const mimeTypes: Record<string, string> = {
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'webp': 'image/webp',
+      'txt': 'text/plain',
+    };
+    return mimeTypes[extension] || 'application/octet-stream';
   };
 
   const progress = ((currentStep + 1) / STEPS.length) * 100;

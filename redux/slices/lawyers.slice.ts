@@ -41,7 +41,7 @@ export const lawyerApi = createApi({
       providesTags: ["LawyerMe"],
     }),
     
-    submitVerification: builder.mutation<ApiResponse<LawyerFull>, SubmitVerificationPayload>({
+    submitVerification: builder.mutation<ApiResponse<LawyerFull>, FormData>({
       query: (data) => ({
         url: "/citizen/lawyer-profile",
         method: "POST",
