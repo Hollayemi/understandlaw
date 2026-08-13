@@ -68,7 +68,7 @@ function StepRail({ steps, active }: { steps: string[]; active: number }) {
               </span>
             </div>
             {n < steps.length && (
-              <div className={`h-px flex-1 mx-2 ${done ? "bg-[#111827]" : "bg-gray-200"}`} />
+              <div className={`h-px! flex-1 mx-2 ${done ? "bg-[#111827]" : "bg-gray-200"}`} />
             )}
           </div>
         );
@@ -175,7 +175,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           <h3 className="text-[15px] font-bold text-gray-900 mb-1">Help me choose</h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-4">
             Tell us what's going on. Our team reviews your case first, then recommends a short list of
-            lawyers who genuinely fit — you pick who you want to work with.
+            lawyers who genuinely fit, you pick who you want to work with.
           </p>
           <ul className="space-y-2 mb-1">
             {[
@@ -205,7 +205,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
           <h3 className="text-[15px] font-bold text-gray-900 mb-1">Choose Myself</h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-4">
             Prefer to pick directly? Browse profiles and book instantly with any of our subscribed,
-            verified lawyers — no waiting on a referral.
+            verified lawyers. no waiting on a referral.
           </p>
           <ul className="space-y-2 mb-1">
             {[
@@ -233,7 +233,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
         <div>
           <p className="text-[12px] font-bold text-[#111827]">How matching stays fair</p>
           <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
-            Recommendations are based on specialism fit, response speed and track record — never on who
+            Recommendations are based on specialism fit, response speed and track record, never on who
             pays the most. Every lawyer on LawTicha, matched or self-selected, is SCN-verified.
           </p>
         </div>
@@ -343,11 +343,11 @@ const prices = ["100", "250", "500", "1000"];
         </div>
         <h3 className="text-lg font-bold text-gray-900 mb-1">Your request is with our team</h3>
         <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto leading-relaxed">
-          We're reviewing your case now. Within a few hours you'll get a short list of lawyers who fit —
+          We're reviewing your case now. Within a few hours you'll get a short list of lawyers who fit
           your summary, documents and notes go with the referral, so nobody starts from zero.
         </p>
         <div className="bg-gray-50 rounded-xl p-4 text-left mb-6 space-y-1">
-          <SummaryRow label="Legal issue" value={specialismLabel || "—"} />
+          <SummaryRow label="Legal issue" value={specialismLabel || "-"} />
           <SummaryRow label="Safety" value={urgency} />
           <SummaryRow label="Location" value={location} />
           <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
@@ -455,7 +455,7 @@ const prices = ["100", "250", "500", "1000"];
             <div>
               <SectionLabel>Tell us your story</SectionLabel>
               <p className="text-[11px] text-gray-400 -mt-1.5 mb-2">
-                This is what your matched lawyer will read first — the more context, the better prepared they'll be.
+                This is what your matched lawyer will read first. The more context, the better prepared they'll be.
               </p>
               <textarea
                 value={summary}
@@ -470,7 +470,7 @@ const prices = ["100", "250", "500", "1000"];
                 Additional Notes <span className="font-normal text-gray-400">(optional)</span>
               </SectionLabel>
               <p className="text-[11px] text-gray-400 -mt-1.5 mb-2">
-                Anything else your lawyer should know — deadlines, other parties involved, prior legal advice.
+                Anything else your lawyer should know?. Deadlines, other parties involved, prior legal advice.
               </p>
               <textarea
                 value={notes}
@@ -630,8 +630,8 @@ const prices = ["100", "250", "500", "1000"];
 
             <div className="rounded-xl border border-gray-100 divide-y divide-gray-100 overflow-hidden">
               <div className="p-4 space-y-0.5">
-                <SummaryRow label="Legal issue" value={specialismLabel || "—"} />
-                <SummaryRow label="Topic" value={topic || "—"} />
+                <SummaryRow label="Legal issue" value={specialismLabel || "-"} />
+                <SummaryRow label="Topic" value={topic || "-"} />
                 <SummaryRow label="Safety" value={urgency} />
                 <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
                 <SummaryRow label="Preferred mode" value={CONSULT_MODES.find(m => m.id === mode)?.label} />
@@ -956,7 +956,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
         <div>
           <p className="text-[12px] font-bold text-[#111827]">Subscribed & verified only</p>
           <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
-            Everyone below has passed SCN verification and actively subscribes to take direct bookings —
+            Everyone below has passed SCN verification and actively subscribes to take direct bookings, 
             so you know they're set up to respond.
           </p>
         </div>

@@ -10,6 +10,7 @@ import {
   useEnrolInModuleMutation,
 } from "@/redux/slices/learn.slice";
 import { useUserData } from "@/hook/useData";
+import { NotificationBell } from "../../components/sections/NotificationBell";
 
 type TabKey = "all" | "active" | "complete" | "saved";
 
@@ -450,11 +451,8 @@ export default function DashboardLearnPage() {
               <Search size={16} className="text-gray-500" />
             </button>
           )}
+          <NotificationBell />
 
-          <button className="relative w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 shadow-sm transition-colors">
-            <Bell size={16} className="text-gray-500" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E8317A] rounded-full" />
-          </button>
           {user.role !== "lawyer" && <Link
             href="/dashboard/consultations"
             className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
@@ -532,7 +530,7 @@ export default function DashboardLearnPage() {
       )}
 
       {/* Featured Topics */}
-      <div>
+      <div className="hidden">
         <h2 className="text-base font-bold text-gray-900 mb-4">Featured Topics</h2>
         {featuredLoading ? (
           <div className="flex justify-center py-8">

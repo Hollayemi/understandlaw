@@ -191,6 +191,9 @@ export default function TopicDetailPage() {
   const topics = module?.topics || [];
   const subtopics = topic?.subtopics || [];
 
+  console.log("Topic Data:", topic);
+  console.log("Subtopics:", subtopics);
+
   // Set first subtopic as active by default
   // useEffect(() => {
   //   if (subtopics.length > 0 && !activeSubtopicId) {
@@ -253,7 +256,6 @@ export default function TopicDetailPage() {
 
   const handleSubtopicComplete = (subtopicId: string) => {
     setCompletedSubtopics(prev => new Set([...prev, subtopicId]));
-    // In real app, you'd call an API to mark subtopic complete
   };
 
   const getYouTubeEmbedUrl = () => {
@@ -308,20 +310,20 @@ export default function TopicDetailPage() {
           </span>
         </nav>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+          {/* <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
             <Search size={14} className="text-gray-600" />
-          </button>
-          <button
+          </button> */}
+          {/* <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
           >
             {sidebarOpen ? <X size={14} /> : <Menu size={14} />}
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Module Progress Bar */}
-      <div className="sticky top-[57px] z-10 bg-white border-b border-gray-100 px-4 md:px-6 py-2">
+      <div className="sticky hidden top-[57px] z-10 bg-white border-b border-gray-100 px-4 md:px-6 py-2">
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <div className="flex justify-between text-[10px] text-gray-500 mb-0.5">
@@ -415,7 +417,7 @@ export default function TopicDetailPage() {
                   <button
                     onClick={handleMarkComplete}
                     disabled={isCompleting}
-                    className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center gap-2 shadow-md"
+                    className="px-5 hidden py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center gap-2 shadow-md"
                     style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
                   >
                     {isCompleting ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />}
@@ -488,9 +490,9 @@ export default function TopicDetailPage() {
                     </p>
                   </div>
                   <div>
-                    <div>
-                      {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm !text-right underline text-[#E8317A]">Open Lesson</Link>}
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-end">
+                      {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm text-right! underline text-[#E8317A]">Open Lesson</Link>}
+                      {/* <div className="flex items-center gap-2">
                         <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className="h-1.5 rounded-full transition-all duration-300"
@@ -503,7 +505,7 @@ export default function TopicDetailPage() {
                         <span className="text-xs font-semibold text-[#E8317A]">
                           {completedSubtopics.size}/{subtopics.length}
                         </span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

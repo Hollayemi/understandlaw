@@ -137,9 +137,9 @@ export default function LoginPage() {
               Law<span style={{ color: "#E8317A" }}>Ticha</span>
             </span>
           </Link>
-          <p className="text-sm text-gray-500 mt-2">
+          {/* <p className="text-sm text-gray-500 mt-2">
             Continue learning. Your rights don&apos;t take a break.
-          </p>
+          </p> */}
         </motion.div>
 
         {/* Auth Card */}
@@ -238,28 +238,6 @@ export default function LoginPage() {
             </Link>
           </p>
         </AuthCard>
-
-        {/* Trust Indicators */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center justify-center gap-5 mt-6"
-        >
-          {[
-            { icon: "🔒", text: "Secure & private" },
-            { icon: "🇳🇬", text: "Nigerian law only" },
-            { icon: "✓", text: "Free forever" },
-          ].map((item) => (
-            <div
-              key={item.text}
-              className="flex items-center gap-1.5 text-xs text-gray-400"
-            >
-              <span>{item.icon}</span>
-              {item.text}
-            </div>
-          ))}
-        </motion.div>
       </motion.div>
     </div>
   );

@@ -400,7 +400,6 @@ export default function SubtopicContentPage() {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [showDiscussion, setShowDiscussion] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [saved, setSaved] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
@@ -1180,14 +1179,6 @@ export default function SubtopicContentPage() {
                       >
                         <Heart size={16} className={liked ? "fill-[#E8317A]" : ""} />
                         Like ({likesCount})
-                      </button>
-
-                      <button
-                        onClick={() => setShowDiscussion(!showDiscussion)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
-                      >
-                        <MessageCircle size={16} />
-                        Discussion ({comments.length})
                       </button>
 
                       <AskQuestionButton
