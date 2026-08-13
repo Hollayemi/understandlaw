@@ -11,12 +11,9 @@ import {
   MessageType,
   IAttachment,
 } from "@/redux/slices/chat.slice";
+import { server } from "@/redux/shared/backendUrl";
 
-const SERVER_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  (process.env.NODE_ENV === "production"
-    ? "https://lawticha.onrender.com"
-    : "http://localhost:5000");
+const SERVER_URL = server; // imported from redux/shared/backendUrl.ts
 
 interface UseChatSocketOptions {
   token: string | null;

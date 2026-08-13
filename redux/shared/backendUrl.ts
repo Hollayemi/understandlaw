@@ -7,4 +7,4 @@
 export const server =
   process.env.NODE_ENV === "production"
     ? "https://lawticha.onrender.com"
-    : "http://localhost:5000";
+    : "http://172.20.10.8:5000" //"http://localhost:5000";

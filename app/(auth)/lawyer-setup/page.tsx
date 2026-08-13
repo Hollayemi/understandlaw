@@ -30,7 +30,7 @@ export default function LawyerOnboardingPage() {
 
   const router = useRouter()
   const [image, setImage] = useState<any>([])
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState<LawyerFormData>({
     scnNumber: "",
     yearOfCall: "",
@@ -111,7 +111,7 @@ export default function LawyerOnboardingPage() {
       if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";
       if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
       if (!form.responseTime) newErrors.responseTime = "Select a response time";
-    }  else if(step === 4) {
+    } else if (step === 4) {
       if (!form.profilePicture) newErrors.image = "Please select a profile pictured";
     }
 
@@ -179,32 +179,51 @@ export default function LawyerOnboardingPage() {
       return;
     }
 
-    const payload = {
-      scnNumber: form.scnNumber.trim().toUpperCase(),
-      yearOfCall: parseInt(form.yearOfCall),
-      calledAt: form.yearOfCall,
-      bio: form.bio.trim(),
-      location: form.location.trim(),
-      state: NIGERIAN_STATES.find(s => s.code === form.state)?.label || form.state,
-      stateCode: form.state,
-      languages: form.languages,
-      specialisms: form.specialisms,
-      fees: form.fees,
-      documents: documents.filter(d => d.uploaded).map(d => ({
-        label: d.label,
-        filename: d.filename,
-        fileUrl: d.fileUrl,
-        sizeBytes: d.sizeBytes,
-        base64: d?.base64,
-        mimeType: d?.mimeType,
-      })),
-    };
+    // Create FormData object
+    const formData = new FormData();
+
+    // Append all form fields
+    formData.append('scnNumber', form.scnNumber.trim().toUpperCase());
+    formData.append('yearOfCall', form.yearOfCall.toString());
+    formData.append('calledAt', form.yearOfCall.toString());
+    formData.append('bio', form.bio.trim());
+    formData.append('location', form.location.trim());
+    formData.append('state', NIGERIAN_STATES.find(s => s.code === form.state)?.label || form.state);
+    formData.append('stateCode', form.state);
+    formData.append('languages', JSON.stringify(form.languages));
+    formData.append('specialisms', JSON.stringify(form.specialisms));
+    formData.append('fees', JSON.stringify(form.fees));
+
+    // Append documents
+    const uploadedDocsList = documents.filter(d => d.uploaded);
+    formData.append('documents', JSON.stringify(uploadedDocsList.map(d => ({
+      label: d.label,
+      filename: d.filename,
+      fileUrl: d.fileUrl,
+      sizeBytes: d.sizeBytes,
+      mimeType: d.mimeType,
+    }))));
+
+    // Append each document's base64 data as separate files
+    uploadedDocsList.forEach((doc, index) => {
+      if (doc.base64) {
+        // Convert base64 to blob and append
+        const byteCharacters = atob(doc.base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: doc.mimeType || 'application/octet-stream' });
+        formData.append(`document_${index}`, blob, doc.filename);
+        formData.append(`document_${index}_label`, doc.label);
+      }
+    });
 
     try {
-      const result = await submitVerification(payload).unwrap();
+      const result = await submitVerification(formData).unwrap();
       if (result.success) {
         showSuccess("Profile submitted successfully!", "We'll review your application within 48 hours.");
-        // alert("Profile submitted successfully! We'll review your application within 48 hours.");
         router.push("/dashboard");
       }
     } catch (error: any) {
