@@ -95,8 +95,8 @@ export function SubTopicEditor({
         onClick={() => setExpanded(!expanded)}
       >
         <GripVertical size={14} className="text-[#D1D5DB] flex-shrink-0 cursor-grab" />
-        <div className="w-5 h-5 rounded-full bg-[#E8317A]/10 flex items-center justify-center flex-shrink-0">
-          <span className="text-[9px] font-bold text-[#E8317A]">{st.order}</span>
+        <div className="w-5 h-5 rounded-full bg-[#F97316]/10 flex items-center justify-center flex-shrink-0">
+          <span className="text-[9px] font-bold text-[#F97316]">{st.order}</span>
         </div>
         {editing ? (
           <input
@@ -105,7 +105,7 @@ export function SubTopicEditor({
             onBlur={handleSaveTitle}
             onKeyDown={e => e.key === "Enter" && handleSaveTitle()}
             onClick={e => e.stopPropagation()}
-            className="flex-1 text-[12px] font-semibold text-[#111827] bg-white border border-[#E8317A] rounded-lg px-2 py-0.5 outline-none"
+            className="flex-1 text-[12px] font-semibold text-[#111827] bg-white border border-[#F97316] rounded-lg px-2 py-0.5 outline-none"
             autoFocus
           />
         ) : (
@@ -142,14 +142,14 @@ export function SubTopicEditor({
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Add detailed notes, script points, or key concepts for this sub-topic..."
-              className="w-full h-28 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors bg-white"
+              className="w-full h-28 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors bg-white"
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] text-[#9CA3AF]">{notes.length} characters</span>
               <button
                 onClick={handleSaveNotes}
                 disabled={notesLoading}
-                className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline disabled:opacity-50">
+                className="flex items-center gap-1 text-[11px] font-semibold text-[#F97316] hover:underline disabled:opacity-50">
                 <Save size={11} /> {notesLoading ? "Saving..." : "Save Notes"}
               </button>
             </div>
@@ -294,7 +294,7 @@ export function TopicCard({
                   ] as const).map(t => (
                     <button key={t.id}
                       onClick={() => setVideoType(t.id)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${videoType === t.id ? "border-[#E8317A] bg-pink-50 text-[#E8317A]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${videoType === t.id ? "border-[#F97316] bg-pink-50 text-[#F97316]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
                       <t.icon size={12} /> {t.label}
                     </button>
                   ))}
@@ -314,7 +314,7 @@ export function TopicCard({
                         value={videoUrl}
                         onChange={e => setVideoUrl(e.target.value)}
                         placeholder="https://youtube.com/watch?v=..."
-                        className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                        className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
                       />
                     </div>
                     <button
@@ -326,7 +326,7 @@ export function TopicCard({
                 )}
 
                 {videoType === "upload" && (
-                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-6 text-center hover:border-[#E8317A] transition-colors cursor-pointer">
+                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-6 text-center hover:border-[#F97316] transition-colors cursor-pointer">
                     <Upload size={20} className="text-[#D1D5DB] mx-auto mb-2" />
                     <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload video</p>
                     <p className="text-[10px] text-[#D1D5DB] mt-0.5">MP4, MOV or WebM, max 500MB</p>
@@ -366,7 +366,7 @@ export function TopicCard({
                     Sub-Topics ({subtopics.length})
                   </h4>
                   <button onClick={addSubTopic}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-[#E8317A] hover:underline">
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#F97316] hover:underline">
                     <Plus size={11} /> Add Sub-Topic
                   </button>
                 </div>
@@ -376,7 +376,7 @@ export function TopicCard({
                     <Layers size={20} className="text-[#D1D5DB] mx-auto mb-2" />
                     <p className="text-[12px] text-[#9CA3AF]">No sub-topics yet. Add some to break this topic down further.</p>
                     <button onClick={addSubTopic}
-                      className="mt-3 flex items-center gap-1.5 mx-auto text-[12px] font-semibold text-[#E8317A] hover:underline">
+                      className="mt-3 flex items-center gap-1.5 mx-auto text-[12px] font-semibold text-[#F97316] hover:underline">
                       <Plus size={11} /> Add First Sub-Topic
                     </button>
                   </div>
@@ -406,7 +406,7 @@ export function TopicCard({
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Classification</label>
                     <select
                       defaultValue={topic.classification}
-                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#F97316] bg-white transition-colors">
                       {["Foundational", "Rights", "Procedural", "Advanced", "Scenario"].map(c => (
                         <option key={c}>{c}</option>
                       ))}
@@ -416,7 +416,7 @@ export function TopicCard({
                     <label className="block text-[11px] font-semibold text-[#6B7280] mb-1">Status</label>
                     <select
                       defaultValue={topic.status}
-                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                      className="w-full h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#F97316] bg-white transition-colors">
                       {["published", "draft", "pending"].map(s => (
                         <option key={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                       ))}
@@ -463,7 +463,7 @@ export function TopicCard({
 
               <div className="flex flex-col gap-1.5">
                 <Link href={`/admin/modules/${moduleId}/topics/${topic.id}`}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-all">
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] transition-all">
                   <Eye size={12} /> View Full Topic Page
                 </Link>
                 <button

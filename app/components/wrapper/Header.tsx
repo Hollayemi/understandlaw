@@ -41,8 +41,8 @@ export default function Header() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}>
+          {/* <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "linear-gradient(135deg,#F97316,#EA580C)" }}>
             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
               <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
               <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -52,9 +52,10 @@ export default function Header() {
               <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
               <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
-          </div>
+          </div> */}
+          <img src="/images/icon.jpg" alt="LawTicha Logo" className="w-8 h-8 flex-shrink-0" />
           <span className="font-bold text-[17px] text-gray-900 tracking-tight" style={{ fontFamily: "var(--font-dm-sans)" }}>
-            Law<span className="text-[#E8317A]">Ticha</span>
+            Law<span className="text-[#F97316]">Ticha</span>
           </span>
         </Link>
 
@@ -67,7 +68,7 @@ export default function Header() {
               onMouseLeave={() => setOpenMenu(null)}>
 
               <Link href={item.href}
-                className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium text-gray-700 hover:text-[#E8317A] hover:bg-gray-50 transition-colors whitespace-nowrap">
+                className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium text-gray-700 hover:text-[#F97316] hover:bg-gray-50 transition-colors whitespace-nowrap">
                 {item.label}
                 {item.sub && (
                   <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${openMenu === item.label ? "rotate-180" : ""}`}
@@ -131,9 +132,9 @@ export default function Header() {
               </Link>
             ))}
             <div className="border-t border-gray-100 mt-2 pt-3 flex flex-col gap-2">
-              <Link href="/auth" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Login</Link>
-              <Link href="/auth"
-                className="flex items-center justify-center gap-2 bg-[#E8317A] text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-[#d01f68] transition-colors"
+              <Link href="/login" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Login</Link>
+              <Link href="/login"
+                className="flex items-center justify-center gap-2 bg-[#F97316] text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-[#d01f68] transition-colors"
                 onClick={() => setMobileOpen(false)}>
                 Get Started for Free →
               </Link>

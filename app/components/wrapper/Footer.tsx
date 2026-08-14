@@ -42,7 +42,7 @@ export default function Footer() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}>
+                style={{ background: "linear-gradient(135deg,#F97316,#EA580C)" }}>
                 <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
                   <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
                   <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
@@ -54,7 +54,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:700, fontSize:17, color:"#111827" }}>
-                Law<span style={{ color:"#E8317A" }}>Ticha</span>
+                Law<span style={{ color:"#F97316" }}>Ticha</span>
               </span>
             </Link>
 
@@ -100,7 +100,7 @@ export default function Footer() {
         <div className="py-8 border-t border-gray-100">
           <div className="flex flex-col md:flex-row items-center justify-between gap-5 bg-gray-50 rounded-2xl px-4! md:px-6! !py-6">
             <div>
-              <p className="text-xs font-semibold text-[#E8317A] uppercase tracking-wider mb-1">Weekly Digest</p>
+              <p className="text-xs font-semibold text-[#F97316] uppercase tracking-wider mb-1">Weekly Digest</p>
               <h3 className="text-base font-bold text-gray-900">Know Your Rights, Every Week.</h3>
               <p className="text-sm text-gray-500 mt-0.5">Plain-English legal updates, no jargon.</p>
             </div>

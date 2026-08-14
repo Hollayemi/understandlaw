@@ -133,7 +133,7 @@ export default function LawyerConsultationsPage() {
     return (
       <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#E8317A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-12 h-12 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#6B7280]">Loading your briefs...</p>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function LawyerConsultationsPage() {
           </div>
           <div className="flex items-center gap-2">
             {stats.awaitingLawyer > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFF0F5] border border-[#FBCFE8] text-[11px] font-bold text-[#E8317A]">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFF0F5] border border-[#FBCFE8] text-[11px] font-bold text-[#F97316]">
                 <Bell size={11} />
                 {stats.awaitingLawyer} action{stats.awaitingLawyer > 1 ? "s" : ""} needed
               </div>
@@ -189,7 +189,7 @@ export default function LawyerConsultationsPage() {
                 label: "Action Required",
                 value: stats.awaitingLawyer,
                 icon: Timer,
-                color: "#E8317A",
+                color: "#F97316",
                 bg: "#FFF0F5",
                 urgent: stats.awaitingLawyer > 0,
               },
@@ -226,7 +226,7 @@ export default function LawyerConsultationsPage() {
                       <Icon size={14} style={{ color: s.color }} />
                     </div>
                     {s.urgent && (
-                      <span className="w-2 h-2 rounded-full bg-[#E8317A] animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse" />
                     )}
                   </div>
                   <p className="text-[22px] font-bold text-[#111827]">{s.value}</p>
@@ -244,7 +244,7 @@ export default function LawyerConsultationsPage() {
                 <p className="text-2xl font-bold text-white">NGN {stats.totalEarnings?.toLocaleString() || 0}</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                <DollarSign size={18} className="text-[#E8317A]" />
+                <DollarSign size={18} className="text-[#F97316]" />
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-[#F3F4F6] p-5 flex items-center justify-between">
@@ -274,7 +274,7 @@ export default function LawyerConsultationsPage() {
                   <Icon size={13} />
                   {s.label}
                   {s.count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeSection === s.id ? "bg-[#E8317A] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeSection === s.id ? "bg-[#F97316] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
                       {s.count}
                     </span>
                   )}
@@ -294,7 +294,7 @@ export default function LawyerConsultationsPage() {
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search by topic, client, or ID…"
-                    className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors bg-white"
+                    className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors bg-white"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export default function LawyerConsultationsPage() {
                       <button key={opt.v} onClick={() => setTab(opt.v)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all whitespace-nowrap ${tab === opt.v ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
                         {opt.l}
-                        <span className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-[#E8317A] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{count}</span>
+                        <span className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-[#F97316] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{count}</span>
                       </button>
                     );
                   })}
@@ -352,7 +352,7 @@ export default function LawyerConsultationsPage() {
                             <td className="px-5 py-3.5">
                               <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
-                                  style={{ background: `linear-gradient(135deg, ${c.citizen?.color || "#E8317A"}, ${c.citizen?.color || "#E8317A"}80)` }}>
+                                  style={{ background: `linear-gradient(135deg, ${c.citizen?.color || "#F97316"}, ${c.citizen?.color || "#F97316"}80)` }}>
                                   {c.citizen?.initials || c.citizen?.name?.charAt(0) || "U"}
                                 </div>
                                 <div>
@@ -377,7 +377,7 @@ export default function LawyerConsultationsPage() {
                               <div className="flex items-center gap-2">
                                 <StatusBadge status={c.status} />
                                 {c.status === "awaiting_lawyer" && (
-                                  <span className="w-2 h-2 rounded-full bg-[#E8317A] animate-pulse flex-shrink-0" />
+                                  <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse flex-shrink-0" />
                                 )}
                               </div>
                             </td>
@@ -440,7 +440,7 @@ export default function LawyerConsultationsPage() {
 
               {pendingMatches.length > 0 && (
                 <div className="flex items-start gap-3 p-4 bg-[#FFF0F5] border border-[#FBCFE8] rounded-2xl mb-5">
-                  <AlertTriangle size={14} className="text-[#E8317A] flex-shrink-0 mt-0.5" />
+                  <AlertTriangle size={14} className="text-[#F97316] flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-[12px] font-bold text-[#9D174D] mb-0.5">
                       {pendingMatches.length} match request{pendingMatches.length > 1 ? "s" : ""} awaiting your decision

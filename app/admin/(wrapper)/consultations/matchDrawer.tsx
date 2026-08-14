@@ -60,7 +60,7 @@ export function MatchRequestDrawer({ req, onClose, onUpdate }: { req: MatchReque
     <div className="fixed inset-0 z-50 flex">
       <div className="flex-1 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div className="w-full max-w-xl bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
-        <div className="h-1 w-full flex-shrink-0" style={{ background: "linear-gradient(90deg, #E8317A, #ff6fa8)" }} />
+        <div className="h-1 w-full flex-shrink-0" style={{ background: "linear-gradient(90deg, #F97316, #EA580C)" }} />
 
         {/* Header */}
         <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
@@ -112,7 +112,7 @@ export function MatchRequestDrawer({ req, onClose, onUpdate }: { req: MatchReque
               onClick={handleAccept}
               disabled={accepting}
               className="w-full mt-4 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
             >
               {accepting ? <><Loader2 size={13} className="animate-spin" /> Accepting…</> : <><CheckCircle2 size={13} /> Accept & Start Review</>}
             </button>
@@ -122,7 +122,7 @@ export function MatchRequestDrawer({ req, onClose, onUpdate }: { req: MatchReque
               onClick={() => handleStatus("recommended")}
               disabled={accepting}
               className="w-full mt-4 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
             >
               {accepting ? <><Loader2 size={13} className="animate-spin" /> Matching…</> : <><CheckCircle2 size={13} /> Match Client</>}
             </button>
@@ -300,13 +300,13 @@ function HandleTab({
               value={draft}
               onChange={e => setDraft(e.target.value)}
               placeholder="Write your initial assessment and next steps for the citizen..."
-              className="w-full h-32 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              className="w-full h-32 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
             />
             <button
               onClick={handleSend}
               disabled={sending || !draft.trim()}
               className="w-full mt-3 py-2.5 rounded-xl text-[12px] font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
             >
               {sending ? <><Loader2 size={13} className="animate-spin" /> Sending…</> : <><Send size={13} /> Send Message</>}
             </button>
@@ -321,7 +321,7 @@ function HandleTab({
                 <Calendar size={12} className="text-[#6B7280]" /> {formatTime(scheduledCall.dateTime)}
               </div>
               {scheduledCall.link && (
-                <a href={scheduledCall.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[12px] text-[#E8317A] font-semibold hover:underline">
+                <a href={scheduledCall.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[12px] text-[#F97316] font-semibold hover:underline">
                   <LinkIcon size={12} /> {scheduledCall.link}
                 </a>
               )}
@@ -337,7 +337,7 @@ function HandleTab({
                 type="datetime-local"
                 value={dateTime}
                 onChange={e => setDateTime(e.target.value)}
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#F97316] transition-colors"
               />
             </div>
             <div>
@@ -346,7 +346,7 @@ function HandleTab({
                 value={link}
                 onChange={e => setLink(e.target.value)}
                 placeholder="https://meet.google.com/..."
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
               />
             </div>
             <div>
@@ -355,14 +355,14 @@ function HandleTab({
                 value={note}
                 onChange={e => setNote(e.target.value)}
                 placeholder="e.g. Please have any relevant documents ready on the call"
-                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
               />
             </div>
             <button
               onClick={handleSchedule}
               disabled={scheduling || !dateTime}
               className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
             >
               {scheduling ? <><Loader2 size={13} className="animate-spin" /> Scheduling…</> : <><Calendar size={13} /> {scheduledCall ? "Update Schedule" : "Schedule Call"}</>}
             </button>
@@ -477,7 +477,7 @@ function DocumentsTab({
         <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Case Brief for the Lawyer</p>
         {caseBrief && (
           <div className="mb-3">
-            <AdminDocRow doc={caseBrief} badge={{ label: "Current brief", color: "#E8317A", bg: "#FFF0F5" }} />
+            <AdminDocRow doc={caseBrief} badge={{ label: "Current brief", color: "#F97316", bg: "#FFF0F5" }} />
           </div>
         )}
 
@@ -500,7 +500,7 @@ function DocumentsTab({
               value={link}
               onChange={e => setLink(e.target.value)}
               placeholder="…or paste a document link (Drive, Dropbox, etc.)"
-              className="w-full h-10 pl-8 pr-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+              className="w-full h-10 pl-8 pr-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-900 outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
             />
           </div>
 
@@ -508,11 +508,11 @@ function DocumentsTab({
             value={label}
             onChange={e => setLabel(e.target.value)}
             placeholder="Label, e.g. Refined Case Brief"
-            className="w-full h-10 px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+            className="w-full h-10 px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-900 outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
           />
 
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={isBrief} onChange={e => setIsBrief(e.target.checked)} className="accent-[#E8317A] w-3.5 h-3.5" />
+            <input type="checkbox" checked={isBrief} onChange={e => setIsBrief(e.target.checked)} className="accent-[#F97316] w-3.5 h-3.5" />
             <span className="text-[11px] text-gray-600">This is the refined case brief for the assigned lawyer</span>
           </label>
 
@@ -524,7 +524,7 @@ function DocumentsTab({
             onClick={handleAttach}
             disabled={isLoading}
             className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white disabled:opacity-50 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+            style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
           >
             {isLoading ? <><Loader2 size={13} className="animate-spin" /> Attaching…</> : <><Upload size={13} /> Attach Document</>}
           </button>
@@ -600,7 +600,7 @@ function RecommendTab({
     <div className="space-y-4">
       {recommendedLawyers.length > 0 && (
         <div className="bg-[#FFF0F5] border border-[#FBCFE8] rounded-xl p-3.5 flex items-start gap-2.5">
-          <Zap size={14} className="text-[#E8317A] shrink-0 mt-0.5" />
+          <Zap size={14} className="text-[#F97316] shrink-0 mt-0.5" />
           <p className="text-[11px] text-[#9D174D] leading-relaxed">
             {recommendedLawyers.length} lawyer{recommendedLawyers.length > 1 ? "s" : ""} already recommended to this citizen.
             Selecting a new shortlist below and sending will replace it.
@@ -619,12 +619,12 @@ function RecommendTab({
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search verified lawyers by name…"
-          className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+          className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
         />
       </div>
 
       {loadingLawyers ? (
-        <div className="flex items-center justify-center py-10"><Loader2 size={20} className="animate-spin text-[#E8317A]" /></div>
+        <div className="flex items-center justify-center py-10"><Loader2 size={20} className="animate-spin text-[#F97316]" /></div>
       ) : lawyers.length === 0 ? (
         <div className="text-center py-10 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6]">
           <Users size={20} className="text-[#D1D5DB] mx-auto mb-2" />
@@ -638,7 +638,7 @@ function RecommendTab({
               <button
                 key={l._id}
                 onClick={() => toggle(l._id)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl border-[1.5px] text-left transition-all ${checked ? "border-[#E8317A] bg-pink-50/60" : "border-[#F3F4F6] hover:border-gray-300"}`}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border-[1.5px] text-left transition-all ${checked ? "border-[#F97316] bg-pink-50/60" : "border-[#F3F4F6] hover:border-gray-300"}`}
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
                   style={{ background: `linear-gradient(135deg, ${l.colorA}, ${l.colorB})` }}>
@@ -651,7 +651,7 @@ function RecommendTab({
                   </div>
                   <p className="text-[10px] text-[#9CA3AF] truncate">{l.title} · {l.responseTimeLabel}</p>
                 </div>
-                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${checked ? "bg-[#E8317A] border-[#E8317A]" : "border-gray-300"}`}>
+                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${checked ? "bg-[#F97316] border-[#F97316]" : "border-gray-300"}`}>
                   {checked && <Check size={11} className="text-white" />}
                 </div>
               </button>
@@ -666,7 +666,7 @@ function RecommendTab({
         onClick={handleSend}
         disabled={isLoading || selectedIds.length === 0}
         className="w-full py-3 rounded-xl text-[12px] font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center justify-center gap-2"
-        style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+        style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
       >
         {isLoading ? <><Loader2 size={13} className="animate-spin" /> Sending…</> : <>Send Shortlist to Citizen ({selectedIds.length})</>}
       </button>

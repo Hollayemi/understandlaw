@@ -205,10 +205,10 @@ export default function RegisterPage() {
   };
 
   const inputClass = (hasError?: string) =>
-    `w-full h-11 px-4 rounded-xl border-[1.5px] text-sm text-gray-900 bg-white outline-none placeholder:text-gray-300 transition-colors ${
+    `w-full h-11! px-4 rounded-xl border-[1.5px] text-sm text-gray-900 bg-white outline-none placeholder:text-gray-300 transition-colors ${
       hasError
         ? "border-red-300 focus:border-red-400"
-        : "border-gray-200 focus:border-[#E8317A]"
+        : "border-gray-200 focus:border-[#F97316]"
     }`;
 
   return (
@@ -220,7 +220,7 @@ export default function RegisterPage() {
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <motion.div
+        {/* <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.4 }}
@@ -230,7 +230,7 @@ export default function RegisterPage() {
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
               style={{
-                background: "linear-gradient(135deg, #E8317A, #ff6fa8)",
+                background: "linear-gradient(135deg, #F97316, #EA580C)",
               }}
             >
               <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
@@ -247,13 +247,13 @@ export default function RegisterPage() {
               className="font-bold text-xl text-gray-900"
               style={{ fontFamily: "var(--font-dm-sans)" }}
             >
-              Law<span style={{ color: "#E8317A" }}>Ticha</span>
+              Law<span style={{ color: "#F97316" }}>Ticha</span>
             </span>
           </Link>
           <p className="text-sm text-gray-500 mt-2">
             Free forever. No card required. Nigerian law, simplified.
           </p>
-        </motion.div>
+        </motion.div> */}
 
         {/* Auth Card */}
         <AuthCard title="Create Account" subtitle="Start your legal journey today">
@@ -360,7 +360,7 @@ export default function RegisterPage() {
                     key={option.value}
                     className={`flex items-start gap-2.5 rounded-xl border-[1.5px] px-3.5 py-3 cursor-pointer transition-colors ${
                       formData.role === option.value
-                        ? "border-[#E8317A] bg-[#FDF1F6]"
+                        ? "border-[#F97316] bg-[#FDF1F6]"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -370,12 +370,12 @@ export default function RegisterPage() {
                       value={option.value}
                       checked={formData.role === option.value}
                       onChange={handleInputChange}
-                      className="mt-0.5 w-4 h-4 accent-[#E8317A] flex-shrink-0"
+                      className="mt-0.5 w-4 h-4 accent-[#F97316] flex-shrink-0"
                     />
                     <span>
                       <span
                         className={`block text-sm font-semibold ${
-                          formData.role === option.value ? "text-[#E8317A]" : "text-gray-800"
+                          formData.role === option.value ? "text-[#F97316]" : "text-gray-800"
                         }`}
                       >
                         {option.label}
@@ -464,15 +464,15 @@ export default function RegisterPage() {
                     terms: e.target.checked ? undefined : prev.terms,
                   }));
                 }}
-                className="mt-0.5 w-4 h-4 rounded accent-[#E8317A] flex-shrink-0"
+                className="mt-0.5 w-4 h-4 rounded accent-[#F97316] flex-shrink-0"
               />
               <label htmlFor="terms" className="text-xs text-gray-500 leading-relaxed">
                 I agree to the{" "}
-                <Link href="/legal/terms" className="text-[#E8317A] hover:underline font-medium">
+                <Link href="/legal/terms" className="text-[#F97316] hover:underline font-medium">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/legal/privacy" className="text-[#E8317A] hover:underline font-medium">
+                <Link href="/legal/privacy" className="text-[#F97316] hover:underline font-medium">
                   Privacy Policy
                 </Link>
                 . Content is educational only, not legal advice.
@@ -488,7 +488,7 @@ export default function RegisterPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 mt-1 rounded-full bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
+              className="w-full h-12 mt-1 rounded-full bg-[#F97316] hover:bg-[#d01f68] disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -529,7 +529,7 @@ export default function RegisterPage() {
           {/* Switch to Login */}
           <p className="text-center text-xs text-gray-500 mt-6">
             Already have an account?{" "}
-            <Link href="/login" className="text-[#E8317A] font-semibold hover:underline">
+            <Link href="/login" className="text-[#F97316] font-semibold hover:underline">
               Sign in
             </Link>
           </p>

@@ -7,15 +7,10 @@ import {
   LayoutDashboard,
   BookOpen,
   BookMarked,
-  HandHelping,
-  Scale,
   MessageSquare,
-  Award,
   Settings,
-  ChevronRight,
   Smartphone,
   Menu,
-  X,
   MessageSquareText,
   Gavel,
 } from "lucide-react";
@@ -65,22 +60,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="px-6 pt-7 pb-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: "linear-gradient(135deg,#E8317A,#ff6fa8)" }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <circle cx="5" cy="8" r="1" fill="white" />
-                <circle cx="19" cy="8" r="1" fill="white" />
-                <path d="M3 11 Q5 15 7 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </div>
+            <img src="/images/icon.jpg" alt="LawTicha Logo" className="w-8 h-8 flex-shrink-0" />
             <span className="font-bold text-[17px] tracking-tight text-gray-900">
-              Law<span style={{ color: "#E8317A" }}>Ticha</span>
+              Law<span className="text-orange-500">Ticha</span>
             </span>
           </Link>
         </div>
@@ -122,19 +104,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="px-4 pb-6 pt-4">
           <div
             className="relative rounded-2xl p-4 overflow-hidden"
-            style={{ background: "linear-gradient(135deg, #FFF5F0 0%, #FFF0F5 100%)" }}
+            style={{ background: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)" }}
           >
             {/* Decorative blob */}
             <div
               className="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-30"
-              style={{ background: "radial-gradient(circle, #E8317A, transparent)" }}
+              style={{ background: "radial-gradient(circle, #F97316, transparent)" }}
             />
 
             {/* 3D-ish icon */}
             <div className="flex justify-center mb-3">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
-                style={{ background: "linear-gradient(135deg, #FFE4EE, #FFD0E3)" }}
+                style={{ background: "linear-gradient(135deg, #FFEDD5, #FED7AA)" }}
               >
                 📱
               </div>
@@ -146,7 +128,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </p>
             <button
               className="w-full h-8 rounded-full flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              style={{ background: "linear-gradient(135deg, #F97316, #FB923C)" }}
             >
               <Smartphone size={12} />
               Coming Soon
@@ -168,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu size={18} className="text-gray-600" />
           </button>
           <span className="font-bold text-[15px] text-gray-900">
-            Law<span style={{ color: "#E8317A" }}>Ticha</span>
+            Law<span className="text-orange-500">Ticha</span>
           </span>
           <div className="w-9" />
         </div>

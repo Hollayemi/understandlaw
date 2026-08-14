@@ -56,7 +56,7 @@ export default function AdminModulesPage() {
 
   // Stats for StatBar
   const stats = [
-    { label: "Total Modules", value: statsData?.data?.totalModules ?? 0, icon: BookOpen, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Total Modules", value: statsData?.data?.totalModules ?? 0, icon: BookOpen, color: "#F97316", bg: "#FFF0F5" },
     { label: "Total Topics", value: statsData?.data?.totalTopics ?? 0, icon: Layers, color: "#3B82F6", bg: "#EFF6FF" },
     { label: "Total Enrolled", value: (statsData?.data?.totalEnrolled ?? 0).toLocaleString(), icon: Users, color: "#10B981", bg: "#ECFDF5" },
     { label: "Avg Completion", value: `${statsData?.data?.avgCompletion ?? 0}%`, icon: Target, color: "#F59E0B", bg: "#FFFBEB" },
@@ -106,7 +106,7 @@ export default function AdminModulesPage() {
                 <Download size={13} /> Export
               </button>
               <button onClick={() => setShowCreate(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors">
                 <Plus size={13} /> New Module
               </button>
             </div>
@@ -145,7 +145,7 @@ export default function AdminModulesPage() {
           rightSlot={
             <div className="flex items-center gap-2">
               <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}
-                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#E8317A] transition-colors">
+                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#F97316] transition-colors">
                 <option value="all">All Categories</option>
                 {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
                   <option key={k} value={k}>{v.label}</option>
@@ -169,9 +169,9 @@ export default function AdminModulesPage() {
             ))}
             {/* Add new card */}
             <button onClick={() => setShowCreate(true)}
-              className="rounded-2xl border-2 border-dashed border-[#E5E7EB] flex flex-col items-center justify-center p-8 text-center hover:border-[#E8317A]/40 hover:bg-pink-50/20 transition-all group min-h-[320px]">
+              className="rounded-2xl border-2 border-dashed border-[#E5E7EB] flex flex-col items-center justify-center p-8 text-center hover:border-[#F97316]/40 hover:bg-pink-50/20 transition-all group min-h-[320px]">
               <div className="w-10 h-10 rounded-full bg-[#F3F4F6] group-hover:bg-pink-100 flex items-center justify-center mb-3 transition-colors">
-                <Plus size={18} className="text-[#9CA3AF] group-hover:text-[#E8317A] transition-colors" />
+                <Plus size={18} className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors" />
               </div>
               <p className="text-[13px] font-bold text-[#9CA3AF] group-hover:text-[#111827] transition-colors">New Module</p>
               <p className="text-[11px] text-[#D1D5DB] mt-1">Create a new learning module</p>

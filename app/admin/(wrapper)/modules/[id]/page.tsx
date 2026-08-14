@@ -88,7 +88,7 @@ function SummaryPreviewSidebar({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[#F3F4F6] flex-shrink-0">
           <div className="flex items-center gap-3">
-            <BookOpen size={18} className="text-[#E8317A]" />
+            <BookOpen size={18} className="text-[#F97316]" />
             <div>
               <h3 className="text-[15px] font-bold text-[#111827]">Summary Preview</h3>
               <p className="text-[11px] text-[#9CA3AF]">
@@ -391,7 +391,7 @@ export default function ModuleDetailPage() {
           <BookOpen size={48} className="text-[#E5E7EB] mx-auto mb-4" />
           <h2 className="text-lg font-bold text-[#111827] mb-2">Module Not Found</h2>
           <p className="text-[13px] text-[#9CA3AF] mb-6">The module you're looking for doesn't exist or has been deleted.</p>
-          <Link href="/admin/modules" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E8317A] text-white text-[13px] font-semibold">
+          <Link href="/admin/modules" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F97316] text-white text-[13px] font-semibold">
             <ArrowLeft size={14} /> Back to Modules
           </Link>
         </div>
@@ -399,7 +399,7 @@ export default function ModuleDetailPage() {
     );
   }
 
-  const categoryConfig = CATEGORY_CONFIG[module.category] || { label: module.category, color: "#E8317A", bg: "#FFF0F5" };
+  const categoryConfig = CATEGORY_CONFIG[module.category] || { label: module.category, color: "#F97316", bg: "#FFF0F5" };
 
   // Transform analytics data for display
   const progressDistribution = analyticsData?.progressDistribution || [];
@@ -461,7 +461,7 @@ export default function ModuleDetailPage() {
 
           <div className="grid grid-cols-4 gap-3 text-center">
             {[
-              { v: topics.length, l: "Topics", icon: Layers, c: "#E8317A" },
+              { v: topics.length, l: "Topics", icon: Layers, c: "#F97316" },
               { v: module.enrolledCount?.toLocaleString(), l: "Enrolled", icon: Users, c: "#3B82F6" },
               { v: `${module.completionRate}%`, l: "Complete", icon: Target, c: "#10B981" },
               { v: module.avgRating?.toFixed(1), l: "Rating", icon: Star, c: "#F59E0B" },
@@ -514,14 +514,14 @@ export default function ModuleDetailPage() {
                   max="2000"
                   value={maxWords}
                   onChange={(e) => setMaxWords(Math.min(2000, Math.max(100, Number(e.target.value) || 500)))}
-                  className="w-16 h-7 px-2 rounded-lg border-[1.5px] border-[#E5E7EB] text-[11px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors"
+                  className="w-16 h-7 px-2 rounded-lg border-[1.5px] border-[#E5E7EB] text-[11px] text-[#111827] outline-none focus:border-[#F97316] bg-white transition-colors"
                 />
               </div>
               
               <button
                 onClick={handleOpenPreview}
                 disabled={isGenerating}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors disabled:opacity-50"
               >
                 {isGenerating ? (
                   <RefreshCw size={13} className="animate-spin" />
@@ -532,7 +532,7 @@ export default function ModuleDetailPage() {
               </button>
               
               <button onClick={addTopic}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors">
                 <Plus size={13} /> Add Topic
               </button>
             </div>
@@ -552,7 +552,7 @@ export default function ModuleDetailPage() {
           </div>
 
           <button onClick={addTopic}
-            className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-[#E5E7EB] text-[12px] font-semibold text-[#9CA3AF] hover:border-[#E8317A] hover:text-[#E8317A] hover:bg-pink-50/20 transition-all">
+            className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-[#E5E7EB] text-[12px] font-semibold text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F97316] hover:bg-pink-50/20 transition-all">
             <Plus size={14} /> Add New Topic
           </button>
         </div>
@@ -700,7 +700,7 @@ export default function ModuleDetailPage() {
                         <p className="text-[11px] font-semibold text-[#111827] truncate">{l.name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <div className="flex-1 h-1 bg-[#F3F4F6] rounded-full overflow-hidden">
-                            <div className="h-1 rounded-full bg-[#E8317A]" style={{ width: `${l.progressPercentage}%` }} />
+                            <div className="h-1 rounded-full bg-[#F97316]" style={{ width: `${l.progressPercentage}%` }} />
                           </div>
                           <span className="text-[9px] text-[#9CA3AF]">{l.progressPercentage}%</span>
                         </div>
@@ -736,12 +736,12 @@ export default function ModuleDetailPage() {
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Module Title</label>
                   <input name="title" defaultValue={module.title}
-                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] transition-colors" />
+                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Category</label>
                   <select name="category" defaultValue={module.category}
-                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] bg-white transition-colors">
                     {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
                       <option key={k} value={k}>{v.label}</option>
                     ))}
@@ -750,12 +750,12 @@ export default function ModuleDetailPage() {
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Overview / Description</label>
                   <textarea name="description" defaultValue={module.description}
-                    className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] transition-colors" />
+                    className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Publication Status</label>
                   <select name="status" defaultValue={module.status}
-                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] bg-white transition-colors">
+                    className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] bg-white transition-colors">
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                     <option value="pending">Pending Review</option>
@@ -768,7 +768,7 @@ export default function ModuleDetailPage() {
                     <Trash2 size={12} /> Delete Module
                   </button>
                   <button type="submit"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors">
                     <Save size={13} /> Save Changes
                   </button>
                 </div>

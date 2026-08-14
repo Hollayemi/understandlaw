@@ -128,7 +128,7 @@ export default function NotificationsPage() {
               </button>
               <h1 className="text-lg font-semibold text-gray-800">Notifications</h1>
               {unreadCount > 0 && (
-                <span className="text-xs bg-[#E8317A] text-white px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-[#F97316] text-white px-2 py-0.5 rounded-full">
                   {unreadCount} unread
                 </span>
               )}
@@ -137,7 +137,7 @@ export default function NotificationsPage() {
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-[#E8317A] hover:text-[#d02b6c] transition-colors flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-pink-50"
+                  className="text-xs text-[#F97316] hover:text-[#d02b6c] transition-colors flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-pink-50"
                 >
                   <CheckCheck size={14} />
                   Mark all read
@@ -155,7 +155,7 @@ export default function NotificationsPage() {
               }}
               className={`px-4 py-1.5 text-sm rounded-full transition-colors ${
                 selectedFilter === 'all'
-                  ? 'bg-[#E8317A] text-white'
+                  ? 'bg-[#F97316] text-white'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -171,7 +171,7 @@ export default function NotificationsPage() {
               }}
               className={`px-4 py-1.5 text-sm rounded-full transition-colors ${
                 selectedFilter === 'unread'
-                  ? 'bg-[#E8317A] text-white'
+                  ? 'bg-[#F97316] text-white'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -188,7 +188,7 @@ export default function NotificationsPage() {
       <div className="max-w-3xl mx-auto px-4 py-4">
         {isLoading && page === 1 ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-8 h-8 border-3 border-[#E8317A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-[#F97316] border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-gray-500 mt-4">Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
@@ -253,7 +253,7 @@ export default function NotificationsPage() {
                               </div>
                               <div className="flex items-center gap-1 flex-shrink-0">
                                 {notification.unread ? (
-                                  <span className="w-2 h-2 bg-[#E8317A] rounded-full" />
+                                  <span className="w-2 h-2 bg-[#F97316] rounded-full" />
                                 ): null}
                                 <button
                                   onClick={(e) => handleDelete(notification._id, e)}
@@ -277,7 +277,7 @@ export default function NotificationsPage() {
                                       e.stopPropagation();
                                       handleMarkAsRead(notification._id, e);
                                     }}
-                                    className="text-xs text-[#E8317A] hover:text-[#d02b6c] transition-colors flex items-center gap-1"
+                                    className="text-xs text-[#F97316] hover:text-[#d02b6c] transition-colors flex items-center gap-1"
                                   >
                                     <Eye size={12} />
                                     Mark as read
@@ -306,11 +306,11 @@ export default function NotificationsPage() {
                 <button
                   onClick={loadMore}
                   disabled={isLoading}
-                  className="px-6 py-2 text-sm text-[#E8317A] hover:bg-pink-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="px-6 py-2 text-sm text-[#F97316] hover:bg-pink-50 rounded-lg transition-colors disabled:opacity-50"
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-[#E8317A] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
                       Loading...
                     </div>
                   ) : (

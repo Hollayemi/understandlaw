@@ -199,7 +199,7 @@ export function ChatBubble({
   }
 
   const bubbleBg = isMine
-    ? "linear-gradient(135deg, #E8317A, #d01f68)"
+    ? "linear-gradient(135deg, #F97316, #d01f68)"
     : "#F3F4F6";
   const textColor = isMine ? "#fff" : "#111827";
   const timeColor = isMine ? "rgba(255,255,255,0.6)" : "#9CA3AF";
@@ -328,9 +328,9 @@ export function ReplyPreview({
 }) {
   return (
     <div className="flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] border-t border-[#F3F4F6]">
-      <div className="w-0.5 h-8 bg-[#E8317A] rounded-full flex-shrink-0" />
+      <div className="w-0.5 h-8 bg-[#F97316] rounded-full flex-shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-bold text-[#E8317A]">Replying to {message.senderName}</p>
+        <p className="text-[10px] font-bold text-[#F97316]">Replying to {message.senderName}</p>
         <p className="text-[11px] text-[#6B7280] truncate">{message.content}</p>
       </div>
       <button onClick={onCancel} className="text-[#9CA3AF] hover:text-[#374151] transition-colors">
@@ -433,7 +433,7 @@ export function MessageInput({
             disabled={disabled}
             placeholder={placeholder}
             rows={1}
-            className="w-full px-4 py-2.5 rounded-2xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors bg-white leading-relaxed"
+            className="w-full px-4 py-2.5 rounded-2xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors bg-white leading-relaxed"
             style={{ maxHeight: 120 }}
           />
         </div>
@@ -441,7 +441,7 @@ export function MessageInput({
           onClick={handleSend}
           disabled={!text.trim() || disabled}
           className="w-9 h-9 rounded-full flex items-center justify-center text-white flex-shrink-0 disabled:opacity-40 transition-all hover:scale-105 active:scale-95"
-          style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+          style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
         >
           <Send size={15} />
         </button>
@@ -508,7 +508,7 @@ export function ConversationHeader({
         <div className="flex items-center gap-1.5">
           <p className="text-[13px] font-bold text-[#111827] truncate">{name}</p>
           {isAdmin && (
-            <span className="text-[9px] font-bold text-[#E8317A] bg-[#FFF0F5] border border-[#FBCFE8] px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+            <span className="text-[9px] font-bold text-[#F97316] bg-[#FFF0F5] border border-[#FBCFE8] px-1.5 py-0.5 rounded-full uppercase tracking-wider">
               Admin View
             </span>
           )}
@@ -589,7 +589,7 @@ export function ConversationListItem({
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b border-[#F9FAFB] ${
         isActive
-          ? "bg-[#FFF0F5] border-l-2 border-l-[#E8317A]"
+          ? "bg-[#FFF0F5] border-l-2 border-l-[#F97316]"
           : "hover:bg-[#F9FAFB]"
       }`}
     >
@@ -623,7 +623,7 @@ export function ConversationListItem({
             {preview}
           </p>
           {unreadCount > 0 && (
-            <span className="flex-shrink-0 min-w-[18px] h-[18px] px-1 rounded-full bg-[#E8317A] text-white text-[10px] font-bold flex items-center justify-center">
+            <span className="flex-shrink-0 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F97316] text-white text-[10px] font-bold flex items-center justify-center">
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
@@ -648,7 +648,7 @@ export function EmptyConversation({
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-[#FAFAFA] gap-4">
       <div className="w-16 h-16 rounded-2xl bg-[#FFF0F5] flex items-center justify-center">
-        <MessageSquare size={28} className="text-[#E8317A]" />
+        <MessageSquare size={28} className="text-[#F97316]" />
       </div>
       <div className="text-center">
         <p className="text-[14px] font-semibold text-[#374151]">{message}</p>
@@ -728,7 +728,7 @@ export function MessageList({
     >
       {isLoadingHistory && (
         <div className="flex justify-center py-4">
-          <Loader2 size={20} className="animate-spin text-[#E8317A]" />
+          <Loader2 size={20} className="animate-spin text-[#F97316]" />
         </div>
       )}
 

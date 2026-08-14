@@ -24,7 +24,7 @@ const ROLE_CONFIG: Record<AdminRole, { label: string; icon: React.ElementType; c
   [AdminRole.INSTRUCTOR]: { label: "Instructor", icon: GraduationCap, color: "#10B981", bg: "#ECFDF5" },
   [AdminRole.MODERATOR]: { label: "Moderator", icon: Users, color: "#F59E0B", bg: "#FFFBEB" },
   [AdminRole.ANALYST]: { label: "Analyst", icon: UserCheck, color: "#06B6D4", bg: "#ECFEFF" },
-  [AdminRole.SUPPORT]: { label: "Support", icon: UserX, color: "#E8317A", bg: "#FFF0F5" },
+  [AdminRole.SUPPORT]: { label: "Support", icon: UserX, color: "#F97316", bg: "#FFF0F5" },
 };
 
 // Role options for dropdown
@@ -101,12 +101,12 @@ function AdminModal({
 
   if (!isOpen) return null;
 
-  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
+  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8]" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#F97316] to-[#EA580C]" />
         <div className="p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -184,7 +184,7 @@ function AdminModal({
                     id="sendInvite"
                     checked={form.sendInvite}
                     onChange={set("sendInvite")}
-                    className="w-4 h-4 rounded border-[#E5E7EB] text-[#E8317A] focus:ring-[#E8317A]"
+                    className="w-4 h-4 rounded border-[#E5E7EB] text-[#F97316] focus:ring-[#F97316]"
                   />
                   <label htmlFor="sendInvite" className="text-[12px] text-[#6B7280]">
                     Send invitation email
@@ -529,7 +529,7 @@ export default function AdminManagementPage() {
           action={
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors"
             >
               <UserPlus size={13} /> Add Admin
             </button>
@@ -574,7 +574,7 @@ export default function AdminManagementPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by name or email..."
-                  className="w-full h-9 pl-9 pr-3 rounded-xl border border-[#E5E7EB] text-[12px] outline-none focus:border-[#E8317A] transition-colors"
+                  className="w-full h-9 pl-9 pr-3 rounded-xl border border-[#E5E7EB] text-[12px] outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
             </div>
@@ -583,7 +583,7 @@ export default function AdminManagementPage() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="h-9 px-3 rounded-xl border border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#E8317A] transition-colors"
+              className="h-9 px-3 rounded-xl border border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#F97316] transition-colors"
             >
               {ROLE_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -594,7 +594,7 @@ export default function AdminManagementPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 px-3 rounded-xl border border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#E8317A] transition-colors"
+              className="h-9 px-3 rounded-xl border border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#F97316] transition-colors"
             >
               {STATUS_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -604,7 +604,7 @@ export default function AdminManagementPage() {
             {/* Refresh Button */}
             <button
               onClick={() => refetch()}
-              className="h-9 w-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-colors"
+              className="h-9 w-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] transition-colors"
             >
               <RefreshCw size={14} />
             </button>

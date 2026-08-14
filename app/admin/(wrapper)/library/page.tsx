@@ -250,7 +250,7 @@ export default function AdminLibraryPage() {
       key: "amount",
       header: "Amount",
       render: (o: BookOrder) => (
-        <span className="text-[12px] font-bold text-[#E8317A]">NGN {o.totalAmount.toLocaleString()}</span>
+        <span className="text-[12px] font-bold text-[#F97316]">NGN {o.totalAmount.toLocaleString()}</span>
       ),
     },
     {
@@ -296,7 +296,7 @@ export default function AdminLibraryPage() {
   if (statsLoading && !statsData) {
     return (
       <div className="flex items-center justify-center h-96">
-        <Loader2 className="animate-spin text-[#E8317A]" size={40} />
+        <Loader2 className="animate-spin text-[#F97316]" size={40} />
       </div>
     );
   }
@@ -324,7 +324,7 @@ export default function AdminLibraryPage() {
           subtitle="Manage books available for download and physical purchase."
           action={
             <button onClick={() => setShowUpload(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] transition-colors">
               <Plus size={13} /> Upload Book
             </button>
           }
@@ -332,7 +332,7 @@ export default function AdminLibraryPage() {
 
         {/* Stats */}
         <StatBar items={[
-          { label: "Total Books", value: stats?.totalBooks || 0, icon: BookOpen, color: "#E8317A", bg: "#FFF0F5" },
+          { label: "Total Books", value: stats?.totalBooks || 0, icon: BookOpen, color: "#F97316", bg: "#FFF0F5" },
           { label: "Total Downloads", value: (stats?.totalDownloads || 0).toLocaleString(), icon: Download, color: "#3B82F6", bg: "#EFF6FF" },
           { label: "Total Orders", value: stats?.totalOrders || 0, icon: ShoppingCart, color: "#F59E0B", bg: "#FFFBEB" },
           { label: "Pending Orders", value: stats?.pendingOrders || 0, icon: Clock, color: "#9CA3AF", bg: "#F9FAFB" },
@@ -361,7 +361,7 @@ export default function AdminLibraryPage() {
               <button key={t.id} onClick={() => setActiveTab(t.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all ${activeTab === t.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
                 <Icon size={13} /> {t.label}
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeTab === t.id ? "bg-[#E8317A] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{t.count}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeTab === t.id ? "bg-[#F97316] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{t.count}</span>
               </button>
             );
           })}
@@ -381,7 +381,7 @@ export default function AdminLibraryPage() {
                     setBookPage(1);
                   }}
                   placeholder="Search books…"
-                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
               <div className="flex items-center gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1">
@@ -421,7 +421,7 @@ export default function AdminLibraryPage() {
                 ))}
               </div>
               {(booksFetching || booksLoading) && (
-                <Loader2 size={16} className="animate-spin text-[#E8317A] ml-2" />
+                <Loader2 size={16} className="animate-spin text-[#F97316] ml-2" />
               )}
             </div>
 
@@ -430,7 +430,7 @@ export default function AdminLibraryPage() {
                 <BookOpen size={36} className="text-[#E5E7EB] mx-auto mb-3" />
                 <p className="text-sm font-semibold text-[#9CA3AF]">No books found</p>
                 <button onClick={() => setShowUpload(true)}
-                  className="mt-4 flex items-center gap-1.5 mx-auto text-[12px] font-bold text-[#E8317A] hover:underline">
+                  className="mt-4 flex items-center gap-1.5 mx-auto text-[12px] font-bold text-[#F97316] hover:underline">
                   <Plus size={12} /> Upload your first book
                 </button>
               </div>
@@ -449,9 +449,9 @@ export default function AdminLibraryPage() {
                   ))}
                   {/* Upload card */}
                   <button onClick={() => setShowUpload(true)}
-                    className="rounded-2xl border-2 border-dashed border-[#E5E7EB] flex flex-col items-center justify-center p-8 text-center hover:border-[#E8317A]/40 hover:bg-pink-50/20 transition-all group min-h-[340px]">
+                    className="rounded-2xl border-2 border-dashed border-[#E5E7EB] flex flex-col items-center justify-center p-8 text-center hover:border-[#F97316]/40 hover:bg-pink-50/20 transition-all group min-h-[340px]">
                     <div className="w-10 h-10 rounded-full bg-[#F3F4F6] group-hover:bg-pink-100 flex items-center justify-center mb-3 transition-colors">
-                      <Plus size={18} className="text-[#9CA3AF] group-hover:text-[#E8317A] transition-colors" />
+                      <Plus size={18} className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors" />
                     </div>
                     <p className="text-[13px] font-bold text-[#9CA3AF] group-hover:text-[#111827] transition-colors">Upload Book</p>
                     <p className="text-[11px] text-[#D1D5DB] mt-1">PDF, physical, or both</p>
@@ -504,7 +504,7 @@ export default function AdminLibraryPage() {
                     setOrderPage(1);
                   }}
                   placeholder="Search orders…"
-                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
               <div className="flex items-center gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1 flex-wrap">
@@ -528,7 +528,7 @@ export default function AdminLibraryPage() {
                 ))}
               </div>
               {(ordersFetching || ordersLoading) && (
-                <Loader2 size={16} className="animate-spin text-[#E8317A] ml-2" />
+                <Loader2 size={16} className="animate-spin text-[#F97316] ml-2" />
               )}
             </div>
 
