@@ -45,7 +45,7 @@ export default function PlanDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 size={32} className="animate-spin text-[#F97316]" />
+        <Loader2 size={32} className="animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function PlanDetailPage() {
         <p className="text-gray-500">Plan not found</p>
         <Link
           href="/admin/subscriptions"
-          className="text-[#F97316] hover:underline mt-2"
+          className="text-[#7C3AED] hover:underline mt-2"
         >
           Back to subscriptions
         </Link>
@@ -172,7 +172,7 @@ export default function PlanDetailPage() {
       {/* Badges */}
       <div className="flex gap-4">
         {plan.isPopular && (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-pink-50 text-[#F97316] border border-pink-200">
+          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-pink-50 text-[#7C3AED] border border-pink-200">
             Popular
           </span>
         )}

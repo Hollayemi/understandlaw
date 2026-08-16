@@ -79,7 +79,7 @@ function SummaryView({
         <p className="text-[13px] text-[#9CA3AF] mt-1">This module doesn't have an AI summary yet.</p>
         <button
           onClick={onBack}
-          className="mt-6 flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold text-[#F97316] hover:bg-[#F97316]/10 transition-colors"
+          className="mt-6 flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-colors"
         >
           <ArrowLeft size={16} /> Back to Module
         </button>
@@ -163,7 +163,7 @@ function SummaryView({
       <div className="border-t border-[#F3F4F6] pt-4 flex items-center justify-between text-[11px] text-[#9CA3AF]">
         <span>Total: {totalOriginalWords.toLocaleString()} original words</span>
         <span className="flex items-center gap-1">
-          <Sparkles size={12} className="text-[#F97316]" />
+          <Sparkles size={12} className="text-[#7C3AED]" />
           Summary
         </span>
       </div>
@@ -300,7 +300,7 @@ export default function ModuleDetailPage() {
   if (moduleLoading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-[#F97316]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -309,7 +309,7 @@ export default function ModuleDetailPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <p className="text-gray-500 mb-4">Module not found</p>
-        <Link href="/dashboard/learn" className="text-[#F97316] font-semibold">
+        <Link href="/dashboard/learn" className="text-[#7C3AED] font-semibold">
           Back to Learning
         </Link>
       </div>
@@ -334,7 +334,7 @@ export default function ModuleDetailPage() {
           {hasSummary && (
             <button 
               onClick={handleViewSummary}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#F97316] bg-[#F97316]/10 hover:bg-[#F97316]/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#7C3AED] bg-[#7C3AED]/10 hover:bg-[#7C3AED]/20 transition-colors"
             >
               <Sparkles size={13} />
               {showSummary ? "View Module" : "Quick Summary"}
@@ -348,7 +348,7 @@ export default function ModuleDetailPage() {
             disabled={isTogglingSave}
             className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
           >
-            <Bookmark size={14} className={module.isSaved ? "text-[#F97316] fill-[#F97316]" : "text-gray-500"} />
+            <Bookmark size={14} className={module.isSaved ? "text-[#7C3AED] fill-[#7C3AED]" : "text-gray-500"} />
           </button>
         </div>
       </div>
@@ -380,7 +380,7 @@ export default function ModuleDetailPage() {
               onClick={handleEnrol}
               disabled={isEnrolling}
               className="px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
             >
               {isEnrolling ? <Loader2 size={16} className="animate-spin inline mr-2" /> : null}
               Start Learning
@@ -393,7 +393,7 @@ export default function ModuleDetailPage() {
                 <button
                   onClick={handleViewSummary}
                   className="px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                  style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                  style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                 >
                   <Sparkles size={14} className="inline mr-2" />
                   Quick Summary
@@ -402,7 +402,7 @@ export default function ModuleDetailPage() {
               <Link
                 href={`/dashboard/learn/${slug}/${topics.find((t: any) => !t.completed)?.slug || topics[0]?.slug}`}
                 className="px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                style={{ background: hasSummary ? "linear-gradient(135deg, #6B7280, #9CA3AF)" : "linear-gradient(135deg, #F97316, #EA580C)" }}
+                style={{ background: hasSummary ? "linear-gradient(135deg, #6B7280, #9CA3AF)" : "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
               >
                 {hasSummary ? "Dive Deeper" : "Continue Learning"}
               </Link>
@@ -503,7 +503,7 @@ export default function ModuleDetailPage() {
                         className="h-2 rounded-full transition-all duration-500"
                         style={{
                           width: `${progressPercent}%`,
-                          background: "linear-gradient(90deg, #F97316, #EA580C)"
+                          background: "linear-gradient(90deg, #7C3AED, #5B21B6)"
                         }}
                       />
                     </div>
@@ -575,8 +575,8 @@ export default function ModuleDetailPage() {
                               <Check size={16} className="text-green-600" />
                             </div>
                           ) : topic.active ? (
-                            <div className="w-8 h-8 rounded-full bg-[#F97316]/10 flex items-center justify-center">
-                              <PlayCircle size={16} className="text-[#F97316]" />
+                            <div className="w-8 h-8 rounded-full bg-[#7C3AED]/10 flex items-center justify-center">
+                              <PlayCircle size={16} className="text-[#7C3AED]" />
                             </div>
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
@@ -593,7 +593,7 @@ export default function ModuleDetailPage() {
                               <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Completed</span>
                             )}
                             {topic.active && !topic.completed && (
-                              <span className="text-[10px] bg-[#F97316]/10 text-[#F97316] px-2 py-0.5 rounded-full">Active</span>
+                              <span className="text-[10px] bg-[#7C3AED]/10 text-[#7C3AED] px-2 py-0.5 rounded-full">Active</span>
                             )}
                           </div>
                           <h3 className="font-semibold text-gray-900 mb-1">{topic.title}</h3>
@@ -610,7 +610,7 @@ export default function ModuleDetailPage() {
                         <button
                           onClick={() => handleStartTopic(topic.slug)}
                           className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all hover:-translate-y-0.5"
-                          style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                          style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                         >
                           Start Lesson
                         </button>
@@ -620,7 +620,7 @@ export default function ModuleDetailPage() {
                         <button
                           onClick={() => handleStartTopic(topic.slug)}
                           className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all hover:-translate-y-0.5"
-                          style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                          style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                         >
                           Open
                         </button>
@@ -663,7 +663,7 @@ export default function ModuleDetailPage() {
               <Link
                 href="/dashboard/consultation"
                 className="flex-shrink-0 px-5 py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
               >
                 Find my Lawyer
               </Link>

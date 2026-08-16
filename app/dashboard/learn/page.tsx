@@ -139,10 +139,10 @@ function AutoSlideCarousel({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#F97316] transition-colors shadow-sm"
+              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#7C3AED] transition-colors shadow-sm"
               aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
             >
-              {isPlaying ? <Pause size={14} className="text-gray-600" /> : <Play size={14} className="text-[#F97316]" />}
+              {isPlaying ? <Pause size={14} className="text-gray-600" /> : <Play size={14} className="text-[#7C3AED]" />}
             </button>
             <span className="text-[10px] text-gray-400 font-medium">
               {isPlaying ? "Auto-sliding" : "Paused"}
@@ -152,7 +152,7 @@ function AutoSlideCarousel({
           <div className="flex items-center gap-2">
             <button
               onClick={prevSlide}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#F97316] transition-colors shadow-sm"
+              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#7C3AED] transition-colors shadow-sm"
               aria-label="Previous slide"
             >
               <ChevronLeft size={14} className="text-gray-600" />
@@ -164,7 +164,7 @@ function AutoSlideCarousel({
                 <button
                   key={idx}
                   onClick={() => goToSlide(idx * currentItemsPerView)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "w-6 bg-[#F97316]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "w-6 bg-[#7C3AED]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
                     }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -173,7 +173,7 @@ function AutoSlideCarousel({
 
             <button
               onClick={nextSlide}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#F97316] transition-colors shadow-sm"
+              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#7C3AED] transition-colors shadow-sm"
               aria-label="Next slide"
             >
               <ChevronRight size={14} className="text-gray-600" />
@@ -299,7 +299,7 @@ export default function DashboardLearnPage() {
             <p className="text-white text-xs font-medium">{item.progressPercent}% Complete</p>
             <div className="w-32 h-1.5 bg-white/30 rounded-full mt-2 mx-auto">
               <div
-                className="h-1.5 rounded-full bg-[#F97316]"
+                className="h-1.5 rounded-full bg-[#7C3AED]"
                 style={{ width: `${item.progressPercent}%` }}
               />
             </div>
@@ -346,7 +346,7 @@ export default function DashboardLearnPage() {
         >
           <Bookmark
             size={14}
-            className={mod.isSaved ? "text-[#F97316] fill-[#F97316]" : "text-gray-500"}
+            className={mod.isSaved ? "text-[#7C3AED] fill-[#7C3AED]" : "text-gray-500"}
           />
         </button>
       </div>
@@ -391,7 +391,7 @@ export default function DashboardLearnPage() {
             <Link
               href={`/dashboard/learn/${mod.slug}`}
               className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
             >
               <ChevronRight size={13} />
             </Link>
@@ -399,7 +399,7 @@ export default function DashboardLearnPage() {
             <button
               onClick={() => handleEnrol(mod._id)}
               disabled={isEnrolling}
-              className="flex-shrink-0 text-[10px] font-semibold text-[#F97316] hover:text-[#F97316]/80"
+              className="flex-shrink-0 text-[10px] font-semibold text-[#7C3AED] hover:text-[#7C3AED]/80"
             >
               Start
             </button>
@@ -412,7 +412,7 @@ export default function DashboardLearnPage() {
   if (modulesLoading && !modulesData) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-[#F97316]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#7C3AED]" />
       </div>
     );
   }
@@ -456,7 +456,7 @@ export default function DashboardLearnPage() {
           {user.role !== "lawyer" && <Link
             href="/dashboard/consultations"
             className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+            style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
           >
             Find my Lawyer
           </Link>}
@@ -500,7 +500,7 @@ export default function DashboardLearnPage() {
       {/* Module cards */}
       {modulesLoading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-[#F97316]" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#7C3AED]" />
         </div>
       ) : modules.length === 0 ? (
         <div className="text-center py-12">
@@ -508,7 +508,7 @@ export default function DashboardLearnPage() {
           {tab !== "all" && (
             <button
               onClick={() => setTab("all")}
-              className="mt-2 text-[#F97316] text-sm font-semibold"
+              className="mt-2 text-[#7C3AED] text-sm font-semibold"
             >
               View all lessions
             </button>
@@ -534,7 +534,7 @@ export default function DashboardLearnPage() {
         <h2 className="text-base font-bold text-gray-900 mb-4">Featured Topics</h2>
         {featuredLoading ? (
           <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-[#F97316]" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#7C3AED]" />
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">

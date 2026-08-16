@@ -26,7 +26,7 @@ export function VerificationSteps() {
   return (
     <div className="bg-[#0B1120] rounded-2xl p-5 border border-white/6">
       <div className="flex items-center gap-2 mb-4">
-        <Shield size={14} className="text-[#F97316]" />
+        <Shield size={14} className="text-[#7C3AED]" />
         <span className="text-xs font-bold text-white uppercase tracking-widest">Verification Process</span>
       </div>
       <div className="grid grid-cols-5 gap-2">
@@ -35,8 +35,8 @@ export function VerificationSteps() {
             {i < steps.length - 1 && (
               <div className="absolute top-4 left-[calc(50%+14px)] right-0 h-px bg-white/10" />
             )}
-            <div className="w-8 h-8 rounded-full bg-[#F97316]/15 border border-[#F97316]/30 flex items-center justify-center mb-2 relative z-10">
-              <span className="text-[10px] font-bold text-[#F97316]">{s.n}</span>
+            <div className="w-8 h-8 rounded-full bg-[#7C3AED]/15 border border-[#7C3AED]/30 flex items-center justify-center mb-2 relative z-10">
+              <span className="text-[10px] font-bold text-[#7C3AED]">{s.n}</span>
             </div>
             <p className="text-[10px] font-semibold text-white leading-tight">{s.title}</p>
             <p className="text-[9px] text-gray-500 leading-tight mt-0.5 hidden sm:block">{s.desc}</p>
@@ -79,7 +79,7 @@ export function LawyerCard({
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-gray-900 text-[15px] leading-tight truncate group-hover:text-[#F97316] transition-colors">
+            <h3 className="font-bold text-gray-900 text-[15px] leading-tight truncate group-hover:text-[#7C3AED] transition-colors">
               {lawyer.fullName}
             </h3>
             <p className="text-xs text-gray-500 mt-0.5">{lawyer.title}</p>
@@ -155,7 +155,7 @@ export function LawyerCard({
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
             style={{
               background: lawyer.isAvailable
-                ? `linear-gradient(135deg, #F97316, #EA580C)`
+                ? `linear-gradient(135deg, #7C3AED, #5B21B6)`
                 : "#9CA3AF",
             }}
           >
@@ -210,7 +210,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative overflow-hidden">
         {/* Top bar */}
-        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #F97316, #EA580C)" }} />
+        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #7C3AED, #5B21B6)" }} />
 
         <div className="p-6">
           {/* Close */}
@@ -241,7 +241,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-500">Fee</span>
-                  <span className="font-bold text-[#F97316]">NGN {fee.toLocaleString()}</span>
+                  <span className="font-bold text-[#7C3AED]">NGN {fee.toLocaleString()}</span>
                 </div>
               </div>
               <button onClick={onClose} className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors">
@@ -261,9 +261,9 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                   <p className="text-xs text-gray-500">{lawyer.fullName} - {lawyer.title}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step === 1 ? "bg-[#F97316] text-white" : "bg-gray-100 text-gray-400"}`}>1</span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step === 1 ? "bg-[#7C3AED] text-white" : "bg-gray-100 text-gray-400"}`}>1</span>
                   <div className="w-4 h-px bg-gray-200" />
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step === 2 ? "bg-[#F97316] text-white" : "bg-gray-100 text-gray-400"}`}>2</span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step === 2 ? "bg-[#7C3AED] text-white" : "bg-gray-100 text-gray-400"}`}>2</span>
                 </div>
               </div>
 
@@ -276,12 +276,12 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                         const Icon = m.icon;
                         return (
                           <button key={m.id} onClick={() => setMode(m.id)}
-                            className={`flex items-center gap-3 p-3.5 rounded-xl border-[1.5px] text-left transition-all ${mode === m.id ? "border-[#F97316] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"}`}>
-                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${mode === m.id ? "bg-[#F97316]/10" : "bg-gray-100"}`}>
-                              <Icon size={16} className={mode === m.id ? "text-[#F97316]" : "text-gray-500"} />
+                            className={`flex items-center gap-3 p-3.5 rounded-xl border-[1.5px] text-left transition-all ${mode === m.id ? "border-[#7C3AED] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"}`}>
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${mode === m.id ? "bg-[#7C3AED]/10" : "bg-gray-100"}`}>
+                              <Icon size={16} className={mode === m.id ? "text-[#7C3AED]" : "text-gray-500"} />
                             </div>
                             <div className="flex-1">
-                              <p className={`text-sm font-semibold ${mode === m.id ? "text-[#F97316]" : "text-gray-900"}`}>{m.label}</p>
+                              <p className={`text-sm font-semibold ${mode === m.id ? "text-[#7C3AED]" : "text-gray-900"}`}>{m.label}</p>
                               <p className="text-[11px] text-gray-500">{m.desc}</p>
                             </div>
                             <div className="shrink-0 text-right">
@@ -298,7 +298,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Legal Topic</label>
                     <input value={topic} onChange={e => setTopic(e.target.value)}
                       placeholder="e.g. My landlord is trying to evict me without notice"
-                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
                     />
                   </div>
 
@@ -306,7 +306,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                     onClick={() => setStep(2)}
                     disabled={!topic.trim()}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:translate-y-0"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                   >
                     Continue
                     <ChevronRight size={14} className="inline ml-1" />
@@ -324,7 +324,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Describe your situation <span className="font-normal text-gray-400">(optional but helpful)</span></label>
                     <textarea value={detail} onChange={e => setDetail(e.target.value)}
                       placeholder="Provide any relevant details that will help the lawyer prepare..."
-                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
                     />
                   </div>
 
@@ -334,7 +334,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                       <div className="grid grid-cols-2 gap-2">
                         {slots.map(s => (
                           <button key={s} onClick={() => setSlot(s)}
-                            className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${slot === s ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                            className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${slot === s ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
                             {s}
                           </button>
                         ))}
@@ -351,7 +351,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                       <div className="flex justify-between"><span className="text-gray-500">Topic</span><span className="font-semibold truncate max-w-45">{topic}</span></div>
                       <div className="flex justify-between border-t border-gray-200 pt-1.5 mt-1.5">
                         <span className="text-gray-500 font-semibold">Total</span>
-                        <span className="font-bold text-[#F97316] text-sm">NGN {fee.toLocaleString()}</span>
+                        <span className="font-bold text-[#7C3AED] text-sm">NGN {fee.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -367,7 +367,7 @@ export function ConsultModal({ lawyer, onClose }: { lawyer: LawyerFull; onClose:
                     onClick={submit}
                     disabled={isLoading || ((mode === "call" || mode === "video") && !slot)}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                   >
                     {isLoading ? <><Loader2 size={14} className="animate-spin" /> Sending...</> : <>Send Request <Send size={13} /></>}
                   </button>
@@ -437,7 +437,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative overflow-hidden max-h-[90vh] overflow-y-auto">
-        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #0B1120, #F97316)" }} />
+        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #0B1120, #7C3AED)" }} />
         <div className="p-6">
           <button onClick={onClose} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors z-10">
             <X size={14} />
@@ -471,7 +471,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                 <div className="flex items-center gap-2">
                   {[1, 2].map(n => (
                     <React.Fragment key={n}>
-                      <span className={`w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center ${step === n ? "bg-[#F97316] text-white" : step > n ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-400"}`}>
+                      <span className={`w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center ${step === n ? "bg-[#7C3AED] text-white" : step > n ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-400"}`}>
                         {step > n ? <Check size={11} /> : n}
                       </span>
                       {n < 2 && <div className="w-4 h-px bg-gray-200" />}
@@ -489,8 +489,8 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                         // const Icon = s.icon;
                         return (
                           <button key={s._id} onClick={() => setSpecialism(s._id)}
-                            className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left text-xs font-medium transition-all ${specialism === s._id ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
-                            <div className={`w-2 h-2 rounded-full ${specialism === s._id ? "bg-[#F97316]" : "bg-white"}`} />
+                            className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left text-xs font-medium transition-all ${specialism === s._id ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                            <div className={`w-2 h-2 rounded-full ${specialism === s._id ? "bg-[#7C3AED]" : "bg-white"}`} />
                             {s.displayName}
                           </button>
                         );
@@ -503,7 +503,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <div className="grid grid-cols-2 gap-2">
                       {urgencies.map(u => (
                         <button key={u.label} onClick={() => setUrgency(u.value as any)}
-                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${urgency === u.value ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${urgency === u.value ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
                           {u.label}
                         </button>
                       ))}
@@ -514,7 +514,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     onClick={() => setStep(2)}
                     disabled={!specialism}
                     className="w-full py-3 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                   >
                     Continue
                   </button>
@@ -531,7 +531,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Preferred State / Location <span className="font-normal text-gray-400">(optional)</span></label>
                     <select value={location} onChange={e => setLocation(e.target.value)}
                       // placeholder="e.g. Lagos, Abuja, Port Harcourt"
-                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
                     >
                       <option value="">Any State</option>
                       {NIGERIAN_STATES.map((e:any, i:number) => <option key={i} value={e.code}>{e.label}</option> )}
@@ -541,7 +541,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Legal Topic</label>
                     <input value={topic} onChange={e => setTopic(e.target.value)}
                       placeholder="e.g. My landlord is trying to evict me without notice"
-                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
                     />
                   </div>
                   <div>
@@ -549,7 +549,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <div className="grid grid-cols-3 gap-2">
                       {["Message", "Call", "Video"].map(b => (
                         <button key={b} onClick={() => setMode(b.toLowerCase())}
-                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${mode === b.toLowerCase() ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${mode === b.toLowerCase() ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
                           {b}
                         </button>
                       ))}
@@ -560,7 +560,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <div className="grid grid-cols-2 gap-2">
                       {budgets.map(b => (
                         <button key={b} onClick={() => setBudget(b)}
-                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${budget === b ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
+                          className={`py-2.5 px-3 rounded-xl border-[1.5px] text-xs font-medium transition-all ${budget === b ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-700 hover:border-gray-300"}`}>
                           {b}
                         </button>
                       ))}
@@ -571,7 +571,7 @@ export function RequestLawyerModal({ onClose }: { onClose: () => void }) {
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Brief Description of Your Issue</label>
                     <textarea value={description} onChange={e => setDescription(e.target.value)}
                       placeholder="Describe your legal situation briefly so we can find the right match..."
-                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
                     />
                   </div>
 

@@ -114,13 +114,13 @@ export default function PricingPage() {
       {/* Hero */}
       <section className="bg-white pt-14 pb-14 border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-3">Pricing</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">Pricing</p>
           <h1
             className="text-[clamp(48px,7vw,80px)] leading-none tracking-[0.01em] text-gray-900 uppercase mb-4"
             style={{ fontFamily: "var(--font-bebas)" }}
           >
             START FREE.<br />
-            <span style={{ color: "#F97316" }}>SCALE WHEN READY.</span>
+            <span style={{ color: "#7C3AED" }}>SCALE WHEN READY.</span>
           </h1>
           <p className="text-base text-gray-500 max-w-xl mx-auto leading-relaxed">
             Legal knowledge is free,  forever. Only pay when you need a professional lawyer.
@@ -143,7 +143,7 @@ export default function PricingPage() {
                 key={phase.label}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
                   phase.active
-                    ? "bg-[#F97316] text-white"
+                    ? "bg-[#7C3AED] text-white"
                     : "bg-white border border-gray-200 text-gray-500"
                 }`}
               >
@@ -175,20 +175,20 @@ export default function PricingPage() {
                 {tier.badge && (
                   <div
                     className={`absolute -top-px left-0 right-0 h-1 ${
-                      tier.highlight ? "bg-gradient-to-r from-[#F97316] to-[#EA580C]" : "bg-gradient-to-r from-gray-200 to-gray-300"
+                      tier.highlight ? "bg-gradient-to-r from-[#7C3AED] to-[#5B21B6]" : "bg-gradient-to-r from-gray-200 to-gray-300"
                     }`}
                   />
                 )}
                 {tier.badge && (
                   <div className={`absolute top-3 right-4 text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                    tier.highlight ? "bg-[#F97316] text-white" : "bg-gray-100 text-gray-500"
+                    tier.highlight ? "bg-[#7C3AED] text-white" : "bg-gray-100 text-gray-500"
                   }`}>
                     {tier.badge}
                   </div>
                 )}
 
                 <div className="p-7 flex flex-col flex-1">
-                  <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-[#F97316]" : "text-gray-400"}`}>
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-[#7C3AED]" : "text-gray-400"}`}>
                     {tier.name}
                   </p>
                   <div className="flex items-baseline gap-1.5 mb-1">
@@ -208,7 +208,7 @@ export default function PricingPage() {
                     {tier.features.map((f) => (
                       <li key={f.text} className="flex items-start gap-2.5">
                         {f.included ? (
-                          <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#F97316]" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#7C3AED]" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         ) : (
@@ -233,7 +233,7 @@ export default function PricingPage() {
                     href={tier.href}
                     className={`w-full py-3 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                       tier.highlight
-                        ? "bg-[#F97316] text-white hover:bg-[#d01f68] hover:shadow-lg hover:shadow-pink-900/30"
+                        ? "bg-[#7C3AED] text-white hover:bg-[#5B21B6] hover:shadow-lg hover:shadow-pink-900/30"
                         : "border-[1.5px] border-gray-200 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
                     }`}
                   >
@@ -256,7 +256,7 @@ export default function PricingPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex items-end justify-between gap-6 mb-8">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-2">For Nigerian Lawyers</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">For Nigerian Lawyers</p>
               <h2
                 className="text-[clamp(28px,4vw,44px)] leading-none text-gray-900 uppercase"
                 style={{ fontFamily: "var(--font-bebas)" }}
@@ -293,7 +293,7 @@ export default function PricingPage() {
                 <ul className="flex flex-col gap-2 mb-5">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs text-gray-600">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 text-[#F97316]" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 text-[#7C3AED]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                       {f}
@@ -304,7 +304,7 @@ export default function PricingPage() {
                   href={tier.href}
                   className={`w-full py-2.5 rounded-full text-sm font-semibold flex items-center justify-center transition-all ${
                     tier.active
-                      ? "bg-[#F97316] text-white hover:bg-[#d01f68]"
+                      ? "bg-[#7C3AED] text-white hover:bg-[#5B21B6]"
                       : "border border-gray-200 text-gray-500 cursor-not-allowed"
                   }`}
                 >
@@ -320,7 +320,7 @@ export default function PricingPage() {
       <section className="bg-[#F3F3F3] py-16 xl:py-20">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-2">FAQ</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">FAQ</p>
             <h2
               className="text-[clamp(28px,4vw,44px)] leading-none text-gray-900 uppercase"
               style={{ fontFamily: "var(--font-bebas)" }}
@@ -331,7 +331,7 @@ export default function PricingPage() {
           <div className="flex flex-col gap-3">
             {FAQS.map((faq, i) => (
               <details key={i} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden">
-                <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none text-sm font-semibold text-gray-900 hover:text-[#F97316] transition-colors">
+                <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none text-sm font-semibold text-gray-900 hover:text-[#7C3AED] transition-colors">
                   {faq.q}
                   <svg className="w-4 h-4 flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

@@ -22,8 +22,8 @@ export const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: strin
   contracts:     { label: "Contracts",     color: "#F59E0B", bg: "#FFFBEB" },
   business:      { label: "Business",      color: "#06B6D4", bg: "#ECFEFF" },
   family:        { label: "Family",        color: "#EF4444", bg: "#FEF2F2" },
-  consumer:      { label: "Consumer",      color: "#F97316", bg: "#FFF0F5" },
-  road:          { label: "Road Traffic",  color: "#F97316", bg: "#FFF7ED" },
+  consumer:      { label: "Consumer",      color: "#7C3AED", bg: "#FFF0F5" },
+  road:          { label: "Road Traffic",  color: "#7C3AED", bg: "#FFF7ED" },
   constitutional:{ label: "Constitutional",color: "#7C3AED", bg: "#F5F3FF" },
 };
 

@@ -154,13 +154,13 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
     setProgress(100);
   };
 
-  const inputCls = "w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors";
-  const textareaCls = "w-full px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors";
+  const inputCls = "w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors";
+  const textareaCls = "w-full px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden max-h-[92vh] flex flex-col">
-        <div className="h-1 w-full bg-gradient-to-r from-[#F97316] to-[#EA580C] flex-shrink-0" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] flex-shrink-0" />
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6] flex-shrink-0">
@@ -171,7 +171,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
           <div className="flex items-center gap-2">
             {[1, 2, 3].map(n => (
               <React.Fragment key={n}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#F97316] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#7C3AED] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
                   }`}>{step > n ? <Check size={11} /> : n}</div>
                 {n < 3 && <div className="w-5 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
@@ -188,7 +188,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
             <div className="space-y-4">
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                  Book Title <span className="text-[#F97316]">*</span>
+                  Book Title <span className="text-[#7C3AED]">*</span>
                 </label>
                 <input
                   value={form.title}
@@ -201,7 +201,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                    Author <span className="text-[#F97316]">*</span>
+                    Author <span className="text-[#7C3AED]">*</span>
                   </label>
                   <input
                     value={form.author}
@@ -212,7 +212,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                    Category <span className="text-[#F97316]">*</span>
+                    Category <span className="text-[#7C3AED]">*</span>
                   </label>
                   <select value={form.category} onChange={set("category")} className={`${inputCls} bg-white`}>
                     {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
@@ -224,7 +224,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
 
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                  Description <span className="text-[#F97316]">*</span>
+                  Description <span className="text-[#7C3AED]">*</span>
                 </label>
                 <textarea
                   value={form.description}
@@ -238,7 +238,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                    ISBN <span className="text-[#F97316]">*</span>
+                    ISBN <span className="text-[#7C3AED]">*</span>
                   </label>
                   <input
                     value={form.isbn}
@@ -249,7 +249,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                    Year <span className="text-[#F97316]">*</span>
+                    Year <span className="text-[#7C3AED]">*</span>
                   </label>
                   <input
                     value={form.publishedYear}
@@ -260,7 +260,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                    Pages <span className="text-[#F97316]">*</span>
+                    Pages <span className="text-[#7C3AED]">*</span>
                   </label>
                   <input
                     value={form.totalPages}
@@ -306,7 +306,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <button
                 onClick={() => setStep(2)}
                 disabled={!form.title || !form.author || !form.description || !form.isbn || !form.totalPages}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] disabled:opacity-40 transition-colors"
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] disabled:opacity-40 transition-colors"
               >
                 Continue →
               </button>
@@ -326,14 +326,14 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               {/* Format selector */}
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">
-                  Book Format <span className="text-[#F97316]">*</span>
+                  Book Format <span className="text-[#7C3AED]">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {(["pdf", "physical", "both"] as BookFormat[]).map(f => (
                     <button
                       key={f}
                       onClick={() => setForm(prev => ({ ...prev, format: f }))}
-                      className={`py-3 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${form.format === f ? "border-[#F97316] bg-pink-50 text-[#F97316]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}
+                      className={`py-3 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${form.format === f ? "border-[#7C3AED] bg-pink-50 text-[#7C3AED]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}
                     >
                       {f === "pdf" ? "📄 PDF Only" : f === "physical" ? "📦 Physical" : "📚 Both"}
                     </button>
@@ -345,14 +345,14 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               {form.format !== "physical" && (
                 <div>
                   <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">
-                    PDF File <span className="text-[#F97316]">*</span>
+                    PDF File <span className="text-[#7C3AED]">*</span>
                   </label>
                   <div className="flex gap-2 mb-2">
                     {(["upload", "url"] as const).map(t => (
                       <button
                         key={t}
                         onClick={() => setForm(f => ({ ...f, pdfType: t, pdfFile: '', pdfUrl: "" }))}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.pdfType === t ? "border-[#F97316] bg-pink-50 text-[#F97316]" : "border-[#E5E7EB] text-[#6B7280]"}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.pdfType === t ? "border-[#7C3AED] bg-pink-50 text-[#7C3AED]" : "border-[#E5E7EB] text-[#6B7280]"}`}
                       >
                         {t === "upload" ? <Upload size={11} /> : <Globe size={11} />}
                         {t === "upload" ? "Upload File" : "External URL"}
@@ -369,7 +369,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                             {/* {pdfs.map((pdf: any) => pdf.name).join(", ").toFixed(2)} MB */}
                           </p>
                         </div> : <div
-                          className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#F97316] transition-colors cursor-pointer"
+                          className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#7C3AED] transition-colors cursor-pointer"
                         >
                           <FileText size={22} className="text-[#D1D5DB] mx-auto mb-2" />
                           <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload PDF</p>
@@ -398,7 +398,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                     <button
                       key={t}
                       onClick={() => setForm(f => ({ ...f, coverType: t, coverFile: '', coverUrl: "" }))}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.coverType === t ? "border-[#F97316] bg-pink-50 text-[#F97316]" : "border-[#E5E7EB] text-[#6B7280]"}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${form.coverType === t ? "border-[#7C3AED] bg-pink-50 text-[#7C3AED]" : "border-[#E5E7EB] text-[#6B7280]"}`}
                     >
                       {t === "upload" ? <Upload size={11} /> : <Globe size={11} />}
                       {t === "upload" ? "Upload Image" : "Image URL"}
@@ -409,7 +409,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                   <>
                     <ThumbnailUpload preview images={covers} title=" " setImages={setCovers} maxImages={1}>
                       <div
-                        className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#F97316] transition-colors cursor-pointer"
+                        className="border-2 w-full border-dashed border-[#E5E7EB] rounded-xl p-5 text-center hover:border-[#7C3AED] transition-colors cursor-pointer"
                       >
                         <ImageIcon size={22} className="text-[#D1D5DB] mx-auto mb-2" />
                         <p className="text-[12px] font-semibold text-[#9CA3AF]">Click to upload cover</p>
@@ -432,7 +432,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">
-                      Price (NGN) <span className="text-[#F97316]">*</span>
+                      Price (NGN) <span className="text-[#7C3AED]">*</span>
                     </label>
                     <input
                       value={form.pricePhysical}
@@ -499,7 +499,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
                   </div>
                   <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
                     <div
-                      className="h-1.5 bg-[#F97316] rounded-full transition-all duration-200"
+                      className="h-1.5 bg-[#7C3AED] rounded-full transition-all duration-200"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -509,7 +509,7 @@ export function UploadBookModal({ onClose, onAdd }: { onClose: () => void; onAdd
               <button
                 onClick={handleUploadWithProgress}
                 disabled={isUploading}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] disabled:opacity-60 flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] disabled:opacity-60 flex items-center justify-center gap-2 transition-colors"
               >
                 {isUploading ? (
                   <>
@@ -596,7 +596,7 @@ export function OrderModal({ order, onClose, onUpdateStatus }: {
             <div className="min-w-0 flex-1">
               <p className="text-[12px] font-bold text-[#111827] leading-snug">{order.bookTitle}</p>
               <p className="text-[11px] text-[#9CA3AF] mt-0.5">Qty: {order.quantity} × NGN {order?.unitPrice?.toLocaleString()}</p>
-              <p className="text-[12px] font-bold text-[#F97316] mt-0.5">NGN {order.totalAmount.toLocaleString()}</p>
+              <p className="text-[12px] font-bold text-[#7C3AED] mt-0.5">NGN {order.totalAmount.toLocaleString()}</p>
             </div>
           </div>
 
@@ -624,7 +624,7 @@ export function OrderModal({ order, onClose, onUpdateStatus }: {
               <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Tracking Number</label>
               <input value={tracking} onChange={e => setTracking(e.target.value)}
                 placeholder="e.g. GIG-1234567"
-                className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
+                className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
               />
             </div>
           )}
@@ -779,7 +779,7 @@ export function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDel
           )}
           {book.format !== "pdf" && (
             <div className="text-center">
-              <p className="text-[12px] font-bold text-[#F97316]">{book.orderCount}</p>
+              <p className="text-[12px] font-bold text-[#7C3AED]">{book.orderCount}</p>
               <p className="text-[9px] text-[#9CA3AF]">Orders</p>
             </div>
           )}
@@ -801,7 +801,7 @@ export function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDel
 
         {/* Price */}
         {book.pricePhysical !== null && (
-          <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#F97316] mb-3">
+          <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#7C3AED] mb-3">
             <DollarSign size={11} />
             NGN {book.pricePhysical.toLocaleString()} / copy
           </div>
@@ -826,7 +826,7 @@ export function BookCard({ book, onEdit, onToggleStatus, onToggleFeatured, onDel
             </a>
           )}
           <button onClick={() => onEdit(book)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] transition-all">
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#E5E7EB] text-[11px] font-semibold text-[#6B7280] hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all">
             <Edit2 size={11} /> Edit
           </button>
         </div>

@@ -62,7 +62,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/" className="flex items-center gap-2.5">
             <img src="/images/icon.jpg" alt="LawTicha Logo" className="w-8 h-8 flex-shrink-0" />
             <span className="font-bold text-[17px] tracking-tight text-gray-900">
-              Law<span className="text-orange-500">Ticha</span>
+              Law<span className="text-purple-600">Ticha</span>
             </span>
           </Link>
         </div>
@@ -104,19 +104,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="px-4 pb-6 pt-4">
           <div
             className="relative rounded-2xl p-4 overflow-hidden"
-            style={{ background: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)" }}
+            style={{ background: "linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%)" }}
           >
             {/* Decorative blob */}
             <div
               className="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-30"
-              style={{ background: "radial-gradient(circle, #F97316, transparent)" }}
+              style={{ background: "radial-gradient(circle, #7C3AED, transparent)" }}
             />
 
             {/* 3D-ish icon */}
             <div className="flex justify-center mb-3">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
-                style={{ background: "linear-gradient(135deg, #FFEDD5, #FED7AA)" }}
+                style={{ background: "linear-gradient(135deg, #EDE9FE, #DDD6FE)" }}
               >
                 📱
               </div>
@@ -128,7 +128,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </p>
             <button
               className="w-full h-8 rounded-full flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
-              style={{ background: "linear-gradient(135deg, #F97316, #FB923C)" }}
+              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
             >
               <Smartphone size={12} />
               Coming Soon
@@ -150,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu size={18} className="text-gray-600" />
           </button>
           <span className="font-bold text-[15px] text-gray-900">
-            Law<span className="text-orange-500">Ticha</span>
+            Law<span className="text-purple-600">Ticha</span>
           </span>
           <div className="w-9" />
         </div>

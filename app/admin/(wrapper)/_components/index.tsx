@@ -30,7 +30,7 @@ interface StatCardProps {
   color?: string;
   bg?: string;
 }
-export function StatCard({ icon: Icon, label, value, trend, color = "#F97316", bg = "#FFF0F5" }: StatCardProps) {
+export function StatCard({ icon: Icon, label, value, trend, color = "#7C3AED", bg = "#FFF0F5" }: StatCardProps) {
   const positive = trend ? trend.value >= 0 : null;
   return (
     <div className="bg-pink-600 rounded-2xl border border-[#F3F4F6] p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
@@ -184,7 +184,7 @@ interface AvatarProps {
 }
 const AVATAR_SIZES = { sm: "w-7 h-7 text-[10px]", md: "w-9 h-9 text-xs", lg: "w-11 h-11 text-sm" };
 
-export function Avatar({ initials, color = "#F97316", size = "md" }: AvatarProps) {
+export function Avatar({ initials, color = "#7C3AED", size = "md" }: AvatarProps) {
   return (
     <div
       className={`${AVATAR_SIZES[size]} rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0`}
@@ -226,7 +226,7 @@ export function FilterBar({
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={searchPlaceholder ?? "Search…"}
-            className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
+            className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
           />
         </div>
       )}
@@ -245,7 +245,7 @@ export function FilterBar({
             {opt.label}
             {opt.count !== undefined && (
               <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                value === opt.value ? "bg-[#F97316] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                value === opt.value ? "bg-[#7C3AED] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
               }`}>
                 {opt.count}
               </span>

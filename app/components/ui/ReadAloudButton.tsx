@@ -75,13 +75,13 @@ export default function ReadAloudButton({ text, className = "" }: Props) {
       {/* Main Button - Icon Only */}
       <button
         onClick={handleToggle}
-        className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors focus:outline-none ring-2 ring-[#F97316] focus:ring-offset-2"
+        className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors focus:outline-none ring-2 ring-[#7C3AED] focus:ring-offset-2"
         aria-label={isPlaying ? (isPaused ? "Resume" : "Pause") : "Read aloud"}
         title={isPlaying ? (isPaused ? "Resume" : "Pause") : "Read aloud"}
       >
         {!isPlaying && <Volume2 size={20} className="text-gray-700" />}
-        {isPlaying && !isPaused && <Pause size={20} className="text-[#F97316]" />}
-        {isPlaying && isPaused && <Play size={20} className="text-[#F97316]" />}
+        {isPlaying && !isPaused && <Pause size={20} className="text-[#7C3AED]" />}
+        {isPlaying && isPaused && <Play size={20} className="text-[#7C3AED]" />}
       </button>
 
       {/* Settings Dropdown Button */}
@@ -109,7 +109,7 @@ export default function ReadAloudButton({ text, className = "" }: Props) {
               <select
                 value={selectedVoice?.name || ""}
                 onChange={(e) => handleVoiceChange(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:border-[#F97316] focus:ring-2 focus:ring-pink-100 outline-none transition-all"
+                className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:border-[#7C3AED] focus:ring-2 focus:ring-pink-100 outline-none transition-all"
               >
                 {availableVoices.map((voice) => (
                   <option key={voice.name} value={voice.name}>
@@ -132,7 +132,7 @@ export default function ReadAloudButton({ text, className = "" }: Props) {
                 step="0.1"
                 value={rate}
                 onChange={(e) => handleRateChange(parseFloat(e.target.value))}
-                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#F97316]"
+                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7C3AED]"
               />
             </div>
 
@@ -149,7 +149,7 @@ export default function ReadAloudButton({ text, className = "" }: Props) {
                 step="0.1"
                 value={pitch}
                 onChange={(e) => handlePitchChange(parseFloat(e.target.value))}
-                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#F97316]"
+                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7C3AED]"
               />
             </div>
 

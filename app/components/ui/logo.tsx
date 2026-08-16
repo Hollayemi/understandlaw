@@ -5,7 +5,7 @@ const Logo = ({ className, showText }: { className?: string; showText?: boolean 
         
         {showText && (
           <span className="font-bold text-[17px] text-gray-900 tracking-tight" style={{ fontFamily: "var(--font-dm-sans)" }}>
-            Law<span className="text-[#F97316]">Ticha</span>
+            Law<span className="text-[#7C3AED]">Ticha</span>
           </span>
         )}
     </div>

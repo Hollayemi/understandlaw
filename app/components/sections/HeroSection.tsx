@@ -29,7 +29,7 @@ export default function HeroSection() {
                 ))}
               </div>
               <div className="flex items-center -space-x-2">
-                {["#F97316","#3B82F6","#10B981","#F59E0B"].map((color, i) => (
+                {["#7C3AED","#3B82F6","#10B981","#F59E0B"].map((color, i) => (
                   <div key={i} className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
                     style={{ background: color, zIndex: 4 - i }}>
                     {["A","B","C","D"][i]}
@@ -56,7 +56,7 @@ export default function HeroSection() {
                 className="md:flex-1 min-w-0 h-[52px] !px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
               />
               <Link href="/dashboard"
-                className="flex-shrink-0 flex items-center justify-center gap-2 h-[52px] px-6 bg-[#F97316] hover:bg-[#d01f68] text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 whitespace-nowrap">
+                className="flex-shrink-0 flex items-center justify-center gap-2 h-[52px] px-6 bg-[#7C3AED] hover:bg-[#5B21B6] text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 whitespace-nowrap">
                 Get Started for Free
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>

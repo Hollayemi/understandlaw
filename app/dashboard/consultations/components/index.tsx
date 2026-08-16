@@ -61,16 +61,16 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
         const isLast = i === labels.length - 1;
 
         const dotColor = cancelled
-          ? i === 0 ? "#F97316" : "#E5E7EB"
+          ? i === 0 ? "#7C3AED" : "#E5E7EB"
           : disputed && i >= 3
             ? "#EF4444"
             : done || (active && !isLast)
-              ? "#F97316"
+              ? "#7C3AED"
               : active
-                ? "#F97316"
+                ? "#7C3AED"
                 : "#E5E7EB";
 
-        const lineColor = done ? "#F97316" : "#E5E7EB";
+        const lineColor = done ? "#7C3AED" : "#E5E7EB";
 
         return (
           <React.Fragment key={label}>
@@ -78,19 +78,19 @@ export function JourneyTracker({ status }: { status: ConsultStatus }) {
               <div
                 className="w-5 h-5 rounded-full flex items-center justify-center transition-all"
                 style={{
-                  background: done ? "#F97316" : active ? "#FFF0F5" : "#F3F4F6",
+                  background: done ? "#7C3AED" : active ? "#FFF0F5" : "#F3F4F6",
                   border: `2px solid ${dotColor}`,
                 }}
               >
                 {done ? (
                   <CheckCircle size={10} className="text-white fill-white" style={{ color: "white" }} />
                 ) : active ? (
-                  <span className="w-2 h-2 rounded-full bg-[#F97316]" />
+                  <span className="w-2 h-2 rounded-full bg-[#7C3AED]" />
                 ) : null}
               </div>
               <span
                 className="text-[9px] font-semibold whitespace-nowrap"
-                style={{ color: done || active ? "#F97316" : "#9CA3AF" }}
+                style={{ color: done || active ? "#7C3AED" : "#9CA3AF" }}
               >
                 {label}
               </span>
@@ -148,7 +148,7 @@ export function DocumentPreviewModal({ doc, onClose }: { doc: ConsultationDocume
                 href={doc.fileUrl}
                 download={doc.name}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition-all hover:-translate-y-0.5"
-                style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
               >
                 <Download size={11} /> Download
               </a>
@@ -176,7 +176,7 @@ export function DocumentPreviewModal({ doc, onClose }: { doc: ConsultationDocume
             <div className="text-center py-10">
               <FileIcon size={28} className="text-gray-300 mx-auto mb-3" />
               <p className="text-sm font-semibold text-gray-500">No inline preview for this file type</p>
-              <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-[#F97316] hover:underline mt-2">
+              <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-[#7C3AED] hover:underline mt-2">
                 Open in new tab <ExternalLink size={11} />
               </a>
             </div>
@@ -267,7 +267,7 @@ export function DocumentsPanel({
             {viewerRole === "citizen" ? "Our Case Brief" : "Case Brief — From LawTicha"}
           </p>
           <div className="rounded-xl border-[1.5px] border-[#FBCFE8] bg-[#FFF0F5] p-1">
-            <DocRow doc={caseBrief} badge={{ label: "Prepared by our team", color: "#F97316", bg: "#FFFFFF" }} />
+            <DocRow doc={caseBrief} badge={{ label: "Prepared by our team", color: "#7C3AED", bg: "#FFFFFF" }} />
           </div>
           <p className="text-[11px] text-[#9CA3AF] mt-2 leading-relaxed flex items-start gap-1.5">
             <Sparkles size={11} className="shrink-0 mt-0.5" />
@@ -305,7 +305,7 @@ export function DocumentsPanel({
               />
             ))}
             {firmDocs.map((d, i) => (
-              <DocRow key={`${d.name}-firm-${i}`} doc={d} badge={{ label: "From our team", color: "#F97316", bg: "#FFF0F5" }} />
+              <DocRow key={`${d.name}-firm-${i}`} doc={d} badge={{ label: "From our team", color: "#7C3AED", bg: "#FFF0F5" }} />
             ))}
           </div>
         </div>
@@ -375,7 +375,7 @@ export const ConversationTab = ({
                 : "The conversation will appear here once it starts."}
             </p>
             {consult.status === "awaiting_lawyer" && viewerRole === "citizen" && (
-              <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#F97316] font-semibold">
+              <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#7C3AED] font-semibold">
                 <Loader2 size={11} className="animate-spin" />
                 Awaiting lawyer response…
               </div>
@@ -490,7 +490,7 @@ export function ConsultationDrawer({
               consult.status === "disputed" ? "#EF4444"
                 : consult.status === "completed" ? "#10B981"
                   : consult.status === "cancelled" ? "#9CA3AF"
-                    : "linear-gradient(90deg, #F97316, #EA580C)",
+                    : "linear-gradient(90deg, #7C3AED, #5B21B6)",
           }}
         />
 
@@ -638,7 +638,7 @@ export function ConsultationDrawer({
                   </div>
                   <Link
                     href={`/dashboard/marketplace/${consult.lawyer.scnNumber.replaceAll("/", "-")}`}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-[#F97316] hover:underline shrink-0"
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#7C3AED] hover:underline shrink-0"
                   >
                     Profile <ExternalLink size={10} />
                   </Link>
@@ -675,14 +675,14 @@ export function ConsultationDrawer({
                         value={ratingNote}
                         onChange={e => setRatingNote(e.target.value)}
                         placeholder="Tell us what was helpful (optional)…"
-                        className="w-full h-18 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors mb-3"
+                        className="w-full h-18 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors mb-3"
                         rows={3}
                       />
                       <button
                         onClick={handleRatingSubmit}
                         disabled={!rating || loading}
                         className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-40 hover:-translate-y-0.5 transition-all"
-                        style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                        style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
                       >
                         {loading ? <Loader2 size={12} className="animate-spin" /> : <ThumbsUp size={12} />}
                         Submit Review
@@ -839,7 +839,7 @@ export function ConsultationCard({
       {urgent && (
         <div
           className="h-0.5 w-full"
-          style={{ background: "linear-gradient(90deg, #F97316, #EA580C, #F97316)" }}
+          style={{ background: "linear-gradient(90deg, #7C3AED, #5B21B6, #7C3AED)" }}
         />
       )}
 
@@ -863,8 +863,8 @@ export function ConsultationCard({
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {hasUnread && (
-              <span className="flex items-center gap-1 text-[10px] font-bold text-[#F97316] bg-[#FFF0F5] border border-[#FBCFE8] px-2 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+              <span className="flex items-center gap-1 text-[10px] font-bold text-[#7C3AED] bg-[#FFF0F5] border border-[#FBCFE8] px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED]" />
                 New reply
               </span>
             )}
@@ -920,7 +920,7 @@ export function ConsultationCard({
           )}
 
           {consult.status === "completed" && !consult.rating && (
-            <span className="text-[11px] font-semibold text-[#F97316]">Leave a review →</span>
+            <span className="text-[11px] font-semibold text-[#7C3AED]">Leave a review →</span>
           )}
         </div>
       </div>
@@ -1018,8 +1018,8 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                   <X size={20} />
                 </button>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#F97316]/10 flex items-center justify-center">
-                    <Shield size={20} className="text-[#F97316]" />
+                  <div className="w-10 h-10 rounded-full bg-[#7C3AED]/10 flex items-center justify-center">
+                    <Shield size={20} className="text-[#7C3AED]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
@@ -1108,7 +1108,7 @@ export function ConfidentialityConsent({ onAccept, onDecline }: ConfidentialityC
                 </button>
                 <button
                   onClick={handleAccept}
-                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-[#F97316] hover:bg-[#d02b6c] rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-[#7C3AED] hover:bg-[#d02b6c] rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <Shield size={16} />
                   I Understand & Agree

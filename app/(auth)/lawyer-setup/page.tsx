@@ -311,7 +311,7 @@ export default function LawyerOnboardingPage() {
         {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <Link href="/" className="inline-flex items-center gap-2 mb-6 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
               <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
                 <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
                 <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -322,7 +322,7 @@ export default function LawyerOnboardingPage() {
               </svg>
             </div>
             <span className="text-xl font-bold text-[#111827]">
-              Law<span className="text-[#F97316]">Ticha</span>
+              Law<span className="text-[#7C3AED]">Ticha</span>
             </span>
           </Link>
 
@@ -335,14 +335,14 @@ export default function LawyerOnboardingPage() {
         {/* Progress Steps */}
         <div className="mb-8 md:mb-10">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#F97316] uppercase tracking-wide">
+            <span className="text-[11px] font-semibold text-[#7C3AED] uppercase tracking-wide">
               Step {currentStep + 1} of {STEPS.length}
             </span>
             <span className="text-[11px] text-[#9CA3AF]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#F97316] to-[#EA580C] transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] transition-all duration-500 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -360,7 +360,7 @@ export default function LawyerOnboardingPage() {
                 <div className="flex flex-col items-center gap-2 flex-1">
                   <div className="relative">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all
-                      ${isActive ? 'bg-[#F97316] shadow-lg scale-110' :
+                      ${isActive ? 'bg-[#7C3AED] shadow-lg scale-110' :
                         isCompleted ? 'bg-[#10B981]' : 'bg-white border-2 border-[#E5E7EB]'}`}
                     >
                       {isCompleted ? (
@@ -370,11 +370,11 @@ export default function LawyerOnboardingPage() {
                       )}
                     </div>
                     {isActive && (
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#F97316]" />
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#7C3AED]" />
                     )}
                   </div>
                   <span className={`text-[11px] font-semibold text-center max-w-[80px]
-                    ${isActive ? 'text-[#F97316]' : isCompleted ? 'text-[#10B981]' : 'text-[#9CA3AF]'}`}
+                    ${isActive ? 'text-[#7C3AED]' : isCompleted ? 'text-[#10B981]' : 'text-[#9CA3AF]'}`}
                   >
                     {step.label}
                   </span>
@@ -391,7 +391,7 @@ export default function LawyerOnboardingPage() {
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-[#F3F4F6] overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-[#F97316] to-[#EA580C]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6]" />
 
           <div className="p-6 md:p-8">
             {currentStep === 0 && <ProfessionalStep form={form} updateForm={updateForm} errors={errors} />}
@@ -415,7 +415,7 @@ export default function LawyerOnboardingPage() {
             {currentStep > 0 && (
               <button
                 onClick={handleBack}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all"
               >
                 <ChevronLeft size={14} /> Back
               </button>
@@ -426,7 +426,7 @@ export default function LawyerOnboardingPage() {
             {currentStep < STEPS.length - 1 ? (
               <button
                 onClick={handleNext}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] hover:shadow-lg hover:-translate-y-0.5 transition-all"
               >
                 Continue <ChevronRight size={14} />
               </button>
@@ -457,11 +457,11 @@ export default function LawyerOnboardingPage() {
         {/* Footer */}
         <p className="text-center text-[11px] text-[#9CA3AF] mt-6 leading-relaxed">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-[#F97316] font-semibold hover:underline">
+          <Link href="/auth/login" className="text-[#7C3AED] font-semibold hover:underline">
             Sign in
           </Link>
           {" "}· Need help?{" "}
-          <Link href="/support" className="text-[#F97316] font-semibold hover:underline">
+          <Link href="/support" className="text-[#7C3AED] font-semibold hover:underline">
             Contact support
           </Link>
         </p>

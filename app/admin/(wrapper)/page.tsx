@@ -213,7 +213,7 @@ export default function AdminDashboardPage() {
   }
 
   const revenueSegments = [
-    { label: "Commission", value: ov?.revenue.platformCommission || 0, color: "#F97316" },
+    { label: "Commission", value: ov?.revenue.platformCommission || 0, color: "#7C3AED" },
     { label: "Lawyer payout", value: (ov?.revenue.totalGross || 0) - (ov?.revenue.platformCommission || 0), color: "#F3F4F6" },
   ];
 
@@ -257,7 +257,7 @@ export default function AdminDashboardPage() {
 
       {/* Primary stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Users}        label="Total Citizens"     value={ov?.citizens.total       || 0} sub={`+${ov?.citizens.newThisWeek || 0} this week`}              trend={ov?.citizens.growthPercent}    trendLabel="vs last period" color="#F97316" bg="#FFF0F5" href="/admin/citizens" />
+        <StatCard icon={Users}        label="Total Citizens"     value={ov?.citizens.total       || 0} sub={`+${ov?.citizens.newThisWeek || 0} this week`}              trend={ov?.citizens.growthPercent}    trendLabel="vs last period" color="#7C3AED" bg="#FFF0F5" href="/admin/citizens" />
         <StatCard icon={Scale}        label="Verified Lawyers"   value={ov?.lawyers.verified     || 0} sub={`${ov?.lawyers.pendingVerification || 0} pending review`}   color="#10B981" bg="#ECFDF5" href="/admin/lawyers" />
         <StatCard icon={MessageSquare} label="Consultations"     value={ov?.consultations.total  || 0} sub={`${ov?.consultations.active || 0} active`}                  color="#3B82F6" bg="#EFF6FF" href="/admin/consultations" />
         <StatCard icon={DollarSign}   label="Platform Revenue"  value={formatCurrency(ov?.revenue.platformCommission || 0)} sub={`${formatCurrency(ov?.revenue.totalGross || 0)} gross`} trend={ov?.revenue.growthPercent} trendLabel="vs last month" color="#F59E0B" bg="#FFFBEB" />
@@ -282,7 +282,7 @@ export default function AdminDashboardPage() {
               <p className="text-[11px] text-[#9CA3AF]">Gross vs commission over time</p>
             </div>
             <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF]">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#F97316] inline-block" /> Commission</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#7C3AED] inline-block" /> Commission</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#BFDBFE] inline-block" /> Gross</span>
             </div>
           </div>
@@ -299,7 +299,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="w-full flex flex-col items-center gap-0.5">
                       <div className="w-full rounded-t-sm bg-[#BFDBFE]" style={{ height: `${gPct}%` }} />
-                      <div className="w-full rounded-t-sm bg-[#F97316] absolute bottom-5" style={{ height: `${cPct}%` }} />
+                      <div className="w-full rounded-t-sm bg-[#7C3AED] absolute bottom-5" style={{ height: `${cPct}%` }} />
                     </div>
                     <span className="text-[9px] text-[#D1D5DB]">{d.label?.slice(0, 3)}</span>
                   </div>
@@ -349,7 +349,7 @@ export default function AdminDashboardPage() {
               <p className="text-[11px] text-[#9CA3AF]">Citizens vs Lawyers</p>
             </div>
             <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF]">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#F97316] inline-block" /> Citizens</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#7C3AED] inline-block" /> Citizens</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#3B82F6] inline-block" /> Lawyers</span>
             </div>
           </div>
@@ -362,7 +362,7 @@ export default function AdminDashboardPage() {
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 bg-[#111827] text-white text-[9px] px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">
                       Citizens: {d.citizens} | Lawyers: {d.lawyers}
                     </div>
-                    <div className="w-full rounded-t-sm bg-[#F97316] opacity-70" style={{ height: `${Math.max((d.citizens / maxC) * 100, 3)}%` }} />
+                    <div className="w-full rounded-t-sm bg-[#7C3AED] opacity-70" style={{ height: `${Math.max((d.citizens / maxC) * 100, 3)}%` }} />
                     <div className="w-full rounded-t-sm bg-[#3B82F6]" style={{ height: `${Math.max((d.lawyers / Math.max(...an.userGrowth.map(x => x.lawyers), 1)) * 100, 3)}%` }} />
                     <span className="text-[8px] text-[#D1D5DB]">{d.label?.slice(0, 3)}</span>
                   </div>
@@ -424,7 +424,7 @@ export default function AdminDashboardPage() {
           <div className="px-5 py-4 border-b border-[#F3F4F6] flex items-center justify-between">
             <h3 className="text-[13px] font-bold text-[#111827]">Pending Actions</h3>
             {an?.pendingActions && an.pendingActions.length > 0 && (
-              <span className="text-[10px] font-bold bg-[#F97316] text-white px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold bg-[#7C3AED] text-white px-2 py-0.5 rounded-full">
                 {an.pendingActions.length}
               </span>
             )}
@@ -457,7 +457,7 @@ export default function AdminDashboardPage() {
         <div className="bg-white rounded-2xl border border-[#F3F4F6] shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[#F3F4F6] flex items-center justify-between">
             <h3 className="text-[13px] font-bold text-[#111827]">Top Lawyers</h3>
-            <Link href="/admin/reviews" className="text-[11px] text-[#F97316] font-semibold hover:underline">View all</Link>
+            <Link href="/admin/reviews" className="text-[11px] text-[#7C3AED] font-semibold hover:underline">View all</Link>
           </div>
           <div className="p-4 flex flex-col gap-3">
             {an?.topLawyers && an.topLawyers.length > 0 ? an.topLawyers.slice(0, 5).map((l, i) => (

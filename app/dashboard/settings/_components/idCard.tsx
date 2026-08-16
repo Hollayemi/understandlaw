@@ -47,7 +47,7 @@ function CardToggle({
     >
       <span className="text-[12.5px] font-medium text-gray-700">{label}</span>
       <span
-        className={`w-9 h-5 rounded-full flex items-center px-0.5 transition-colors flex-shrink-0 ${checked ? "bg-[#F97316]" : "bg-gray-200"
+        className={`w-9 h-5 rounded-full flex items-center px-0.5 transition-colors flex-shrink-0 ${checked ? "bg-[#7C3AED]" : "bg-gray-200"
           }`}
       >
         <span
@@ -76,7 +76,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
     .join("") || "L";
 
   const colorA = profile?.colorA || "#1E3A5F";
-  const colorB = profile?.colorB || "#F97316";
+  const colorB = profile?.colorB || "#7C3AED";
   const nbaNumber: string = profile?.nbaNumber || "—";
   const yearOfCall = profile?.yearOfCall || profile?.calledAt || "—";
   const title = profile?.title || "";
@@ -155,16 +155,16 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               className="relative w-full max-w-[300px] aspect-[3/4] rounded-[20px] overflow-hidden shadow-2xl bg-white"
             >
               {/* Decorative gradient border */}
-              <div className="absolute inset-0 p-[2px] bg-gradient-to-br from-[#F97316] via-[#F97316]/50 to-[#1E3A5F] rounded-[20px]">
+              <div className="absolute inset-0 p-[2px] bg-gradient-to-br from-[#7C3AED] via-[#7C3AED]/50 to-[#1E3A5F] rounded-[20px]">
                 <div className="w-full h-full bg-white rounded-[19px] relative overflow-hidden">
                   {/* Subtle decorative stripe at top */}
-                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#F97316] via-[#F97316]/70 to-[#F97316]" />
+                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#7C3AED] via-[#7C3AED]/70 to-[#7C3AED]" />
                   
                   {/* Subtle decorative corner accents */}
-                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-[#F97316]/10 rounded-tl-lg" />
-                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#F97316]/10 rounded-tr-lg" />
-                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#F97316]/10 rounded-bl-lg" />
-                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-[#F97316]/10 rounded-br-lg" />
+                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-[#7C3AED]/10 rounded-tl-lg" />
+                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#7C3AED]/10 rounded-tr-lg" />
+                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#7C3AED]/10 rounded-bl-lg" />
+                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-[#7C3AED]/10 rounded-br-lg" />
 
                   <div className="relative h-full flex flex-col p-6">
                     {/* Header with logo */}
@@ -178,8 +178,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                         />
                       </div>
                       {isVerified && (
-                        <span className="flex items-center gap-1 text-[8px] font-bold tracking-wider uppercase bg-[#F97316]/10 text-[#F97316] px-2.5 py-1 rounded-full border border-[#F97316]/20">
-                          <BadgeCheck size={10} className="text-[#F97316]" /> Verified
+                        <span className="flex items-center gap-1 text-[8px] font-bold tracking-wider uppercase bg-[#7C3AED]/10 text-[#7C3AED] px-2.5 py-1 rounded-full border border-[#7C3AED]/20">
+                          <BadgeCheck size={10} className="text-[#7C3AED]" /> Verified
                         </span>
                       )}
                     </div>
@@ -189,7 +189,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                       <>
                         <div className="flex flex-col items-center flex-1 justify-center -mt-2">
                           {/* Avatar */}
-                          <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-[#F97316]/20 shadow-lg flex items-center justify-center bg-gradient-to-br from-[#F97316]/5 to-[#1E3A5F]/5">
+                          <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-[#7C3AED]/20 shadow-lg flex items-center justify-center bg-gradient-to-br from-[#7C3AED]/5 to-[#1E3A5F]/5">
                             {avatarUrl ? (
                               <img src={avatarUrl} crossOrigin="anonymous" alt="" className="w-full h-full object-cover" />
                             ) : (
@@ -200,14 +200,14 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                           <div className="text-center w-full mt-4">
                             <p className="text-[20px] font-bold text-[#1E3A5F] leading-tight truncate px-2">{fullName || "—"}</p>
                             {config.showTitle && title && (
-                              <p className="text-[13px] text-[#F97316] font-medium truncate mt-0.5">{title}</p>
+                              <p className="text-[13px] text-[#7C3AED] font-medium truncate mt-0.5">{title}</p>
                             )}
                             {config.showState && state && (
                               <p className="text-[11px] text-gray-500 truncate mt-0.5">{state}</p>
                             )}
                             {config.showRating && ratingAvg > 0 && (
-                              <div className="flex items-center justify-center gap-1.5 mt-3 bg-gradient-to-r from-[#F97316]/5 to-[#1E3A5F]/5 px-3 py-1.5 rounded-full">
-                                <Star size={14} className="fill-[#F97316] text-[#F97316]" />
+                              <div className="flex items-center justify-center gap-1.5 mt-3 bg-gradient-to-r from-[#7C3AED]/5 to-[#1E3A5F]/5 px-3 py-1.5 rounded-full">
+                                <Star size={14} className="fill-[#7C3AED] text-[#7C3AED]" />
                                 <span className="text-[13px] font-bold text-[#1E3A5F]">{ratingAvg.toFixed(1)}</span>
                                 <span className="text-[10px] text-gray-500">({reviewCount} reviews)</span>
                               </div>
@@ -257,7 +257,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                               </div>
                               <div>
                                 <p className="text-[8px] text-gray-400 uppercase tracking-wider font-semibold">Response Time</p>
-                                <p className="font-mono font-bold text-[#F97316]">{profile.responseTime}</p>
+                                <p className="font-mono font-bold text-[#7C3AED]">{profile.responseTime}</p>
                               </div>
                             </div>
                           </div>
@@ -292,7 +292,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                 <button
                   onClick={() => setCardType("front")}
                   className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${config.cardType === "front"
-                      ? "bg-[#F97316] text-white shadow-lg shadow-[#F97316]/20"
+                      ? "bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/20"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
@@ -301,7 +301,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                 <button
                   onClick={() => setCardType("back")}
                   className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${config.cardType === "back"
-                      ? "bg-[#F97316] text-white shadow-lg shadow-[#F97316]/20"
+                      ? "bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/20"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
@@ -320,8 +320,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               <CardToggle label="QR code to full profile" checked={config.showQr} onChange={toggle("showQr")} />
             </div>
 
-            <div className="bg-gradient-to-r from-[#F97316]/5 to-[#1E3A5F]/5 rounded-xl p-3.5 mb-5 flex items-start gap-2 border border-[#F97316]/10">
-              <QrCode size={13} className="text-[#F97316] shrink-0 mt-0.5" />
+            <div className="bg-gradient-to-r from-[#7C3AED]/5 to-[#1E3A5F]/5 rounded-xl p-3.5 mb-5 flex items-start gap-2 border border-[#7C3AED]/10">
+              <QrCode size={13} className="text-[#7C3AED] shrink-0 mt-0.5" />
               <p className="text-[11px] text-gray-600 leading-relaxed">
                 The QR code links to your full LawTicha profile so anyone who scans it can see your reviews, specialisms and book you directly.
               </p>
@@ -331,7 +331,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#F97316] to-[#F97316]/80 hover:shadow-lg hover:shadow-[#F97316]/20 transition-all"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#7C3AED] to-[#7C3AED]/80 hover:shadow-lg hover:shadow-[#7C3AED]/20 transition-all"
               >
                 {downloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
                 {downloading ? "Preparing image…" : "Download as PNG"}

@@ -58,7 +58,7 @@ const CARDS = [
   },
   {
     type: "person" as const,
-    bg: "linear-gradient(160deg,#FB923C 0%,#EA580C 100%)",
+    bg: "linear-gradient(160deg,#FB923C 0%,#5B21B6 100%)",
     publication: "TechCabal",
     category: "Business Law",
     name: "Chidi Okafor",

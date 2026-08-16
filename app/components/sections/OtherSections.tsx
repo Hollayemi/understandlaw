@@ -116,13 +116,13 @@ export function TopicsSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316] mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3AED] mb-2">
               Legal Topics
             </p>
             <h2 className="text-[clamp(32px,4vw,48px)] font-bold leading-[1.05] text-white tracking-tight">
               Know what the law
               <br />
-              <span className="text-[#F97316]">says about you</span>
+              <span className="text-[#7C3AED]">says about you</span>
             </h2>
           </div>
           <Link
@@ -140,7 +140,7 @@ export function TopicsSection() {
             <Link
               key={t.title}
               href={`/learn/${t.title.toLowerCase().replace(/\s+&\s+/g, "-").replace(/\s+/g, "-")}`}
-              className="group block rounded-xl !p-5 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/5 hover:border-[#F97316]/30 transition-all duration-300"
+              className="group block rounded-xl !p-5 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/5 hover:border-[#7C3AED]/30 transition-all duration-300"
             >
               <div className="flex items-start justify-between mb-4">
                 <div
@@ -157,7 +157,7 @@ export function TopicsSection() {
                 </span>
               </div>
 
-              <h3 className="font-semibold text-white text-[15px] mb-3 group-hover:text-[#F97316] transition-colors">
+              <h3 className="font-semibold text-white text-[15px] mb-3 group-hover:text-[#7C3AED] transition-colors">
                 {t.title}
               </h3>
 
@@ -172,7 +172,7 @@ export function TopicsSection() {
                   </li>
                 ))}
                 {t.topics.length > 3 && (
-                  <li className="text-xs text-[#F97316] pl-3.5">
+                  <li className="text-xs text-[#7C3AED] pl-3.5">
                     +{t.topics.length - 3} more
                   </li>
                 )}
@@ -198,7 +198,7 @@ export function MarketplaceSection() {
       <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-2">Lawyer Marketplace</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">Lawyer Marketplace</p>
             <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
               VERIFIED LAWYERS.<br />REAL EXPERTISE.
             </h2>
@@ -216,8 +216,8 @@ export function MarketplaceSection() {
               <div key={step} className="flex items-center gap-2">
                 {i > 0 && <svg className="w-4 h-4 text-gray-300 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>}
                 <div className="flex items-center gap-1.5">
-                  <div className="w-6 h-6 rounded-full bg-[#F97316]/10 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-[#F97316]">{i + 1}</span>
+                  <div className="w-6 h-6 rounded-full bg-[#7C3AED]/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-[#7C3AED]">{i + 1}</span>
                   </div>
                   <span className="text-xs font-medium text-gray-700">{step}</span>
                 </div>
@@ -231,14 +231,14 @@ export function MarketplaceSection() {
           {LAWYERS.map((l, index) => (
             <div
               key={l.name}
-              className="group relative bg-white rounded-2xl border border-gray-100 hover:border-[#F97316]/20 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col"
+              className="group relative bg-white rounded-2xl border border-gray-100 hover:border-[#7C3AED]/20 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col"
               style={{ transitionDelay: `${index * 80}ms` }}
             >
               {/* Premium gradient accent line */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#F97316] to-[#FF6B9D] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7C3AED] to-[#FF6B9D] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               {/* Subtle background pattern */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#F97316]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#7C3AED]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
               <div className="p-7 flex-1 relative">
                 {/* Header with refined layout */}
@@ -255,7 +255,7 @@ export function MarketplaceSection() {
                   </div>
 
                   <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="font-semibold text-gray-900 text-sm truncate group-hover:text-[#F97316] transition-colors">
+                    <p className="font-semibold text-gray-900 text-sm truncate group-hover:text-[#7C3AED] transition-colors">
                       {l.name}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5 font-medium">{l.role}</p>
@@ -297,7 +297,7 @@ export function MarketplaceSection() {
                     { value: l.response, label: "Response" },
                   ].map((stat) => (
                     <div key={stat.label} className="text-center">
-                      <div className={`text-sm font-bold ${stat.highlight ? 'text-[#F97316]' : 'text-gray-900'}`}>
+                      <div className={`text-sm font-bold ${stat.highlight ? 'text-[#7C3AED]' : 'text-gray-900'}`}>
                         {stat.value}
                       </div>
                       <div className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-0.5">
@@ -315,7 +315,7 @@ export function MarketplaceSection() {
                     </span>
                   ))}
                   {l.expertise?.length > 3 && (
-                    <span className="text-[10px] text-[#F97316] font-medium !px-2.5 !py-1">
+                    <span className="text-[10px] text-[#7C3AED] font-medium !px-2.5 !py-1">
                       +{l.expertise.length - 3}
                     </span>
                   )}
@@ -327,7 +327,7 @@ export function MarketplaceSection() {
                 <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent" />
                 <Link
                   href={`/marketplace/${l.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="group/btn relative w-full flex items-center justify-center gap-2 py-3 bg-gray-50 hover:bg-[#F97316] text-gray-700 hover:text-white font-semibold text-sm rounded-xl transition-all duration-300 overflow-hidden"
+                  className="group/btn relative w-full flex items-center justify-center gap-2 py-3 bg-gray-50 hover:bg-[#7C3AED] text-gray-700 hover:text-white font-semibold text-sm rounded-xl transition-all duration-300 overflow-hidden"
                 >
                   <span className="relative z-10">Book Consultation</span>
                   <ArrowRight className="w-4 h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" />
@@ -357,7 +357,7 @@ export function TestimonialsSection() {
     <section className="bg-white !py-20 xl:py-28">
       <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
         <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-2">Real Stories</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">Real Stories</p>
           <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
             THE LAW CHANGED THEIR OUTCOME.<br />KNOWLEDGE DID TOO.
           </h2>
@@ -427,7 +427,7 @@ export function CTASection() {
       <section className="bg-[#F3F3F3] !py-20 xl:py-28">
         <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-2">Pricing</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">Pricing</p>
             <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
               START FREE. SCALE WHEN READY.
             </h2>
@@ -440,14 +440,14 @@ export function CTASection() {
             {TIERS.map((t) => (
               <div key={t.name}
                 className={`relative rounded-2xl !p-7 flex flex-col transition-all duration-300 ${t.highlight
-                    ? "bg-[#111827] border-2 border-[#F97316] shadow-xl scale-[1.02]"
+                    ? "bg-[#111827] border-2 border-[#7C3AED] shadow-xl scale-[1.02]"
                     : "bg-white border border-gray-100 hover:shadow-lg hover:-translate-y-0.5"
                   }`}>
                 {t.badge && (
-                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 !px-3 !py-0.5 rounded-full text-[11px] font-semibold ${t.highlight ? "bg-[#F97316] text-white" : "bg-gray-200 text-gray-600"
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 !px-3 !py-0.5 rounded-full text-[11px] font-semibold ${t.highlight ? "bg-[#7C3AED] text-white" : "bg-gray-200 text-gray-600"
                     }`}>{t.badge}</div>
                 )}
-                <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${t.highlight ? "text-[#F97316]" : "text-gray-400"}`}>{t.name}</p>
+                <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${t.highlight ? "text-[#7C3AED]" : "text-gray-400"}`}>{t.name}</p>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, color: t.highlight ? "#fff" : "#111827", lineHeight: 1 }}>{t.price}</span>
                   <span className={`text-xs ${t.highlight ? "text-gray-400" : "text-gray-400"}`}>/ {t.period}</span>
@@ -456,7 +456,7 @@ export function CTASection() {
                 <ul className="flex flex-col gap-2.5 mb-7 flex-1">
                   {t.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#F97316]" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#7C3AED]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                       <span className={`text-xs leading-relaxed ${t.highlight ? "text-gray-300" : "text-gray-500"}`}>{f}</span>
@@ -487,11 +487,11 @@ export function CTASection() {
       {/* Final CTA */}
       <section className="bg-[#111827] !py-20 xl:py-24">
         <div className="max-w-3xl mx-auto !px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-4">Get Started Today</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-4">Get Started Today</p>
           <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(40px,6vw,72px)", lineHeight: 0.95, color: "#fff", letterSpacing: "0.01em" }}
             className="mb-5">
             YOUR RIGHTS DON'T CHANGE.<br />
-            <span style={{ color: "#F97316" }}>YOUR AWARENESS SHOULD.</span>
+            <span style={{ color: "#7C3AED" }}>YOUR AWARENESS SHOULD.</span>
           </h2>
           <p className="text-sm text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
             Join thousands of Nigerians learning the law, protecting their rights, and making informed decisions every day.

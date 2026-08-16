@@ -454,7 +454,7 @@ export default function AdminAnalyticsPage() {
                 data={an.revenue}
                 lines={[
                   { key: "gross", color: "#93C5FD", label: "Gross" },
-                  { key: "commission", color: "#F97316", label: "Commission" },
+                  { key: "commission", color: "#7C3AED", label: "Commission" },
                   { key: "lawyerPayout", color: "#34D399", label: "Payout" },
                 ]}
                 height={180}
@@ -540,7 +540,7 @@ export default function AdminAnalyticsPage() {
               <LineChart
                 data={an.userGrowth}
                 lines={[
-                  { key: "cumCitizens", color: "#F97316", label: "Citizens" },
+                  { key: "cumCitizens", color: "#7C3AED", label: "Citizens" },
                   { key: "cumLawyers", color: "#3B82F6", label: "Lawyers" },
                 ]}
                 height={160}

@@ -81,7 +81,7 @@ function ShareModal({ lawyer, onClose }: { lawyer: any; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-[#F97316] to-[#EA580C]" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6]" />
         <div className="p-6">
           <div className="flex items-center justify-between mb-5">
             <h3 className="font-bold text-[#111827] text-sm">Share Profile</h3>
@@ -213,11 +213,11 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${step === 1 ? "bg-[#F97316] text-white" : "bg-[#111827] text-white"}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${step === 1 ? "bg-[#7C3AED] text-white" : "bg-[#111827] text-white"}`}>
                       {step > 1 ? <Check size={11} /> : "1"}
                     </div>
                     <div className="w-5 h-px bg-[#E5E7EB]" />
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${step === 2 ? "bg-[#F97316] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${step === 2 ? "bg-[#7C3AED] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
                       2
                     </div>
                   </div>
@@ -240,12 +240,12 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                         const modeFee = m.id === "message" ? lawyer.feeMessage : m.id === "call" ? lawyer.feeCall : lawyer.feeVideo;
                         return (
                           <button key={m.id} onClick={() => setMode(m.id)}
-                            className={`flex items-center gap-3 p-4 rounded-xl border-[1.5px] text-left transition-all ${active ? "border-[#F97316] bg-pink-50/60" : "border-[#E5E7EB] hover:border-[#9CA3AF]"}`}>
-                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${active ? "bg-[#F97316]/10" : "bg-[#F3F4F6]"}`}>
-                              <Icon size={16} className={active ? "text-[#F97316]" : "text-[#6B7280]"} />
+                            className={`flex items-center gap-3 p-4 rounded-xl border-[1.5px] text-left transition-all ${active ? "border-[#7C3AED] bg-pink-50/60" : "border-[#E5E7EB] hover:border-[#9CA3AF]"}`}>
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${active ? "bg-[#7C3AED]/10" : "bg-[#F3F4F6]"}`}>
+                              <Icon size={16} className={active ? "text-[#7C3AED]" : "text-[#6B7280]"} />
                             </div>
                             <div className="flex-1">
-                              <p className={`text-[13px] font-semibold ${active ? "text-[#F97316]" : "text-[#111827]"}`}>{m.label}</p>
+                              <p className={`text-[13px] font-semibold ${active ? "text-[#7C3AED]" : "text-[#111827]"}`}>{m.label}</p>
                               <p className="text-[11px] text-[#9CA3AF]">{m.desc}</p>
                             </div>
                             <div className="text-right flex-shrink-0">
@@ -261,13 +261,13 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                     <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Legal Topic</label>
                     <input value={topic} onChange={e => setTopic(e.target.value)}
                       placeholder="e.g. My landlord is trying to evict me without notice"
-                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
+                      className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
                     />
                   </div>
 
                   <button onClick={() => setStep(2)} disabled={!topic.trim()}
                     className="w-full py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 hover:-translate-y-0.5 transition-all"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}>
+                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
                     Continue →
                   </button>
                 </div>
@@ -283,7 +283,7 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                     <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Describe your situation <span className="font-normal text-[#9CA3AF]">(optional)</span></label>
                     <textarea value={detail} onChange={e => setDetail(e.target.value)}
                       placeholder="Provide details that will help the lawyer prepare..."
-                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
+                      className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
                     />
                   </div>
 
@@ -292,13 +292,13 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                       <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-2">Preferred Time Slot</label>
                       {isLoadingSlots ? (
                         <div className="flex items-center justify-center py-4">
-                          <Loader2 size={20} className="animate-spin text-[#F97316]" />
+                          <Loader2 size={20} className="animate-spin text-[#7C3AED]" />
                         </div>
                       ) : timeSlots.length > 0 ? (
                         <div className="grid grid-cols-2 gap-2">
                           {timeSlots.map(s => (
                             <button key={s} onClick={() => setSlot(s)}
-                              className={`py-2.5 px-3 rounded-xl border-[1.5px] text-[11px] font-medium text-left transition-all ${slot === s ? "border-[#F97316] bg-pink-50/60 text-[#F97316]" : "border-[#E5E7EB] text-[#374151] hover:border-[#9CA3AF]"}`}>
+                              className={`py-2.5 px-3 rounded-xl border-[1.5px] text-[11px] font-medium text-left transition-all ${slot === s ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-[#E5E7EB] text-[#374151] hover:border-[#9CA3AF]"}`}>
                               {s}
                             </button>
                           ))}
@@ -333,7 +333,7 @@ function BookingModal({ lawyer, onClose, refetch }: { lawyer: any; onClose: () =
                   <button onClick={submit}
                     disabled={submitting || isBooking || ((mode === "call" || mode === "video") && !slot)}
                     className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50 hover:-translate-y-0.5 transition-all"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}>
+                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
                     {(submitting || isBooking) ? <><Loader2 size={13} className="animate-spin" /> Sending...</> : <><Send size={13} /> Send Request</>}
                   </button>
                 </div>
@@ -386,7 +386,7 @@ export default function LawyerProfilePage() {
     return (
       <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Loader2 size={40} className="animate-spin text-[#F97316] mx-auto mb-4" />
+          <Loader2 size={40} className="animate-spin text-[#7C3AED] mx-auto mb-4" />
           <p className="text-gray-500">Loading lawyer profile...</p>
         </div>
       </div>
@@ -404,7 +404,7 @@ export default function LawyerProfilePage() {
           </p>
           <button
             onClick={() => router.push("/dashboard/marketplace")}
-            className="px-4 py-2 rounded-xl bg-[#F97316] text-white text-sm font-semibold hover:bg-[#c81e6b] transition-colors"
+            className="px-4 py-2 rounded-xl bg-[#7C3AED] text-white text-sm font-semibold hover:bg-[#c81e6b] transition-colors"
           >
             Back to Marketplace
           </button>
@@ -433,8 +433,8 @@ export default function LawyerProfilePage() {
               <Share2 size={13} /> Share
             </button>
             <button onClick={() => setBookmarked(!bookmarked)}
-              className={`p-2 rounded-xl border transition-colors ${bookmarked ? "border-[#F97316] bg-pink-50 text-[#F97316]" : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#9CA3AF]"}`}>
-              <Bookmark size={15} className={bookmarked ? "fill-[#F97316]" : ""} />
+              className={`p-2 rounded-xl border transition-colors ${bookmarked ? "border-[#7C3AED] bg-pink-50 text-[#7C3AED]" : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#9CA3AF]"}`}>
+              <Bookmark size={15} className={bookmarked ? "fill-[#7C3AED]" : ""} />
             </button>
           </div>
         </div>
@@ -515,7 +515,7 @@ export default function LawyerProfilePage() {
                   </div>
                   <button onClick={() => setBookingOpen(true)} disabled={!lawyer.isAvailable}
                     className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:translate-y-0"
-                    style={{ background: lawyer.isAvailable ? "linear-gradient(135deg, #F97316, #EA580C)" : "#9CA3AF" }}>
+                    style={{ background: lawyer.isAvailable ? "linear-gradient(135deg, #7C3AED, #5B21B6)" : "#9CA3AF" }}>
                     <Calendar size={14} />
                     {lawyer.isAvailable ? "Book a Consultation" : "Currently Unavailable"}
                   </button>
@@ -604,7 +604,7 @@ export default function LawyerProfilePage() {
                     { q: "What happens if I'm unhappy with the consultation?", a: "LawTicha has a dispute resolution process. If you feel the advice was inadequate, you can raise a dispute within 7 days and the platform will review the consultation and determine if a refund is appropriate." },
                   ].map((faq, i) => (
                     <details key={i} className="group bg-white rounded-2xl border border-[#F3F4F6] shadow-sm overflow-hidden">
-                      <summary className="flex items-center justify-between gap-3 px-5 py-4 cursor-pointer list-none text-[13px] font-semibold text-[#111827] hover:text-[#F97316] transition-colors">
+                      <summary className="flex items-center justify-between gap-3 px-5 py-4 cursor-pointer list-none text-[13px] font-semibold text-[#111827] hover:text-[#7C3AED] transition-colors">
                         {faq.q}
                         <ChevronRight size={14} className="text-[#9CA3AF] group-open:rotate-90 transition-transform flex-shrink-0" />
                       </summary>
@@ -643,12 +643,12 @@ export default function LawyerProfilePage() {
               </div>
 
               <div className="bg-gradient-to-br from-[#111827] to-[#1E3A5F] rounded-2xl p-5 border border-white/6 relative overflow-hidden">
-                <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#F97316]/10 blur-2xl" />
+                <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#7C3AED]/10 blur-2xl" />
                 <p className="text-[11px] font-bold text-white/60 uppercase tracking-wider mb-1">Ready to start?</p>
                 <p className="text-[14px] font-bold text-white mb-3 leading-snug">Get expert legal advice in your next session</p>
                 <button onClick={() => setBookingOpen(true)}
                   className="w-full py-2.5 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
-                  style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}>
+                  style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
                   Book Consultation
                 </button>
               </div>
@@ -657,7 +657,7 @@ export default function LawyerProfilePage() {
                 <p className="text-[12px] font-bold text-[#111827] mb-3">Know someone who needs this?</p>
                 <p className="text-[11px] text-[#9CA3AF] mb-3 leading-relaxed">Share this profile with someone who could benefit from legal advice.</p>
                 <button onClick={() => setShareOpen(true)}
-                  className="w-full py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] flex items-center justify-center gap-1.5 transition-all">
+                  className="w-full py-2.5 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#7C3AED] hover:text-[#7C3AED] flex items-center justify-center gap-1.5 transition-all">
                   <Share2 size={12} /> Share Profile
                 </button>
               </div>

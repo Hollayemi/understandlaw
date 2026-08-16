@@ -151,13 +151,13 @@ export default function LearnPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-3">Legal Learning Module</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">Legal Learning Module</p>
               <h1
                 className="text-[clamp(48px,7vw,76px)] leading-none tracking-[0.01em] text-gray-900 uppercase"
                 style={{ fontFamily: "var(--font-bebas)" }}
               >
                 KNOW WHAT<br />THE LAW SAYS<br />
-                <span style={{ color: "#F97316" }}>ABOUT YOU</span>
+                <span style={{ color: "#7C3AED" }}>ABOUT YOU</span>
               </h1>
             </div>
             <div>
@@ -192,12 +192,12 @@ export default function LearnPage() {
               <input
                 type="text"
                 placeholder="Search topics,  e.g. 'eviction notice', 'wrongful termination'..."
-                className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#F97316] placeholder:text-gray-400 transition-colors"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
               />
             </div>
             <Link
               href="/register"
-              className="flex items-center gap-2 px-5 h-12 rounded-xl bg-[#F97316] text-white text-sm font-semibold hover:bg-[#d01f68] transition-colors whitespace-nowrap flex-shrink-0"
+              className="flex items-center gap-2 px-5 h-12 rounded-xl bg-[#7C3AED] text-white text-sm font-semibold hover:bg-[#5B21B6] transition-colors whitespace-nowrap flex-shrink-0"
             >
               Save Progress
             </Link>
@@ -239,7 +239,7 @@ export default function LearnPage() {
                 </div>
 
                 <h3
-                  className="font-bold text-gray-900 text-base mb-2 group-hover:text-[#F97316] transition-colors"
+                  className="font-bold text-gray-900 text-base mb-2 group-hover:text-[#7C3AED] transition-colors"
                   style={{ fontFamily: "var(--font-dm-sans)" }}
                 >
                   {cat.title}
@@ -278,7 +278,7 @@ export default function LearnPage() {
       {/* Bottom CTA */}
       <section className="bg-white py-16 border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#F97316] mb-3">Can't find it?</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">Can't find it?</p>
           <h2
             className="text-[clamp(28px,4vw,40px)] leading-none text-gray-900 uppercase mb-4"
             style={{ fontFamily: "var(--font-bebas)" }}
@@ -291,7 +291,7 @@ export default function LearnPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/learn/request"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#F97316] text-white text-sm font-bold hover:bg-[#d01f68] transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#7C3AED] text-white text-sm font-bold hover:bg-[#5B21B6] transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200"
             >
               Request a Topic
             </Link>

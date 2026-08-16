@@ -166,18 +166,18 @@ function NavItem({
         group relative flex items-center gap-3 rounded-xl transition-all duration-150 select-none
         ${collapsed ? "justify-center px-0 py-3 mx-1" : "px-3 py-2.5 mx-0"}
         ${isActive
-          ? "bg-[#F97316]/10 text-[#F97316]"
+          ? "bg-[#7C3AED]/10 text-[#7C3AED]"
           : "text-[#6B7280] hover:text-[#111827] hover:bg-gray-50"
         }
       `}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#F97316] rounded-r-full" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#7C3AED] rounded-r-full" />
       )}
 
       <Icon
         size={17}
-        className={`flex-shrink-0 transition-colors ${isActive ? "text-[#F97316]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+        className={`flex-shrink-0 transition-colors ${isActive ? "text-[#7C3AED]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
           }`}
       />
 
@@ -293,7 +293,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <div
             className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+            style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
           >
             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
               <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -309,7 +309,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {!collapsed && (
             <div className="overflow-hidden">
               <p className="text-gray-900 font-bold text-[15px] leading-none tracking-tight whitespace-nowrap">
-                Law<span style={{ color: "#F97316" }}>Ticha</span>
+                Law<span style={{ color: "#7C3AED" }}>Ticha</span>
               </p>
               <p
                 className="text-[10px] font-semibold uppercase tracking-[0.12em] mt-0.5 whitespace-nowrap"
@@ -368,7 +368,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex justify-center">
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
               >
                 SA
               </div>
@@ -377,7 +377,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-2.5">
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #F97316, #EA580C)" }}
+                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
               >
                 SA
               </div>
@@ -482,7 +482,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {notifications > 0 && (
                 <span
                   className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center leading-none"
-                  style={{ background: "#F97316", color: "white" }}
+                  style={{ background: "#7C3AED", color: "white" }}
                 >
                   {notifications > 9 ? "9+" : notifications}
                 </span>
@@ -492,7 +492,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[11px] font-bold cursor-pointer"
               style={{
-                background: "linear-gradient(135deg, #F97316, #EA580C)",
+                background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
                 border: "1px solid rgba(232, 49, 122, 0.2)",
               }}
             >

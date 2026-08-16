@@ -28,8 +28,8 @@ export const CATEGORY_CONFIG: Record<ModuleCategory, { label: string; icon: Reac
   contracts: { label: "Contracts & Agreements", icon: FileText, color: "#F59E0B", bg: "#FFFBEB" },
   business: { label: "Business & Commerce", icon: Building2, color: "#06B6D4", bg: "#ECFEFF" },
   family: { label: "Family & Personal", icon: Heart, color: "#EF4444", bg: "#FEF2F2" },
-  consumer: { label: "Consumer Rights", icon: Globe, color: "#F97316", bg: "#FFF0F5" },
-  road: { label: "Road Traffic", icon: Car, color: "#F97316", bg: "#FFF7ED" },
+  consumer: { label: "Consumer Rights", icon: Globe, color: "#7C3AED", bg: "#FFF0F5" },
+  road: { label: "Road Traffic", icon: Car, color: "#7C3AED", bg: "#FFF7ED" },
 };
 
 
@@ -75,12 +75,12 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors";
+  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-[#F97316] to-[#EA580C]" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6]" />
         <div className="p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -95,7 +95,7 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
           <div className="flex items-center gap-2 mb-5">
             {[1, 2].map(n => (
               <React.Fragment key={n}>
-                <div className={`flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold transition-all ${step === n ? "bg-[#F97316] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                <div className={`flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold transition-all ${step === n ? "bg-[#7C3AED] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
                   }`}>{n}</div>
                 {n < 2 && <div className="flex-1 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
@@ -111,7 +111,7 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Category / Classification</label>
                 <select value={form.category} onChange={set("category")}
-                  className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] transition-colors bg-white">
+                  className="w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] transition-colors bg-white">
                   {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
                     <option key={k} value={k}>{v.label}</option>
                   ))}
@@ -121,13 +121,13 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Brief Overview</label>
                 <textarea value={form.description} onChange={set("description")}
                   placeholder="Describe what citizens will learn in this module..."
-                  className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors"
+                  className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
               <div className="">
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Instructor ID</label>
                 <select value={form.instructorId} onChange={set("instructorId")}
-                  className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] w-full text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#F97316] transition-colors">
+                  className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] w-full text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#7C3AED] transition-colors">
                   <option value="all">All Categories</option>
                   {instructors.map((each, i) => (
                     <option key={each?._id} value={each?._id}>{each.name}</option>
@@ -135,7 +135,7 @@ export function CreateModuleModal({ onClose }: { onClose: () => void }) {
                 </select>
               </div>
               <button onClick={() => setStep(2)} disabled={!form.title || !form.description || !form.instructorId}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F97316] hover:bg-[#d01f68] disabled:opacity-40 transition-colors">
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] disabled:opacity-40 transition-colors">
                 Continue →
               </button>
             </div>
@@ -190,18 +190,18 @@ export function ModuleCard({ mod, onDelete, onEdit }: { mod: Module; onDelete: (
 
   return (
     <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-      <div className="relative h-36 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat?.color || '#F97316'}20, ${cat?.color || '#F97316'}08)` }}>
+      <div className="relative h-36 flex-shrink-0" style={{ background: `linear-gradient(135deg, ${cat?.color || '#7C3AED'}20, ${cat?.color || '#7C3AED'}08)` }}>
         {mod.thumbnail ? (
           <img src={mod.thumbnail} alt={mod.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <CatIcon size={40} style={{ color: cat?.color || '#F97316', opacity: 0.25 }} />
+            <CatIcon size={40} style={{ color: cat?.color || '#7C3AED', opacity: 0.25 }} />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: cat?.bg || '#FFF0F5', color: cat?.color || '#F97316' }}>
+            style={{ background: cat?.bg || '#FFF0F5', color: cat?.color || '#7C3AED' }}>
             {cat?.label || mod.category}
           </span>
           {mod.trending && (
@@ -275,7 +275,7 @@ export function ModuleCard({ mod, onDelete, onEdit }: { mod: Module; onDelete: (
         </div>
 
         <Link href={`/admin/modules/${mod.id}`}
-          className="mt-3 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] transition-all">
+          className="mt-3 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all">
           Manage Module <ChevronRight size={12} />
         </Link>
       </div>
@@ -316,12 +316,12 @@ export function EditModuleModal({ module, onClose }: { module: Module; onClose: 
     }
   };
 
-  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#F97316] placeholder:text-[#D1D5DB] transition-colors";
+  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-[#F97316] to-[#EA580C]" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6]" />
         <div className="p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -357,7 +357,7 @@ export function EditModuleModal({ module, onClose }: { module: Module; onClose: 
             <div>
               <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Description</label>
               <textarea value={form.description} onChange={set("description")}
-                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#F97316]"
+                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#7C3AED]"
               />
             </div>
             <div>

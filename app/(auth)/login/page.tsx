@@ -87,7 +87,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#F97316] placeholder:text-gray-300 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#7C3AED] placeholder:text-gray-300 transition-colors"
               />
             </div>
 
@@ -98,7 +98,7 @@ export default function LoginPage() {
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-xs text-[#F97316] hover:underline font-medium"
+                  className="text-xs text-[#7C3AED] hover:underline font-medium"
                 >
                   Forgot password?
                 </Link>
@@ -116,7 +116,7 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 mt-2 rounded-full bg-[#F97316] hover:bg-[#d01f68] disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
+              className="w-full h-12 mt-2 rounded-full bg-[#7C3AED] hover:bg-[#5B21B6] disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -164,7 +164,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
-              className="text-[#F97316] font-semibold hover:underline"
+              className="text-[#7C3AED] font-semibold hover:underline"
             >
               Create one free
             </Link>
