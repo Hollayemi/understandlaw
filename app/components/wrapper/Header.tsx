@@ -131,8 +131,8 @@ export default function Header() {
               </Link>
             ))}
             <div className="border-t border-gray-100 mt-2 pt-3 flex flex-col gap-2">
-              <Link href="/auth" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Login</Link>
-              <Link href="/auth"
+              <Link href="/login" className="px-4 py-3 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Login</Link>
+              <Link href="/login"
                 className="flex items-center justify-center gap-2 bg-[#E8317A] text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-[#d01f68] transition-colors"
                 onClick={() => setMobileOpen(false)}>
                 Get Started for Free →
