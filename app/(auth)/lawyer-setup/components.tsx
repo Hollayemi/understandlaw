@@ -25,10 +25,10 @@ export const RESPONSE_TIMES = [
 ];
 
 export const REQUIRED_DOCUMENTS = [
-  { id: "callToBar", label: "Call to Bar Certificate", hint: "Your official certificate from the Nigerian Law School", required: true },
-  { id: "lawSchool", label: "Law School Certificate", hint: "Degree certificate from an accredited law faculty", required: true },
-  { id: "practicingLicense", label: "Practicing License", hint: "Current Supreme Court practicing certificate", required: true },
-  { id: "governmentId", label: "Government-Issued ID", hint: "National ID, International Passport, or Voter's Card", required: true },
+  { id: "callToBar", label: "Call to Bar Certificate", hint: "Your official certificate from the Nigerian Law School", required: false },
+  { id: "lawSchool", label: "Law School Certificate", hint: "Degree certificate from an accredited law faculty", required: false },
+  { id: "practicingLicense", label: "Practicing License", hint: "Current Supreme Court practicing certificate", required: false },
+  { id: "governmentId", label: "Government-Issued ID", hint: "National ID, International Passport, or Voter's Card", required: false },
 ];
 
 export const STEPS = [

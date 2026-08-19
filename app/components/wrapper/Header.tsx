@@ -10,7 +10,7 @@ const NAV = [
   { label: "Legal Library", href: "/library" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Marketplace", href: "/marketplace" },
-  { label: "Pricing", href: "/pricing" },
+  // { label: "Pricing", href: "/pricing" },
 ];
 
 function getInitials(name: string) {

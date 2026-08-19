@@ -173,7 +173,7 @@ export default function RegisterPage() {
         // unlocks.
         router.push(
           formData.role === "citizen"
-            ? "/dashboard"
+            ? "/dashboard?welcome=user"
             : "/lawyer-setup"
         );
         router.refresh();
