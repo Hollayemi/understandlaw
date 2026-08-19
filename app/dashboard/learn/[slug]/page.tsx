@@ -331,18 +331,18 @@ export default function ModuleDetailPage() {
           </span>
         </nav>
         <div className="flex items-center gap-2">
-          {hasSummary && (
+          {hasSummary && showSummary && (
             <button 
-              onClick={handleViewSummary}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-maroon-500 bg-maroon-500/10 hover:bg-maroon-500/20 transition-colors"
+              onClick={handleBackToModule}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-maroon-500 bg-maroon-500/10 hover:bg-maroon-500/20 transition-colors"
             >
               <Sparkles size={13} />
-              {showSummary ? "View Module" : "Quick Summary"}
+              View Module
             </button>
           )}
-          <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors">
+          {/* <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Search size={14} className="text-gray-500" />
-          </button>
+          </button> */}
           <button 
             onClick={handleToggleSave}
             disabled={isTogglingSave}
@@ -355,7 +355,7 @@ export default function ModuleDetailPage() {
 
       {/* Hero Section */}
       <div 
-        className="relative h-64 md:h-80 flex items-center justify-center overflow-hidden"
+        className="relative h-80 flex items-center justify-center overflow-hidden"
         style={{ background: module.gradient, backgroundRepeat: "no-repeat", backgroundSize:"cover", backgroundAttachment: "fixed" }}
       >
         <div className="absolute inset-0 bg-black/80" />
@@ -407,6 +407,15 @@ export default function ModuleDetailPage() {
                 {hasSummary ? "Dive Deeper" : "Continue Learning"}
               </Link>
             </div>
+          )}
+           {hasSummary && showSummary && (
+            <button 
+              onClick={handleBackToModule}
+              className="flex items-center mx-auto gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-maroon-500 bg-maroon-500/10 hover:bg-maroon-500/20 transition-colors"
+            >
+              <Sparkles size={13} />
+              Back to Lesson
+            </button>
           )}
         </div>
       </div>

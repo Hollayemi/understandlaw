@@ -12,7 +12,7 @@ export default function HeroSection() {
         {/* LEFT, headline + form */}
         <div className="w-full lg:w-[400px] xl:w-[430px] flex-shrink-0 pr-6 lg:pr-0 animate-fade-up">
           <h1
-            className="text-[27px] sm:text-[36px] leading-[1.06] tracking-tight uppercase text-gray-900 font-black"
+            className="text-[33px] sm:text-[36px] leading-[1.06] tracking-tight uppercase text-gray-900 font-black"
             style={{ fontFamily: "var(--font-archivo-black)" }}
           >
             Know your rights.
