@@ -76,7 +76,7 @@ export const authApi = createApi({
 
         validateResetPasswordToken: builder.mutation<{ message: string }, string>({
             query: (token) => ({
-                url: `/auth/validate-reset-password/${token}`,
+                url: `/auth/validate-reset-token/${token}`,
                 method: 'PATCH',
             }),
         }),
@@ -85,7 +85,7 @@ export const authApi = createApi({
             query: ({ token, password, confirmPassword }) => ({
                 url: `/auth/reset-password/${token}`,
                 method: 'PATCH',
-                data: { password, confirmPassword },
+                data: { password, confirmPassword, token },
             }),
         }),
 

@@ -146,7 +146,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu size={18} className="text-gray-600" />
           </button>
           <span className="font-bold text-[15px] text-gray-900">
-            Law<span className="text-purple-600">Ticha</span>
+            Law<span className="text-maroon-600">Ticha</span>
           </span>
           <div className="w-9" />
         </div>

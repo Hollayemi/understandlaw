@@ -52,6 +52,11 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!token) {
+      showError("Invalid link", "The password reset link is missing or invalid.");
+      return;
+    }
+
     // Client-side validation
     if (password !== confirmPassword) {
       showError("Passwords don't match", "Please make sure both passwords match.");
@@ -65,7 +70,7 @@ export default function ResetPasswordPage() {
 
     try {
       const result = await resetPassword({ 
-        token: token!, 
+        token: token, 
         password, 
         confirmPassword 
       }).unwrap();
