@@ -93,7 +93,7 @@ export function TopicsSection() {
             <Link
               key={t.title}
               href={`/learn/${t.title.toLowerCase().replace(/\s+&\s+/g, "-").replace(/\s+/g, "-")}`}
-              className="group block rounded-xl p-5 bg-white/[0.04] hover:bg-white/[0.07] border border-white/5 hover:border-[var(--maroon-600)]/40 transition-all duration-300"
+              className="group block rounded-xl p-5 bg-white/[0.04] hover:bg-white/[0.07] border border-white/5 hover:border-[var(--maroon-500)]/40 transition-all duration-300"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white">
@@ -146,7 +146,7 @@ export function MarketplaceSection() {
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--maroon-600)" }}>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--maroon-500)" }}>
               Lawyer Marketplace
             </p>
             <h2
@@ -195,7 +195,7 @@ export function MarketplaceSection() {
           {LAWYERS.map((l) => (
             <div
               key={l.name}
-              className="group relative bg-white rounded-2xl border border-gray-100 hover:border-[var(--maroon-600)]/25 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col"
+              className="group relative bg-white rounded-2xl border border-gray-100 hover:border-[var(--maroon-500)]/25 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col"
             >
               <div className="p-6 flex-1">
                 <div className="flex items-start gap-4 mb-5">
@@ -266,7 +266,7 @@ export function MarketplaceSection() {
                 <Link
                   href={`/marketplace/${l.name.toLowerCase().replace(/\s+/g, "-")}`}
                   className="group/btn w-full flex items-center justify-center gap-2 py-3 rounded-xl border-[1.5px] font-semibold text-sm transition-colors hover:bg-[var(--maroon-700)] hover:text-white hover:border-[var(--maroon-700)]"
-                  style={{ borderColor: "#EAC7CE", color: "var(--maroon-600)" }}
+                  style={{ borderColor: "#EAC7CE", color: "var(--maroon-500)" }}
                 >
                   <span>Book Consultation</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />

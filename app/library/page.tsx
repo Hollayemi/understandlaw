@@ -28,7 +28,7 @@ const FEATURED_ACTS = [
     chapter: "Cap. C23, LFN",
     year: "1999 (as amended)",
     category: "Fundamental Rights",
-    color: "#7C3AED",
+    color: "#9B2E3D",
     sections: 320,
     summary: "The supreme law of Nigeria. Chapter IV covers Fundamental Rights including freedom from arbitrary arrest.",
     tags: ["Rights", "Arrest", "Due Process", "Freedom"],
@@ -83,13 +83,13 @@ export default function LibraryPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 items-end">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">Legal Library</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-maroon-500 mb-3">Legal Library</p>
               <h1
                 className="text-[clamp(48px,7vw,76px)] leading-none tracking-[0.01em] text-gray-900 uppercase"
                 style={{ fontFamily: "var(--font-bebas)" }}
               >
                 THE LAW,<br />
-                <span style={{ color: "#7C3AED" }}>IN YOUR LANGUAGE</span>
+                <span style={{ color: "#9B2E3D" }}>IN YOUR LANGUAGE</span>
               </h1>
             </div>
             <div>
@@ -127,10 +127,10 @@ export default function LibraryPage() {
               <input
                 type="text"
                 placeholder="Search legislation,  e.g. 'Labour Act', 'Section 35 Constitution'..."
-                className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               />
             </div>
-            <select className="h-12 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-700 bg-white outline-none focus:border-[#7C3AED] transition-colors">
+            <select className="h-12 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-700 bg-white outline-none focus:border-maroon-500 transition-colors">
               <option>All Jurisdictions</option>
               <option>Federal</option>
               <option>Lagos State</option>
@@ -145,7 +145,7 @@ export default function LibraryPage() {
                 key={cat.label}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                   cat.active
-                    ? "bg-[#7C3AED] text-white shadow-md"
+                    ? "bg-maroon-500 text-white shadow-md"
                     : "bg-white border border-gray-200 text-gray-600 hover:border-gray-400"
                 }`}
               >
@@ -168,7 +168,7 @@ export default function LibraryPage() {
             <p className="text-sm text-gray-500">
               Showing <strong className="text-gray-900">40</strong> pieces of legislation
             </p>
-            <select className="h-9 px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-700 bg-white outline-none focus:border-[#7C3AED]">
+            <select className="h-9 px-3 rounded-lg border-[1.5px] border-gray-200 text-xs text-gray-700 bg-white outline-none focus:border-maroon-500">
               <option>Most Relevant</option>
               <option>Recently Updated</option>
               <option>Most Viewed</option>
@@ -200,7 +200,7 @@ export default function LibraryPage() {
                 </div>
 
                 <h3
-                  className="font-bold text-gray-900 text-base mb-1 group-hover:text-[#7C3AED] transition-colors leading-snug"
+                  className="font-bold text-gray-900 text-base mb-1 group-hover:text-maroon-500 transition-colors leading-snug"
                   style={{ fontFamily: "var(--font-dm-sans)" }}
                 >
                   {act.title}
@@ -250,7 +250,7 @@ export default function LibraryPage() {
       {/* Register CTA for bookmarks */}
       <section className="bg-[#111827] py-14">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">Registered Users</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-maroon-500 mb-3">Registered Users</p>
           <h2
             className="text-[clamp(28px,4vw,44px)] leading-none text-white uppercase mb-4"
             style={{ fontFamily: "var(--font-bebas)" }}
@@ -262,7 +262,7 @@ export default function LibraryPage() {
           </p>
           <Link
             href="/auth"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#7C3AED] text-white text-sm font-bold hover:bg-[#5B21B6] transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-900/30"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-maroon-500 text-white text-sm font-bold hover:bg-maroon-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-900/30"
           >
             Create Free Account →
           </Link>

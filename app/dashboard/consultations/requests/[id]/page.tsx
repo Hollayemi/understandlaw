@@ -29,7 +29,7 @@ const MATCH_STATUS_CFG: Record<MatchStatus, { label: string; sub: string; bg: st
   in_review: { label: "Being Reviewed", sub: "Our team is looking at your case now.", bg: "#EFF6FF", text: "#1D4ED8", dot: "#3B82F6" },
   ready_for_call: { label: "Ready for call", sub: "Our team has reviewed your case and is ready to schedule a call with you.", bg: "#EFF6FF", text: "#1D4ED8", dot: "#3B82F6" },
   matching: { label: "Matching", sub: "We're lining up lawyers who fit your case.", bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
-  recommended: { label: "Lawyers Ready", sub: "We've found lawyers for you — pick who you'd like to work with.", bg: "#FFF0F5", text: "#9D174D", dot: "#7C3AED" },
+  recommended: { label: "Lawyers Ready", sub: "We've found lawyers for you — pick who you'd like to work with.", bg: "#FFF0F5", text: "#9D174D", dot: "#9B2E3D" },
   matched: { label: "Matched", sub: "You're all set with your chosen lawyer.", bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   expired: { label: "Expired", sub: "This request has expired. You can start a new one anytime.", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
 };
@@ -68,7 +68,7 @@ export default function MatchRequestDetailPage() {
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
-        <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
+        <Loader2 size={24} className="animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -78,7 +78,7 @@ export default function MatchRequestDetailPage() {
       <div className="flex-1 flex flex-col items-center justify-center bg-[#F5F2EE] gap-3 px-6 text-center">
         <XCircle size={28} className="text-gray-300" />
         <p className="text-sm font-semibold text-gray-600">We couldn't load this request</p>
-        <Link href="/dashboard/consultations" className="text-xs font-bold text-[#7C3AED] hover:underline">
+        <Link href="/dashboard/consultations" className="text-xs font-bold text-maroon-500 hover:underline">
           Back to My Consultations
         </Link>
       </div>
@@ -155,7 +155,7 @@ export default function MatchRequestDetailPage() {
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-all ${done ? "bg-[#111827] text-white" : current ? "text-white" : "bg-gray-100 text-gray-300"
                           }`}
-                        style={current ? { background: "linear-gradient(135deg, #7C3AED, #5B21B6)" } : undefined}
+                        style={current ? { background: "linear-gradient(135deg, #9B2E3D, #82212D)" } : undefined}
                       >
                         {done ? <CheckCircle2 size={11} /> : i + 1}
                       </div>
@@ -183,7 +183,7 @@ export default function MatchRequestDetailPage() {
             <Link
               href="/dashboard/consultations/new"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               Start a New Request
             </Link>
@@ -221,7 +221,7 @@ export default function MatchRequestDetailPage() {
             <Link
               href="/dashboard/consultations"
               className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               Open Case <ArrowRight size={12} />
             </Link>
@@ -297,7 +297,7 @@ export default function MatchRequestDetailPage() {
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
-                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
               >
                 <LinkIcon size={12} /> Join Session
               </a>
@@ -399,7 +399,7 @@ function AddDocumentForm({ matchRequestId }: { matchRequestId: string }) {
           onClick={handleUpload}
           disabled={!file || isLoading}
           className="flex-1 py-2 rounded-lg text-[11px] font-bold text-white disabled:opacity-50 transition-all flex items-center justify-center gap-1.5"
-          style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+          style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
         >
           {isLoading ? <Loader2 size={12} className="animate-spin" /> : "Upload"}
         </button>

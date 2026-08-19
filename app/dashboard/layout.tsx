@@ -17,6 +17,7 @@ import {
 import RouteGuard from "../components/wrapper/RouteGuard";
 import PaymentStatus from "../components/sections/PaymentStatus";
 import { useUserData } from "@/hook/useData";
+import Logo from "../components/ui/logo";
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -59,12 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         {/* Logo */}
         <div className="px-6 pt-7 pb-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <img src="/images/icon.jpg" alt="LawTicha Logo" className="w-8 h-8 flex-shrink-0" />
-            <span className="font-bold text-[17px] tracking-tight text-gray-900">
-              Law<span className="text-purple-600">Ticha</span>
-            </span>
-          </Link>
+          <Logo showText />
         </div>
 
         {/* Nav */}
@@ -85,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   group flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium
                   transition-all duration-200
                   ${active
-                    ? "bg-[#111827] text-white shadow-sm"
+                    ? "bg-maroon-600!  text-white shadow-sm" //
                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                   }
                 `}
@@ -104,19 +100,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="px-4 pb-6 pt-4">
           <div
             className="relative rounded-2xl p-4 overflow-hidden"
-            style={{ background: "linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%)" }}
+            style={{ background: "linear-gradient(135deg, #ffd2d8 0%, #ffd4da 100%)" }}
           >
             {/* Decorative blob */}
             <div
               className="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-30"
-              style={{ background: "radial-gradient(circle, #7C3AED, transparent)" }}
+              style={{ background: "radial-gradient(circle, #9B2E3D, transparent)" }}
             />
 
             {/* 3D-ish icon */}
             <div className="flex justify-center mb-3">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
-                style={{ background: "linear-gradient(135deg, #EDE9FE, #DDD6FE)" }}
+                style={{ background: "linear-gradient(135deg, #fcbfc8, #fba6b0)" }}
               >
                 📱
               </div>
@@ -128,7 +124,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </p>
             <button
               className="w-full h-8 rounded-full flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               <Smartphone size={12} />
               Coming Soon

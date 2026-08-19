@@ -136,7 +136,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
       >
         <Bell size={15} className="text-gray-500" />
         {unreadCount > 0 ? (
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#7C3AED] rounded-full animate-pulse" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-maroon-500 rounded-full animate-pulse" />
         ) : null}
       </button>
 
@@ -154,7 +154,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-sm text-gray-800">Notifications</span>
                 {unreadCount > 0 && (
-                  <span className="text-xs bg-[#7C3AED] text-white px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-maroon-500 text-white px-2 py-0.5 rounded-full">
                     {unreadCount}
                   </span>
                 )}
@@ -163,7 +163,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="text-xs text-[#7C3AED] hover:text-[#d02b6c] transition-colors flex items-center gap-1"
+                    className="text-xs text-maroon-500 hover:text-[#d02b6c] transition-colors flex items-center gap-1"
                   >
                     <Check size={12} />
                     Mark all read
@@ -182,7 +182,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
             <div className="overflow-y-auto max-h-[350px]">
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="w-6 h-6 border-2 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-maroon-500 border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
@@ -233,7 +233,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
                                   {getTimeLabel(notification.createdAt)}
                                 </span>
                                 {notification.unread ? (
-                                  <span className="w-1.5 h-1.5 bg-[#7C3AED] rounded-full" />
+                                  <span className="w-1.5 h-1.5 bg-maroon-500 rounded-full" />
                                 ) : null}
                               </div>
                             </div>
@@ -248,11 +248,11 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
                     <button
                       onClick={loadMore}
                       disabled={isLoadingMore}
-                      className="w-full py-2 text-xs text-[#7C3AED] hover:bg-gray-50 transition-colors border-t border-gray-100 disabled:opacity-50"
+                      className="w-full py-2 text-xs text-maroon-500 hover:bg-gray-50 transition-colors border-t border-gray-100 disabled:opacity-50"
                     >
                       {isLoadingMore ? (
                         <div className="flex items-center justify-center gap-2">
-                          <div className="w-3 h-3 border-2 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+                          <div className="w-3 h-3 border-2 border-maroon-500 border-t-transparent rounded-full animate-spin" />
                           Loading...
                         </div>
                       ) : (
@@ -268,7 +268,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
             <div className="px-4 py-2.5 border-t border-gray-100">
               <button
                 onClick={handleViewAll}
-                className="w-full text-center text-xs text-[#7C3AED] hover:text-[#d02b6c] transition-colors font-medium"
+                className="w-full text-center text-xs text-maroon-500 hover:text-[#d02b6c] transition-colors font-medium"
               >
                 View all notifications
               </button>

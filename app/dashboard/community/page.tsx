@@ -31,7 +31,7 @@ const roomColors: Record<string, string> = {
   "legal-advice": "#10B981",
   "case-study": "#F59E0B",
   "law-students": "#8B5CF6",
-  "lawyers-lounge": "#7C3AED",
+  "lawyers-lounge": "#9B2E3D",
   "ask-lawyer": "#06B6D4",
 };
 
@@ -93,7 +93,7 @@ export default function CommunityPage() {
     <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#7C3AED] rounded-2xl to-[#5B21B6] text-white">
+      <div className="bg-gradient-to-r from-maroon-500 rounded-2xl to-maroon-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
@@ -104,7 +104,7 @@ export default function CommunityPage() {
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-[#7C3AED] rounded-xl font-semibold text-sm hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-white text-maroon-500 rounded-xl font-semibold text-sm hover:shadow-lg transition-all"
             >
               <Plus size={16} /> Start Discussion
             </button>
@@ -123,13 +123,13 @@ export default function CommunityPage() {
                 placeholder="Search discussions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#7C3AED]"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-maroon-500"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#7C3AED]"
+              className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-maroon-500"
             >
               {sortOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -145,7 +145,7 @@ export default function CommunityPage() {
               onClick={() => setSelectedRoom("all")}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 selectedRoom === "all"
-                  ? "bg-[#7C3AED] text-white shadow-md"
+                  ? "bg-maroon-500 text-white shadow-md"
                   : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
               }`}
             >
@@ -178,7 +178,7 @@ export default function CommunityPage() {
         <div className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center py-12">
-              <div className="w-8 h-8 border-2 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-maroon-500 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-2xl">
@@ -234,7 +234,7 @@ export default function CommunityPage() {
                     
                     {/* Post Title */}
                     <Link href={`/dashboard/community/${post._id}`}>
-                      <h2 className="text-lg font-bold text-gray-900 mb-2 hover:text-[#7C3AED] transition-colors line-clamp-2">
+                      <h2 className="text-lg font-bold text-gray-900 mb-2 hover:text-maroon-500 transition-colors line-clamp-2">
                         {post.title}
                       </h2>
                     </Link>
@@ -246,7 +246,7 @@ export default function CommunityPage() {
                     
                     {/* Reference Context */}
                     {post.reference && (
-                      <div className="mb-3 p-2 bg-gray-50 rounded-lg border-l-4 border-[#7C3AED]">
+                      <div className="mb-3 p-2 bg-gray-50 rounded-lg border-l-4 border-maroon-500">
                         <p className="text-[10px] text-gray-400 uppercase tracking-wide">Related to</p>
                         <p className="text-xs text-gray-700">
                           {post.reference.moduleTitle && `${post.reference.moduleTitle} › `}
@@ -295,7 +295,7 @@ export default function CommunityPage() {
                       <div className="flex items-center gap-3 text-xs text-gray-500">
                         <button 
                           onClick={() => handleLike(post._id)}
-                          className="flex items-center gap-1 hover:text-[#7C3AED] transition-colors"
+                          className="flex items-center gap-1 hover:text-maroon-500 transition-colors"
                         >
                           <Heart size={14} /> {post.likes}
                         </button>

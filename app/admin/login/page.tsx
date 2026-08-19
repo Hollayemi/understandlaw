@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
                     <Link href="/" className="inline-flex items-center gap-2 justify-center">
                         <div
                             className="w-10 h-10 rounded-lg flex items-center justify-center"
-                            style={{ background: "linear-gradient(135deg,#7C3AED,#5B21B6)" }}
+                            style={{ background: "linear-gradient(135deg,#9B2E3D,#82212D)" }}
                         >
                             <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
                                 <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -102,7 +102,7 @@ export default function AdminLoginPage() {
                             className="font-bold text-2xl text-gray-900"
                             style={{ fontFamily: "var(--font-dm-sans)" }}
                         >
-                            Law<span style={{ color: "#7C3AED" }}>Ticha</span>
+                            Law<span style={{ color: "#9B2E3D" }}>Ticha</span>
                             <span className="text-sm font-normal text-gray-500 ml-2">Admin</span>
                         </span>
                     </Link>
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     placeholder="admin@lawticha.com"
-                                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all sm:text-sm"
+                                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all sm:text-sm"
                                 />
                             </div>
                         </div>
@@ -153,7 +153,7 @@ export default function AdminLoginPage() {
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     placeholder="Enter your password"
-                                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all sm:text-sm pr-11"
+                                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all sm:text-sm pr-11"
                                 />
                                 <button
                                     type="button"
@@ -183,7 +183,7 @@ export default function AdminLoginPage() {
                                     type="checkbox"
                                     checked={formData.rememberMe}
                                     onChange={handleInputChange}
-                                    className="h-4 w-4 text-[#7C3AED] focus:ring-[#7C3AED] border-gray-300 rounded"
+                                    className="h-4 w-4 text-maroon-500 focus:ring-maroon-500 border-gray-300 rounded"
                                 />
                                 <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
                                     Remember me
@@ -191,7 +191,7 @@ export default function AdminLoginPage() {
                             </div>
 
                             <div className="text-sm">
-                                <Link href="/admin/forgot-password" className="font-medium text-[#7C3AED] hover:text-[#5B21B6] transition-colors">
+                                <Link href="/admin/forgot-password" className="font-medium text-maroon-500 hover:text-maroon-600 transition-colors">
                                     Forgot password?
                                 </Link>
                             </div>
@@ -202,7 +202,7 @@ export default function AdminLoginPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED] transition-all disabled:opacity-60 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
+                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-maroon-500 hover:bg-maroon-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
                             >
                                 {isLoading ? (
                                     <>

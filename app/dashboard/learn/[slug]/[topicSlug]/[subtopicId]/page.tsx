@@ -77,7 +77,7 @@ const BookmarkHighlight: React.FC<BookmarkHighlightProps> = ({
       className="bookmark-highlight cursor-pointer relative"
       style={{
         backgroundColor: 'rgba(232, 49, 122, 0.15)',
-        borderBottom: '2px solid #7C3AED',
+        borderBottom: '2px solid #9B2E3D',
         padding: '2px 0',
         transition: 'background-color 0.2s'
       }}
@@ -177,7 +177,7 @@ const BookmarkSelectionPopup: React.FC<BookmarkSelectionPopupProps> = ({
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="What do you want to remember about this text?"
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED] resize-none"
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500 resize-none"
           rows={3}
           disabled={isSaving}
         />
@@ -194,7 +194,7 @@ const BookmarkSelectionPopup: React.FC<BookmarkSelectionPopupProps> = ({
         <button
           onClick={() => onSave(comment)}
           className="px-4 py-1.5 text-sm font-semibold text-white rounded-lg transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)' }}
+          style={{ background: 'linear-gradient(135deg, #9B2E3D, #82212D)' }}
           disabled={isSaving}
         >
           {isSaving ? (
@@ -246,7 +246,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
       `}>
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           <h3 className="font-bold text-gray-900 flex items-center gap-2">
-            <Bookmark size={18} className="text-[#7C3AED]" />
+            <Bookmark size={18} className="text-maroon-500" />
             Bookmarks ({bookmarks.length})
           </h3>
           <button
@@ -290,7 +290,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                   <div className="flex gap-1">
                     <button
                       onClick={() => onJump(bookmark)}
-                      className="p-1.5 text-gray-400 hover:text-[#7C3AED] transition-colors rounded-lg hover:bg-[#7C3AED]/10"
+                      className="p-1.5 text-gray-400 hover:text-maroon-500 transition-colors rounded-lg hover:bg-maroon-500/10"
                       title="Jump to bookmark"
                     >
                       <Move size={14} />
@@ -339,7 +339,7 @@ const SubtopicNavItem = ({
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all group ${isActive
-        ? "bg-gradient-to-r from-[#7C3AED]/10 to-transparent border-l-4 border-[#7C3AED]"
+        ? "bg-gradient-to-r from-maroon-500/10 to-transparent border-l-4 border-maroon-500"
         : "hover:bg-gray-50"
         }`}
     >
@@ -349,8 +349,8 @@ const SubtopicNavItem = ({
             <Check size={12} className="text-green-600" />
           </div>
         ) : isActive ? (
-          <div className="w-6 h-6 rounded-full bg-[#7C3AED]/10 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-[#7C3AED]" />
+          <div className="w-6 h-6 rounded-full bg-maroon-500/10 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-maroon-500" />
           </div>
         ) : (
           <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
@@ -376,7 +376,7 @@ const SubtopicNavItem = ({
       </div>
 
       {isActive && (
-        <ChevronRight size={14} className="text-[#7C3AED] flex-shrink-0" />
+        <ChevronRight size={14} className="text-maroon-500 flex-shrink-0" />
       )}
     </button>
   );
@@ -791,11 +791,11 @@ export default function SubtopicContentPage() {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         const originalStyle = el.getAttribute('style') || '';
         el.setAttribute('style',
-          'background-color: rgba(232, 49, 122, 0.3); border-bottom: 3px solid #7C3AED; padding: 2px 0; cursor: pointer; transition: background-color 0.5s;'
+          'background-color: rgba(232, 49, 122, 0.3); border-bottom: 3px solid #9B2E3D; padding: 2px 0; cursor: pointer; transition: background-color 0.5s;'
         );
         setTimeout(() => {
           el.setAttribute('style', originalStyle ||
-            'background-color: rgba(232, 49, 122, 0.15); border-bottom: 2px solid #7C3AED; padding: 2px 0; cursor: pointer; transition: background-color 0.2s;'
+            'background-color: rgba(232, 49, 122, 0.15); border-bottom: 2px solid #9B2E3D; padding: 2px 0; cursor: pointer; transition: background-color 0.2s;'
           );
         }, 1000);
         break;
@@ -923,7 +923,7 @@ export default function SubtopicContentPage() {
   if (moduleLoading || topicLoading || subtopicStateLoading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-[#7C3AED]" />
+        <Loader2 className="w-8 h-8 animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -932,7 +932,7 @@ export default function SubtopicContentPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <p className="text-gray-500 mb-4">Content not found</p>
-        <Link href={`/dashboard/learn/${slug}`} className="text-[#7C3AED] font-semibold">
+        <Link href={`/dashboard/learn/${slug}`} className="text-maroon-500 font-semibold">
           Back to Module
         </Link>
       </div>
@@ -964,11 +964,11 @@ export default function SubtopicContentPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowBookmarkList(!showBookmarkList)}
-              className="w-8 h-8 rounded-full bg-[#7C3AED]/10 flex items-center justify-center hover:bg-[#7C3AED]/20 transition-colors relative"
+              className="w-8 h-8 rounded-full bg-maroon-500/10 flex items-center justify-center hover:bg-maroon-500/20 transition-colors relative"
             >
-              <Bookmark size={14} className="text-[#7C3AED]" />
+              <Bookmark size={14} className="text-maroon-500" />
               {bookmarks.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#7C3AED] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-maroon-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
                   {bookmarks.length}
                 </span>
               )}
@@ -1042,11 +1042,11 @@ export default function SubtopicContentPage() {
                       <button
                         onClick={handleLikeToggle}
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${liked
-                          ? "bg-[#7C3AED]/10 text-[#7C3AED]"
+                          ? "bg-maroon-500/10 text-maroon-500"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                           }`}
                       >
-                        <Heart size={14} className={liked ? "fill-[#7C3AED]" : ""} />
+                        <Heart size={14} className={liked ? "fill-maroon-500" : ""} />
                         <span>{likesCount}</span>
                       </button>
                         
@@ -1119,7 +1119,7 @@ export default function SubtopicContentPage() {
                             const currentIdx = subtopics.findIndex(s => s._id === activeSubtopic?._id);
                             navigateToSubtopic(subtopics[currentIdx - 1]);
                           }}
-                          className="flex items-center gap-2 text-gray-600 hover:text-[#7C3AED] transition-colors"
+                          className="flex items-center gap-2 text-gray-600 hover:text-maroon-500 transition-colors"
                         >
                           <ChevronLeft size={16} /> Previous Section
                         </button>
@@ -1133,7 +1133,7 @@ export default function SubtopicContentPage() {
                             const currentIdx = subtopics.findIndex(s => s._id === activeSubtopic?._id);
                             navigateToSubtopic(subtopics[currentIdx + 1]);
                           }}
-                          className="flex items-center gap-2 text-gray-600 hover:text-[#7C3AED] transition-colors"
+                          className="flex items-center gap-2 text-gray-600 hover:text-maroon-500 transition-colors"
                         >
                           Next Section <ChevronRight size={16} />
                         </button>
@@ -1158,7 +1158,7 @@ export default function SubtopicContentPage() {
                     <button
                       onClick={handleTopicComplete}
                       className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5"
-                      style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                      style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                     >
                       Complete Lesson & Continue
                     </button>
@@ -1173,11 +1173,11 @@ export default function SubtopicContentPage() {
                       <button
                         onClick={handleLikeToggle}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${liked
-                          ? "bg-[#7C3AED]/10 text-[#7C3AED]"
+                          ? "bg-maroon-500/10 text-maroon-500"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                           }`}
                       >
-                        <Heart size={16} className={liked ? "fill-[#7C3AED]" : ""} />
+                        <Heart size={16} className={liked ? "fill-maroon-500" : ""} />
                         Like ({likesCount})
                       </button>
 
@@ -1217,7 +1217,7 @@ export default function SubtopicContentPage() {
                   <Link
                     href={`/dashboard/learn/${slug}/${nextTopic.slug}`}
                     className={`flex-1 flex items-center justify-end gap-2 p-4 rounded-xl transition-all group ${allSubtopicsCompleted
-                      ? "bg-gradient-to-r from-[#7C3AED]/10 to-[#5B21B6]/10 border border-[#7C3AED]/20"
+                      ? "bg-gradient-to-r from-maroon-500/10 to-maroon-600/10 border border-maroon-500/20"
                       : "bg-white border border-gray-200 hover:border-gray-300"
                       }`}
                   >
@@ -1243,7 +1243,7 @@ export default function SubtopicContentPage() {
                   </div>
                   <div className="p-4">
                     <div className="text-center mb-3">
-                      <div className="text-2xl font-bold text-[#7C3AED]">
+                      <div className="text-2xl font-bold text-maroon-500">
                         {topicProgress.progressPercent}%
                       </div>
                       <p className="text-xs text-gray-500">
@@ -1255,7 +1255,7 @@ export default function SubtopicContentPage() {
                         className="h-2 rounded-full transition-all duration-500"
                         style={{
                           width: `${topicProgress.progressPercent}%`,
-                          background: "linear-gradient(90deg, #7C3AED, #5B21B6)"
+                          background: "linear-gradient(90deg, #9B2E3D, #82212D)"
                         }}
                       />
                     </div>
@@ -1265,7 +1265,7 @@ export default function SubtopicContentPage() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="p-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
-                      <List size={14} className="text-[#7C3AED]" />
+                      <List size={14} className="text-maroon-500" />
                       Lesson Sections
                     </h3>
                   </div>
@@ -1294,7 +1294,7 @@ export default function SubtopicContentPage() {
 
                 <button
                   onClick={() => setShowAIChat(!showAIChat)}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white hover:shadow-lg transition-all"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-maroon-500 to-maroon-600! text-white hover:shadow-lg transition-all"
                 >
                   <MessageCircle size={18} />
                   <div className="text-left flex-1">
@@ -1335,7 +1335,7 @@ export default function SubtopicContentPage() {
         <div className="fixed bottom-6 right-6 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50">
           <div className="flex items-center justify-between p-4 border-b border-gray-100">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-maroon-500 to-maroon-600 flex items-center justify-center">
                 <Zap size={14} className="text-white" />
               </div>
               <h3 className="font-semibold text-gray-900">AI Learning Assistant</h3>
@@ -1354,9 +1354,9 @@ export default function SubtopicContentPage() {
               <input
                 type="text"
                 placeholder="Ask a question..."
-                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED]"
+                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500"
               />
-              <button className="px-3 py-2 bg-[#7C3AED] text-white rounded-lg">
+              <button className="px-3 py-2 bg-maroon-500 text-white rounded-lg">
                 <Send size={14} />
               </button>
             </div>

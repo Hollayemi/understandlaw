@@ -19,7 +19,7 @@ const CITIZEN_STEPS = [
     icon: <BookOpen />,
     title: "Pick a Topic",
     desc: "Browse categories like Tenancy, Employment, Police Rights, or Contracts. Everything is organised by situation,  not by statute.",
-    color: "#7C3AED",
+    color: "#9B2E3D",
   },
   {
     num: "02",
@@ -50,7 +50,7 @@ const LAWYER_STEPS = [
     icon: <FileText />,
     title: "Register & Submit Credentials",
     desc: "Fill out your profile with your SCN number, year of call, and practice areas. Upload supporting documents.",
-    color: "#7C3AED",
+    color: "#9B2E3D",
   },
   {
     num: "02",
@@ -111,13 +111,13 @@ export default function HowItWorksPage() {
       {/* Hero */}
       <section className="bg-white pt-14 pb-16 border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-3">How It Works</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-maroon-500 mb-3">How It Works</p>
           <h1
             className="text-[clamp(48px,7vw,80px)] leading-none tracking-[0.01em] text-gray-900 uppercase mb-4"
             style={{ fontFamily: "var(--font-bebas)" }}
           >
             FROM CONFUSION<br />
-            <span style={{ color: "#7C3AED" }}>TO CLARITY</span>
+            <span style={{ color: "#9B2E3D" }}>TO CLARITY</span>
           </h1>
           <p className="text-base text-gray-500 max-w-xl mx-auto leading-relaxed">
             LawTicha is designed around one idea: everyone deserves to understand the law that governs their life.
@@ -151,7 +151,7 @@ export default function HowItWorksPage() {
           <div className="mb-12">
             <div className="inline-flex items-center gap-2 bg-pink-50 border border-pink-100 px-3 py-1.5 rounded-full mb-4">
               <span className="text-sm"><User /></span>
-              <span className="text-xs font-semibold text-[#7C3AED]">For Citizens</span>
+              <span className="text-xs font-semibold text-maroon-500">For Citizens</span>
             </div>
             <h2
               className="text-[clamp(32px,5vw,52px)] leading-none text-gray-900 uppercase"
@@ -196,7 +196,7 @@ export default function HowItWorksPage() {
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Link
               href="/learn"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#7C3AED] text-white text-sm font-bold hover:bg-[#5B21B6] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-maroon-500 text-white text-sm font-bold hover:bg-maroon-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 transition-all"
             >
               Start Learning Free
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -226,7 +226,7 @@ export default function HowItWorksPage() {
               style={{ fontFamily: "var(--font-bebas)" }}
             >
               BUILD YOUR<br />
-              <span style={{ color: "#7C3AED" }}>CLIENT BASE</span>
+              <span style={{ color: "#9B2E3D" }}>CLIENT BASE</span>
             </h2>
             <p className="text-sm text-gray-500 mt-3 max-w-lg">
               LawTicha connects you with Nigerians who are already educated on the law and ready to take action.
@@ -275,7 +275,7 @@ export default function HowItWorksPage() {
           <div className="mt-6">
             <Link
               href="/lawyers/join"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#7C3AED] text-white text-sm font-bold hover:bg-[#5B21B6] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-maroon-500 text-white text-sm font-bold hover:bg-maroon-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 transition-all"
             >
               Apply as a Lawyer →
             </Link>
@@ -287,7 +287,7 @@ export default function HowItWorksPage() {
       <section className="bg-white py-20 xl:py-28">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#7C3AED] mb-2">FAQ</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-maroon-500 mb-2">FAQ</p>
             <h2
               className="text-[clamp(32px,5vw,52px)] leading-none text-gray-900 uppercase"
               style={{ fontFamily: "var(--font-bebas)" }}
@@ -304,7 +304,7 @@ export default function HowItWorksPage() {
 
           <div className="text-center mt-10">
             <p className="text-sm text-gray-500 mb-3">Still have questions?</p>
-            <Link href="/contact" className="text-sm font-semibold text-[#7C3AED] hover:underline">
+            <Link href="/contact" className="text-sm font-semibold text-maroon-500 hover:underline">
               Contact our team →
             </Link>
           </div>
@@ -317,7 +317,7 @@ export default function HowItWorksPage() {
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <details className="group bg-gray-50 border border-gray-100 rounded-2xl overflow-hidden">
-      <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-sm text-gray-900 hover:text-[#7C3AED] transition-colors">
+      <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-sm text-gray-900 hover:text-maroon-500 transition-colors">
         {q}
         <svg
           className="w-4 h-4 flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform"

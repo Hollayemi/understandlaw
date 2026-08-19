@@ -205,7 +205,7 @@ export default function ReferenceSelector({ value, onChange }: ReferenceSelector
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setShowModuleDropdown(true)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED]"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500"
             />
             {modulesLoading && (
               <Loader2 size={14} className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-gray-400" />
@@ -226,7 +226,7 @@ export default function ReferenceSelector({ value, onChange }: ReferenceSelector
                     className="w-full text-left px-3 py-2 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                   >
                     <div className="flex items-center gap-2">
-                      <BookOpen size={14} className="text-[#7C3AED]" />
+                      <BookOpen size={14} className="text-maroon-500" />
                       <span className="text-sm font-medium text-gray-900">{module.title}</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5 ml-6">{module.category}</p>
@@ -259,7 +259,7 @@ export default function ReferenceSelector({ value, onChange }: ReferenceSelector
           <div className="relative">
             <div
               onClick={() => setShowTopicDropdown(!showTopicDropdown)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg cursor-pointer hover:border-[#7C3AED] transition-colors flex items-center justify-between"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg cursor-pointer hover:border-maroon-500 transition-colors flex items-center justify-between"
             >
               <span className={selectedTopic ? "text-gray-900" : "text-gray-400"}>
                 {selectedTopic ? selectedTopic.title : "Select a topic..."}
@@ -318,7 +318,7 @@ export default function ReferenceSelector({ value, onChange }: ReferenceSelector
           <div className="relative">
             <div
               onClick={() => setShowSubtopicDropdown(!showSubtopicDropdown)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg cursor-pointer hover:border-[#7C3AED] transition-colors flex items-center justify-between"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg cursor-pointer hover:border-maroon-500 transition-colors flex items-center justify-between"
             >
               <span className={selectedSubtopic ? "text-gray-900" : "text-gray-400"}>
                 {selectedSubtopic ? selectedSubtopic.title : "Select a subtopic (optional)..."}
@@ -374,7 +374,7 @@ export default function ReferenceSelector({ value, onChange }: ReferenceSelector
             href={`/dashboard/learn/${value.type === 'module' ? generateSlug(value.moduleTitle) : `${generateSlug(value.moduleTitle)}/${generateSlug(value.topicTitle)}`}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-[#7C3AED] hover:underline flex items-center gap-1"
+            className="text-xs text-maroon-500 hover:underline flex items-center gap-1"
           >
             <BookOpen size={10} /> View referenced content
           </a>

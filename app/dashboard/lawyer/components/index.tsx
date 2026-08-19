@@ -131,7 +131,7 @@ function PaymentProofSlot({
 
             {(!existing || needsReupload) && (
                 <div className="space-y-2">
-                    <label className="flex items-center gap-2 h-10 px-3 rounded-lg border-[1.5px] border-dashed border-[#E5E7EB] text-[11px] text-[#9CA3AF] cursor-pointer hover:border-[#7C3AED] transition-colors">
+                    <label className="flex items-center gap-2 h-10 px-3 rounded-lg border-[1.5px] border-dashed border-[#E5E7EB] text-[11px] text-[#9CA3AF] cursor-pointer hover:border-maroon-500 transition-colors">
                         <UploadCloud size={13} className="text-[#9CA3AF] shrink-0" />
                         <span className="truncate">{file ? file.name : `Choose ${type} file…`}</span>
                         <input type="file" accept="image/*,.pdf" className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} />
@@ -141,7 +141,7 @@ function PaymentProofSlot({
                         onClick={handleUpload}
                         disabled={isLoading || !file}
                         className="w-full py-2 rounded-lg text-[11px] font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5"
-                        style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                        style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                     >
                         {isLoading
                             ? <><Loader2 size={11} className="animate-spin" /> Uploading…</>
@@ -255,7 +255,7 @@ export function ConsultationDrawer({
                         ? "#EF4444"
                         : consult.status === "completed"
                             ? "#10B981"
-                            : "linear-gradient(90deg, #7C3AED, #5B21B6)"
+                            : "linear-gradient(90deg, #9B2E3D, #82212D)"
                 }} />
 
                 <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
@@ -559,7 +559,7 @@ export function MatchRequestCard({
                         onClick={handleAccept}
                         disabled={acting !== null}
                         className="flex-1 py-2.5 rounded-xl text-[12px] font-bold text-white flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transition-all disabled:opacity-60"
-                        style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                        style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                     >
                         {acting === "accept" ? <Loader2 size={11} className="animate-spin" /> : <ThumbsUp size={11} />}
                         Accept

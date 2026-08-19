@@ -17,7 +17,7 @@ export default function AuthCard({ children, title, subtitle }: AuthCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, duration: 0.5 }}
-      className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden p-7"
+      className="md:bg-white md:rounded-3xl md:shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden px-2 md:p-7"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}

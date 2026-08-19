@@ -1,12 +1,6 @@
 @import "tailwindcss";
 
-/*  Design tokens  */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-
-  /* Brand colours, maroon system */
-  --color-maroon-600: #3D0A14;
+@theme {
   --color-maroon-900: #4D0E1B;
   --color-maroon-800: #5C1420;
   --color-maroon-700: #6B1220;
@@ -14,17 +8,25 @@
   --color-maroon-500: #9B2E3D;
   --color-rose-400:   #C46478;
   --color-rose-100:   #FBEFF1;
-
-  /* Kept for legacy components */
-  --color-pink:       #6B1220;
-  --color-pink-hover: #4D0E1B;
   --color-gold:       #C9922A;
   --color-gold-light: #E8B04A;
   --color-navy:       #121824;
   --color-navy-2:     #0F1520;
+  --color-bg:         #F3F3F3;
+}
 
-  /* Page background */
-  --color-bg: #F3F3F3;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  --maroon-900: var(--color-maroon-900);
+  --maroon-800: var(--color-maroon-800);
+  --maroon-700: var(--color-maroon-700);
+  --maroon-600: var(--color-maroon-600);
+  --maroon-500: var(--color-maroon-500);
+
+  --color-pink:       var(--color-maroon-700);
+  --color-pink-hover: var(--color-maroon-900);
 }
 
 @theme inline {

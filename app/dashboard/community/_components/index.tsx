@@ -139,7 +139,7 @@ export default function CreatePostModal({
     return (
       <div className="mt-2 p-2 bg-gray-50 rounded-lg text-xs">
         <span className="text-gray-500">Will link to:</span>
-        <a href={path} target="_blank" className="text-[#7C3AED] ml-2 hover:underline">
+        <a href={path} target="_blank" className="text-maroon-500 ml-2 hover:underline">
           {reference.type}: {reference.title}
         </a>
       </div>
@@ -181,7 +181,7 @@ export default function CreatePostModal({
                   type="button"
                   onClick={() => setRoom(r.id)}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${room === r.id
-                    ? "border-[#7C3AED] bg-[#7C3AED]/5"
+                    ? "border-maroon-500 bg-maroon-500/5"
                     : "border-gray-200 hover:border-gray-300"
                     }`}
                 >
@@ -209,7 +209,7 @@ export default function CreatePostModal({
               placeholder="What's your question or discussion about?"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED]"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500"
               maxLength={200}
             />
             <div className="text-right text-xs text-gray-400 mt-1">
@@ -227,7 +227,7 @@ export default function CreatePostModal({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED] resize-none"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500 resize-none"
               maxLength={5000}
             />
             <div className="text-right text-xs text-gray-400 mt-1">
@@ -260,7 +260,7 @@ export default function CreatePostModal({
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={handleAddTag}
               placeholder="e.g., landlord-tenant, employment, human-rights (max 5 tags)"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#7C3AED]"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500"
             />
             <p className="text-[10px] text-gray-400 mt-1">
               Add up to 5 tags to help others find your post
@@ -296,7 +296,7 @@ export default function CreatePostModal({
           <button
             onClick={handleSubmit}
             disabled={isSubmitting || !title.trim() || !content.trim()}
-            className="px-6 py-2 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
+            className="px-6 py-2 bg-gradient-to-r from-maroon-500 to-maroon-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
           >
             {isSubmitting ? (
               <>

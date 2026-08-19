@@ -13,7 +13,7 @@ const REQUEST_STATUS_CFG: Record<MatchStatus, { label: string; bg: string; text:
   in_review: { label: "In Review", bg: "#EFF6FF", text: "#1D4ED8", dot: "#3B82F6" },
   ready_for_call: { label: "Ready for call", bg: "#EFF6FF", text: "#1D4ED8", dot: "#3B82F6" },
   matching: { label: "Matching", bg: "#FFFBEB", text: "#92400E", dot: "#F59E0B" },
-  recommended: { label: "Lawyers Ready", bg: "#FFF0F5", text: "#9D174D", dot: "#7C3AED" },
+  recommended: { label: "Lawyers Ready", bg: "#FFF0F5", text: "#9D174D", dot: "#9B2E3D" },
   matched: { label: "Matched", bg: "#ECFDF5", text: "#065F46", dot: "#10B981" },
   expired: { label: "Expired", bg: "#F9FAFB", text: "#6B7280", dot: "#9CA3AF" },
 };
@@ -120,7 +120,7 @@ export default function CitizenConsultationsPage() {
     return (
       <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-12 h-12 border-4 border-maroon-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#6B7280]">Loading your consultations...</p>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function CitizenConsultationsPage() {
             <Link
               href="/dashboard/consultations/new"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white hover:-translate-y-0.5 transition-all"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               <Plus size={13} />
               Find my Lawyer
@@ -184,7 +184,7 @@ export default function CitizenConsultationsPage() {
                   {opt.l}
                   {!!opt.count && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${mainTab === opt.v ? "bg-white/20 text-white" : "bg-[#FFF0F5] text-[#7C3AED]"
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${mainTab === opt.v ? "bg-white/20 text-white" : "bg-[#FFF0F5] text-maroon-500"
                         }`}
                     >
                       {opt.count}
@@ -194,7 +194,7 @@ export default function CitizenConsultationsPage() {
               ))}
             </div>
             {needsAction > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFF0F5] border border-[#FBCFE8] text-[11px] font-bold text-[#7C3AED]">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFF0F5] border border-[#FBCFE8] text-[11px] font-bold text-maroon-500">
                 {needsAction} need{needsAction === 1 ? "s" : ""} attention
               </div>
             )}
@@ -213,7 +213,7 @@ export default function CitizenConsultationsPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 ">
                 {[
                   { label: "Active", value: uiStats.active, color: "#10B981", bg: "#ECFDF5", icon: MessageCircle },
-                  { label: "Awaiting", value: uiStats.waiting, color: "#7C3AED", bg: "#FFF0F5", icon: Clock, pulse: uiStats.waiting > 0 },
+                  { label: "Awaiting", value: uiStats.waiting, color: "#9B2E3D", bg: "#FFF0F5", icon: Clock, pulse: uiStats.waiting > 0 },
                   { label: "Completed", value: uiStats.completed, color: "#3B82F6", bg: "#EFF6FF", icon: CheckCircle },
                   { label: "Total Spent", value: `NGN ${(uiStats.totalSpent / 1000).toFixed(0)}k`, color: "#6B7280", bg: "#F9FAFB", icon: Receipt },
                 ].map(s => {
@@ -227,7 +227,7 @@ export default function CitizenConsultationsPage() {
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: s.bg }}>
                           <Icon size={13} style={{ color: s.color }} />
                         </div>
-                        {s.pulse && <span className="w-2 h-2 rounded-full bg-[#7C3AED] animate-pulse" />}
+                        {s.pulse && <span className="w-2 h-2 rounded-full bg-maroon-500 animate-pulse" />}
                       </div>
                       <p className="text-[18px] font-bold text-[#111827]">{s.value}</p>
                       <p className="text-[11px] text-[#9CA3AF] mt-0.5">{s.label}</p>
@@ -257,7 +257,7 @@ export default function CitizenConsultationsPage() {
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search by topic or lawyer name…"
-                    className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors bg-white"
+                    className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors bg-white"
                   />
                 </div>
                 <div className="flex items-center gap-1 bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-1 overflow-x-auto flex-shrink-0">
@@ -279,7 +279,7 @@ export default function CitizenConsultationsPage() {
                         {opt.l}
                         {count > 0 && (
                           <span
-                            className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-[#7C3AED] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                            className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-maroon-500 text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
                               }`}
                           >
                             {count}
@@ -304,7 +304,7 @@ export default function CitizenConsultationsPage() {
                   <Link
                     href="/dashboard/consultations/new"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white hover:-translate-y-0.5 transition-all"
-                    style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                    style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                   >
                     <Zap size={13} /> Find my Lawyer
                   </Link>
@@ -393,7 +393,7 @@ function RequestsTab({
         <Link
           href="/dashboard/consultations/new"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white hover:-translate-y-0.5 transition-all"
-          style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+          style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
         >
           <Sparkles size={13} /> Ask Our Team for Help
         </Link>
@@ -406,7 +406,7 @@ function RequestsTab({
       {/* Trust note */}
       <div className="flex items-start gap-3 p-4 bg-white border border-[#F3F4F6] rounded-2xl mb-5">
         <div className="w-8 h-8 rounded-xl bg-[#FFF0F5] flex items-center justify-center flex-shrink-0">
-          <Users size={13} className="text-[#7C3AED]" />
+          <Users size={13} className="text-maroon-500" />
         </div>
         <div>
           <p className="text-[12px] font-bold text-[#111827]">Our team reviews every request</p>
@@ -452,7 +452,7 @@ function RequestsTab({
                 className="flex items-center gap-4 bg-white rounded-2xl border-[1.5px] border-[#F3F4F6] hover:border-[#FBCFE8] p-4 hover:-translate-y-0.5 hover:shadow-sm transition-all"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#FFF0F5] flex items-center justify-center shrink-0">
-                  <Sparkles size={16} className="text-[#7C3AED]" />
+                  <Sparkles size={16} className="text-maroon-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col-reverse gap-2 flex-wrap">

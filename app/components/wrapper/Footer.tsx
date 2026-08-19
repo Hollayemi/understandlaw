@@ -102,8 +102,8 @@ export default function Footer() {
           ))}
 
           {/* Weekly digest */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--maroon-600)" }}>
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--maroon-500)" }}>
               Weekly Digest
             </p>
             <h4 className="text-sm font-bold text-gray-900 mb-1">Know Your Rights, Every Week.</h4>

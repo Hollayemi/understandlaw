@@ -7,17 +7,17 @@ const AVATAR_COLORS = ["#6B1220", "#3B6FC4", "#0F9D58", "#E8A82A"];
 
 export default function HeroSection() {
   return (
-    <section className="bg-white overflow-hidden">
-      <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 pt-12 pb-16 lg:pt-14 pl-6 sm:pl-8 lg:pl-[max(1.5rem,calc((100vw-1152px)/2+1.5rem))]">
+    <section className="bg-white overflow-hidden max-w-7xl mx-auto px-1 lg:px-8">
+      <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 pt-12 pb-16 lg:pt-14 pl-4 sm:pl-8 lg:pl-[max(1.5rem,calc((100vw-1152px)/2+1.5rem))] overflow-hidden!">
         {/* LEFT, headline + form */}
         <div className="w-full lg:w-[400px] xl:w-[430px] flex-shrink-0 pr-6 lg:pr-0 animate-fade-up">
           <h1
-            className="text-[38px] sm:text-[36px] leading-[1.06] tracking-tight uppercase text-gray-900 font-black"
+            className="text-[27px] sm:text-[36px] leading-[1.06] tracking-tight uppercase text-gray-900 font-black"
             style={{ fontFamily: "var(--font-archivo-black)" }}
           >
             Know your rights.
             <br />
-            Own your <span className="text-maroon-600">future.</span>
+            Own your <span className="text-maroon-500">future.</span>
           </h1>
 
           {/* Stars + avatars */}

@@ -2,7 +2,7 @@ export const Input = ({ label, error, required, icon: Icon, ...props }: any) => 
   <div className="space-y-1.5">
     {label && (
       <label className="block text-[12px] font-semibold text-[#374151]">
-        {label} {required && <span className="text-[#7C3AED]">*</span>}
+        {label} {required && <span className="text-maroon-500">*</span>}
       </label>
     )}
     <div className="relative">
@@ -11,7 +11,7 @@ export const Input = ({ label, error, required, icon: Icon, ...props }: any) => 
       )}
       <input
         className={`w-full h-11 px-4 rounded-xl border-[1.5px] text-[14px] transition-all bg-white
-          ${error ? 'border-red-300 focus:border-red-500' : 'border-[#E5E7EB] focus:border-[#7C3AED]'}
+          ${error ? 'border-red-300 focus:border-red-500' : 'border-[#E5E7EB] focus:border-maroon-500'}
           ${Icon ? 'pl-10' : ''} outline-none placeholder:text-[#D1D5DB]`}
         {...props}
       />
@@ -24,12 +24,12 @@ export const TextArea = ({ label, error, required, ...props }: any) => (
   <div className="space-y-1.5">
     {label && (
       <label className="block text-[12px] font-semibold text-[#374151]">
-        {label} {required && <span className="text-[#7C3AED]">*</span>}
+        {label} {required && <span className="text-maroon-500">*</span>}
       </label>
     )}
     <textarea
       className={`w-full px-4 py-3 rounded-xl border-[1.5px] text-[14px] transition-all bg-white resize-none
-        ${error ? 'border-red-300 focus:border-red-500' : 'border-[#E5E7EB] focus:border-[#7C3AED]'}
+        ${error ? 'border-red-300 focus:border-red-500' : 'border-[#E5E7EB] focus:border-maroon-500'}
         outline-none placeholder:text-[#D1D5DB]`}
       rows={5}
       {...props}
@@ -42,12 +42,12 @@ export const Select = ({ label, options, error, required, ...props }: any) => (
   <div className="space-y-1.5">
     {label && (
       <label className="block text-[12px] font-semibold text-[#374151]">
-        {label} {required && <span className="text-[#7C3AED]">*</span>}
+        {label} {required && <span className="text-maroon-500">*</span>}
       </label>
     )}
     <select
       className={`w-full h-11 px-4 rounded-xl border-[1.5px] text-[14px] transition-all bg-white
-        ${error ? 'border-red-300' : 'border-[#E5E7EB] focus:border-[#7C3AED]'}
+        ${error ? 'border-red-300' : 'border-[#E5E7EB] focus:border-maroon-500'}
         outline-none appearance-none cursor-pointer`}
       {...props}
     >

@@ -108,7 +108,7 @@ function LawyerDrawer({ lawyer, onClose }: { lawyer: LawyerFull; onClose: () => 
           {/* Actions */}
           <div className="flex flex-col gap-2 pt-2">
             <button className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
               Send Message
             </button>
             <button className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-[#EF4444] border border-red-100 bg-red-50 hover:bg-red-100 transition-colors">
@@ -165,7 +165,7 @@ const lawyers = data?.data?.data || []
 console.log(lawyers)
 
   const stats = [
-    { label: "Total Lawyers",  value: lawyers.length,                                            icon: Scale,      color: "#7C3AED", bg: "#FFF0F5" },
+    { label: "Total Lawyers",  value: lawyers.length,                                            icon: Scale,      color: "#9B2E3D", bg: "#FFF0F5" },
     { label: "Active",         value: lawyers.filter(l => l.isAvailable).length,         icon: BadgeCheck, color: "#10B981", bg: "#ECFDF5" },
     { label: "Avg Rating",     value: (lawyers.filter(l => l.rating > 0).reduce((s, l) => s + l.rating, 0) / lawyers.filter(l => l.rating > 0).length).toFixed(1),
                                                                                                   icon: Star,       color: "#F59E0B", bg: "#FFFBEB" },

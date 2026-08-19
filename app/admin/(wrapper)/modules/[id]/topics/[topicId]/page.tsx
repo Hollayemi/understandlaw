@@ -46,8 +46,8 @@ const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string
   contracts:   { label: "Contracts & Agreements", color: "#F59E0B", bg: "#FFFBEB" },
   business:    { label: "Business & Commerce",  color: "#06B6D4", bg: "#ECFEFF" },
   family:      { label: "Family & Personal",    color: "#EF4444", bg: "#FEF2F2" },
-  consumer:    { label: "Consumer Rights",      color: "#7C3AED", bg: "#FFF0F5" },
-  road:        { label: "Road Traffic",         color: "#7C3AED", bg: "#FFF7ED" },
+  consumer:    { label: "Consumer Rights",      color: "#9B2E3D", bg: "#FFF0F5" },
+  road:        { label: "Road Traffic",         color: "#9B2E3D", bg: "#FFF7ED" },
 };
 
 // Notes Editor Component
@@ -118,7 +118,7 @@ function NotesEditor({
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[#F9FAFB] cursor-pointer hover:bg-[#F9FAFB] transition-colors"
         onClick={() => setExpanded(!expanded)}>
         <GripVertical size={15} className="text-[#D1D5DB] flex-shrink-0 cursor-grab" />
-        <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">
+        <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-maroon-500 to-maroon-600 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">
           {st.order}
         </div>
         <div className="flex-1 min-w-0">
@@ -128,7 +128,7 @@ function NotesEditor({
               onChange={e => setTitle(e.target.value)}
               onBlur={handleSaveTitle}
               onKeyDown={e => e.key === "Enter" && handleSaveTitle()}
-              className="text-[13px] font-bold text-[#111827] bg-white border border-[#7C3AED] rounded-lg px-2 py-0.5 outline-none w-64"
+              className="text-[13px] font-bold text-[#111827] bg-white border border-maroon-500 rounded-lg px-2 py-0.5 outline-none w-64"
               autoFocus
             />
           ) : (
@@ -174,16 +174,16 @@ function NotesEditor({
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder={`Write detailed notes, script points, talking points, and key concepts for this sub-topic.\n\nYou can include:\n• Legal citations and section references\n• Word-for-word scripts\n• Common questions and answers\n• Real-world examples`}
-                className="w-full h-56 px-4 py-3.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] leading-relaxed resize-none outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors font-mono"
+                className="w-full h-56 px-4 py-3.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] leading-relaxed resize-none outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors font-mono"
               />
             </div>
             <div className="flex items-center justify-between mt-2.5">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#7C3AED]" />
+                <div className="w-2 h-2 rounded-full bg-maroon-500" />
                 <span className="text-[10px] text-[#9CA3AF]">Notes are private, visible only to the admin and instructor</span>
               </div>
               <button onClick={handleSaveNotes} disabled={saving}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] disabled:opacity-60 transition-colors">
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-maroon-500 hover:bg-maroon-600 disabled:opacity-60 transition-colors">
                 {saving ? <><Loader2 size={11} className="animate-spin" /> Saving…</>
                         : saved ? <><Check size={11} /> Saved!</>
                         : <><Save size={11} /> Save Notes</>}
@@ -431,7 +431,7 @@ export default function TopicDetailPage() {
           <BookOpen size={48} className="text-[#E5E7EB] mx-auto mb-4" />
           <h2 className="text-lg font-bold text-[#111827] mb-2">Topic Not Found</h2>
           <p className="text-[13px] text-[#9CA3AF] mb-6">The topic you're looking for doesn't exist or has been deleted.</p>
-          <Link href={`/admin/modules/${moduleId}`} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#7C3AED] text-white text-[13px] font-semibold">
+          <Link href={`/admin/modules/${moduleId}`} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-maroon-500 text-white text-[13px] font-semibold">
             <ArrowLeft size={14} /> Back to Module
           </Link>
         </div>
@@ -467,7 +467,7 @@ export default function TopicDetailPage() {
 
       {/* Topic hero */}
       <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden mb-6">
-        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #7C3AED, #5B21B6)" }} />
+        <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #9B2E3D, #82212D)" }} />
         <div className="p-5 flex flex-col lg:flex-row gap-5">
 
           {/* Left: info */}
@@ -512,7 +512,7 @@ export default function TopicDetailPage() {
             {/* Publish action */}
             <div className="flex items-center gap-2">
               <select value={status} onChange={e => setStatus(e.target.value as TopicStatus)}
-                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#7C3AED] bg-white transition-colors">
+                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-maroon-500 bg-white transition-colors">
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
                 <option value="pending">Pending Review</option>
@@ -577,8 +577,8 @@ export default function TopicDetailPage() {
                 ] as const).map(t => (
                   <button key={t.id}
                     onClick={() => setVideoType(t.id)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${videoType === t.id ? "border-[#7C3AED] bg-pink-50 text-[#7C3AED]" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
-                    <t.icon size={13} className={videoType === t.id ? "text-[#7C3AED]" : t.color} />
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-[1.5px] text-[12px] font-semibold transition-all ${videoType === t.id ? "border-maroon-500 bg-pink-50 text-maroon-500" : "border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"}`}>
+                    <t.icon size={13} className={videoType === t.id ? "text-maroon-500" : t.color} />
                     {t.label}
                   </button>
                 ))}
@@ -608,7 +608,7 @@ export default function TopicDetailPage() {
                         value={videoUrl} 
                         onChange={e => setVideoUrl(e.target.value)}
                         placeholder="https://youtube.com/watch?v=..."
-                        className="w-full h-11 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors" />
+                        className="w-full h-11 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors" />
                     </div>
                     <button 
                       onClick={handleSaveVideo}
@@ -622,9 +622,9 @@ export default function TopicDetailPage() {
               {videoType === "upload" && (
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Video File</label>
-                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-[#7C3AED] transition-colors cursor-pointer group">
+                  <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center hover:border-maroon-500 transition-colors cursor-pointer group">
                     <div className="w-12 h-12 rounded-2xl bg-[#F3F4F6] group-hover:bg-pink-50 flex items-center justify-center mx-auto mb-3 transition-colors">
-                      <Video size={20} className="text-[#9CA3AF] group-hover:text-[#7C3AED] transition-colors" />
+                      <Video size={20} className="text-[#9CA3AF] group-hover:text-maroon-500 transition-colors" />
                     </div>
                     <p className="text-[13px] font-semibold text-[#6B7280]">Click to upload or drag & drop</p>
                     <p className="text-[11px] text-[#D1D5DB] mt-1">MP4, MOV or WebM · Max 500MB · 1080p recommended</p>
@@ -643,7 +643,7 @@ export default function TopicDetailPage() {
                   </p>
                 </div>
                 <button onClick={addSubTopic}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all">
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E5E7EB] text-[12px] font-semibold text-[#6B7280] hover:border-maroon-500 hover:text-maroon-500 transition-all">
                   <Plus size={12} /> Add Sub-Topic
                 </button>
               </div>
@@ -654,7 +654,7 @@ export default function TopicDetailPage() {
                   <p className="text-[13px] font-semibold text-[#9CA3AF] mb-1">No sub-topics yet</p>
                   <p className="text-[11px] text-[#D1D5DB] mb-4">Break this topic into focused segments with instructor notes.</p>
                   <button onClick={addSubTopic}
-                    className="flex items-center gap-1.5 mx-auto px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-[#7C3AED] hover:bg-[#5B21B6] transition-colors">
+                    className="flex items-center gap-1.5 mx-auto px-4 py-2 rounded-xl text-[12px] font-bold text-white bg-maroon-500 hover:bg-maroon-600 transition-colors">
                     <Plus size={12} /> Add First Sub-Topic
                   </button>
                 </div>
@@ -684,12 +684,12 @@ export default function TopicDetailPage() {
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Topic Title</label>
                   <input name="title" defaultValue={topic.title}
-                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-maroon-500 transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Classification</label>
                   <select name="classification" defaultValue={topic.classification}
-                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#7C3AED] bg-white transition-colors">
+                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-maroon-500 bg-white transition-colors">
                     {["Foundational", "Rights", "Procedural", "Advanced", "Scenario", "Case Study"].map(c => (
                       <option key={c}>{c}</option>
                     ))}
@@ -698,17 +698,17 @@ export default function TopicDetailPage() {
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Topic Order</label>
                   <input name="order" type="number" defaultValue={topic.order} min={1}
-                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-maroon-500 transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Overview</label>
                   <textarea name="overview" defaultValue={topic.overview}
-                    className="w-full h-24 px-3 py-2 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full h-24 px-3 py-2 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] resize-none outline-none focus:border-maroon-500 transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Tags (comma-separated)</label>
                   <input name="tags" defaultValue={topic.tags?.join(", ") || ""}
-                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#111827] outline-none focus:border-maroon-500 transition-colors" />
                 </div>
                 <button type="submit" disabled={savingStatus}
                   className="w-full py-2.5 rounded-xl bg-[#111827] text-white text-[12px] font-bold hover:bg-[#1F2937] disabled:opacity-60 transition-colors flex items-center justify-center gap-1.5">
@@ -727,7 +727,7 @@ export default function TopicDetailPage() {
                   { label: "Likes", value: topic.likes || 0, icon: Heart, c: "#EF4444" },
                   { label: "Comments", value: topic.comments || 0, icon: MessageSquare, c: "#F59E0B" },
                   { label: "Duration", value: topic.duration || "—", icon: Clock, c: "#9CA3AF" },
-                  { label: "Sub-topics", value: subtopics.length, icon: Layers, c: "#7C3AED" },
+                  { label: "Sub-topics", value: subtopics.length, icon: Layers, c: "#9B2E3D" },
                 ].map(s => {
                   const Icon = s.icon;
                   return (
@@ -785,7 +785,7 @@ export default function TopicDetailPage() {
                         <span className="text-[9px] text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity">{w.views}</span>
                         <div
                           className="w-full rounded-t-lg transition-all group-hover:opacity-90"
-                          style={{ height: `${Math.max(h, 4)}%`, background: isHighest ? "#7C3AED" : "#F3F4F6", minHeight: 4 }}
+                          style={{ height: `${Math.max(h, 4)}%`, background: isHighest ? "#9B2E3D" : "#F3F4F6", minHeight: 4 }}
                         />
                         <span className="text-[10px] text-[#9CA3AF]">{w.day}</span>
                       </div>
@@ -810,7 +810,7 @@ export default function TopicDetailPage() {
                       <div key={st.subtopicId}>
                         <div className="flex items-center justify-between text-[11px] mb-1.5">
                           <div className="flex items-center gap-2">
-                            <span className="w-4 h-4 rounded-full bg-[#7C3AED]/10 flex items-center justify-center text-[9px] font-bold text-[#7C3AED]">{st.order}</span>
+                            <span className="w-4 h-4 rounded-full bg-maroon-500/10 flex items-center justify-center text-[9px] font-bold text-maroon-500">{st.order}</span>
                             <span className="font-semibold text-[#111827]">{st.title}</span>
                           </div>
                           <div className="flex items-center gap-3 text-[#9CA3AF]">
@@ -819,7 +819,7 @@ export default function TopicDetailPage() {
                           </div>
                         </div>
                         <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
-                          <div className="h-2 rounded-full bg-[#7C3AED] transition-all"
+                          <div className="h-2 rounded-full bg-maroon-500 transition-all"
                             style={{ width: `${dropPct}%` }} />
                         </div>
                         {i > 0 && (
@@ -866,7 +866,7 @@ export default function TopicDetailPage() {
                       <span className="font-bold text-[#111827]">{s.count.toLocaleString()} <span className="text-[#9CA3AF] font-normal">({s.percentage}%)</span></span>
                     </div>
                     <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-                      <div className="h-1.5 rounded-full bg-[#7C3AED]/60" style={{ width: `${s.percentage}%` }} />
+                      <div className="h-1.5 rounded-full bg-maroon-500/60" style={{ width: `${s.percentage}%` }} />
                     </div>
                   </div>
                 ))}

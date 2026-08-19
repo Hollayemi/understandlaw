@@ -12,10 +12,10 @@ const STEPS = [
     bullets: ["1–3 min video lessons", "Scenario walkthroughs", "Plain-text summaries", "Topic recommendations"],
     cta: "Browse Topics",
     href: "/learn",
-    accent: "#7C3AED",
+    accent: "#9B2E3D",
     accentBg: "bg-pink-50",
     accentBorder: "border-pink-100",
-    stepColor: "text-[#7C3AED]",
+    stepColor: "text-maroon-500",
   },
   {
     num: "02",
@@ -55,7 +55,7 @@ export default function FeaturesSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#7C3AED] mb-2">How It Works</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-maroon-500 mb-2">How It Works</p>
             <h2
               className="text-[clamp(36px,5vw,56px)] leading-none tracking-[0.01em] text-gray-900 uppercase"
               style={{ fontFamily: "var(--font-bebas)" }}

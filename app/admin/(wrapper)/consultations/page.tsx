@@ -97,7 +97,7 @@ export default function ConsultationsPage() {
         />
 
         <StatBar items={[
-          { label: "Total Sessions", value: total, icon: MessageSquare, color: "#7C3AED", bg: "#FFF0F5" },
+          { label: "Total Sessions", value: total, icon: MessageSquare, color: "#9B2E3D", bg: "#FFF0F5" },
           { label: "Active", value: active, icon: Activity, color: "#10B981", bg: "#ECFDF5" },
           { label: "Disputed", value: disputed, icon: Gavel, color: "#EF4444", bg: "#FEF2F2" },
           { label: "Unassigned", value: unassignedCount, icon: Timer, color: "#F59E0B", bg: "#FFFBEB" },
@@ -110,7 +110,7 @@ export default function ConsultationsPage() {
               <p className="text-2xl font-bold text-white">NGN {totalRev.toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-              <DollarSign size={18} className="text-[#7C3AED]" />
+              <DollarSign size={18} className="text-maroon-500" />
             </div>
           </div>
           <div className="bg-gradient-to-br from-[#065F46] to-[#0D9488] rounded-2xl p-5 flex items-center justify-between">
@@ -136,7 +136,7 @@ export default function ConsultationsPage() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all ${activeSection === s.id ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
                 <Icon size={13} /> {s.label}
                 {s.count !== null && (
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeSection === s.id ? "bg-[#7C3AED] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${activeSection === s.id ? "bg-maroon-500 text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
                     {s.count}
                   </span>
                 )}
@@ -152,7 +152,7 @@ export default function ConsultationsPage() {
                 <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
                 <input value={search} onChange={e => setSearch(e.target.value)}
                   placeholder="Search by ID, name, or topic…"
-                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#7C3AED] placeholder:text-[#D1D5DB] transition-colors"
+                  className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
 
@@ -173,14 +173,14 @@ export default function ConsultationsPage() {
                     <button key={opt.v} onClick={() => setTab(opt.v)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all whitespace-nowrap ${tab === opt.v ? "bg-white text-[#111827] shadow-sm" : "text-[#6B7280] hover:text-[#111827]"}`}>
                       {opt.l}
-                      <span className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-[#7C3AED] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{count}</span>
+                      <span className={`text-[10px] px-1 py-0.5 rounded-full font-bold ${tab === opt.v ? "bg-maroon-500 text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>{count}</span>
                     </button>
                   );
                 })}
               </div>
 
               <select value={modeFilter} onChange={e => setModeFilter(e.target.value as ConsultMode | "all")}
-                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#7C3AED] transition-colors ml-auto">
+                className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-maroon-500 transition-colors ml-auto">
                 <option value="all">All Modes</option>
                 <option value="message">Written</option>
                 <option value="call">Call</option>
@@ -190,7 +190,7 @@ export default function ConsultationsPage() {
 
             {consultationsLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 size={32} className="animate-spin text-[#7C3AED]" />
+                <Loader2 size={32} className="animate-spin text-maroon-500" />
               </div>
             ) : (
               <div className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden">

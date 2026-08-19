@@ -47,7 +47,7 @@ const DefaultSpinner = () => (
   <div className="min-h-screen w-full flex items-center justify-center bg-white">
     <div className="flex flex-col items-center gap-4">
       <div
-        className="w-10 h-10 rounded-full border-4 border-[#7C3AED] border-t-transparent animate-spin"
+        className="w-10 h-10 rounded-full border-4 border-maroon-500 border-t-transparent animate-spin"
         role="status"
         aria-label="Checking authentication"
       />

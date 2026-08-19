@@ -22,9 +22,9 @@ export const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: strin
   contracts:     { label: "Contracts",     color: "#F59E0B", bg: "#FFFBEB" },
   business:      { label: "Business",      color: "#06B6D4", bg: "#ECFEFF" },
   family:        { label: "Family",        color: "#EF4444", bg: "#FEF2F2" },
-  consumer:      { label: "Consumer",      color: "#7C3AED", bg: "#FFF0F5" },
-  road:          { label: "Road Traffic",  color: "#7C3AED", bg: "#FFF7ED" },
-  constitutional:{ label: "Constitutional",color: "#7C3AED", bg: "#F5F3FF" },
+  consumer:      { label: "Consumer",      color: "#9B2E3D", bg: "#FFF0F5" },
+  road:          { label: "Road Traffic",  color: "#9B2E3D", bg: "#FFF7ED" },
+  constitutional:{ label: "Constitutional",color: "#9B2E3D", bg: "#F5F3FF" },
 };
 
 export const FORMAT_CONFIG: Record<BookFormat, { label: string; color: string; bg: string }> = {

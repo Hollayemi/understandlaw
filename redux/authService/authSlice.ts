@@ -74,6 +74,13 @@ export const authApi = createApi({
             }),
         }),
 
+        validateResetPasswordToken: builder.mutation<{ message: string }, string>({
+            query: (token) => ({
+                url: `/auth/validate-reset-password/${token}`,
+                method: 'PATCH',
+            }),
+        }),
+
         resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
             query: ({ token, password, confirmPassword }) => ({
                 url: `/auth/reset-password/${token}`,
@@ -136,7 +143,7 @@ export const {
     useResendVerificationMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation,
-
+    useValidateResetPasswordTokenMutation,
     useGetMeQuery,
     useLazyGetMeQuery,
     useUpdateProfileMutation,

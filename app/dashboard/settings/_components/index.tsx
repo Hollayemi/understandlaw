@@ -70,7 +70,7 @@ export function ToggleSwitch({
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
       className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${
-        value ? "bg-[#7C3AED]" : "bg-gray-200"
+        value ? "bg-maroon-500" : "bg-gray-200"
       } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
       <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
@@ -174,7 +174,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const inputCls = "w-full h-11! px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors";
+  const inputCls = "w-full h-11! px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
 
   const STATES = ["Lagos", "Abuja", "Rivers", "Kano", "Kaduna", "Oyo", "Anambra", "Enugu", "Delta", "Kwara", "Ondo", "Ogun", "Edo", "Cross River", "Akwa Ibom"];
 
@@ -184,7 +184,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
       <Section title="Profile Photo">
         <div className="flex items-start gap-5">
           <div className="relative">
-            {user.avatarUrl ? <img src={user.avatarUrl} alt="image" className="w-16 h-16 rounded-2xl" /> : <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+            {user.avatarUrl ? <img src={user.avatarUrl} alt="image" className="w-16 h-16 rounded-2xl" /> : <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-maroon-500 to-maroon-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
               AO
             </div>}
             <button className="px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors">
@@ -236,13 +236,13 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
         </Field>
         <Field label="State" desc="Used to surface relevant lawyers near you">
           <select value={form.state} onChange={set("state")}
-            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] transition-colors bg-white">
+            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 transition-colors bg-white">
             {STATES.map(s => <option key={s}>{s}</option>)}
           </select>
         </Field>
         <Field label="Bio" desc="Optional, appears on community posts if you make them public">
           <textarea value={form.bio} onChange={set("bio")} placeholder="A brief note about yourself..."
-            className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+            className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
           />
         </Field>
       </Section>
@@ -251,7 +251,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
         <p className="text-xs text-gray-400">Changes take effect immediately after saving.</p>
         <button onClick={handleUpdate} disabled={saving}
           className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-          style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
+          style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
           {saving ? <><Loader2 size={13} className="animate-spin" /> Saving...</>
             : saved ? <><Check size={13} /> Saved</>
               : <><Save size={13} /> Save Changes</>}
@@ -373,7 +373,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors";
+  const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
 
   const SESSIONS = [
     { device: "Chrome on Windows", location: "Lagos, Nigeria", time: "Active now", current: true },
@@ -411,7 +411,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
         <div className="pt-4 flex justify-end">
           <button onClick={save} disabled={saving}
             className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white disabled:opacity-60 hover:-translate-y-0.5 transition-all"
-            style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}>
+            style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
             {saving ? <><Loader2 size={13} className="animate-spin" /> Updating...</>
               : saved ? <><Check size={13} /> Updated</>
                 : "Update Password"}
@@ -444,7 +444,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
         )}
       </Section>
 
-      <Section title="Active Sessions" desc="These devices are currently signed in to your account.">
+      {/* <Section  title="Active Sessions" desc="These devices are currently signed in to your account.">
         <div className="flex flex-col gap-0">
           {SESSIONS.map((s, i) => (
             <div key={i} className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
@@ -473,7 +473,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
             <LogOut size={12} /> Sign out of all other sessions
           </button>
         </div>
-      </Section>
+      </Section> */}
     </div>
   );
 }
@@ -485,7 +485,7 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [dyslexicFont, setDyslexicFont] = useState(false);
-  const [accentColor, setAccentColor] = useState("#7C3AED");
+  const [accentColor, setAccentColor] = useState("#9B2E3D");
 
   const themes = [
     { id: "light", icon: Sun, label: "Light" },
@@ -493,7 +493,7 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
     { id: "system", icon: Monitor, label: "System" },
   ] as const;
 
-  const accents = ["#7C3AED", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#06B6D4"];
+  const accents = ["#9B2E3D", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#06B6D4"];
 
   return (
     <div>
@@ -504,9 +504,9 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
             const active = theme === t.id;
             return (
               <button key={t.id} onClick={() => setTheme(t.id)}
-                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-[1.5px] transition-all ${active ? "border-[#7C3AED] bg-pink-50/50" : "border-gray-200 hover:border-gray-300"}`}>
-                <Icon size={18} className={active ? "text-[#7C3AED]" : "text-gray-400"} />
-                <span className={`text-xs font-semibold ${active ? "text-[#7C3AED]" : "text-gray-600"}`}>{t.label}</span>
+                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-[1.5px] transition-all ${active ? "border-maroon-500 bg-pink-50/50" : "border-gray-200 hover:border-gray-300"}`}>
+                <Icon size={18} className={active ? "text-maroon-500" : "text-gray-400"} />
+                <span className={`text-xs font-semibold ${active ? "text-maroon-500" : "text-gray-600"}`}>{t.label}</span>
               </button>
             );
           })}
@@ -518,7 +518,7 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
           <div className="flex gap-2">
             {(["small", "medium", "large"] as const).map(s => (
               <button key={s} onClick={() => setFontSize(s)}
-                className={`flex-1 py-2.5 rounded-xl border-[1.5px] text-xs font-semibold capitalize transition-all ${fontSize === s ? "border-[#7C3AED] bg-pink-50/50 text-[#7C3AED]" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+                className={`flex-1 py-2.5 rounded-xl border-[1.5px] text-xs font-semibold capitalize transition-all ${fontSize === s ? "border-maroon-500 bg-pink-50/50 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
                 {s}
               </button>
             ))}
@@ -585,8 +585,8 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
             const on = interests.includes(a.id);
             return (
               <button key={a.id} onClick={() => toggle(a.id)}
-                className={`relative flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${on ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
-                {on && <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#7C3AED] flex items-center justify-center">
+                className={`relative flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${on ? "border-maroon-500 bg-pink-50/60 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+                {on && <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-maroon-500 flex items-center justify-center">
                   <Check size={9} className="text-white" strokeWidth={3} />
                 </div>}
                 {a.label}
@@ -599,7 +599,7 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
       <Section title="Content Language" desc="Language used for legal summaries and educational content.">
         <Field label="Preferred Language">
           <select value={lang} onChange={e => setLang(e.target.value)}
-            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] transition-colors bg-white">
+            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 transition-colors bg-white">
             <option value="en">English</option>
             <option value="yo">Yoruba (coming soon)</option>
             <option value="ig">Igbo (coming soon)</option>
@@ -609,7 +609,7 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
         </Field>
         <Field label="Primary Jurisdiction" desc="Used to surface the most relevant state laws in the library">
           <select value={jurisdiction} onChange={e => setJurisdiction(e.target.value)}
-            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] transition-colors bg-white">
+            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 transition-colors bg-white">
             <option value="federal">Federal (All Nigeria)</option>
             <option value="lagos">Lagos State</option>
             <option value="abuja">Federal Capital Territory</option>
@@ -915,7 +915,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                 <button
                   onClick={handleReactivate}
                   disabled={processing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#7C3AED] text-xs font-semibold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-maroon-500 text-xs font-semibold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
                 >
                   <RefreshCw size={13} className={processing ? "animate-spin" : ""} />
                   Reactivate Subscription
@@ -935,7 +935,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                         key={plan.id}
                         className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
                           selectedPlan === plan.id
-                            ? "border-[#7C3AED] bg-pink-50/30"
+                            ? "border-maroon-500 bg-pink-50/30"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                         onClick={() => setSelectedPlan(plan.id)}
@@ -944,7 +944,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                           <div>
                             <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
                             {plan.isPopular && (
-                              <span className="text-[10px] font-semibold text-[#7C3AED] bg-pink-50 px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full">
                                 Popular
                               </span>
                             )}
@@ -973,7 +973,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     <button
                       onClick={() => handleChangePlan(selectedPlan)}
                       disabled={processing}
-                      className="flex-1 py-2.5 rounded-lg bg-[#7C3AED] text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                      className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
                     >
                       {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Confirm Change"}
                     </button>
@@ -1009,7 +1009,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                 key={plan.id}
                 className={`p-4 rounded-xl border-2 transition-all ${
                   selectedPlan === plan.id 
-                    ? "border-[#7C3AED] bg-pink-50/30" 
+                    ? "border-maroon-500 bg-pink-50/30" 
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -1017,7 +1017,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   <div>
                     <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
                     {plan.isPopular && (
-                      <span className="text-[10px] font-semibold text-[#7C3AED] bg-pink-50 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full">
                         Popular
                       </span>
                     )}
@@ -1041,7 +1041,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   disabled={processing}
                   className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
                     selectedPlan === plan.id
-                      ? "bg-[#7C3AED] text-white hover:bg-[#d02a6e]"
+                      ? "bg-maroon-500 text-white hover:bg-[#d02a6e]"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   } disabled:opacity-50`}
                 >
@@ -1060,7 +1060,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                 <button
                   onClick={() => handleSubscribe(selectedPlan)}
                   disabled={processing}
-                  className="flex-1 py-2.5 rounded-lg bg-[#7C3AED] text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
                 >
                   {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Subscribe Now"}
                 </button>
@@ -1106,7 +1106,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     <td className="py-2.5 px-3 text-right">
                       {item.invoiceUrl ? (
                         <a href={item.invoiceUrl} target="_blank" rel="noopener noreferrer" 
-                           className="text-[#7C3AED] hover:text-[#d02a6e] font-semibold transition-colors">
+                           className="text-maroon-500 hover:text-[#d02a6e] font-semibold transition-colors">
                           Download
                         </a>
                       ) : (

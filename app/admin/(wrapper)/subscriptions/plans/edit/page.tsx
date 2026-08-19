@@ -115,7 +115,7 @@ export default function EditPlanPage() {
   if (isLoadingPlan) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 size={32} className="animate-spin text-[#7C3AED]" />
+        <Loader2 size={32} className="animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -153,7 +153,7 @@ export default function EditPlanPage() {
               value={form.name}
               onChange={(e) => updateForm("name", e.target.value)}
               placeholder="e.g. Professional Plan"
-              className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#7C3AED] transition-colors"
+              className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors"
             />
             {errors.name && (
               <p className="text-xs text-red-500 mt-1">{errors.name}</p>
@@ -169,7 +169,7 @@ export default function EditPlanPage() {
               onChange={(e) => updateForm("description", e.target.value)}
               placeholder="Describe what this plan offers..."
               rows={3}
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#7C3AED] transition-colors resize-none"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors resize-none"
             />
             {errors.description && (
               <p className="text-xs text-red-500 mt-1">{errors.description}</p>
@@ -187,7 +187,7 @@ export default function EditPlanPage() {
                 onChange={(e) => updateForm("price", parseFloat(e.target.value) || 0)}
                 placeholder="e.g. 5000"
                 min="0"
-                className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#7C3AED] transition-colors"
+                className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors"
               />
               {errors.price && (
                 <p className="text-xs text-red-500 mt-1">{errors.price}</p>
@@ -201,7 +201,7 @@ export default function EditPlanPage() {
               <select
                 value={form.interval}
                 onChange={(e) => updateForm("interval", e.target.value)}
-                className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#7C3AED] transition-colors bg-white"
+                className="w-full h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors bg-white"
               >
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
@@ -220,7 +220,7 @@ export default function EditPlanPage() {
             <button
               type="button"
               onClick={addFeature}
-              className="flex items-center gap-1.5 text-sm text-[#7C3AED] hover:text-[#d02a6e] font-medium"
+              className="flex items-center gap-1.5 text-sm text-maroon-500 hover:text-[#d02a6e] font-medium"
             >
               <Plus size={16} />
               Add Feature
@@ -235,7 +235,7 @@ export default function EditPlanPage() {
                   value={feature}
                   onChange={(e) => updateFeature(index, e.target.value)}
                   placeholder={`Feature ${index + 1}`}
-                  className="flex-1 h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#7C3AED] transition-colors"
+                  className="flex-1 h-11 px-4 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors"
                 />
                 {form.features.length > 1 && (
                   <button
@@ -264,7 +264,7 @@ export default function EditPlanPage() {
                 type="checkbox"
                 checked={form.isActive}
                 onChange={(e) => updateForm("isActive", e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 rounded border-gray-300 text-maroon-500 focus:ring-maroon-500"
               />
               <span className="text-sm text-gray-700">Active</span>
             </label>
@@ -274,7 +274,7 @@ export default function EditPlanPage() {
                 type="checkbox"
                 checked={form.isPopular}
                 onChange={(e) => updateForm("isPopular", e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 rounded border-gray-300 text-maroon-500 focus:ring-maroon-500"
               />
               <span className="text-sm text-gray-700">Popular (show badge)</span>
             </label>
@@ -292,7 +292,7 @@ export default function EditPlanPage() {
           <button
             type="submit"
             disabled={isUpdating}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#7C3AED] text-white text-sm font-semibold hover:bg-[#d02a6e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-maroon-500 text-white text-sm font-semibold hover:bg-[#d02a6e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isUpdating ? (
               <Loader2 size={16} className="animate-spin" />

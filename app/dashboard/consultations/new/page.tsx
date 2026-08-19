@@ -56,7 +56,7 @@ function StepRail({ steps, active }: { steps: string[]; active: number }) {
                     ? "text-white"
                     : "bg-white text-gray-300 border-[1.5px] border-gray-200"
                   }`}
-                style={current ? { background: "linear-gradient(135deg, #7C3AED, #5B21B6)" } : undefined}
+                style={current ? { background: "linear-gradient(135deg, #9B2E3D, #82212D)" } : undefined}
               >
                 {done ? <Check size={12} /> : n}
               </div>
@@ -161,14 +161,14 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
         {/* Firm-assisted */}
         <button
           onClick={() => onPick("firm")}
-          className="group text-left bg-white rounded-2xl border-[1.5px] border-[#F3F4F6] hover:border-[#7C3AED] p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden"
+          className="group text-left bg-white rounded-2xl border-[1.5px] border-[#F3F4F6] hover:border-maroon-500 p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden"
         >
-          <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF0F5] text-[#7C3AED] border border-[#FBCFE8]">
+          <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF0F5] text-maroon-500 border border-[#FBCFE8]">
             Recommended
           </span>
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-            style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+            style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
           >
             <Sparkles size={18} className="text-white" />
           </div>
@@ -189,7 +189,7 @@ function PathPicker({ onPick }: { onPick: (p: Path) => void }) {
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#7C3AED]">
+          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-maroon-500">
             Start here <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
           </div>
         </button>
@@ -339,7 +339,7 @@ const prices = ["100", "250", "500", "1000"];
     return (
       <div className="bg-white rounded-2xl border border-[#F3F4F6] p-8 text-center max-w-xl mx-auto">
         <div className="w-14 h-14 rounded-full bg-[#FFF0F5] border-2 border-[#FBCFE8] flex items-center justify-center mx-auto mb-4">
-          <ClipboardList size={26} className="text-[#7C3AED]" />
+          <ClipboardList size={26} className="text-maroon-500" />
         </div>
         <h3 className="text-lg font-bold text-gray-900 mb-1">Your request is with our team</h3>
         <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto leading-relaxed">
@@ -388,11 +388,11 @@ const prices = ["100", "250", "500", "1000"];
                     key={s._id}
                     onClick={() => setSpecialism(s._id)}
                     className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left text-xs font-medium transition-all ${specialism === s._id
-                      ? "border-[#7C3AED] bg-pink-50/60 text-[#7C3AED]"
+                      ? "border-maroon-500 bg-pink-50/60 text-maroon-500"
                       : "border-gray-200 text-gray-700 hover:border-gray-300"
                       }`}
                   >
-                    <div className={`w-2 h-2 rounded-full shrink-0 ${specialism === s._id ? "bg-[#7C3AED]" : "bg-gray-200"}`} />
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${specialism === s._id ? "bg-maroon-500" : "bg-gray-200"}`} />
                     {s.displayName}
                   </button>
                 ))}
@@ -402,7 +402,7 @@ const prices = ["100", "250", "500", "1000"];
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Area of Law <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={specialism} onChange={(e) => setSpecialism(e.target.value)}
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               >
                 <option value="">Select Area of Law</option>
                 {SPECIALISMS.map((e: any, i: number) => <option key={i} value={e._id}>{e.displayName}</option>)}
@@ -415,7 +415,7 @@ const prices = ["100", "250", "500", "1000"];
                 value={topic}
                 onChange={e => setTopic(e.target.value)}
                 placeholder="e.g. My landlord is trying to evict me without notice"
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               />
             </div>
             <div>
@@ -425,14 +425,14 @@ const prices = ["100", "250", "500", "1000"];
                 type="date"
                 onChange={e => setWhenHappened(e.target.value)}
                 placeholder="e.g. My landlord is trying to evict me without notice"
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Urgency<span className="font-normal text-gray-400">(optional)</span></label>
               <select value={urgency} onChange={(s) => setUrgency(s.target.value)}
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               >
                 <option value="">Are you safe ?</option>
                 {Safeties.map((e: any, i: number) => <option key={i} value={e}>{e}</option>)}
@@ -443,7 +443,7 @@ const prices = ["100", "250", "500", "1000"];
               onClick={() => setStep(2)}
               disabled={!specialism || !topic.trim()}
               className="w-full py-3 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center justify-center gap-1.5"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               Continue <ChevronRight size={14} />
             </button>
@@ -461,7 +461,7 @@ const prices = ["100", "250", "500", "1000"];
                 value={summary}
                 onChange={e => setSummary(e.target.value)}
                 placeholder="Walk us through what happened, what you've tried so far, and what outcome you're hoping for..."
-                className="w-full h-28 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-28 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               />
             </div>
 
@@ -476,14 +476,14 @@ const prices = ["100", "250", "500", "1000"];
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="e.g. Court date is on the 14th, I already spoke to the other party's lawyer once..."
-                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-20 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Your Location <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={location} onChange={e => setLocation(e.target.value)}
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               >
                 <option value="">Any State</option>
                 {NIGERIAN_STATES.map((e: any, i: number) => <option key={i} value={e.code}>{e.label}</option>)}
@@ -493,7 +493,7 @@ const prices = ["100", "250", "500", "1000"];
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Preferred Language <span className="font-normal text-gray-400">(optional)</span></label>
               <select value={language} onChange={e => setLanguage(e.target.value)}
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
               >
                 {/* <option value="">English</option> */}
                 {LANGUAGES.map((e: any, i: number) => <option key={i} value={e}>{e}</option>)}
@@ -503,7 +503,7 @@ const prices = ["100", "250", "500", "1000"];
             <div>
               <SectionLabel>Preferred Communication Mode</SectionLabel>
                <p className="text-[11px] text-gray-400 -mt-1.5 mb-4">
-                Your selected communication preference will <span className="font-bold text-[#7C3AED]! ">expire in 2 hours</span>.
+                Your selected communication preference will <span className="font-bold text-maroon-500! ">expire in 2 hours</span>.
               </p>
               <div className="grid  grid-cols-2  md:grid-cols-4 gap-2">
                 {CONSULT_MODES.map((m, i) => {
@@ -512,12 +512,12 @@ const prices = ["100", "250", "500", "1000"];
                     <button
                       key={m.id}
                       onClick={() => setMode(m.id)}
-                      className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-[1.5px] transition-all ${mode === m.id ? "border-[#7C3AED] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
+                      className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-[1.5px] transition-all ${mode === m.id ? "border-maroon-500 bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
                         }`}
                     >
-                      <Icon size={15} className={mode === m.id ? "text-[#7C3AED]" : "text-gray-500"} />
-                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-[#7C3AED]" : "text-gray-700"}`}>{m.label}</span>
-                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-[#7C3AED]" : "text-gray-700"}`}>NGN {1000 * (i + 1)}</span>
+                      <Icon size={15} className={mode === m.id ? "text-maroon-500" : "text-gray-500"} />
+                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-maroon-500" : "text-gray-700"}`}>{m.label}</span>
+                      <span className={`text-[11px] font-semibold ${mode === m.id ? "text-maroon-500" : "text-gray-700"}`}>NGN {1000 * (i + 1)}</span>
                     </button>
                   );
                 })}
@@ -531,7 +531,7 @@ const prices = ["100", "250", "500", "1000"];
                   type="checkbox"
                   checked={waiver}
                   onChange={(e) => setWaiver(e.target.checked)}
-                  className="w-4 h-4 text-[#7C3AED] border-gray-300 rounded focus:ring-[#7C3AED]"
+                  className="w-4 h-4 text-maroon-500 border-gray-300 rounded focus:ring-maroon-500"
                 />
                 Cannot Pay? Request Waiver
               </label>
@@ -547,7 +547,7 @@ const prices = ["100", "250", "500", "1000"];
                   value={waiverReason}
                   onChange={(e) => setWaiverReason(e.target.value)}
                   placeholder="Please explain why you're requesting a waiver..."
-                  className="w-full px-3 py-2 text-sm border-[1.5px] border-gray-200 rounded-xl focus:border-[#7C3AED] focus:ring-2 focus:ring-pink-100 outline-none transition-all resize-none"
+                  className="w-full px-3 py-2 text-sm border-[1.5px] border-gray-200 rounded-xl focus:border-maroon-500 focus:ring-2 focus:ring-pink-100 outline-none transition-all resize-none"
                   rows={3}
                   required
                 />
@@ -562,7 +562,7 @@ const prices = ["100", "250", "500", "1000"];
                 onClick={() => setStep(3)}
                 disabled={!summary.trim()}
                 className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center gap-1.5"
-                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
               >
                 Continue <ChevronRight size={14} />
               </button>
@@ -616,7 +616,7 @@ const prices = ["100", "250", "500", "1000"];
               <button
                 onClick={() => setStep(4)}
                 className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 flex items-center gap-1.5"
-                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
               >
                 Continue <ChevronRight size={14} />
               </button>
@@ -654,7 +654,7 @@ const prices = ["100", "250", "500", "1000"];
                 type="checkbox"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
-                className="mt-0.5 accent-[#7C3AED] w-3.5 h-3.5 shrink-0"
+                className="mt-0.5 accent-maroon-500 w-3.5 h-3.5 shrink-0"
               />
               <span className="text-[11px] text-gray-500 leading-relaxed">
                 I understand our team will review this before recommending lawyers, and that I'll get to choose
@@ -676,7 +676,7 @@ const prices = ["100", "250", "500", "1000"];
                 onClick={submit}
                 disabled={!agreed || isLoading}
                 className="px-6 py-3 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
               >
                 {isLoading ? <><Loader2 size={14} className="animate-spin" /> Sending...</> : <>Submit Request <ArrowRight size={14} /></>}
               </button>
@@ -703,7 +703,7 @@ function FileDropzone({ onFiles }: { onFiles: (files: FileList | null) => void }
         setDragging(false);
         onFiles(e.dataTransfer.files);
       }}
-      className={`rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${dragging ? "border-[#7C3AED] bg-pink-50/50" : "border-gray-200 hover:border-gray-300 bg-gray-50/60"
+      className={`rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${dragging ? "border-maroon-500 bg-pink-50/50" : "border-gray-200 hover:border-gray-300 bg-gray-50/60"
         }`}
     >
       <input
@@ -797,14 +797,14 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`flex items-center gap-3 p-3.5 rounded-xl border-[1.5px] text-left transition-all ${mode === m.id ? "border-[#7C3AED] bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
+                    className={`flex items-center gap-3 p-3.5 rounded-xl border-[1.5px] text-left transition-all ${mode === m.id ? "border-maroon-500 bg-pink-50/60" : "border-gray-200 hover:border-gray-300"
                       }`}
                   >
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${mode === m.id ? "bg-[#7C3AED]/10" : "bg-gray-100"}`}>
-                      <Icon size={16} className={mode === m.id ? "text-[#7C3AED]" : "text-gray-500"} />
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${mode === m.id ? "bg-maroon-500/10" : "bg-gray-100"}`}>
+                      <Icon size={16} className={mode === m.id ? "text-maroon-500" : "text-gray-500"} />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm font-semibold ${mode === m.id ? "text-[#7C3AED]" : "text-gray-900"}`}>{m.label}</p>
+                      <p className={`text-sm font-semibold ${mode === m.id ? "text-maroon-500" : "text-gray-900"}`}>{m.label}</p>
                       <p className="text-[11px] text-gray-500">{m.desc}</p>
                     </div>
                     <div className="shrink-0 text-right">
@@ -823,7 +823,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               value={topic}
               onChange={e => setTopic(e.target.value)}
               placeholder="e.g. My landlord is trying to evict me without notice"
-              className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+              className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
             />
           </div>
 
@@ -835,7 +835,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               value={detail}
               onChange={e => setDetail(e.target.value)}
               placeholder="Provide any relevant details that will help the lawyer prepare..."
-              className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+              className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm resize-none outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
             />
           </div>
 
@@ -847,7 +847,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               onClick={() => setStep(3)}
               disabled={!topic.trim()}
               className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition-all hover:-translate-y-0.5 disabled:translate-y-0 flex items-center gap-1.5"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               Continue <ChevronRight size={14} />
             </button>
@@ -867,7 +867,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               <SummaryRow label="Topic" value={topic} />
               <div className="flex justify-between pt-2 mt-1.5 border-t border-gray-200">
                 <span className="text-gray-500 font-semibold text-xs">Total</span>
-                <span className="font-bold text-[#7C3AED] text-sm">NGN {chosen.fees[mode].toLocaleString()}</span>
+                <span className="font-bold text-maroon-500 text-sm">NGN {chosen.fees[mode].toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -893,7 +893,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               onClick={submit}
               disabled={isLoading}
               className="px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
               {isLoading ? <><Loader2 size={14} className="animate-spin" /> Processing...</> : <>Confirm & Pay <ArrowRight size={14} /></>}
             </button>
@@ -917,7 +917,7 @@ function ChosenLawyerBanner({ lawyer, onChange }: { lawyer: LawyerFull; onChange
         <p className="text-sm font-bold text-gray-900 truncate">{lawyer.fullName}</p>
         <p className="text-xs text-gray-500 truncate">{lawyer.title}</p>
       </div>
-      <button onClick={onChange} className="text-[11px] font-semibold text-[#7C3AED] hover:underline shrink-0">
+      <button onClick={onChange} className="text-[11px] font-semibold text-maroon-500 hover:underline shrink-0">
         Change
       </button>
     </div>
@@ -951,7 +951,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
     <div>
       <div className="flex items-start gap-3 p-4 bg-white border border-[#F3F4F6] rounded-2xl mb-5">
         <div className="w-8 h-8 rounded-xl bg-[#FFF0F5] flex items-center justify-center shrink-0">
-          <BadgeCheck size={13} className="text-[#7C3AED]" />
+          <BadgeCheck size={13} className="text-maroon-500" />
         </div>
         <div>
           <p className="text-[12px] font-bold text-[#111827]">Subscribed & verified only</p>
@@ -969,12 +969,12 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name..."
-            className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm outline-none focus:border-[#7C3AED] placeholder:text-gray-400 transition-colors"
+            className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
           />
         </div>
         <div>
           <select value={location} onChange={e => setLocation(e.target.value)}
-            className="h-10 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-[#7C3AED] transition-colors font-medium"
+            className="h-10 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-maroon-500 transition-colors font-medium"
           >
             <option value="">Any State</option>
             {NIGERIAN_STATES.map((e: any, i: number) => <option key={i} value={e.code}>{e.label}</option>)}
@@ -983,7 +983,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
         <select
           value={filterSpecialism}
           onChange={e => setFilterSpecialism(e.target.value)}
-          className="h-10 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-[#7C3AED] transition-colors font-medium"
+          className="h-10 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-maroon-500 transition-colors font-medium"
         >
           <option value="all">All Areas of Law</option>
           {SPECIALISMS.map((s: any) => (
@@ -994,7 +994,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 size={24} className="animate-spin text-[#7C3AED]" />
+          <Loader2 size={24} className="animate-spin text-maroon-500" />
         </div>
       ) : LAWYERS.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
@@ -1021,7 +1021,7 @@ function DirectLawyerCard({ lawyer, onSelect }: { lawyer: LawyerFull; onSelect: 
     <button
       onClick={onSelect}
       disabled={!lawyer.isAvailable}
-      className="text-left bg-white rounded-2xl border-[1.5px] border-gray-100 hover:border-[#7C3AED] p-4 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-100 disabled:cursor-not-allowed"
+      className="text-left bg-white rounded-2xl border-[1.5px] border-gray-100 hover:border-maroon-500 p-4 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-100 disabled:cursor-not-allowed"
     >
       <div className="flex items-start gap-3 mb-3">
         <div className="relative shrink-0">
@@ -1066,7 +1066,7 @@ function DirectLawyerCard({ lawyer, onSelect }: { lawyer: LawyerFull; onSelect: 
         <span className="text-gray-500">
           From <strong className="text-gray-900">NGN {lawyer.fees.message.toLocaleString()}</strong>
         </span>
-        <span className="font-bold text-[#7C3AED] flex items-center gap-0.5">
+        <span className="font-bold text-maroon-500 flex items-center gap-0.5">
           Select <ChevronRight size={12} />
         </span>
       </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 const CARDS = [
   {
     type: "stat" as const,
@@ -68,22 +70,67 @@ const CARDS = [
 ];
 
 export default function CardStrip() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const animationRef = useRef<number | undefined>(undefined);
+  const speed = 0.8; 
+  // Auto-scroll function
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const autoScroll = () => {
+      if (!isDragging && !isHovered) {
+        container.scrollLeft += speed;
+        
+        // Reset to start when reaching the end
+        if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+          container.scrollLeft = 0;
+        }
+      }
+      animationRef.current = requestAnimationFrame(autoScroll);
+    };
+
+    animationRef.current = requestAnimationFrame(autoScroll);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isDragging, isHovered]);
+
+  // Mouse drag handlers
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    const el = e.currentTarget;
+    const startX = e.pageX - el.offsetLeft;
+    const scrollLeft = el.scrollLeft;
+
+    const onMove = (ev: MouseEvent) => {
+      el.scrollLeft = scrollLeft - (ev.pageX - el.offsetLeft - startX);
+    };
+
+    const onUp = () => {
+      setIsDragging(false);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
   return (
     <div
+      ref={containerRef}
       className="flex gap-4 no-scrollbar overflow-x-auto cursor-grab active:cursor-grabbing select-none"
-      onMouseDown={(e) => {
-        const el = e.currentTarget;
-        const startX = e.pageX - el.offsetLeft;
-        const scrollLeft = el.scrollLeft;
-        const onMove = (ev: MouseEvent) => {
-          el.scrollLeft = scrollLeft - (ev.pageX - el.offsetLeft - startX);
-        };
-        const onUp = () => {
-          window.removeEventListener("mousemove", onMove);
-          window.removeEventListener("mouseup", onUp);
-        };
-        window.addEventListener("mousemove", onMove);
-        window.addEventListener("mouseup", onUp);
+      onMouseDown={handleMouseDown}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        scrollBehavior: "auto", // Prevents smooth scrolling interference
       }}
     >
       {CARDS.map((card) => {
@@ -94,7 +141,11 @@ export default function CardStrip() {
               className="flex-shrink-0 rounded-[20px] overflow-hidden p-6 relative flex flex-col justify-between"
               style={{ width: 190, height: 340, background: card.gradient }}
             >
-              <img src={card.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25" />
+              <img
+                src={card.image}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-25"
+              />
               <p className="relative text-white/90 text-[11px] font-semibold uppercase leading-snug tracking-wide max-w-[150px]">
                 {card.label}
               </p>
@@ -114,7 +165,11 @@ export default function CardStrip() {
             className="flex-shrink-0 rounded-[20px] overflow-hidden relative"
             style={{ width: 190, height: 340, background: card.bg }}
           >
-            <img src={card.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25" />
+            <img
+              src={card.image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-25"
+            />
             {/* Initials watermark */}
             <div className="absolute inset-0 flex items-center justify-center">
               <span
@@ -128,14 +183,24 @@ export default function CardStrip() {
             {/* Bottom info */}
             <div
               className="absolute bottom-0 left-0 right-0 p-4"
-              style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)" }}
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)",
+              }}
             >
               <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                <span className="text-white font-semibold text-xs">{card.publication}</span>
+                <span className="text-white font-semibold text-xs">
+                  {card.publication}
+                </span>
                 <span className="text-white/50 text-xs">|</span>
-                <span className="text-white/85 text-xs font-medium">{card.category}</span>
+                <span className="text-white/85 text-xs font-medium">
+                  {card.category}
+                </span>
               </div>
-              <p className="text-white font-semibold text-sm italic" style={{ fontFamily: "var(--font-playfair)" }}>
+              <p
+                className="text-white font-semibold text-sm italic"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
                 {card.name}
               </p>
             </div>

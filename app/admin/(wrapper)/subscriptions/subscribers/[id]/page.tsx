@@ -65,7 +65,7 @@ export default function SubscriberDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 size={32} className="animate-spin text-[#7C3AED]" />
+        <Loader2 size={32} className="animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function SubscriberDetailPage() {
         <p className="text-gray-500">Subscriber not found</p>
         <Link
           href="/admin/subscriptions"
-          className="text-[#7C3AED] hover:underline mt-2"
+          className="text-maroon-500 hover:underline mt-2"
         >
           Back to subscriptions
         </Link>
