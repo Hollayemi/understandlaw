@@ -446,7 +446,7 @@ export default function UserDashboardOverview() {
           </div>
         </div>
         <div className="flex items-center gap-2.5">
-          <XPBar xpTotal={stats?.xpTotal || 0} xpLevel={stats?.xpLevel || 1} />
+          {/* <XPBar xpTotal={stats?.xpTotal || 0} xpLevel={stats?.xpLevel || 1} /> */}
           <button className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 transition-colors shadow-sm">
             <Search size={15} className="text-gray-500" />
           </button>

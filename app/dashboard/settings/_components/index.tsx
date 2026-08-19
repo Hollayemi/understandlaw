@@ -15,12 +15,13 @@ import {
   XCircle,
   AlertCircle,
   RefreshCw,
+  Mail,
 } from "lucide-react";
 import { useUserData } from "@/hook/useData";
 import { Toggle } from "./types";
 import { CitizenUser, CitizenProfile } from "@/redux/types";
 import ThumbnailUpload, { UploadedImage } from "@/app/components/ui/fileUploader";
-import { 
+import {
   useUpdateMyProfileMutation,
 } from "@/redux/slices/citizens.slice";
 
@@ -34,6 +35,8 @@ import {
   useUpdateAutoRenewMutation,
   useGetMyBillingHistoryQuery,
 } from "@/redux/slices/subscription.slice";
+import { showError, showSuccess } from "@/app/components/ui/sonner";
+import { useResendVerificationMutation } from "@/redux/authService/authSlice";
 
 
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
@@ -69,13 +72,11 @@ export function ToggleSwitch({
     <button
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
-      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${
-        value ? "bg-maroon-500" : "bg-gray-200"
-      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${value ? "bg-maroon-500" : "bg-gray-200"
+        } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
-      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
-        value ? "translate-x-5" : "translate-x-0"
-      }`} />
+      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${value ? "translate-x-5" : "translate-x-0"
+        }`} />
     </button>
   );
 }
@@ -108,8 +109,8 @@ export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: str
       </div>
       <div className="flex items-center gap-2">
         {isLoading && <Loader2 size={14} className="animate-spin text-gray-400" />}
-        <ToggleSwitch 
-          value={localValue} 
+        <ToggleSwitch
+          value={localValue}
           onChange={handleToggle}
           disabled={isLoading}
         />
@@ -134,6 +135,16 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
   });
 
   const [updateProfile, { isLoading }] = useUpdateMyProfileMutation();
+  const [resendVerification, { isLoading: isResending }] = useResendVerificationMutation();
+
+  const handleResendVerification = async () => {
+    try {
+      await resendVerification({ email: user.email }).unwrap();
+      showSuccess("Verification Email Sent", "Please check your inbox.");
+    } catch (error) {
+      showError("Failed to send", "Please try again later.");
+    }
+  };
 
   const handleUpdate = async () => {
     try {
@@ -142,15 +153,15 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
         ...form,
         avatarUrl: images[0]?.base64 || undefined
       }).unwrap();
-      
+
       // Refetch user data to get updated avatar
       await refetch();
 
       setSaving(true);
-      
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-      
+
       // Clear images after successful upload
       if (images.length > 0) {
         setImages([]);
@@ -220,12 +231,51 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
         </Field>
         <Field label="Email Address" desc="Used for login and notifications">
           <div className="flex gap-2">
-            <input value={form.email} onChange={set("email")} type="email" className={`${inputCls} flex-1`} />
-            <span className={`flex items-center gap-1 text-[11px] ${user.isVerified ? "text-green-700 bg-green-50 border border-green-100" : "text-red-700 bg-red-50 border border-red-100"} px-2.5 py-1 rounded-lg font-semibold flex-shrink-0`}>
-              {user.isVerified ? <Check size={10} /> : <X size={10} />} {!user.isVerified && "Not"} Verified
-            </span>
+            <input
+              value={form.email}
+              onChange={set("email")}
+              type="email"
+              className={`${inputCls} flex-1`}
+            />
+            <div className="flex-shrink-0">
+              {user.isVerified ? (
+                <div className="flex items-center gap-1.5 h-10 px-3 rounded-lg bg-green-50 border border-green-100 text-green-700">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-xs font-medium">Verified</span>
+                  <Check size={14} className="text-green-600" />
+                </div>
+              ) : (
+                <button
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="flex items-center gap-2 h-10 px-4 rounded-lg bg-maroon-500 hover:bg-maroon-600 disabled:opacity-60 text-white text-xs font-semibold transition-all hover:shadow-lg hover:shadow-pink-200"
+                >
+                  {isResending ? (
+                    <>
+                      <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail size={14} />
+                      Verify Now
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
+          {!user.isVerified && (
+            <div className="flex items-center gap-2 mt-1.5 text-xs text-amber-600">
+              <AlertCircle size={14} />
+              <span>Email not verified. Check your inbox for the verification link.</span>
+            </div>
+          )}
         </Field>
+
         <Field label="Phone Number" desc="Optional. Used for SMS notifications">
           <div className="flex gap-2">
             <div className="h-11 px-3 bg-gray-50 border-[1.5px] border-gray-200 rounded-xl flex items-center text-sm text-gray-600 flex-shrink-0">
@@ -579,7 +629,7 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
 
   return (
     <div>
-      {user?.role !== "lawyer" &&<Section title="Areas of Interest" desc="We use these to personalise your content feed, topic recommendations, and lawyer suggestions.">
+      {user?.role !== "lawyer" && <Section title="Areas of Interest" desc="We use these to personalise your content feed, topic recommendations, and lawyer suggestions.">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {AREAS.map(a => {
             const on = interests.includes(a.id);
@@ -646,35 +696,35 @@ export function SubscriptionSettings({ user }: { user: any }) {
   const { data: subscriptionData, refetch: refetchSubscription } = useGetMySubscriptionQuery(undefined, {
     skip: user?.role !== "lawyer",
   });
-  
+
   const { data: billingData, refetch: refetchBilling } = useGetMyBillingHistoryQuery(
     { page: 1, pageSize: 10 },
     {
       skip: user?.role !== "lawyer",
     }
   );
-  
+
   const { data: plansData } = useListPublicPlansQuery(
     {},
     {
       skip: user?.role !== "lawyer",
     }
   );
-  
+
   // Use the new mutation hooks
   const [subscribe] = useSubscribeMutation();
   const [changePlan] = useChangePlanMutation();
   const [cancelSubscription] = useCancelSubscriptionMutation();
   const [reactivate] = useReactivateSubscriptionMutation();
   const [updateAutoRenew] = useUpdateAutoRenewMutation();
-  
+
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedInterval, setSelectedInterval] = useState<'monthly' | 'yearly'>('monthly');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showChangePlan, setShowChangePlan] = useState(false);
-  
+
   const subscription = subscriptionData?.data;
   const billingHistory = billingData?.data || [];
   const plans = plansData?.data || [];
@@ -688,9 +738,9 @@ export function SubscriptionSettings({ user }: { user: any }) {
         interval: selectedInterval,
         autoRenew: true,
       }).unwrap();
-      
+
       setSuccess("Subscription initiated! Redirecting to payment...");
-      
+
       // Check if payment URL is returned
       if (result.data?.payment?.authorization_url) {
         window.location.href = result.data.payment.authorization_url;
@@ -720,9 +770,9 @@ export function SubscriptionSettings({ user }: { user: any }) {
         planId,
         interval: selectedInterval,
       }).unwrap();
-      
+
       setSuccess("Plan change initiated! Redirecting to payment...");
-      
+
       if (result.data?.payment?.authorization_url) {
         window.location.href = result.data.payment.authorization_url;
       } else {
@@ -745,7 +795,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
     if (!confirm("Are you sure you want to cancel your subscription?")) return;
     setProcessing(true);
     try {
-      await cancelSubscription({ 
+      await cancelSubscription({
         reason: "Cancelled by user",
         immediate: false // Cancel at period end
       }).unwrap();
@@ -933,11 +983,10 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     .map((plan) => (
                       <div
                         key={plan.id}
-                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                          selectedPlan === plan.id
-                            ? "border-maroon-500 bg-pink-50/30"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
+                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPlan === plan.id
+                          ? "border-maroon-500 bg-pink-50/30"
+                          : "border-gray-200 hover:border-gray-300"
+                          }`}
                         onClick={() => setSelectedPlan(plan.id)}
                       >
                         <div className="flex items-start justify-between mb-2">
@@ -1007,11 +1056,10 @@ export function SubscriptionSettings({ user }: { user: any }) {
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  selectedPlan === plan.id 
-                    ? "border-maroon-500 bg-pink-50/30" 
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
+                className={`p-4 rounded-xl border-2 transition-all ${selectedPlan === plan.id
+                  ? "border-maroon-500 bg-pink-50/30"
+                  : "border-gray-200 hover:border-gray-300"
+                  }`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -1039,18 +1087,17 @@ export function SubscriptionSettings({ user }: { user: any }) {
                 <button
                   onClick={() => setSelectedPlan(plan.id)}
                   disabled={processing}
-                  className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
-                    selectedPlan === plan.id
-                      ? "bg-maroon-500 text-white hover:bg-[#d02a6e]"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  } disabled:opacity-50`}
+                  className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${selectedPlan === plan.id
+                    ? "bg-maroon-500 text-white hover:bg-[#d02a6e]"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    } disabled:opacity-50`}
                 >
                   {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Select Plan"}
                 </button>
               </div>
             ))}
           </div>
-          
+
           {selectedPlan && (
             <div className="mt-4 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
               <p className="text-xs text-gray-600 mb-3">
@@ -1105,8 +1152,8 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     <td className="py-2.5 px-3 text-gray-600">{item.paymentMethod || 'N/A'}</td>
                     <td className="py-2.5 px-3 text-right">
                       {item.invoiceUrl ? (
-                        <a href={item.invoiceUrl} target="_blank" rel="noopener noreferrer" 
-                           className="text-maroon-500 hover:text-[#d02a6e] font-semibold transition-colors">
+                        <a href={item.invoiceUrl} target="_blank" rel="noopener noreferrer"
+                          className="text-maroon-500 hover:text-[#d02a6e] font-semibold transition-colors">
                           Download
                         </a>
                       ) : (
