@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import RouteGuard from "../components/wrapper/RouteGuard";
 import PaymentStatus from "../components/sections/PaymentStatus";
+import WelcomeMessage from "../components/sections/WelcomeMessage";
 import { useUserData } from "@/hook/useData";
 import Logo from "../components/ui/logo";
 
@@ -157,6 +158,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <Suspense fallback={null}>
         <PaymentStatus />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <WelcomeMessage />
       </Suspense>
     </div>
   );

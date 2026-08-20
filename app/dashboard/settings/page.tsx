@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   ChevronRight,
   User,
@@ -50,12 +51,36 @@ import { useLogoutMutation } from "@/redux/authService/authSlice";
 import { LawyerIdCard } from "./_components/idCard"
 
 
-export default function SettingsPage() {
+const VALID_TABS: SettingsTab[] = [
+  "profile",
+  "notifications",
+  "privacy",
+  "security",
+  "appearance",
+  "legal",
+  "subscription",
+  "lawyer-profile",
+  "id-card",
+];
+
+function SettingsPageContent() {
   const { userInfo } = useUserData();
   const user = (userInfo as any)?.user ?? {};
   const profile = (userInfo as any)?.profile ?? {};
-  const [tab, setTab] = useState<SettingsTab>("profile");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as SettingsTab | null;
+  const [tab, setTab] = useState<SettingsTab>(
+    tabParam && VALID_TABS.includes(tabParam) ? tabParam : "profile"
+  );
   const [logout] = useLogoutMutation();
+
+  // Keep the active tab in sync if the ?tab= param changes after mount
+  // (e.g. navigating here again from the welcome message links).
+  useEffect(() => {
+    if (tabParam && VALID_TABS.includes(tabParam)) {
+      setTab(tabParam);
+    }
+  }, [tabParam]);
 
   const handleLogout = async () => {
   await logout();
@@ -77,7 +102,7 @@ export default function SettingsPage() {
         ]
       : []),
     // { id: "appearance", label: "Appearance", icon: Palette },
-    { id: "legal", label: "Legal Prefs", icon: Scale },
+    { id: "legal", label: "Legal Preferences", icon: Scale },
   ];
 
   // If current tab is lawyer-specific but user is not a lawyer, redirect to profile
@@ -178,5 +203,14 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Default export (Suspense boundary for useSearchParams)
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SettingsPageContent />
+    </Suspense>
   );
 }
