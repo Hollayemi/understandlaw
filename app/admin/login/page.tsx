@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
+import Logo from "@/app/components/ui/logo";
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -83,29 +84,9 @@ export default function AdminLoginPage() {
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 {/* Logo */}
                 <div className="text-center">
-                    <Link href="/" className="inline-flex items-center gap-2 justify-center">
-                        <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center"
-                            style={{ background: "linear-gradient(135deg,#9B2E3D,#82212D)" }}
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-                                <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                                <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                                <circle cx="5" cy="8" r="1" fill="white" />
-                                <circle cx="19" cy="8" r="1" fill="white" />
-                                <path d="M3 11 Q5 15 7 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                                <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                                <line x1="9" y1="20" x2="15" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                            </svg>
-                        </div>
-                        <span
-                            className="font-bold text-2xl text-gray-900"
-                            style={{ fontFamily: "var(--font-dm-sans)" }}
-                        >
-                            Law<span style={{ color: "#9B2E3D" }}>Ticha</span>
-                            <span className="text-sm font-normal text-gray-500 ml-2">Admin</span>
-                        </span>
-                    </Link>
+                    <div className="mx-auto flex justify-center items-center  w-full">
+                        <Logo showText  />
+                    </div>
                     <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
                         Admin Portal
                     </h2>
