@@ -6,5 +6,5 @@
 // undefined" / "auth is not a function" errors).
 export const server =
   process.env.NODE_ENV === "production"
-    ? "https://lawticha.onrender.com"
+    ? "http://134.209.177.198:5001/" //"https://lawticha.onrender.com"
     : "http://localhost:5001"; //"http://172.20.10.8:5000" 
