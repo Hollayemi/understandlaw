@@ -133,7 +133,7 @@ export default function Footer() {
           <div className="flex justify-center flex-wrap items-center gap-1 md:gap-4">
             {["Privacy Policy", "Terms of Use", "Content Disclaimer", "Cookies"].map((l, i, arr) => (
               <span key={l} className="flex items-center gap-1 md:gap-4">
-                <Link href="#" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
+                <Link href={`/${l.toLowerCase().split(" ")[0]}`} className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
                   {l}
                 </Link>
                 {i < arr.length - 1 && <span className="text-gray-200">&middot;</span>}
