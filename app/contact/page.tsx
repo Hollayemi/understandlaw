@@ -26,8 +26,8 @@ const CONTACT_CARDS = [
   {
     icon: <Mail className="w-5 h-5" strokeWidth={2} />,
     label: "Email",
-    value: "hello@lawticha.com",
-    href: "mailto:hello@lawticha.com",
+    value: "info@lawticha.com",
+    href: "mailto:info@lawticha.com",
   },
 {
   icon: <MapPin className="w-5 h-5" strokeWidth={2} />,
