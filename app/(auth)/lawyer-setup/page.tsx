@@ -31,7 +31,7 @@ export default function LawyerOnboardingPage() {
 
   const router = useRouter()
   const [image, setImage] = useState<any>([])
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState<LawyerFormData>({
     scnNumber: "",
     yearOfCall: "",
@@ -106,7 +106,7 @@ export default function LawyerOnboardingPage() {
       if (form.languages.length === 0) newErrors.languages = "Select at least one language";
     } else if (step === 2) { // Story
       if (!form.bio.trim()) newErrors.bio = "Bio is required";
-      else if (form.bio.trim().length < 100) newErrors.bio = "Bio must be at least 100 characters";
+      // else if (form.bio.trim().length < 100) newErrors.bio = "Bio must be at least 100 characters";
     } else if (step === 3) { // Consultation
       // if (!form.fees.message || form.fees.message < 500) newErrors.fees = "Minimum NGN 500 for written consultations";
       // if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";

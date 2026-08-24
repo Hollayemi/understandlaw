@@ -148,7 +148,7 @@ export default function LoginPage() {
           </form>
 
           {/* Social Login */}
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="flex-1 h-px bg-gray-200" />
               <span className="text-xs text-gray-400 font-medium">
@@ -157,7 +157,7 @@ export default function LoginPage() {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
             <SocialButtons />
-          </div>
+          </div> */}
 
           {/* Switch to Register */}
           <p className="text-center text-xs text-gray-500 mt-6">

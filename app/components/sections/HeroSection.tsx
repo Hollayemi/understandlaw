@@ -1,11 +1,18 @@
 import React from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useUserData } from "@/hook/useData";
 import { ArrowRight, Star } from "lucide-react";
 import CardStrip from "./CardStrip";
 
 const AVATAR_COLORS = ["#6B1220", "#3B6FC4", "#0F9D58", "#E8A82A"];
 
 export default function HeroSection() {
+  const [email, setEmail] = React.useState("");
+  const { status } = useSession();
+  const { userInfo } = useUserData() as any;
+  const authed = status === "authenticated";
+  const user = userInfo?.user || {};
   return (
     <section className="bg-white overflow-hidden max-w-7xl mx-auto px-1 lg:px-8">
       <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 pt-12 pb-16 lg:pt-14 pl-4 sm:pl-8 lg:pl-[max(1.5rem,calc((100vw-1152px)/2+1.5rem))] overflow-hidden!">
@@ -48,17 +55,23 @@ export default function HeroSection() {
           </p>
 
           {/* Email + CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-7">
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="sm:flex-1 min-w-0 h-[52px] px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
-            />
-            <Link href="/dashboard" className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
-              Get Started for Free
-              <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-            </Link>
-          </div>
+          {!authed ? (
+            <div className="flex flex-col sm:flex-row gap-3 mt-7">
+              <input
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email Address"
+                className="sm:flex-1 min-w-0 h-[52px] px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
+              />
+              <Link href={`/register?email=${email}`} className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
+                Get Started for Free
+                <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+              </Link>
+            </div>
+          ) : <Link href="/dashboard" className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
+            Continue to Dashboard
+            <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>}
 
           <p className="text-xs text-gray-400 mt-4">
             By proceeding you agree to our{" "}

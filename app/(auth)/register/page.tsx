@@ -352,7 +352,7 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-3">
                 {(
                   [
-                    { value: "citizen", label: "Citizen", desc: "Learn your rights" },
+                    { value: "citizen", label: "None Lawyers", desc: "Learn your rights" },
                     { value: "lawyer", label: "Lawyer", desc: "Offer consultations" },
                   ] as const
                 ).map((option) => (

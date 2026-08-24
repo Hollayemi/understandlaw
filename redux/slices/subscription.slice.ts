@@ -67,6 +67,16 @@ export const subscriptionApi = createApi({
       invalidatesTags: ["MySubscription", "MyBillingHistory"],
     }),
 
+
+    completeSubscription: builder.mutation<ApiResponse<SubscriptionPaymentResponse>, { subscriptionId: any }>({
+      query: (data) => ({
+        url: "/citizens/subscription/complete-payment",
+        method: "PUT",
+        data,
+      }),
+      invalidatesTags: ["MySubscription", "MyBillingHistory"],
+    }),
+
     /**
      * POST /api/v1/citizens/subscription/change-plan
      * Change to a different subscription plan
@@ -153,7 +163,7 @@ export const subscriptionApi = createApi({
 export const {
   // Public plans
   useListPublicPlansQuery,
-  
+
   // Subscription management
   useGetMySubscriptionQuery,
   useSubscribeMutation,
@@ -161,7 +171,8 @@ export const {
   useCancelSubscriptionMutation,
   useReactivateSubscriptionMutation,
   useUpdateAutoRenewMutation,
-  
+  useCompleteSubscriptionMutation,
+
   // Billing
   useGetMyBillingHistoryQuery,
   useGetMyInvoiceQuery,

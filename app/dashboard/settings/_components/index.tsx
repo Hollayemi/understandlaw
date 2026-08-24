@@ -34,6 +34,7 @@ import {
   useReactivateSubscriptionMutation,
   useUpdateAutoRenewMutation,
   useGetMyBillingHistoryQuery,
+  useCompleteSubscriptionMutation,
 } from "@/redux/slices/subscription.slice";
 import { showError, showSuccess } from "@/app/components/ui/sonner";
 import { useResendVerificationMutation } from "@/redux/authService/authSlice";
@@ -716,6 +717,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
   const [changePlan] = useChangePlanMutation();
   const [cancelSubscription] = useCancelSubscriptionMutation();
   const [reactivate] = useReactivateSubscriptionMutation();
+  const [completeSubscription, { isLoading }] = useCompleteSubscriptionMutation();
   const [updateAutoRenew] = useUpdateAutoRenewMutation();
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -871,6 +873,17 @@ export function SubscriptionSettings({ user }: { user: any }) {
     });
   };
 
+  const handleCompletePayment = async (subscriptionId: string) => {
+    const subs = await completeSubscription({ subscriptionId }).unwrap();
+    await refetchSubscription();
+    await refetchBilling();
+
+    if (subs.data?.payment?.authorization_url) {
+      window.location.href = subs.data.payment.authorization_url;
+    }
+
+  }
+
   return (
     <div>
       {/* Error/Success Messages */}
@@ -908,6 +921,14 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border text-amber-700 bg-amber-50 border-amber-200">
                       Cancels at period end
                     </span>
+                  )}
+                  {subscription.status === 'pending' && (
+                    <button
+                      onClick={() => handleCompletePayment(subscription.id)}
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-semibold hover:bg-green-100 transition-all"
+                    >
+                      Complete Payment
+                    </button>
                   )}
                 </div>
                 <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
