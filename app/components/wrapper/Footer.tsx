@@ -9,12 +9,12 @@ const LINKS = {
     { label: "Know Your Rights", href: "/learn/rights" },
     { label: "Scenario Guides", href: "/learn/scenarios" },
   ],
-  Library: [
-    { label: "Browse Acts", href: "/library/browse" },
-    { label: "Search Legislation", href: "/library/search" },
-    { label: "Bookmarks", href: "/library/bookmarks" },
-    { label: "Recent Updates", href: "/library/updates" },
-  ],
+  // Library: [
+  //   { label: "Browse Acts", href: "/library/browse" },
+  //   { label: "Search Legislation", href: "/library/search" },
+  //   { label: "Bookmarks", href: "/library/bookmarks" },
+  //   { label: "Recent Updates", href: "/library/updates" },
+  // ],
   Marketplace: [
     { label: "Find a Lawyer", href: "/marketplace" },
     { label: "By Speciality", href: "/marketplace/specialties" },

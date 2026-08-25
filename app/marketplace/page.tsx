@@ -48,7 +48,7 @@ function deriveBadges(lawyer: LawyerFull): string[] {
   return badges;
 }
 
-function LawyerCard({ lawyer }: { lawyer: LawyerFull }) {
+export function LawyerCard({ lawyer }: { lawyer: LawyerFull }) {
   const badges = deriveBadges(lawyer);
   const fee = startingFee(lawyer);
   const rating = lawyer.ratingAvg || (lawyer as unknown as { rating?: number }).rating || 0;
