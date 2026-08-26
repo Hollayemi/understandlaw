@@ -105,7 +105,7 @@ export const authApi = createApi({
             invalidatesTags: ['User'],
         }),
 
-        updatePassword: builder.mutation<{ message: string }, UpdatePasswordRequest>({
+        updatePassword: builder.mutation<ApiResponse<{ message: string }>, UpdatePasswordRequest>({
             query: (passwordData) => ({
                 url: '/auth/update-password',
                 method: 'PATCH',

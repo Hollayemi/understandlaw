@@ -1,7 +1,7 @@
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronRight, ChevronLeft, Sparkles, UserSearch, Shield,
   MessageSquare, Phone, Video, Check, X, Upload, FileText,
@@ -92,8 +92,17 @@ function SummaryRow({ label, value }: { label: string; value: React.ReactNode })
 
 export default function NewConsultationPage() {
   const router = useRouter();
-  const [path, setPath] = useState<Path>(null);
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const selectedLawyerId = searchParams.get('selected');
+
+  console.log("Selected Lawyer ID:", searchParams); // Debugging line
+
+  const [path, setPath] = useState<Path>(selectedLawyerId ? "direct" : null);
   const [consentAccepted, setConsentAccepted] = useState(false);
+
+  useEffect(() => {
+    setPath(selectedLawyerId ? "direct" : null);
+  }, [selectedLawyerId, searchParams]);
 
   const handleConsentAccept = () => {
     setConsentAccepted(true);
@@ -106,7 +115,7 @@ export default function NewConsultationPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-[#F5F2EE]">
       {/* Confidentiality Consent - Shows on mount */}
-      <ConfidentialityConsent 
+      <ConfidentialityConsent
         onAccept={handleConsentAccept}
         onDecline={handleConsentDecline}
       />
@@ -270,7 +279,7 @@ function FirmAssistedFlow({ onDone }: { onDone: () => void }) {
   const [waiver, setWaiver] = useState(false);
   const [waiverReason, setWaiverReason] = useState("");
 
-const prices = ["100", "250", "500", "1000"]; 
+  const prices = ["100", "250", "500", "1000"];
 
   const specialismLabel = SPECIALISMS.find((s: any) => s._id === specialism)?.displayName || "";
 
@@ -322,7 +331,7 @@ const prices = ["100", "250", "500", "1000"];
       const res = await requestMatch(payload as any).unwrap();
 
       const paymentUrl = (res as any)?.data?.paymentResult?.data?.authorization_url;
-      
+
       if (paymentUrl) {
         router.push(paymentUrl);
       } else {
@@ -350,7 +359,7 @@ const prices = ["100", "250", "500", "1000"];
           <SummaryRow label="Legal issue" value={specialismLabel || "-"} />
           <SummaryRow label="Safety" value={urgency} />
           <SummaryRow label="Location" value={location} />
-          <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
+          <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget} />
           <SummaryRow label="Format" value={CONSULT_MODES.find(m => m.label === mode)?.label} />
           <SummaryRow label="Documents attached" value={`${docs.length} file${docs.length === 1 ? "" : "s"}`} />
         </div>
@@ -502,7 +511,7 @@ const prices = ["100", "250", "500", "1000"];
 
             <div>
               <SectionLabel>Preferred Communication Mode</SectionLabel>
-               <p className="text-[11px] text-gray-400 -mt-1.5 mb-4">
+              <p className="text-[11px] text-gray-400 -mt-1.5 mb-4">
                 Your selected communication preference will <span className="font-bold text-maroon-500! ">expire in 2 hours</span>.
               </p>
               <div className="grid  grid-cols-2  md:grid-cols-4 gap-2">
@@ -633,7 +642,7 @@ const prices = ["100", "250", "500", "1000"];
                 <SummaryRow label="Legal issue" value={specialismLabel || "-"} />
                 <SummaryRow label="Topic" value={topic || "-"} />
                 <SummaryRow label="Safety" value={urgency} />
-                <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget } />
+                <SummaryRow label="Billing" value={waiver ? "Requested of Waiver" : budget} />
                 <SummaryRow label="Preferred mode" value={CONSULT_MODES.find(m => m.id === mode)?.label} />
                 <SummaryRow label="Documents" value={docs.length ? `${docs.length} attached` : "None"} />
               </div>
@@ -725,6 +734,8 @@ function FileDropzone({ onFiles }: { onFiles: (files: FileList | null) => void }
 
 //  Path B — Direct booking with a subscribed lawyer                       
 
+// Path B — Direct booking with a subscribed lawyer
+
 function DirectBookingFlow({ onDone }: { onDone: () => void }) {
   const [step, setStep] = useState(1);
   const steps = ["Pick a Lawyer", "Booking Details", "Review"];
@@ -734,9 +745,22 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
   const [topic, setTopic] = useState("");
   const [detail, setDetail] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoadingLawyer, setIsLoadingLawyer] = useState(false);
 
   const [bookConsultation, { isLoading }] = useBookConsultationMutation();
   const router = useRouter();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const selectedLawyerId = searchParams.get('selected');
+
+  // Fetch the specific lawyer when ID is provided in URL
+  const { data: lawyerData, isLoading: lawyerLoading } = useGetMarketplaceLawyersQuery(
+    {
+      page: 1,
+      pageSize: 1,
+      search: selectedLawyerId || undefined,
+    },
+    { skip: !selectedLawyerId }
+  );
 
   const pickLawyer = (l: LawyerFull) => {
     setChosen(l);
@@ -766,6 +790,16 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
       setErrorMsg(err?.data?.message || "Couldn't send that booking. Please try again.");
     }
   };
+
+  // Loading state while fetching the pre-selected lawyer
+  if (selectedLawyerId && lawyerLoading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 size={24} className="animate-spin text-maroon-500" />
+        <span className="ml-2 text-gray-500">Loading lawyer details...</span>
+      </div>
+    );
+  }
 
   return (
     <div className={step === 1 ? "" : "max-w-2xl mx-auto"}>
@@ -808,7 +842,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
                       <p className="text-[11px] text-gray-500">{m.desc}</p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="text-sm font-bold text-gray-900">NGN {chosen.fees[m.id].toLocaleString()}</p>
+                      <p className="text-sm font-bold text-gray-900">NGN {chosen?.fees?.[m.id]?.toLocaleString()}</p>
                       <p className="text-[10px] text-gray-400">per session</p>
                     </div>
                   </button>
@@ -867,7 +901,7 @@ function DirectBookingFlow({ onDone }: { onDone: () => void }) {
               <SummaryRow label="Topic" value={topic} />
               <div className="flex justify-between pt-2 mt-1.5 border-t border-gray-200">
                 <span className="text-gray-500 font-semibold text-xs">Total</span>
-                <span className="font-bold text-maroon-500 text-sm">NGN {chosen.fees[mode].toLocaleString()}</span>
+                <span className="font-bold text-maroon-500 text-sm">NGN {chosen?.fees?.[mode]?.toLocaleString?.()}</span>
               </div>
             </div>
           </div>
@@ -928,14 +962,19 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
   const [search, setSearch] = useState("");
   const [filterSpecialism, setFilterSpecialism] = useState("all");
   const { data: loadSpecialism } = useListSpecialismsQuery();
-
   const [location, setLocation] = useState("");
   const SPECIALISMS = loadSpecialism?.data || [];
+
+  // Get the selected ID from URL
+  const searchParams = useSearchParams();
+  const selectedLawyerId = searchParams.get('selected');
+
+  // Track if we've already auto-selected
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   const queryParams = {
     specialism: filterSpecialism !== "all" ? filterSpecialism : undefined,
     search: search || undefined,
-    subscribedOnly: true,
     sortBy: "rating" as const,
     location,
     page: 1,
@@ -944,8 +983,29 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
 
   const { data: lawyersResponse, isLoading, isFetching } = useGetMarketplaceLawyersQuery(queryParams);
   const raw: LawyerFull[] = lawyersResponse?.data?.data || [];
-  // Belt-and-braces client-side filter in case the API doesn't yet support subscribedOnly.
   const LAWYERS = raw.filter(l => (l as any).subscriptionTier ? (l as any).subscriptionTier !== "basic" : true);
+
+  // Auto-select the lawyer when data loads and we have a selected ID
+  useEffect(() => {
+    if (selectedLawyerId && LAWYERS.length > 0 && !hasAutoSelected) {
+      const selectedLawyer = LAWYERS.find(l => l._id === selectedLawyerId);
+      if (selectedLawyer) {
+        // Check if the lawyer is available
+        if (selectedLawyer.isAvailable) {
+          onPick(selectedLawyer);
+          setHasAutoSelected(true);
+
+          // Remove the selected parameter from URL
+          const url = new URL(window.location.href);
+          url.searchParams.delete('selected');
+          window.history.replaceState({}, '', url.toString());
+        } else {
+          // Optionally show a message that the lawyer is unavailable
+          console.warn('Selected lawyer is not available');
+        }
+      }
+    }
+  }, [selectedLawyerId, LAWYERS, onPick, hasAutoSelected]);
 
   return (
     <div>
@@ -956,7 +1016,7 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
         <div>
           <p className="text-[12px] font-bold text-[#111827]">Subscribed & verified only</p>
           <p className="text-[11px] text-[#9CA3AF] leading-relaxed mt-0.5">
-            Everyone below has passed SCN verification and actively subscribes to take direct bookings, 
+            Everyone below has passed SCN verification and actively subscribes to take direct bookings,
             so you know they're set up to respond.
           </p>
         </div>
@@ -1007,7 +1067,12 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
           {isFetching && <p className="text-[11px] text-gray-400 mb-3 flex items-center gap-1.5"><Loader2 size={11} className="animate-spin" /> Updating...</p>}
           <div className="grid sm:grid-cols-2 gap-3">
             {LAWYERS.map(l => (
-              <DirectLawyerCard key={l._id} lawyer={l} onSelect={() => onPick(l)} />
+              <DirectLawyerCard
+                key={l._id}
+                lawyer={l}
+                onSelect={() => onPick(l)}
+                isSelected={l._id === selectedLawyerId}
+              />
             ))}
           </div>
         </>
@@ -1016,12 +1081,23 @@ function SubscribedLawyerPicker({ onPick }: { onPick: (l: LawyerFull) => void })
   );
 }
 
-function DirectLawyerCard({ lawyer, onSelect }: { lawyer: LawyerFull; onSelect: () => void }) {
+function DirectLawyerCard({
+  lawyer,
+  onSelect,
+  isSelected = false
+}: {
+  lawyer: LawyerFull;
+  onSelect: () => void;
+  isSelected?: boolean;
+}) {
   return (
     <button
       onClick={onSelect}
       disabled={!lawyer.isAvailable}
-      className="text-left bg-white rounded-2xl border-[1.5px] border-gray-100 hover:border-maroon-500 p-4 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-100 disabled:cursor-not-allowed"
+      className={`text-left bg-white rounded-2xl border-[1.5px] p-4 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-100 disabled:cursor-not-allowed ${isSelected
+        ? "border-maroon-500 bg-pink-50/60 shadow-md"
+        : "border-gray-100 hover:border-maroon-500"
+        }`}
     >
       <div className="flex items-start gap-3 mb-3">
         <div className="relative shrink-0">
@@ -1046,6 +1122,11 @@ function DirectLawyerCard({ lawyer, onSelect }: { lawyer: LawyerFull; onSelect: 
             <MapPin size={9} /> {lawyer.location}, {lawyer.state}
           </div>
         </div>
+        {isSelected && (
+          <div className="shrink-0">
+            <Check size={16} className="text-maroon-500" />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-1.5 mb-3">
@@ -1064,10 +1145,10 @@ function DirectLawyerCard({ lawyer, onSelect }: { lawyer: LawyerFull; onSelect: 
 
       <div className="flex items-center justify-between text-[11px]">
         <span className="text-gray-500">
-          From <strong className="text-gray-900">NGN {lawyer.fees.message.toLocaleString()}</strong>
+          From <strong className="text-gray-900">NGN {lawyer?.fees?.message?.toLocaleString()}</strong>
         </span>
-        <span className="font-bold text-maroon-500 flex items-center gap-0.5">
-          Select <ChevronRight size={12} />
+        <span className={`font-bold flex items-center gap-0.5 ${isSelected ? "text-maroon-500" : "text-gray-500"}`}>
+          {isSelected ? "Selected" : "Select"} <ChevronRight size={12} />
         </span>
       </div>
     </button>

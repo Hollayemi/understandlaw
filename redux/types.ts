@@ -206,7 +206,6 @@ export interface UpdateProfileRequest {
 export interface UpdatePasswordRequest {
   currentPassword: string;
   newPassword: string;
-  confirmNewPassword: string;
 }
 
 export interface ForgotPasswordRequest {

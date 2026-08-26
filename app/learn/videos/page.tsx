@@ -4,77 +4,16 @@ import HomeWrapper from "@/app/components/wrapper";
 import { Play, Clock, User, Filter, Search } from "lucide-react";
 
 const VIDEOS = [
-  {
-    id: "getting-started",
-    title: "Getting Started with LawTicha",
-    desc: "Learn how to navigate the platform, find legal guides, and connect with verified lawyers.",
-    duration: "2:30",
-    category: "Platform Guides",
-    thumbnail: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=225&fit=crop",
-    views: "12K",
-  },
+
   {
     id: "tenancy-rights",
-    title: "Your Rights as a Tenant in Nigeria",
-    desc: "Understand eviction procedures, rent control, and what to do if your landlord violates your rights.",
+    title: "Landlord or Tenants, who pays the Lawyer?",
+    desc: "One of the most disputed questions in Nigerian real estate transactions is Who is legally responsible for paying lawyer fees in a tenancy agreement? The tenant? The landlord? Both?",
     duration: "4:15",
     category: "Tenancy",
-    thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=225&fit=crop",
-    views: "8.5K",
-  },
-  {
-    id: "employment-rights",
-    title: "Know Your Employment Rights",
-    desc: "Wrongful termination, severance pay, and how to handle workplace discrimination.",
-    duration: "3:45",
-    category: "Employment",
-    thumbnail: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&h=225&fit=crop",
-    views: "6.2K",
-  },
-  {
-    id: "police-encounters",
-    title: "What to Do During a Police Encounter",
-    desc: "Your rights during arrest, search, and detention. Know what to say and what not to say.",
-    duration: "5:00",
-    category: "Rights",
-    thumbnail: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&h=225&fit=crop",
-    views: "15K",
-  },
-  {
-    id: "contract-basics",
-    title: "Understanding Contracts in Nigeria",
-    desc: "What makes a contract valid, common pitfalls, and how to enforce your rights.",
-    duration: "3:20",
-    category: "Contracts",
-    thumbnail: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=225&fit=crop",
-    views: "4.7K",
-  },
-  {
-    id: "family-law",
-    title: "Family Law: Marriage & Divorce",
-    desc: "Understanding marriage laws, divorce procedures, and child custody in Nigeria.",
-    duration: "4:50",
-    category: "Family",
-    thumbnail: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=225&fit=crop",
-    views: "3.9K",
-  },
-  {
-    id: "business-registration",
-    title: "How to Register a Business in Nigeria",
-    desc: "Step-by-step guide to registering your business with the CAC.",
-    duration: "3:30",
-    category: "Business",
-    thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=225&fit=crop",
-    views: "5.1K",
-  },
-  {
-    id: "consumer-rights",
-    title: "Your Rights as a Consumer",
-    desc: "Product liability, refunds, and how to file complaints against businesses.",
-    duration: "2:55",
-    category: "Consumer",
-    thumbnail: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=225&fit=crop",
-    views: "3.2K",
+    url: "https://www.youtube.com/watch?v=P5Mif1unLJw",
+    thumbnail: "/images/vid1.jpg",
+    views: "153",
   },
 ];
 
@@ -139,7 +78,7 @@ export default function VideoGuidesPage() {
             {VIDEOS.map((video) => (
               <Link
                 key={video.id}
-                href={`/learn/videos/${video.id}`}
+                href={video.url}
                 className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="relative aspect-video bg-gray-100">

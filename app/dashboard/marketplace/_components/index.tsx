@@ -144,7 +144,7 @@ export function LawyerCard({
         {/* Actions */}
         <div className="flex gap-2 mt-auto">
           <button
-            onClick={() => router.push(`/dashboard/marketplace/${lawyer.scnNumber.replaceAll("/", "-")}`)}
+            onClick={() => router.push(`/${lawyer.scnNumber.replaceAll("/", "-")}`)}
             className="flex-1 py-2.5 rounded-xl border-[1.5px] border-gray-200 text-sm font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all"
           >
             View Profile

@@ -129,9 +129,8 @@ export default function LawyerProfilePage() {
                     </div>
                   )}
                   <span
-                    className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-[3px] border-white ${
-                      lawyer.isAvailable ? "bg-emerald-500" : "bg-gray-300"
-                    }`}
+                    className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-[3px] border-white ${lawyer.isAvailable ? "bg-emerald-500" : "bg-gray-300"
+                      }`}
                   />
                 </div>
 
@@ -171,8 +170,8 @@ export default function LawyerProfilePage() {
                             b === "Verified"
                               ? { background: "rgba(107,18,32,0.08)", color: "var(--maroon-700)" }
                               : b === "Top Rated"
-                              ? { background: "#FEF3C7", color: "#92400E" }
-                              : { background: "#DCFCE7", color: "#166534" }
+                                ? { background: "#FEF3C7", color: "#92400E" }
+                                : { background: "#DCFCE7", color: "#166534" }
                           }
                         >
                           {b === "Verified" && <ShieldCheck className="w-3 h-3" />}
@@ -297,16 +296,16 @@ export default function LawyerProfilePage() {
                 })}
               </div>
 
-              <Link href={`/register?next=/${scn}`} className="btn-maroon w-full justify-center py-3 text-sm mb-3">
+              <Link href={`/dashboard/consultations/new?selected=${lawyer._id}`} className="btn-maroon w-full justify-center py-3 text-sm mb-3">
                 Book Consultation
                 <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
-              <p className="text-center text-xs text-gray-400">
+              {/* <p className="text-center text-xs text-gray-400">
                 Already have an account?{" "}
-                <Link href={`/login?next=/${scn}`} className="font-semibold" style={{ color: "var(--maroon-700)" }}>
+                <Link href={`/login`} className="font-semibold" style={{ color: "var(--maroon-700)" }}>
                   Log in
                 </Link>
-              </p>
+              </p> */}
 
               <div className="mt-5 pt-5 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-400">
                 <ShieldCheck className="w-4 h-4 flex-shrink-0" />

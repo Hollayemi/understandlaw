@@ -15,45 +15,10 @@ import {
 const RIGHTS_CATEGORIES = [
   {
     icon: <User className="w-6 h-6" />,
-    title: "Constitutional Rights",
-    desc: "Fundamental rights guaranteed by the Nigerian Constitution, including right to life, dignity, and freedom of expression.",
-    slug: "constitutional",
+    title: "KNOW YOUR RIGHTS",
+    desc: "Let's talk about something very important but often confusing: your rights when dealing with the police. ",
+    slug: "know-your-rights",
     color: "#9B2E3D",
-  },
-  {
-    icon: <Home className="w-6 h-6" />,
-    title: "Tenant Rights",
-    desc: "Your rights as a tenant, including protection from unlawful eviction and harassment.",
-    slug: "tenant",
-    color: "#3B82F6",
-  },
-  {
-    icon: <Briefcase className="w-6 h-6" />,
-    title: "Employee Rights",
-    desc: "Workplace rights including fair wages, safe working conditions, and protection from discrimination.",
-    slug: "employee",
-    color: "#10B981",
-  },
-  {
-    icon: <Shield className="w-6 h-6" />,
-    title: "Police & Arrest Rights",
-    desc: "What police can and cannot do during arrests, searches, and detention.",
-    slug: "police",
-    color: "#F59E0B",
-  },
-  {
-    icon: <Scale className="w-6 h-6" />,
-    title: "Consumer Rights",
-    desc: "Your rights as a consumer, including product safety and fair treatment.",
-    slug: "consumer",
-    color: "#8B5CF6",
-  },
-  {
-    icon: <BookOpen className="w-6 h-6" />,
-    title: "Family Rights",
-    desc: "Rights related to marriage, divorce, children, and inheritance.",
-    slug: "family",
-    color: "#EC4899",
   },
 ];
 
@@ -137,7 +102,7 @@ export default function KnowYourRightsPage() {
             {RIGHTS_CATEGORIES.map((cat) => (
               <Link
                 key={cat.slug}
-                href={`/learn/rights/${cat.slug}`}
+                href={`/dashboard/learn/${cat.slug}`}
                 className="group block bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
                 <div

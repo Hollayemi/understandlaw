@@ -37,7 +37,7 @@ import {
   useCompleteSubscriptionMutation,
 } from "@/redux/slices/subscription.slice";
 import { showError, showSuccess } from "@/app/components/ui/sonner";
-import { useResendVerificationMutation } from "@/redux/authService/authSlice";
+import { useResendVerificationMutation, useUpdatePasswordMutation } from "@/redux/authService/authSlice";
 
 
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
@@ -409,19 +409,25 @@ export function PrivacySettings({ user }: { user: CitizenUser }) {
 
 // Security tab 
 export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
+  const [updatePassword, { isLoading }] = useUpdatePasswordMutation()
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [currentPassword, setCurrentPassword] = useState("")
 
   const save = async () => {
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    if(confirmPassword !== newPassword){
+      showError("Password not match with confirm password")
+    }
+    const update = await updatePassword({ newPassword, currentPassword  }).unwrap()
+
+    if(update.success){
+      setSaved(true)
+    }
   };
 
   const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
@@ -437,7 +443,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
       <Section title="Change Password" desc="Use a strong password that you do not use anywhere else.">
         <Field label="Current Password">
           <div className="relative">
-            <input type={showCurrent ? "text" : "password"} placeholder="Enter current password" className={inputCls} />
+            <input type={showCurrent ? "text" : "password"} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter current password" className={inputCls} />
             <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
@@ -445,7 +451,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
         </Field>
         <Field label="New Password">
           <div className="relative">
-            <input type={showNew ? "text" : "password"} placeholder="Min. 8 characters" className={inputCls} />
+            <input type={showNew ? "text" : "password"} onChange={(e) => setNewPassword(e.target.value)} placeholder="Min. 8 characters" className={inputCls} />
             <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
@@ -453,17 +459,18 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
         </Field>
         <Field label="Confirm Password">
           <div className="relative">
-            <input type={showConfirm ? "text" : "password"} placeholder="Repeat new password" className={inputCls} />
+            <input type={showConfirm ? "text" : "password"} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat new password" className={inputCls} />
             <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
+          <p className="text-red-500 text-xs">{confirmPassword && confirmPassword !== newPassword && "Password not match"}</p>
         </Field>
         <div className="pt-4 flex justify-end">
-          <button onClick={save} disabled={saving}
+          <button onClick={save} disabled={isLoading}
             className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white disabled:opacity-60 hover:-translate-y-0.5 transition-all"
             style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
-            {saving ? <><Loader2 size={13} className="animate-spin" /> Updating...</>
+            {isLoading ? <><Loader2 size={13} className="animate-spin" /> Updating...</>
               : saved ? <><Check size={13} /> Updated</>
                 : "Update Password"}
           </button>

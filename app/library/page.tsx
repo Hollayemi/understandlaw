@@ -1,69 +1,7 @@
-import React from "react";
 import Link from "next/link";
 import HomeWrapper from "@/app/components/wrapper";
 
-const FEATURED_ACTS = [
-  {
-    title: "Labour Act",
-    chapter: "Cap. L1, Laws of the Federation",
-    year: "2004",
-    category: "Employment",
-    color: "#8B5CF6",
-    sections: 91,
-    summary: "Governs conditions of employment, contracts of service, and worker protections in Nigeria.",
-    tags: ["Contracts", "Wages", "Termination", "Leave"],
-  },
-  {
-    title: "Tenancy Law of Lagos State",
-    chapter: "Lagos State No. 5",
-    year: "2011",
-    category: "Tenancy",
-    color: "#10B981",
-    sections: 43,
-    summary: "Regulates landlord and tenant relationships in Lagos,  including eviction procedures and notice periods.",
-    tags: ["Eviction", "Rent", "Notice", "Repairs"],
-  },
-  {
-    title: "Constitution of Nigeria",
-    chapter: "Cap. C23, LFN",
-    year: "1999 (as amended)",
-    category: "Fundamental Rights",
-    color: "#9B2E3D",
-    sections: 320,
-    summary: "The supreme law of Nigeria. Chapter IV covers Fundamental Rights including freedom from arbitrary arrest.",
-    tags: ["Rights", "Arrest", "Due Process", "Freedom"],
-  },
-  {
-    title: "Consumer Protection Council Act",
-    chapter: "Cap. C25, LFN",
-    year: "2004",
-    category: "Consumer Rights",
-    color: "#F59E0B",
-    sections: 36,
-    summary: "Establishes the Consumer Protection Council and protects Nigerians from unfair trade practices.",
-    tags: ["Refunds", "Defective Products", "Complaints"],
-  },
-  {
-    title: "Companies and Allied Matters Act",
-    chapter: "CAMA 2020",
-    year: "2020",
-    category: "Business",
-    color: "#06B6D4",
-    sections: 869,
-    summary: "The primary legislation governing companies in Nigeria,  from registration to dissolution.",
-    tags: ["CAC", "Registration", "Directors", "Shares"],
-  },
-  {
-    title: "Violence Against Persons Prohibition Act",
-    chapter: "VAPP Act",
-    year: "2015",
-    category: "Family Law",
-    color: "#EF4444",
-    sections: 46,
-    summary: "Prohibits all forms of violence against persons, including domestic violence and sexual abuse.",
-    tags: ["Domestic Violence", "Protection", "GBV"],
-  },
-];
+const FEATURED_ACTS = [] as any[];
 
 const CATEGORIES = [
   { label: "All", count: 40, active: true },
@@ -212,7 +150,7 @@ export default function LibraryPage() {
                 <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1">{act.summary}</p>
 
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {act.tags.map((tag) => (
+                  {act.tags.map((tag:any) => (
                     <span
                       key={tag}
                       className="text-[10px] px-2 py-0.5 rounded-md font-medium text-gray-500 bg-gray-50 border border-gray-100"
@@ -261,7 +199,7 @@ export default function LibraryPage() {
             Create a free account to bookmark legislation, save your reading progress, and get notified when Acts are updated.
           </p>
           <Link
-            href="/auth"
+            href="/register"
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-maroon-500 text-white text-sm font-bold hover:bg-maroon-600 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-900/30"
           >
             Create Free Account →

@@ -370,7 +370,7 @@ export function TopicsSection() {
               className="group"
             >
               <Link
-                href={`/dashboard/know-your-rights`}
+                href={`/dashboard/learn/know-your-rights`}
                 className="relative flex flex-col h-full rounded-2xl p-6 bg-white/80 backdrop-blur-sm border border-gray-100/80 hover:border-[var(--maroon-600)]/30 hover:shadow-xl transition-all duration-500 overflow-hidden"
               >
                 {/* Subtle gradient background on hover */}

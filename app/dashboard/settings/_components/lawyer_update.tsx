@@ -307,11 +307,12 @@ export function LawyerProfileUpdate() {
 
       {/* Professional Identity */}
       <Section title="Professional Identity" desc="Your SCN credentials and practice details.">
-        <Field label="SCN Bar Number" desc="This cannot be changed. Contact support for corrections.">
+        <Field label="SCN Bar Number" desc="Change your SCN Number only if it was entered incorrectly.">
+          {/* This cannot be changed. Contact support for corrections. */}
           <div className="relative">
             <input
               value={form.scnNumber}
-              disabled
+              // disabled
               className={`${inputCls} pr-24`}
             />
             <button
