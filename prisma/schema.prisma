@@ -1,0 +1,125 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["identity", "learning", "consultation", "marketplace", "notifications", "payments", "community", "audit"]
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     UserProfile?
+
+  @@schema("identity")
+}
+
+model UserProfile {
+  userId      String @id
+  firstName   String
+  lastName    String
+  state       String?
+  phone       String?
+  avatarUrl   String?
+  bio         String?
+  user        User   @relation(fields: [userId], references: [id])
+
+  @@schema("identity")
+}
+
+model Topic {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  @@schema("learning")
+}
+
+model Module {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  topicId       String
+  title         String
+  description   String
+  difficulty    String?
+  estimatedWeeks Int?
+  ratingAvg     Float    @default(0)
+  topic         Topic    @relation(fields: [topicId], references: [id])
+
+  @@schema("learning")
+}
+
+model Enrollment {
+  id          String   @id @default(uuid())
+  userId      String
+  moduleId    String
+  status      String
+  progressPct Int      @default(0)
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@unique([userId, moduleId])
+  @@schema("learning")
+}
+
+model LawyerProfile {
+  id            String   @id @default(uuid())
+  fullName      String
+  nbaNumber     String   @unique
+  title         String
+  state         String
+  location      String
+  ratingAvg     Float    @default(0)
+  reviewCount   Int      @default(0)
+  available     Boolean  @default(true)
+
+  @@schema("consultation")
+}
+
+model ConsultationRequest {
+  id            String   @id @default(uuid())
+  userId        String
+  lawyerId      String?
+  kind          String
+  mode          String?
+  topic         String
+  detail        String?
+  status        String
+  feeNgn        Int?
+  createdAt     DateTime @default(now())
+  scheduledAt   DateTime?
+  completedAt   DateTime?
+
+  @@schema("consultation")
+}
+
+model ConsultationTimelineEvent {
+  id               String   @id @default(uuid())
+  consultationId   String
+  label            String
+  note             String?
+  happenedAt       DateTime
+
+  @@schema("consultation")
+}
+
+model LawyerMatchRequest {
+  id            String   @id @default(uuid())
+  userId        String
+  specialism    String
+  urgency       String
+  state         String
+  budgetMinNgn  Int?
+  budgetMaxNgn  Int?
+  description   String
+  status        String
+  createdAt     DateTime @default(now())
+
+  @@schema("marketplace")
+}
