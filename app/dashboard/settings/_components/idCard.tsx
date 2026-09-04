@@ -77,7 +77,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
 
   const colorA = profile?.colorA || "#1E3A5F";
   const colorB = profile?.colorB || "#9B2E3D";
-  const nbaNumber: string = profile?.nbaNumber || "—";
+  const scnNumber: string = profile?.scnNumber || "—";
   const yearOfCall = profile?.yearOfCall || profile?.calledAt || "—";
   const title = profile?.title || "";
   const state = profile?.state || "";
@@ -88,8 +88,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
 
   const profileUrl = useMemo(() => {
     if (typeof window === "undefined") return "";
-    return `${window.location.origin}/dashboard/marketplace/${encodeURIComponent(nbaNumber)}`;
-  }, [nbaNumber]);
+    return `${window.location.origin}/${profile._id}`;
+  }, [scnNumber]);
 
   useEffect(() => {
     if (!profileUrl) return;
@@ -118,7 +118,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
         skipFonts: true,
       });
       const link = document.createElement("a");
-      link.download = `lawticha-id-${nbaNumber !== "—" ? nbaNumber.replace(/\W+/g, "-") : "card"}-${config.cardType}.png`;
+      link.download = `lawticha-id-${scnNumber !== "—" ? scnNumber.replace(/\W+/g, "-") : "card"}-${config.cardType}.png`;
       link.href = dataUrl;
       link.click();
       showSuccess("ID card downloaded", "Ready to post — or just screenshot the preview above.");
@@ -219,7 +219,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                         <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
                           <div>
                             <p className="text-[8px] text-gray-400 uppercase tracking-wider font-semibold">ID Number</p>
-                            <p className="text-[13px] font-mono font-bold text-[#1E3A5F]">{nbaNumber}</p>
+                            <p className="text-[13px] font-mono font-bold text-[#1E3A5F]">{scnNumber}</p>
                           </div>
                           {config.showYearOfCall && (
                             <div className="text-right">
