@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Search, Bell, Bookmark, ChevronLeft, ChevronRight, Clock, BookOpen, Star, Loader2, Play, Pause } from "lucide-react";
+import { Search, Bell, Bookmark, ChevronLeft, ChevronRight, Clock, BookOpen, Star, Loader2, Play, Pause, X } from "lucide-react";
 import {
   useListLearnModulesQuery,
   useGetContinueReadingQuery,
@@ -16,17 +16,16 @@ type TabKey = "all" | "active" | "complete" | "saved";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "all", label: "All Lessons" },
-  // { key: "active",   label: "Active" },
   { key: "complete", label: "Complete" },
   { key: "saved", label: "Saved" },
 ];
 
-// Auto-sliding carousel component with smooth sliding and responsive items
+// Auto-sliding carousel component
 function AutoSlideCarousel({
   items,
   renderItem,
   itemsPerView = 3,
-  onSlideChange
+  onSlideChange,
 }: {
   items: any[];
   renderItem: (item: any, index: number) => React.ReactNode;
@@ -39,49 +38,57 @@ function AutoSlideCarousel({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
 
-  // Responsive items per view
   const getItemsPerView = () => {
     if (typeof window === 'undefined') return itemsPerView;
     const width = window.innerWidth;
-    if (width < 640) return 1.5; // Mobile: show 1.5 items
-    if (width < 1024) return 2; // Tablet: show 2 items
-    return itemsPerView; // Desktop: show configured items
+    if (width < 480) return 1.2;
+    if (width < 640) return 1.5;
+    if (width < 768) return 2;
+    if (width < 1024) return 2.5;
+    if (width < 1280) return 3;
+    return itemsPerView;
   };
 
   const [currentItemsPerView, setCurrentItemsPerView] = useState(getItemsPerView());
 
-  // Update items per view on resize
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
-      setCurrentItemsPerView(getItemsPerView());
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const newItemsPerView = getItemsPerView();
+        setCurrentItemsPerView(newItemsPerView);
+        if (currentIndex >= items.length - newItemsPerView) {
+          setCurrentIndex(Math.max(0, items.length - newItemsPerView));
+        }
+      }, 200);
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [items.length, currentIndex]);
 
   const totalItems = items.length;
   const totalSlides = Math.ceil(totalItems / currentItemsPerView);
   const currentSlide = Math.floor(currentIndex / currentItemsPerView);
-
-  // Calculate the width of each item
   const itemWidth = 100 / currentItemsPerView;
   const translateX = -(currentIndex * itemWidth);
 
-  // Navigate to specific slide
   const goToSlide = (index: number) => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex(index);
-    if (onSlideChange) onSlideChange(index);
-
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 500);
+    const clampedIndex = Math.max(0, Math.min(index, totalItems - currentItemsPerView));
+    setCurrentIndex(clampedIndex);
+    if (onSlideChange) onSlideChange(clampedIndex);
+    setTimeout(() => setIsTransitioning(false), 500);
   };
 
-  // Navigate to next slide
   const nextSlide = () => {
     const nextIndex = currentIndex + currentItemsPerView;
     if (nextIndex >= totalItems) {
@@ -91,7 +98,6 @@ function AutoSlideCarousel({
     }
   };
 
-  // Navigate to previous slide
   const prevSlide = () => {
     const prevIndex = currentIndex - currentItemsPerView;
     if (prevIndex < 0) {
@@ -102,30 +108,26 @@ function AutoSlideCarousel({
     }
   };
 
-  // Auto-slide logic
   useEffect(() => {
     if (isPlaying && !isHovered && totalItems > currentItemsPerView) {
-      intervalRef.current = setInterval(() => {
-        nextSlide();
-      }, 5000);
+      intervalRef.current = setInterval(() => nextSlide(), 5000);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isPlaying, isHovered, currentIndex, totalItems, currentItemsPerView]);
 
-  // Reset to first slide when items change
-  useEffect(() => {
-    setCurrentIndex(0);
-    setIsTransitioning(false);
-  }, [items.length]);
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStartX(e.touches[0].clientX);
+  const handleTouchMove = (e: React.TouchEvent) => setTouchEndX(e.touches[0].clientX);
+  const handleTouchEnd = () => {
+    if (touchStartX - touchEndX > 50) nextSlide();
+    else if (touchEndX - touchStartX > 50) prevSlide();
+  };
 
   if (totalItems === 0) return null;
+  const showControls = totalItems > currentItemsPerView;
 
   return (
     <div
@@ -133,57 +135,52 @@ function AutoSlideCarousel({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Controls */}
-      {totalItems > currentItemsPerView && (
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+      {showControls && (
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <div className="flex items-center gap-1.5 md:gap-2">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#E8317A] transition-colors shadow-sm"
-              aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+              className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-maroon-500 transition-colors shadow-sm flex-shrink-0"
             >
-              {isPlaying ? <Pause size={14} className="text-gray-600" /> : <Play size={14} className="text-[#E8317A]" />}
+              {isPlaying ? <Pause size={12} className="md:text-sm text-gray-600" /> : <Play size={12} className="md:text-sm text-maroon-500" />}
             </button>
-            <span className="text-[10px] text-gray-400 font-medium">
+            <span className="text-[9px] md:text-[10px] text-gray-400 font-medium hidden sm:inline">
               {isPlaying ? "Auto-sliding" : "Paused"}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 md:gap-2">
             <button
               onClick={prevSlide}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#E8317A] transition-colors shadow-sm"
-              aria-label="Previous slide"
+              className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-maroon-500 transition-colors shadow-sm flex-shrink-0"
             >
-              <ChevronLeft size={14} className="text-gray-600" />
+              <ChevronLeft size={12} className="md:text-sm text-gray-600" />
             </button>
-
-            {/* Slide indicators */}
-            <div className="hidden md:flex  gap-1.5 px-2">
-              {Array.from({ length: totalSlides }).map((_, idx) => (
+            <div className="hidden sm:flex gap-1.5 px-1 md:px-2">
+              {Array.from({ length: Math.min(totalSlides, 8) }).map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => goToSlide(idx * currentItemsPerView)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "w-6 bg-[#E8317A]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "w-6 bg-maroon-500" : "w-1.5 bg-gray-300 hover:bg-gray-400"}`}
                 />
               ))}
             </div>
-
             <button
               onClick={nextSlide}
-              className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#E8317A] transition-colors shadow-sm"
-              aria-label="Next slide"
+              className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-maroon-500 transition-colors shadow-sm flex-shrink-0"
             >
-              <ChevronRight size={14} className="text-gray-600" />
+              <ChevronRight size={12} className="md:text-sm text-gray-600" />
             </button>
           </div>
         </div>
       )}
 
-      {/* Slide content with smooth sliding */}
-      <div className="overflow-hidden">
+      <div
+        className="overflow-hidden -mx-2"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <div
           ref={containerRef}
           className="flex transition-transform duration-500 ease-in-out"
@@ -195,36 +192,43 @@ function AutoSlideCarousel({
           {items.map((item, idx) => (
             <div
               key={item._id || item.slug || idx}
-              className="flex-shrink-0 px-2"
+              className="flex-shrink-0 px-1.5 sm:px-2"
               style={{ width: `${itemWidth}%` }}
             >
-              <div className="h-full">
-                {renderItem(item, idx)}
-              </div>
+              <div className="h-full">{renderItem(item, idx)}</div>
             </div>
           ))}
         </div>
       </div>
+
+      {showControls && (
+        <div className="flex justify-center gap-1 mt-3 sm:hidden">
+          {Array.from({ length: Math.min(totalSlides, 6) }).map((_, idx) => (
+            <div
+              key={idx}
+              onClick={() => goToSlide(idx * currentItemsPerView)}
+              className={`h-1.5! rounded-full transition-all duration-300 ${idx === currentSlide ? "w-4 bg-maroon-500" : "w-1.5 bg-gray-300"}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function DashboardLearnPage() {
-  const { userInfo } = useUserData() as any
+  const { userInfo } = useUserData() as any;
   const [tab, setTab] = useState<TabKey>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [category, setCategory] = useState<string>("all");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const user = userInfo.user || {}
+  const user = userInfo.user || {};
 
-
-
-  // RTK Query hooks
   const {
     data: modulesData,
     isLoading: modulesLoading,
-    error: modulesError,
     refetch: refetchModules
   } = useListLearnModulesQuery({
     tab: tab === "all" ? undefined : tab,
@@ -236,10 +240,9 @@ export default function DashboardLearnPage() {
 
   const {
     data: continueReadingData,
-    isLoading: continueLoading,
     refetch: refetchContinue
   } = useGetContinueReadingQuery(undefined, {
-    skip: tab !== "all", // Only fetch on "all" tab
+    skip: tab !== "all",
   });
 
   const {
@@ -254,7 +257,24 @@ export default function DashboardLearnPage() {
   const featuredTopics = featuredData?.data || [];
   const continueReading = continueReadingData?.data || [];
 
-  console.log(featuredTopics)
+  // Focus search input when opened
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [showSearch]);
+
+  // Close search on escape key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showSearch) {
+        setShowSearch(false);
+        setSearchTerm("");
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [showSearch]);
 
   const toggleSave = async (moduleId: string, isCurrentlySaved: boolean) => {
     try {
@@ -276,130 +296,110 @@ export default function DashboardLearnPage() {
     }
   };
 
-  // Get counts for tabs
   const getTabCount = (tabKey: TabKey) => {
     if (tabKey === "all") return modulesData?.data?.total || 0;
     return modules.filter((m: any) => {
-      // if (tabKey === "active") return m.userTab === "active";
       if (tabKey === "complete") return m.userTab === "complete";
       if (tabKey === "saved") return m.isSaved;
       return true;
     }).length;
   };
 
-  // Render continue reading item
   const renderContinueItem = (item: any) => (
     <Link
       href={`/dashboard/learn/${item.moduleSlug}`}
-      className="block bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full"
+      className="block bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full"
     >
-      <div className="relative h-32 flex items-center justify-center" style={{ background: item.gradient }}>
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-white text-xs font-medium">{item.progressPercent}% Complete</p>
-            <div className="w-32 h-1.5 bg-white/30 rounded-full mt-2 mx-auto">
-              <div
-                className="h-1.5 rounded-full bg-[#E8317A]"
-                style={{ width: `${item.progressPercent}%` }}
-              />
+      <div className="relative h-24 sm:h-28 md:h-32 flex items-center justify-center" style={{ background: item.gradient }}>
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-2">
+          <div className="text-center w-full">
+            <p className="text-white text-[10px] sm:text-xs font-medium">{item.progressPercent}% Complete</p>
+            <div className="w-24 sm:w-32 h-1.5 bg-white/30 rounded-full mt-1.5 mx-auto">
+              <div className="h-1.5 rounded-full bg-maroon-500" style={{ width: `${item.progressPercent}%` }} />
             </div>
           </div>
         </div>
       </div>
-      <div className="p-4">
-        <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor }}>
+      <div className="p-3 sm:p-4">
+        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wide" style={{ color: item.tagColor }}>
           {item.tag}
         </span>
-        <h3 className="font-bold text-gray-900 text-sm leading-snug mt-1 mb-1">{item.title}</h3>
-        <p className="text-xs text-gray-500">{item.currentSectionTitle}</p>
-        <p className="text-[10px] text-gray-400 mt-2">{item.lastReadLabel}</p>
+        <h3 className="font-bold text-gray-900 text-xs sm:text-sm leading-snug mt-0.5 sm:mt-1 mb-0.5 line-clamp-2">{item.title}</h3>
+        <p className="text-[10px] sm:text-xs text-gray-500 line-clamp-1">{item.currentSectionTitle}</p>
+        <p className="text-[9px] sm:text-[10px] text-gray-400 mt-1.5">{item.lastReadLabel}</p>
       </div>
     </Link>
   );
 
-  // Render module item
   const renderModuleItem = (mod: any) => (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-      {/* Thumbnail */}
-      <div className="relative h-44 flex items-center justify-center" style={{ background: mod.gradient }}>
+    <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+      <div className="relative h-32 sm:h-36 md:h-44 flex items-center justify-center" style={{ background: mod.gradient }}>
         {mod.thumbnailUrl ? (
           <img src={mod.thumbnailUrl} alt={mod.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="text-4xl font-bold text-white/20">{mod.categoryLabel[0]}</div>
+          <div className="text-3xl sm:text-4xl font-bold text-white/20">{mod.categoryLabel[0]}</div>
         )}
-        {/* Progress badge for enrolled modules */}
         {mod.progressPercent > 0 && mod.progressPercent < 100 && (
-          <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
+          <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg">
             {mod.progressPercent}% Complete
           </div>
         )}
         {mod.progressPercent === 100 && (
-          <div className="absolute bottom-3 left-3 bg-green-500/90 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
+          <div className="absolute bottom-2 left-2 bg-green-500/90 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg">
             Completed ✓
           </div>
         )}
-        {/* Bookmark */}
         <button
           onClick={() => toggleSave(mod._id, mod.isSaved)}
           disabled={isTogglingSave}
-          className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors disabled:opacity-50"
+          className="absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors disabled:opacity-50"
         >
-          <Bookmark
-            size={14}
-            className={mod.isSaved ? "text-[#E8317A] fill-[#E8317A]" : "text-gray-500"}
-          />
+          <Bookmark size={12} className={mod.isSaved ? "text-maroon-500 fill-maroon-500" : "text-gray-500"} />
         </button>
       </div>
 
-      {/* Body */}
-      <div className="p-5 flex flex-col flex-1">
-        <span
-          className="text-[10px] font-bold uppercase tracking-wide mb-2"
-          style={{ color: mod.categoryColor }}
-        >
+      <div className="p-3 sm:p-4 md:p-5 flex flex-col flex-1">
+        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wide mb-1" style={{ color: mod.categoryColor }}>
           {mod.categoryLabel}
         </span>
+        <h3 className="font-bold text-gray-900 text-xs sm:text-sm leading-snug mb-1 line-clamp-2">{mod.title}</h3>
+        <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed mb-2 flex-1 line-clamp-2">{mod.description}</p>
 
-        <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1.5 line-clamp-2">{mod.title}</h3>
-        <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1 line-clamp-2">{mod.description}</p>
-
-        {/* Stats row */}
-        <div className="flex items-center gap-3 mb-4 text-xs text-gray-500">
-          <span className="flex items-center gap-1 font-semibold text-amber-500">
-            <Star size={11} className="fill-amber-400 text-amber-400" />{mod.rating.toFixed(1)}
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 text-[10px] sm:text-xs text-gray-500 flex-wrap">
+          <span className="flex items-center gap-0.5 sm:gap-1 font-semibold text-amber-500">
+            <Star size={10} className="fill-amber-400 text-amber-400" />{mod.rating.toFixed(1)}
           </span>
-          <span className="flex items-center gap-1">
-            <Clock size={11} className="text-gray-400" />{mod.weeksDuration}w
+          <span className="flex items-center gap-0.5 sm:gap-1">
+            <Clock size={10} className="text-gray-400" />{mod.weeksDuration}w
           </span>
-          <span className="flex items-center gap-1">
-            <BookOpen size={11} className="text-gray-400" />{mod.lessonCount} lessons
+          <span className="flex items-center gap-0.5 sm:gap-1">
+            <BookOpen size={10} className="text-gray-400" />{mod.lessonCount} lessons
           </span>
         </div>
 
-        {/* Instructor & Action */}
-        <div className="flex items-center gap-2 pt-3 border-t border-gray-50">
+        <div className="flex items-center gap-1.5 sm:gap-2 pt-2 sm:pt-3 border-t border-gray-50">
           <div
-            className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-white text-[8px] sm:text-[10px] font-bold flex-shrink-0"
             style={{ background: `linear-gradient(135deg, ${mod.instructor.color}, ${mod.instructor.color}80)` }}
           >
             {mod.instructor.initials}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-gray-900 truncate">{mod.instructor.name}</p>
+            <p className="text-[10px] sm:text-xs font-semibold text-gray-900 truncate">{mod.instructor.name}</p>
           </div>
           {mod.enrolledAt ? (
             <Link
               href={`/dashboard/learn/${mod.slug}`}
-              className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+              className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-white transition-all hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
             >
-              <ChevronRight size={13} />
+              <ChevronRight size={12} />
             </Link>
           ) : (
             <button
               onClick={() => handleEnrol(mod._id)}
               disabled={isEnrolling}
-              className="flex-shrink-0 text-[10px] font-semibold text-[#E8317A] hover:text-[#E8317A]/80"
+              className="flex-shrink-0 text-[9px] sm:text-[10px] font-semibold text-maroon-500 hover:text-maroon-500/80"
             >
               Start
             </button>
@@ -412,72 +412,99 @@ export default function DashboardLearnPage() {
   if (modulesLoading && !modulesData) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-[#E8317A]" />
+        <Loader2 className="w-8 h-8 animate-spin text-maroon-500" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 p-5 xl:p-8 overflow-y-auto">
-
+    <div className="flex-1 p-3 sm:p-5 xl:p-8 overflow-y-auto relative">
       {/* Header */}
-      <div className="flex items-center justify-between mb-7">
-        <h1 className="text-xl font-bold text-gray-900">Our Lessons</h1>
-        <div className="flex items-center gap-3">
-          {/* Search */}
-          {showSearch ? (
-            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5">
-              <Search size={16} className="text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search lessons..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-sm outline-none bg-transparent w-48"
-                autoFocus
-              />
-              <button onClick={() => {
-                setShowSearch(false);
-                setSearchTerm("");
-              }} className="text-gray-400 hover:text-gray-600">
-                ×
-              </button>
-            </div>
-          ) : (
+      <div className="flex items-center justify-between mb-4 sm:mb-7">
+        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Our Lessons</h1>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Search Button - only visible when search is closed */}
+          {!showSearch && (
             <button
               onClick={() => setShowSearch(true)}
-              className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 shadow-sm transition-colors"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center hover:border-gray-300 shadow-sm transition-colors"
+              aria-label="Open search"
             >
-              <Search size={16} className="text-gray-500" />
+              <Search size={14} className="text-gray-500" />
             </button>
           )}
           <NotificationBell />
 
-          {user.role !== "lawyer" && <Link
-            href="/dashboard/consultations"
-            className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
-          >
-            Find my Lawyer
-          </Link>}
+          {user.role !== "lawyer" && (
+            <Link
+              href="/dashboard/consultations"
+              className="hidden sm:flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-white text-[10px] sm:text-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
+            >
+              Find my Lawyer
+            </Link>
+          )}
         </div>
       </div>
 
+      {/* Absolute Search Overlay - Mobile & Desktop */}
+      {showSearch && (
+        <div className="absolute top-0 left-0 right-0 z-50 p-3 sm:p-5 xl:p-8 bg-gradient-to-b from-gray-50 via-gray-50 to-transparent animate-in slide-in-from-top duration-300">
+          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-lg max-w-2xl mx-auto">
+            <Search size={16} className="text-gray-400 flex-shrink-0" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search lessons..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-sm outline-none bg-transparent w-full text-gray-900 placeholder:text-gray-400"
+              autoFocus
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+              >
+                <X size={14} />
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setShowSearch(false);
+                setSearchTerm("");
+              }}
+              className="text-gray-400 hover:text-gray-600 font-medium text-xs flex-shrink-0 px-2"
+            >
+              Cancel
+            </button>
+          </div>
+          {/* Backdrop click to close */}
+          <div 
+            className="fixed inset-0 -z-10" 
+            onClick={() => {
+              setShowSearch(false);
+              setSearchTerm("");
+            }}
+          />
+        </div>
+      )}
+
       {/* Tabs */}
-      <div className="flex items-center gap-0.5 mb-6 border-b border-gray-200">
+      <div className="flex items-center gap-0.5 mb-4 sm:mb-6 border-b border-gray-200 overflow-x-auto no-scrollbar">
         {TABS.map((t) => {
           const count = getTabCount(t.key);
           return (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex shrink-0 items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${tab === t.key
+              className={`flex shrink-0 items-center gap-1 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all border-b-2 -mb-px whitespace-nowrap ${tab === t.key
                   ? "text-gray-900 border-gray-900"
                   : "text-gray-400 border-transparent hover:text-gray-600"
                 }`}
             >
               {t.label}
-              <span className={`text-[11px] font-medium ${tab === t.key ? "text-gray-500" : "text-gray-300"}`}>
+              <span className={`text-[10px] sm:text-[11px] font-medium ${tab === t.key ? "text-gray-500" : "text-gray-300"}`}>
                 ({String(count).padStart(2, "0")})
               </span>
             </button>
@@ -485,84 +512,51 @@ export default function DashboardLearnPage() {
         })}
       </div>
 
-      {/* Continue Reading Section - Only show on "all" tab */}
-      {tab === "all" && continueReading.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-base font-bold text-gray-900 mb-4">Continue Reading</h2>
-          <AutoSlideCarousel
-            items={continueReading}
-            itemsPerView={3}
-            renderItem={renderContinueItem}
-          />
-        </div>
-      )}
+      {/* Content with padding when search is open */}
+      <div className={showSearch ? "opacity-50 pointer-events-none transition-opacity duration-300" : "transition-opacity duration-300"}>
+        {/* Continue Reading Section */}
+        {tab === "all" && continueReading.length > 0 && (
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">Continue Reading</h2>
+            <AutoSlideCarousel
+              items={continueReading}
+              itemsPerView={3}
+              renderItem={renderContinueItem}
+            />
+          </div>
+        )}
 
-      {/* Module cards */}
-      {modulesLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-[#E8317A]" />
-        </div>
-      ) : modules.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No lessons found</p>
-          {tab !== "all" && (
-            <button
-              onClick={() => setTab("all")}
-              className="mt-2 text-[#E8317A] text-sm font-semibold"
-            >
-              View all lessions
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="mb-10">
-          <h2 className="text-base font-bold text-gray-900 mb-4">
-            {tab === "all" ? "All Lessons" :
-              tab === "active" ? "Active Lessons" :
-                tab === "complete" ? "Completed Lessons" : "Saved Lessons"}
-          </h2>
-          <AutoSlideCarousel
-            items={modules}
-            itemsPerView={3}
-            renderItem={renderModuleItem}
-          />
-        </div>
-      )}
-
-      {/* Featured Topics */}
-      <div className="hidden">
-        <h2 className="text-base font-bold text-gray-900 mb-4">Featured Topics</h2>
-        {featuredLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-[#E8317A]" />
+        {/* Module cards */}
+        {modulesLoading ? (
+          <div className="flex justify-center py-8 sm:py-12">
+            <Loader2 className="w-6 h-6 animate-spin text-maroon-500" />
+          </div>
+        ) : modules.length === 0 ? (
+          <div className="text-center py-8 sm:py-12">
+            <p className="text-gray-500 text-sm">No lessons found</p>
+            {tab !== "all" && (
+              <button
+                onClick={() => setTab("all")}
+                className="mt-2 text-maroon-500 text-xs sm:text-sm font-semibold"
+              >
+                View all lessons
+              </button>
+            )}
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            {featuredTopics.map((f: any) => (
-              <Link
-                key={f._id}
-                href={`/dashboard/learn/${f.module}/${f.slug}`}
-                className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
-              >
-                <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{f.title}</h3>
-                <div className="flex items-center gap-2.5 mt-auto">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${f.instructor.color}, ${f.instructor.color}80)` }}
-                  >
-                    {f.instructor.initials}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-gray-900 truncate">{f.instructor.name}</p>
-                    <p className="text-[10px] text-gray-400 truncate">{f.instructor.email}</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          <div className="mb-6 sm:mb-10">
+            <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">
+              {tab === "all" ? "All Lessons" :
+                tab === "complete" ? "Completed Lessons" : "Saved Lessons"}
+            </h2>
+            <AutoSlideCarousel
+              items={modules}
+              itemsPerView={3}
+              renderItem={renderModuleItem}
+            />
           </div>
         )}
       </div>
-
     </div>
   );
 }

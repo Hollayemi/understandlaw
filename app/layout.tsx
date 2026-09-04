@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
-import { Geist, Geist_Mono, Bebas_Neue, DM_Sans, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Bebas_Neue, DM_Sans, Playfair_Display, Archivo_Black } from "next/font/google";
 import "./globals.css";
 import ProviderWrapper from "@/redux/provider";
 import { Toaster } from "./components/ui/sonner";
@@ -20,6 +20,12 @@ const geistMono = Geist_Mono({
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas",
+  weight: "400",
+  subsets: ["latin"],
+});
+
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
   weight: "400",
   subsets: ["latin"],
 });
@@ -70,7 +76,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${archivoBlack.variable} ${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ProviderWrapper session={session}>

@@ -24,9 +24,9 @@ const CATEGORY_CONFIG: Record<BookCategory, { label: string; color: string; bg: 
   contracts: { label: "Contracts", color: "#F59E0B", bg: "#FFFBEB", icon: FileText },
   business: { label: "Business", color: "#06B6D4", bg: "#ECFEFF", icon: Building2 },
   family: { label: "Family Law", color: "#EF4444", bg: "#FEF2F2", icon: Users },
-  consumer: { label: "Consumer Rights", color: "#E8317A", bg: "#FFF0F5", icon: Globe },
-  road: { label: "Road Traffic", color: "#F97316", bg: "#FFF7ED", icon: Car },
-  constitutional: { label: "Constitutional", color: "#7C3AED", bg: "#F5F3FF", icon: Shield },
+  consumer: { label: "Consumer Rights", color: "#9B2E3D", bg: "#FFF0F5", icon: Globe },
+  road: { label: "Road Traffic", color: "#9B2E3D", bg: "#FFF7ED", icon: Car },
+  constitutional: { label: "Constitutional", color: "#9B2E3D", bg: "#F5F3FF", icon: Shield },
 };
 
 
@@ -143,7 +143,7 @@ function SuccessModal({ orderId, }: { orderId: string; }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
-        <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] flex-shrink-0" />
+        <div className="h-1 w-full bg-gradient-to-r from-maroon-500 to-maroon-600 flex-shrink-0" />
 
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6] flex-shrink-0">
           <div>
@@ -165,7 +165,7 @@ function SuccessModal({ orderId, }: { orderId: string; }) {
               <p className="text-[11px] text-[#9CA3AF]">quantity {order.quantity}</p>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-[14px] font-bold text-[#E8317A]">NGN {(order.totalAmount || 0).toLocaleString()}</p>
+              <p className="text-[14px] font-bold text-maroon-500">NGN {(order.totalAmount || 0).toLocaleString()}</p>
               <p className="text-[10px] text-[#9CA3AF]">{order.status}</p>
             </div>
           </div>
@@ -206,7 +206,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   ) => setForm(f => ({ ...f, [k]: k === "quantity" ? Math.max(1, Number(e.target.value)) : e.target.value }));
 
   const total = (book.pricePhysical || 0) * form.quantity;
-  const inputCls = "w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors";
+  const inputCls = "w-full h-10 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors";
 
   const submit = async () => {
     setSubmitting(true);
@@ -238,7 +238,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
-        <div className="h-1 w-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] flex-shrink-0" />
+        <div className="h-1 w-full bg-gradient-to-r from-maroon-500 to-maroon-600 flex-shrink-0" />
 
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6] flex-shrink-0">
           <div>
@@ -248,7 +248,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
           <div className="flex items-center gap-2">
             {[1, 2, 3].map(n => (
               <React.Fragment key={n}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#E8317A] text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-maroon-500 text-white" : step > n ? "bg-[#111827] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
                   }`}>{step > n ? <Check size={11} /> : n}</div>
                 {n < 3 && <div className="w-5 h-px bg-[#E5E7EB]" />}
               </React.Fragment>
@@ -269,7 +269,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
               <p className="text-[11px] text-[#9CA3AF]">by {book.author}</p>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-[14px] font-bold text-[#E8317A]">NGN {(book.pricePhysical || 0).toLocaleString()}</p>
+              <p className="text-[14px] font-bold text-maroon-500">NGN {(book.pricePhysical || 0).toLocaleString()}</p>
               <p className="text-[10px] text-[#9CA3AF]">per copy</p>
             </div>
           </div>
@@ -310,12 +310,12 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
               <div>
                 <label className="block text-[11px] font-bold text-[#6B7280] uppercase tracking-wider mb-1.5">Notes (optional)</label>
                 <textarea value={form.notes} onChange={set("notes")} placeholder="Any delivery instructions..."
-                  className="w-full h-16 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                  className="w-full h-16 px-3 py-2.5 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors"
                 />
               </div>
               <button onClick={() => setStep(2)}
                 disabled={!form.name || !form.phone || !form.email || !form.address}
-                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-40 transition-colors">
+                className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white bg-maroon-500 hover:bg-maroon-600 disabled:opacity-40 transition-colors">
                 Continue →
               </button>
             </div>
@@ -344,7 +344,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
                   </div>
                   <div className="flex justify-between border-t border-[#E5E7EB] pt-2">
                     <span className="font-bold text-[#111827] text-[14px]">Total</span>
-                    <span className="font-bold text-[#E8317A] text-[14px]">NGN {total.toLocaleString()}</span>
+                    <span className="font-bold text-maroon-500 text-[14px]">NGN {total.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -361,7 +361,7 @@ function OrderModal({ book, onClose }: { book: Book; onClose: () => void }) {
 
               <button onClick={submit} disabled={submitting || isLoading}
                 className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-60 transition-all"
-                style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
                 {(submitting || isLoading)
                   ? <><Loader2 size={13} className="animate-spin" /> Processing…</>
                   : <><Send size={13} /> Place Order & Pay NGN {total.toLocaleString()}</>
@@ -423,7 +423,7 @@ function BookCard({
 
         <button onClick={() => setSaved(!saved)}
           className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors">
-          <Heart size={14} className={saved ? "text-[#E8317A] fill-[#E8317A]" : "text-gray-500"} />
+          <Heart size={14} className={saved ? "text-maroon-500 fill-maroon-500" : "text-gray-500"} />
         </button>
       </div>
 
@@ -452,7 +452,7 @@ function BookCard({
           )}
           {book.format !== "pdf" && (
             <span className="flex items-center gap-1">
-              <ShoppingCart size={10} className="text-[#E8317A]" />
+              <ShoppingCart size={10} className="text-maroon-500" />
               {book.orderCount} orders
             </span>
           )}
@@ -462,7 +462,7 @@ function BookCard({
         </div>
 
         {book.pricePhysical !== null && (
-          <p className="text-[13px] font-bold text-[#E8317A] mb-3">
+          <p className="text-[13px] font-bold text-maroon-500 mb-3">
             NGN {book.pricePhysical.toLocaleString()} / copy
           </p>
         )}
@@ -485,7 +485,7 @@ function BookCard({
             <button onClick={() => onOrder(book)}
               disabled={book.stockCount !== null && book.stockCount === 0}
               className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
+              style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
               <ShoppingCart size={12} />
               {book.stockCount === 0 ? "Out of Stock" : `Order Physical, NGN ${(book.pricePhysical || 0).toLocaleString()}`}
             </button>
@@ -526,7 +526,7 @@ export default function UserLibraryPage({ searchParams }: any) {
   if (booksLoading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#F5F2EE]">
-        <Loader2 className="animate-spin text-[#E8317A]" size={40} />
+        <Loader2 className="animate-spin text-maroon-500" size={40} />
       </div>
     );
   }
@@ -563,8 +563,8 @@ export default function UserLibraryPage({ searchParams }: any) {
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <BookOpen size={14} className="text-[#E8317A]" />
-                    <span className="text-xs font-bold text-[#E8317A] uppercase tracking-widest">Legal Library</span>
+                    <BookOpen size={14} className="text-maroon-500" />
+                    <span className="text-xs font-bold text-maroon-500 uppercase tracking-widest">Legal Library</span>
                   </div>
                   <h1 className="text-2xl font-bold text-white leading-tight mb-2">Nigerian Law Books</h1>
                   <p className="text-sm text-gray-400 max-w-md leading-relaxed">
@@ -592,7 +592,7 @@ export default function UserLibraryPage({ searchParams }: any) {
             <section className="mb-7">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-bold text-gray-900 text-base flex items-center gap-2">
-                  <span className="w-1.5 h-4 rounded-full bg-[#E8317A] inline-block" />
+                  <span className="w-1.5 h-4 rounded-full bg-maroon-500 inline-block" />
                   Featured Books
                 </h2>
               </div>
@@ -619,7 +619,7 @@ export default function UserLibraryPage({ searchParams }: any) {
                         )}
                         {book.format !== "pdf" && (
                           <button onClick={e => { e.stopPropagation(); setOrderBook(book); }}
-                            className="flex items-center gap-1 text-[11px] font-bold text-[#E8317A] hover:underline">
+                            className="flex items-center gap-1 text-[11px] font-bold text-maroon-500 hover:underline">
                             <ShoppingCart size={11} /> NGN {(book.pricePhysical || 0).toLocaleString()}
                           </button>
                         )}
@@ -638,11 +638,11 @@ export default function UserLibraryPage({ searchParams }: any) {
                 <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input value={search} onChange={e => setSearch(e.target.value)}
                   placeholder="Search by title, author, or topic…"
-                  className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                  className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
                 />
               </div>
               <div>
-                <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className={`w-full h-10 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors bg-white`}>
+                <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className={`w-full h-10 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors bg-white`}>
                   <option value="">All Categories</option>
                   {Object.entries(CATEGORY_CONFIG).map(([k, v]) =>
                     <option key={k} value={k}>
@@ -690,7 +690,7 @@ export default function UserLibraryPage({ searchParams }: any) {
               <BookOpen size={32} className="text-gray-200 mx-auto mb-3" />
               <p className="text-sm font-semibold text-gray-500">No books found</p>
               <button onClick={() => { setSearch(""); setCategoryFilter("all"); setFormatFilter("all"); }}
-                className="mt-3 text-xs text-[#E8317A] font-semibold hover:underline">Clear filters</button>
+                className="mt-3 text-xs text-maroon-500 font-semibold hover:underline">Clear filters</button>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -808,7 +808,7 @@ function BookDrawer({ book, onClose, onDownload, onOrder }: {
               <button onClick={() => { onOrder(book); onClose(); }}
                 disabled={book.stockCount !== null && book.stockCount === 0}
                 className="w-full py-3 rounded-xl text-[13px] font-bold text-white flex items-center justify-center gap-2 hover:-translate-y-0.5 disabled:opacity-40 transition-all"
-                style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}>
+                style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
                 <ShoppingCart size={14} />
                 Order Physical Copy, NGN {(book.pricePhysical || 0).toLocaleString()}
               </button>

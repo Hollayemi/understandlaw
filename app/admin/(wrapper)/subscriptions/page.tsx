@@ -99,7 +99,7 @@ export default function AdminSubscriptionsPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/subscriptions/plans/create"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#E8317A] text-white text-sm font-semibold hover:bg-[#d02a6e] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-maroon-500 text-white text-sm font-semibold hover:bg-[#d02a6e] transition-colors"
           >
             <Plus size={16} />
             Create Plan
@@ -118,7 +118,7 @@ export default function AdminSubscriptionsPage() {
               onClick={() => setActiveTab(tab.id as TabType)}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap border-b-2 ${
                 isActive
-                  ? "border-[#E8317A] text-[#E8317A]"
+                  ? "border-maroon-500 text-maroon-500"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
@@ -138,7 +138,7 @@ export default function AdminSubscriptionsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#E8317A] transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-maroon-500 transition-colors"
           />
         </div>
       </div>
@@ -238,7 +238,7 @@ export default function AdminSubscriptionsPage() {
               </div>
               <Link
                 href="/admin/subscriptions?tab=subscribers"
-                className="block text-center text-sm text-[#E8317A] font-semibold hover:underline mt-4"
+                className="block text-center text-sm text-maroon-500 font-semibold hover:underline mt-4"
               >
                 View all subscribers →
               </Link>
@@ -268,7 +268,7 @@ export default function AdminSubscriptionsPage() {
               </div>
               <Link
                 href="/admin/subscriptions?tab=invoices"
-                className="block text-center text-sm text-[#E8317A] font-semibold hover:underline mt-4"
+                className="block text-center text-sm text-maroon-500 font-semibold hover:underline mt-4"
               >
                 View all invoices →
               </Link>
@@ -319,7 +319,7 @@ export default function AdminSubscriptionsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/subscriptions/plans/${plan.id}`}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-[#E8317A] hover:bg-pink-50 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-maroon-500 hover:bg-pink-50 transition-colors"
                         >
                           <Eye size={16} />
                         </Link>
@@ -416,7 +416,7 @@ export default function AdminSubscriptionsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/subscriptions/subscribers/${sub.id}`}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-[#E8317A] hover:bg-pink-50 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-maroon-500 hover:bg-pink-50 transition-colors"
                         >
                           <Eye size={16} />
                         </Link>
@@ -483,7 +483,7 @@ export default function AdminSubscriptionsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/subscriptions/invoices/${invoice.id}`}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-[#E8317A] hover:bg-pink-50 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-maroon-500 hover:bg-pink-50 transition-colors"
                         >
                           <Eye size={16} />
                         </Link>

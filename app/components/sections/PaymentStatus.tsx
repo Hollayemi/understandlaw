@@ -60,7 +60,7 @@ function SuccessMessage({ message = "Payment verified successfully." }: SuccessM
           <div className="flex flex-col items-center text-center">
             {/* Icon */}
             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-pink-50">
-              <CheckCircle className="h-10 w-10 text-[#E8317A]" strokeWidth={1.5} />
+              <CheckCircle className="h-10 w-10 text-maroon-500" strokeWidth={1.5} />
             </div>
 
             {/* Title */}
@@ -72,7 +72,7 @@ function SuccessMessage({ message = "Payment verified successfully." }: SuccessM
             {/* Close/continue button */}
             <button
               onClick={removeSearchParams}
-              className="w-full rounded-lg bg-[#E8317A] px-6 py-3 font-medium text-white transition-colors hover:bg-[#d02a6e] focus:outline-none focus:ring-2 focus:ring-[#E8317A] focus:ring-offset-2"
+              className="w-full rounded-lg bg-maroon-500 px-6 py-3 font-medium text-white transition-colors hover:bg-[#d02a6e] focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:ring-offset-2"
             >
               Continue
             </button>

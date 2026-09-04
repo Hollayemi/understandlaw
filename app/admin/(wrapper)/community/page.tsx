@@ -46,7 +46,7 @@ const POST_TYPE_CONFIG: Record<PostType, { label: string; color: string; bg: str
   discussion: { label: "Discussion", color: "#3B82F6", bg: "#EFF6FF" },
   argument: { label: "Argument", color: "#8B5CF6", bg: "#F5F3FF" },
   poll: { label: "Poll", color: "#10B981", bg: "#ECFDF5" },
-  announcement: { label: "Announcement", color: "#E8317A", bg: "#FFF0F5" },
+  announcement: { label: "Announcement", color: "#9B2E3D", bg: "#FFF0F5" },
   case_study: { label: "Case Study", color: "#F59E0B", bg: "#FFFBEB" },
 };
 
@@ -220,7 +220,7 @@ function ModerateModal({
                 onChange={e => setReason(e.target.value)}
                 placeholder={`Explain why this post is being ${action}ed...`}
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+                className="w-full px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors"
               />
             </div>
           )}
@@ -266,7 +266,7 @@ function PostCard({
         {/* Header */}
         <div className="flex items-start gap-3 mb-3">
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-            style={{ background: post.author?.color || "#E8317A" }}>
+            style={{ background: post.author?.color || "#9B2E3D" }}>
             {post.author?.initials || post.author?.name?.charAt(0).toUpperCase() || "U"}
           </div>
           <div className="flex-1 min-w-0">
@@ -278,7 +278,7 @@ function PostCard({
                 </span>
               )}
               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                post.author?.role === "admin" ? "bg-pink-50 text-[#E8317A]"
+                post.author?.role === "admin" ? "bg-pink-50 text-maroon-500"
                 : post.author?.role === "lawyer" ? "bg-blue-50 text-[#3B82F6]"
                 : "bg-gray-100 text-[#6B7280]"
               }`}>
@@ -518,7 +518,7 @@ function PostCard({
                     </div>
                   ))}
                   {post.comments.length > 3 && (
-                    <p className="text-[11px] text-[#E8317A] text-center font-semibold">+{post.comments.length - 3} more comments</p>
+                    <p className="text-[11px] text-maroon-500 text-center font-semibold">+{post.comments.length - 3} more comments</p>
                   )}
                 </div>
               </div>
@@ -690,7 +690,7 @@ export default function AdminCommunityPage() {
   };
 
   const statsItems = [
-    { label: "Total Posts", value: stats?.overview.totalPosts || 0, icon: MessageSquare, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Total Posts", value: stats?.overview.totalPosts || 0, icon: MessageSquare, color: "#9B2E3D", bg: "#FFF0F5" },
     { label: "Promoted", value: stats?.overview.promotedPosts || 0, icon: Star, color: "#F59E0B", bg: "#FFFBEB" },
     { label: "Pending Review", value: stats?.overview.pendingPosts || 0, icon: Clock, color: "#3B82F6", bg: "#EFF6FF" },
     { label: "Reported", value: stats?.overview.reportedPosts || 0, icon: Flag, color: "#EF4444", bg: "#FEF2F2" },
@@ -788,7 +788,7 @@ export default function AdminCommunityPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search posts, authors, tags..."
-              className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+              className="w-full h-9 pl-9 pr-4 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors"
             />
           </div>
 
@@ -805,7 +805,7 @@ export default function AdminCommunityPage() {
                   }`}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                    tab === s ? "bg-[#E8317A] text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
+                    tab === s ? "bg-maroon-500 text-white" : "bg-[#F3F4F6] text-[#9CA3AF]"
                   }`}>{count}</span>
                 </button>
               );
@@ -816,7 +816,7 @@ export default function AdminCommunityPage() {
           <select
             value={typeFilter}
             onChange={e => { setTypeFilter(e.target.value as PostType | "all"); setPage(1); }}
-            className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-[#E8317A] transition-colors"
+            className="h-9 px-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[12px] text-[#6B7280] bg-white outline-none focus:border-maroon-500 transition-colors"
           >
             {typeOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -825,7 +825,7 @@ export default function AdminCommunityPage() {
           {/* <button
             onClick={() => setShowBulkSelect(!showBulkSelect)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${
-              showBulkSelect ? "bg-[#E8317A] text-white" : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
+              showBulkSelect ? "bg-maroon-500 text-white" : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
             }`}
           >
             <CheckSquare size={12} />
@@ -836,7 +836,7 @@ export default function AdminCommunityPage() {
         {/* Post list */}
         {isLoading ? (
           <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16 text-center">
-            <Loader2 size={36} className="text-[#E8317A] animate-spin mx-auto mb-3" />
+            <Loader2 size={36} className="text-maroon-500 animate-spin mx-auto mb-3" />
             <p className="text-sm font-semibold text-[#9CA3AF]">Loading posts...</p>
           </div>
         ) : posts.length === 0 ? (
@@ -853,7 +853,7 @@ export default function AdminCommunityPage() {
                   type="checkbox"
                   checked={selectedPosts.length === posts.length && posts.length > 0}
                   onChange={selectAllPosts}
-                  className="w-4 h-4 rounded border-gray-300 text-[#E8317A] focus:ring-[#E8317A]"
+                  className="w-4 h-4 rounded border-gray-300 text-maroon-500 focus:ring-maroon-500"
                 />
                 <span className="text-[12px] text-[#6B7280]">Select All ({posts.length})</span>
               </div>
@@ -866,7 +866,7 @@ export default function AdminCommunityPage() {
                       type="checkbox"
                       checked={selectedPosts.includes(post._id)}
                       onChange={() => toggleSelectPost(post._id)}
-                      className="w-4 h-4 rounded border-gray-300 text-[#E8317A] focus:ring-[#E8317A]"
+                      className="w-4 h-4 rounded border-gray-300 text-maroon-500 focus:ring-maroon-500"
                     />
                   </div>
                 )}
@@ -892,7 +892,7 @@ export default function AdminCommunityPage() {
               >
                 Previous
               </button>
-              <span className="px-3 py-1.5 rounded-lg text-[12px] font-medium bg-[#E8317A] text-white">
+              <span className="px-3 py-1.5 rounded-lg text-[12px] font-medium bg-maroon-500 text-white">
                 {pagination.page}
               </span>
               <button

@@ -25,10 +25,10 @@ export const RESPONSE_TIMES = [
 ];
 
 export const REQUIRED_DOCUMENTS = [
-  { id: "callToBar", label: "Call to Bar Certificate", hint: "Your official certificate from the Nigerian Law School", required: true },
-  { id: "lawSchool", label: "Law School Certificate", hint: "Degree certificate from an accredited law faculty", required: true },
-  { id: "practicingLicense", label: "Practicing License", hint: "Current Supreme Court practicing certificate", required: true },
-  { id: "governmentId", label: "Government-Issued ID", hint: "National ID, International Passport, or Voter's Card", required: true },
+  { id: "callToBar", label: "Call to Bar Certificate", hint: "Your official certificate from the Nigerian Law School", required: false },
+  { id: "lawSchool", label: "Law School Certificate", hint: "Degree certificate from an accredited law faculty", required: false },
+  { id: "practicingLicense", label: "Practicing License", hint: "Current Supreme Court practicing certificate", required: false },
+  { id: "governmentId", label: "Government-Issued ID", hint: "National ID, International Passport, or Voter's Card", required: false },
 ];
 
 export const STEPS = [
@@ -141,7 +141,7 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
 
       <div>
         <label className="block text-[12px] font-semibold text-[#374151] mb-3">
-          Areas of Specialisation <span className="text-[#E8317A]">*</span>
+          Areas of Specialisation <span className="text-maroon-500">*</span>
         </label>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {specialisms.map((spec: any) => {
@@ -153,15 +153,15 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
                 onClick={() => toggleSpecialism(spec._id)}
                 className={`flex items-center gap-3 p-3 rounded-xl border-[1.5px] text-left transition-all group
                   ${isSelected
-                    ? 'border-[#E8317A] bg-pink-50 shadow-sm'
-                    : 'border-[#E5E7EB] bg-white hover:border-[#E8317A]/50 hover:bg-pink-50/30'
+                    ? 'border-maroon-500 bg-pink-50 shadow-sm'
+                    : 'border-[#E5E7EB] bg-white hover:border-maroon-500/50 hover:bg-pink-50/30'
                   }`}
               >
-                <div className={`w-2 h-2 rounded-full transition-colors ${isSelected ? 'bg-[#E8317A]' : 'bg-[#D1D5DB]'}`} />
-                <span className={`text-[13px] font-medium flex-1 ${isSelected ? 'text-[#E8317A]' : 'text-[#374151]'}`}>
+                <div className={`w-2 h-2 rounded-full transition-colors ${isSelected ? 'bg-maroon-500' : 'bg-[#D1D5DB]'}`} />
+                <span className={`text-[13px] font-medium flex-1 ${isSelected ? 'text-maroon-500' : 'text-[#374151]'}`}>
                   {spec.displayName}
                 </span>
-                {isSelected && <Check size={14} className="text-[#E8317A]" />}
+                {isSelected && <Check size={14} className="text-maroon-500" />}
               </button>
             );
           })}
@@ -176,7 +176,7 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
 
       <div>
         <label className="block text-[12px] font-semibold text-[#374151] mb-3">
-          Languages Spoken <span className="text-[#E8317A]">*</span>
+          Languages Spoken <span className="text-maroon-500">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {LANGUAGES.map(lang => {
@@ -188,8 +188,8 @@ export function SpecialismsStep({ form, specialisms, updateForm, errors }: any) 
                 onClick={() => toggleLanguage(lang)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[13px] font-medium transition-all
                   ${isSelected
-                    ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
-                    : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50 hover:text-[#E8317A]'
+                    ? 'border-maroon-500 bg-pink-50 text-maroon-500'
+                    : 'border-[#E5E7EB] text-[#6B7280] hover:border-maroon-500/50 hover:text-maroon-500'
                   }`}
               >
                 {isSelected && <Check size={12} />}
@@ -262,7 +262,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
           <button
             type="button"
             onClick={addEducation}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-[#E8317A] hover:bg-pink-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-maroon-500 hover:bg-pink-50 transition-colors"
           >
             <Plus size={14} /> Add Entry
           </button>
@@ -300,7 +300,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
             <button
               type="button"
               onClick={addEducation}
-              className="w-full py-8 rounded-xl border-2 border-dashed border-[#E5E7EB] text-[13px] text-[#9CA3AF] hover:border-[#E8317A] hover:text-[#E8317A] transition-all"
+              className="w-full py-8 rounded-xl border-2 border-dashed border-[#E5E7EB] text-[13px] text-[#9CA3AF] hover:border-maroon-500 hover:text-maroon-500 transition-all"
             >
               <GraduationCap size={20} className="mx-auto mb-2" />
               Add Education
@@ -315,7 +315,7 @@ export function StoryStep({ form, updateForm, errors }: any) {
           <button
             type="button"
             onClick={addWork}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-[#E8317A] hover:bg-pink-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-maroon-500 hover:bg-pink-50 transition-colors"
           >
             <Plus size={14} /> Add Achievement
           </button>
@@ -323,12 +323,12 @@ export function StoryStep({ form, updateForm, errors }: any) {
         <div className="space-y-2">
           {form.notableWork.map((work: string, index: number) => (
             <div key={index} className="flex items-center gap-2">
-              <Star size={14} className="text-[#E8317A] flex-shrink-0" />
+              <Star size={14} className="text-maroon-500 flex-shrink-0" />
               <input
                 value={work}
                 onChange={(e) => updateWork(index, e.target.value)}
                 placeholder="e.g. Represented clients in landmark constitutional case (2022)"
-                className="flex-1 h-10! px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                className="flex-1 h-10! px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-maroon-500 transition-colors"
               />
               <button
                 type="button"
@@ -362,7 +362,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
 
       <div>
         <label className="block text-[12px] font-semibold text-[#374151] mb-3">
-          Consultation Fees (NGN) <span className="text-[#E8317A]">*</span>
+          Consultation Fees (NGN) <span className="text-maroon-500">*</span>
         </label>
         <div className="space-y-3">
           {feeTypes.map(fee => {
@@ -384,11 +384,11 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
                       type="button"
                       onClick={() => updateForm("fees", { ...form.fees, probono: !form.fees.probono })}
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${form.fees.probono
-                          ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
-                          : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50'
+                          ? 'border-maroon-500 bg-pink-50 text-maroon-500'
+                          : 'border-[#E5E7EB] text-[#6B7280] hover:border-maroon-500/50'
                         }`}
                     >
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${form.fees.probono ? 'bg-[#E8317A] border-[#E8317A]' : 'border-[#D1D5DB]'
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${form.fees.probono ? 'bg-maroon-500 border-maroon-500' : 'border-[#D1D5DB]'
                         }`}>
                         {form.fees.probono && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>}
                       </div>
@@ -403,7 +403,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
                         onChange={(e) => updateForm("fees", { ...form.fees, [fee.key]: parseInt(e.target.value) || 0 })}
                         placeholder="0"
                         min="0"
-                        className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-[#E8317A] transition-colors"
+                        className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-maroon-500 transition-colors"
                       />
                     </>
                   )}
@@ -417,7 +417,7 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
 
       <div>
         <label className="block text-[12px] font-semibold text-[#374151] mb-3">
-          Typical Response Time <span className="text-[#E8317A]">*</span>
+          Typical Response Time <span className="text-maroon-500">*</span>
         </label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {RESPONSE_TIMES.map(rt => (
@@ -427,8 +427,8 @@ export function ConsultationStep({ form, updateForm, errors }: any) {
               onClick={() => updateForm("responseTime", rt.value)}
               className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-[13px] font-medium transition-all
                 ${form.responseTime === rt.value
-                  ? 'border-[#E8317A] bg-pink-50 text-[#E8317A]'
-                  : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50'
+                  ? 'border-maroon-500 bg-pink-50 text-maroon-500'
+                  : 'border-[#E5E7EB] text-[#6B7280] hover:border-maroon-500/50'
                 }`}
             >
               <Clock size={14} />
@@ -500,13 +500,13 @@ export function DocumentsStep({ documents, onUpload, onRemove, image, setImage }
           };
 
           return (
-            <div key={doc.id} className="border border-[#E5E7EB] rounded-xl p-4 hover:border-[#E8317A]/30 transition-all">
+            <div key={doc.id} className="border border-[#E5E7EB] rounded-xl p-4 hover:border-maroon-500/30 transition-all">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="text-[14px] font-semibold text-[#111827]">{doc.label}</p>
                     {doc.required && (
-                      <span className="text-[10px] font-semibold text-[#E8317A] bg-pink-50 px-2 py-0.5 rounded-full">Required</span>
+                      <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full">Required</span>
                     )}
                   </div>
                   <p className="text-[11px] text-[#6B7280] mt-1">{doc.hint}</p>
@@ -535,7 +535,7 @@ export function DocumentsStep({ documents, onUpload, onRemove, image, setImage }
                         href={uploadedDoc.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-[#E8317A] hover:bg-pink-50 transition-colors"
+                        className="p-1.5 rounded-lg text-maroon-500 hover:bg-pink-50 transition-colors"
                       >
                         <ExternalLink size={14} />
                       </a>
@@ -559,7 +559,7 @@ export function DocumentsStep({ documents, onUpload, onRemove, image, setImage }
                   title=" "
                 >
                   <div className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
-                    ${error ? 'border-red-300 bg-red-50/30' : 'border-[#E5E7EB] hover:border-[#E8317A] hover:bg-pink-50/20'}`}
+                    ${error ? 'border-red-300 bg-red-50/30' : 'border-[#E5E7EB] hover:border-maroon-500 hover:bg-pink-50/20'}`}
                   >
                     <Upload size={24} className={`mx-auto mb-2 transition-colors ${error ? 'text-red-400' : 'text-[#D1D5DB]'}`} />
                     <p className={`text-[12px] font-medium transition-colors ${error ? 'text-red-500' : 'text-[#9CA3AF]'}`}>
@@ -576,7 +576,7 @@ export function DocumentsStep({ documents, onUpload, onRemove, image, setImage }
                 <div className="mt-3">
                   <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] transition-all duration-300 rounded-full"
+                      className="h-full bg-gradient-to-r from-maroon-500 to-maroon-600 transition-all duration-300 rounded-full"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -620,7 +620,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
         <div className="bg-white rounded-xl border border-[#F3F4F6] overflow-hidden">
           <div className="px-5 py-3 bg-gradient-to-r from-pink-50 to-transparent border-b border-[#F3F4F6]">
             <div className="flex items-center gap-2">
-              <BadgeCheck size={16} className="text-[#E8317A]" />
+              <BadgeCheck size={16} className="text-maroon-500" />
               <h3 className="text-[13px] font-bold text-[#111827] uppercase tracking-wide">Professional Information</h3>
             </div>
           </div>
@@ -640,7 +640,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
         <div className="bg-white rounded-xl border border-[#F3F4F6] overflow-hidden">
           <div className="px-5 py-3 bg-gradient-to-r from-pink-50 to-transparent border-b border-[#F3F4F6]">
             <div className="flex items-center gap-2">
-              <Scale size={16} className="text-[#E8317A]" />
+              <Scale size={16} className="text-maroon-500" />
               <h3 className="text-[13px] font-bold text-[#111827] uppercase tracking-wide">Practice & Languages</h3>
             </div>
           </div>
@@ -653,7 +653,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
               <span className="text-[#6B7280] block mb-1">Languages:</span>
               <div className="flex flex-wrap gap-1.5">
                 {form.languages.map((lang: string) => (
-                  <span key={lang} className="text-[12px] bg-pink-50 text-[#E8317A] px-2 py-0.5 rounded-full">
+                  <span key={lang} className="text-[12px] bg-pink-50 text-maroon-500 px-2 py-0.5 rounded-full">
                     {lang}
                   </span>
                 ))}
@@ -666,7 +666,7 @@ export function ReviewStep({ form, documents, specialisms }: any) {
         <div className="bg-white rounded-xl border border-[#F3F4F6] overflow-hidden">
           <div className="px-5 py-3 bg-gradient-to-r from-pink-50 to-transparent border-b border-[#F3F4F6]">
             <div className="flex items-center gap-2">
-              <span className="text-[#E8317A]">₦</span>
+              <span className="text-maroon-500">₦</span>
               <h3 className="text-[13px] font-bold text-[#111827] uppercase tracking-wide">Consultation Setup</h3>
             </div>
           </div>

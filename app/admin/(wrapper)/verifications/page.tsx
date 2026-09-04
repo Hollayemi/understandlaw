@@ -249,7 +249,7 @@ function ReviewModal({
                 action === "reject" ? "Explain why this application was rejected…" :
                 "Specify what additional information or documents are needed…"
               }
-              className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-[#E8317A] placeholder:text-[#D1D5DB] transition-colors"
+              className="w-full h-24 px-4 py-3 rounded-xl border-[1.5px] border-[#E5E7EB] text-[13px] text-[#111827] resize-none outline-none focus:border-maroon-500 placeholder:text-[#D1D5DB] transition-colors"
             />
           </div>
 
@@ -513,7 +513,7 @@ export default function VerificationsPage() {
 
   // Stats from API
   const stats = [
-    { label: "Total Lawyers", value: statsData?.data?.total || 0, icon: FileText, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Total Lawyers", value: statsData?.data?.total || 0, icon: FileText, color: "#9B2E3D", bg: "#FFF0F5" },
     { label: "Pending Review", value: statsData?.data?.byStatus?.pending || 0, icon: Clock, color: "#F59E0B", bg: "#FFFBEB" },
     { label: "Approved", value: statsData?.data?.byStatus?.approved || 0, icon: CheckCircle, color: "#10B981", bg: "#ECFDF5" },
     { label: "Rejected", value: statsData?.data?.byStatus?.rejected || 0, icon: XCircle, color: "#EF4444", bg: "#FEF2F2" },
@@ -642,7 +642,7 @@ export default function VerificationsPage() {
 
         {isLoadingList ? (
           <div className="bg-white rounded-2xl border border-[#F3F4F6] p-16 text-center">
-            <Loader2 size={36} className="text-[#E8317A] mx-auto mb-3 animate-spin" />
+            <Loader2 size={36} className="text-maroon-500 mx-auto mb-3 animate-spin" />
             <p className="text-sm font-semibold text-[#9CA3AF]">Loading verifications...</p>
           </div>
         ) : filteredRequests.length === 0 ? (

@@ -42,7 +42,7 @@ const SubtopicContent = ({
   return (
     <div
       className={`border rounded-xl transition-all duration-300 ${isActive
-        ? "border-[#E8317A] shadow-md bg-white"
+        ? "border-maroon-500 shadow-md bg-white"
         : "border-gray-200 bg-white hover:border-gray-300"
         }`}
     >
@@ -54,13 +54,13 @@ const SubtopicContent = ({
           <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${isCompleted
             ? "bg-green-100"
             : isActive
-              ? "bg-[#E8317A]/10"
+              ? "bg-maroon-500/10"
               : "bg-gray-100"
             }`}>
             {isCompleted ? (
               <Check size={12} className="text-green-600" />
             ) : isActive ? (
-              <div className="w-2 h-2 rounded-full bg-[#E8317A]" />
+              <div className="w-2 h-2 rounded-full bg-maroon-500" />
             ) : (
               <span className="text-[10px] text-gray-400">
                 {subtopic.order || "•"}
@@ -68,7 +68,7 @@ const SubtopicContent = ({
             )}
           </div>
           <div className="flex-1">
-            <h4 className={`text-sm font-semibold ${isActive ? "text-[#E8317A]" : "text-gray-900"
+            <h4 className={`text-sm font-semibold ${isActive ? "text-maroon-500" : "text-gray-900"
               }`}>
               {subtopic.title}
             </h4>
@@ -92,7 +92,7 @@ const SubtopicContent = ({
 
             <button
               onClick={() => setExpanded(!expanded)}
-              className="flex items-center ml-3 justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8317A] focus:ring-offset-2"
+              className="flex items-center ml-3 justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:ring-offset-2"
               aria-label="Voice settings"
             >
               {expanded ? (
@@ -110,7 +110,7 @@ const SubtopicContent = ({
           <div className="prose prose-sm max-w-none">
             <div className="bg-gray-50 rounded-lg p-4 mb-3">
               <div className="flex items-center gap-2 mb-2">
-                <FileText size={14} className="text-[#E8317A]" />
+                <FileText size={14} className="text-maroon-500" />
                 <span className="text-xs font-semibold text-gray-700">Notes</span>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -128,7 +128,7 @@ const SubtopicContent = ({
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-[#E8317A] hover:underline flex items-center gap-1"
+                      className="text-xs text-maroon-500 hover:underline flex items-center gap-1"
                     >
                       <FileText size={10} /> {resource.name}
                     </a>
@@ -141,7 +141,7 @@ const SubtopicContent = ({
           {onComplete && !isCompleted && (
             <button
               onClick={onComplete}
-              className="mt-3 text-xs text-[#E8317A] font-semibold hover:underline"
+              className="mt-3 text-xs text-maroon-500 font-semibold hover:underline"
             >
               Mark this section as complete
             </button>
@@ -272,7 +272,7 @@ export default function TopicDetailPage() {
   if (moduleLoading || topicLoading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-[#E8317A]" />
+        <Loader2 className="w-8 h-8 animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -281,7 +281,7 @@ export default function TopicDetailPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <p className="text-gray-500 mb-4">Topic not found</p>
-        <Link href={`/dashboard/learn/${slug}`} className="text-[#E8317A] font-semibold">
+        <Link href={`/dashboard/learn/${slug}`} className="text-maroon-500 font-semibold">
           Back to Module
         </Link>
       </div>
@@ -335,7 +335,7 @@ export default function TopicDetailPage() {
                 className="h-1.5 rounded-full transition-all duration-500"
                 style={{
                   width: `${moduleProgressPercent}%`,
-                  background: "linear-gradient(90deg, #E8317A, #ff6fa8)"
+                  background: "linear-gradient(90deg, #9B2E3D, #82212D)"
                 }}
               />
             </div>
@@ -389,8 +389,8 @@ export default function TopicDetailPage() {
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 mb-5">
               <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[#E8317A]/10 flex items-center justify-center flex-shrink-0">
-                    <GraduationCap size={22} className="text-[#E8317A]" />
+                  <div className="w-12 h-12 rounded-full bg-maroon-500/10 flex items-center justify-center flex-shrink-0">
+                    <GraduationCap size={22} className="text-maroon-500" />
                   </div>
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wide text-gray-400">
@@ -418,7 +418,7 @@ export default function TopicDetailPage() {
                     onClick={handleMarkComplete}
                     disabled={isCompleting}
                     className="px-5 hidden py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center gap-2 shadow-md"
-                    style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                    style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                   >
                     {isCompleting ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />}
                     Mark Lesson Complete
@@ -441,7 +441,7 @@ export default function TopicDetailPage() {
                 className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <FileText size={18} className="text-[#E8317A]" />
+                  <FileText size={18} className="text-maroon-500" />
                   <h2 className="font-bold text-gray-900">Lesson Overview</h2>
                 </div>
                 {descExpanded ? (
@@ -482,7 +482,7 @@ export default function TopicDetailPage() {
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <h2 className="font-bold text-gray-900 flex items-center gap-2">
-                      <List size={18} className="text-[#E8317A]" />
+                      <List size={18} className="text-maroon-500" />
                       Lesson Content
                     </h2>
                     <p className="text-xs text-gray-500 mt-1">
@@ -491,18 +491,18 @@ export default function TopicDetailPage() {
                   </div>
                   <div>
                     <div className="flex flex-col items-end">
-                      {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm text-right! underline text-[#E8317A]">Open Lesson</Link>}
+                      {subtopics?.[0]?._id && <Link href={`/dashboard/learn/${slug}/${topicSlug}/${subtopics?.[0]?._id}`} className="text-sm text-right! underline text-maroon-500">Open Lesson</Link>}
                       {/* <div className="flex items-center gap-2">
                         <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className="h-1.5 rounded-full transition-all duration-300"
                             style={{
                               width: `${subtopicProgress}%`,
-                              background: "linear-gradient(90deg, #E8317A, #ff6fa8)"
+                              background: "linear-gradient(90deg, #9B2E3D, #82212D)"
                             }}
                           />
                         </div>
-                        <span className="text-xs font-semibold text-[#E8317A]">
+                        <span className="text-xs font-semibold text-maroon-500">
                           {completedSubtopics.size}/{subtopics.length}
                         </span>
                       </div> */}
@@ -535,7 +535,7 @@ export default function TopicDetailPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-5">
               <div className="p-5 border-b border-gray-100">
                 <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                  <MessageCircle size={16} className="text-[#E8317A]" />
+                  <MessageCircle size={16} className="text-maroon-500" />
                   Discussion
                 </h3>
               </div>
@@ -544,7 +544,7 @@ export default function TopicDetailPage() {
                 <div className="w-full mx-auto py-3">
                   <AskQuestionButton />
                 </div>
-                {/* <button className="mt-2 text-sm text-[#E8317A] font-semibold hover:underline">
+                {/* <button className="mt-2 text-sm text-maroon-500 font-semibold hover:underline">
                   Ask a question
                 </button> */}
               </div>
@@ -563,7 +563,7 @@ export default function TopicDetailPage() {
                   </div>
                   <div className="p-4">
                     <div className="text-center mb-3">
-                      <div className="text-2xl font-bold text-[#E8317A]">{subtopicProgress.toFixed(0)}%</div>
+                      <div className="text-2xl font-bold text-maroon-500">{subtopicProgress.toFixed(0)}%</div>
                       <p className="text-xs text-gray-500">Lesson Complete</p>
                     </div>
                     <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -571,7 +571,7 @@ export default function TopicDetailPage() {
                         className="h-2 rounded-full transition-all duration-500"
                         style={{
                           width: `${subtopicProgress}%`,
-                          background: "linear-gradient(90deg, #E8317A, #ff6fa8)"
+                          background: "linear-gradient(90deg, #9B2E3D, #82212D)"
                         }}
                       />
                     </div>
@@ -582,7 +582,7 @@ export default function TopicDetailPage() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="p-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
-                      <Menu size={14} className="text-[#E8317A]" />
+                      <Menu size={14} className="text-maroon-500" />
                       Jump to Section
                     </h3>
                   </div>
@@ -603,7 +603,7 @@ export default function TopicDetailPage() {
                         <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${completedSubtopics.has(subtopic._id)
                           ? "bg-green-100"
                           : activeSubtopicId === subtopic._id
-                            ? "bg-[#E8317A]/10"
+                            ? "bg-maroon-500/10"
                             : "bg-gray-100"
                           }`}>
                           {completedSubtopics.has(subtopic._id) ? (
@@ -612,7 +612,7 @@ export default function TopicDetailPage() {
                             <span className="text-[9px] text-gray-500">{idx + 1}</span>
                           )}
                         </div>
-                        <span className={`text-xs flex-1 truncate ${activeSubtopicId === subtopic._id ? 'font-semibold text-[#E8317A]' : 'text-gray-600'
+                        <span className={`text-xs flex-1 truncate ${activeSubtopicId === subtopic._id ? 'font-semibold text-maroon-500' : 'text-gray-600'
                           }`}>
                           {subtopic.title}
                         </span>
@@ -640,13 +640,13 @@ export default function TopicDetailPage() {
                   {nextTopic && !isCompleted && (
                     <button
                       onClick={() => router.push(`/dashboard/learn/${slug}/topic/${nextTopic.slug}`)}
-                      className="w-full flex items-center justify-end gap-2 p-3 rounded-xl bg-gradient-to-r from-[#E8317A]/10 to-[#ff6fa8]/10 border border-[#E8317A]/20 transition-all group"
+                      className="w-full flex items-center justify-end gap-2 p-3 rounded-xl bg-gradient-to-r from-maroon-500/10 to-maroon-600/10 border border-maroon-500/20 transition-all group"
                     >
                       <div className="flex-1 text-right min-w-0">
-                        <p className="text-[10px] text-[#E8317A]">Next Lesson</p>
+                        <p className="text-[10px] text-maroon-500">Next Lesson</p>
                         <p className="text-xs font-medium text-gray-700 truncate">{nextTopic.title}</p>
                       </div>
-                      <ChevronRight size={16} className="text-[#E8317A]" />
+                      <ChevronRight size={16} className="text-maroon-500" />
                     </button>
                   )}
                 </div>

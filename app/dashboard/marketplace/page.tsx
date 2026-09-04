@@ -101,7 +101,7 @@ export default function MarketplacePage() {
     return (
       <div className="flex-1 bg-[#F5F2EE] flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Loader2 size={40} className="animate-spin text-[#E8317A] mx-auto mb-4" />
+          <Loader2 size={40} className="animate-spin text-maroon-500 mx-auto mb-4" />
           <p className="text-gray-500">Loading verified lawyers...</p>
         </div>
       </div>
@@ -117,7 +117,7 @@ export default function MarketplacePage() {
           <p className="text-sm text-gray-500 mb-4">Please check your connection and try again</p>
           <button
             onClick={() => refetch()}
-            className="px-4 py-2 rounded-xl bg-[#E8317A] text-white text-sm font-semibold hover:bg-[#c81e6b] transition-colors"
+            className="px-4 py-2 rounded-xl bg-maroon-500 text-white text-sm font-semibold hover:bg-[#c81e6b] transition-colors"
           >
             Try Again
           </button>
@@ -157,13 +157,13 @@ export default function MarketplacePage() {
               backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
               backgroundSize: "28px 28px",
             }} />
-            <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-[#E8317A]/8 blur-[80px] pointer-events-none" />
+            <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-maroon-500/8 blur-[80px] pointer-events-none" />
 
             <div className="relative grid md:grid-cols-[1fr_auto] gap-6 p-6 xl:p-8 items-center">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <BadgeCheck size={14} className="text-[#E8317A]" />
-                  <span className="text-xs font-bold text-[#E8317A] uppercase tracking-widest">Verified Lawyers Only</span>
+                  <BadgeCheck size={14} className="text-maroon-500" />
+                  <span className="text-xs font-bold text-maroon-500 uppercase tracking-widest">Verified Lawyers Only</span>
                 </div>
                 <h1 className="text-2xl xl:text-3xl font-bold text-white leading-tight mb-2">
                   Find the Right Lawyer for Your Situation
@@ -175,7 +175,7 @@ export default function MarketplacePage() {
                   <button
                     onClick={() => setModal("request")}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                    style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                    style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                   >
                     <UserPlus size={14} />
                     Request a Lawyer
@@ -202,7 +202,7 @@ export default function MarketplacePage() {
                   const Icon = s.icon;
                   return (
                     <div key={s.l} className="bg-white/6 border border-white/8 rounded-xl p-3 flex items-center gap-2.5">
-                      <Icon size={14} className="text-[#E8317A] shrink-0" />
+                      <Icon size={14} className="text-maroon-500 shrink-0" />
                       <div>
                         <p className="text-sm font-bold text-white leading-none">{s.v}</p>
                         <p className="text-[10px] text-gray-500 mt-0.5">{s.l}</p>
@@ -229,7 +229,7 @@ export default function MarketplacePage() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search by name or area..."
-                  className="w-full h-11 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                  className="w-full h-11 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
                 />
               </div>
 
@@ -243,10 +243,10 @@ export default function MarketplacePage() {
                     const count = getFilterCounts(LAWYERS, s._id, filterState);
                     return (
                       <button key={s.id} onClick={() => setFilterSpecialism(s.id)}
-                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-[#E8317A] font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
-                        {/* <Icon size={14} className={active ? "text-[#E8317A]" : "text-gray-400"} /> */}
+                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-maroon-500 font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
+                        {/* <Icon size={14} className={active ? "text-maroon-500" : "text-gray-400"} /> */}
                         <span className="flex-1">{s.displayName}</span>
-                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${active ? "bg-pink-100 text-[#E8317A]" : "bg-gray-100 text-gray-400"}`}>{count}</span>
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${active ? "bg-pink-100 text-maroon-500" : "bg-gray-100 text-gray-400"}`}>{count}</span>
                       </button>
                     );
                   })}
@@ -262,9 +262,9 @@ export default function MarketplacePage() {
                     const count = getFilterCounts(LAWYERS, filterSpecialism, s);
                     return (
                       <button key={s} onClick={() => setFilterState(s)}
-                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-[#E8317A] font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm text-left transition-all ${active ? "bg-pink-50 text-maroon-500 font-semibold" : "text-gray-600 hover:bg-gray-50"}`}>
                         <span>{s === "all" ? "All States" : s}</span>
-                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${active ? "bg-pink-100 text-[#E8317A]" : "bg-gray-100 text-gray-400"}`}>{count}</span>
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${active ? "bg-pink-100 text-maroon-500" : "bg-gray-100 text-gray-400"}`}>{count}</span>
                       </button>
                     );
                   })}
@@ -273,8 +273,8 @@ export default function MarketplacePage() {
 
               {/* Request box */}
               <div className="bg-[#0B1120] rounded-2xl p-5 border border-white/6">
-                <div className="w-9 h-9 rounded-xl bg-[#E8317A]/15 border border-[#E8317A]/20 flex items-center justify-center mb-3">
-                  <Sparkles size={15} className="text-[#E8317A]" />
+                <div className="w-9 h-9 rounded-xl bg-maroon-500/15 border border-maroon-500/20 flex items-center justify-center mb-3">
+                  <Sparkles size={15} className="text-maroon-500" />
                 </div>
                 <p className="text-sm font-bold text-white mb-1">Not sure who to pick?</p>
                 <p className="text-xs text-gray-400 leading-relaxed mb-4">
@@ -283,7 +283,7 @@ export default function MarketplacePage() {
                 <button
                   onClick={() => setModal("request")}
                   className="w-full py-2.5 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transition-all"
-                  style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                  style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                 >
                   <UserPlus size={12} /> Request a Match
                 </button>
@@ -300,7 +300,7 @@ export default function MarketplacePage() {
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search lawyers..."
-                    className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+                    className="w-full h-10 pl-9 pr-4 rounded-xl border-[1.5px] border-gray-200 bg-white text-sm outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
                   />
                 </div>
 
@@ -319,7 +319,7 @@ export default function MarketplacePage() {
                   <select
                     value={sortBy}
                     onChange={e => setSortBy(e.target.value as typeof sortBy)}
-                    className="h-9 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-[#E8317A] transition-colors font-medium"
+                    className="h-9 px-3 rounded-xl border-[1.5px] border-gray-200 bg-white text-xs text-gray-700 outline-none focus:border-maroon-500 transition-colors font-medium"
                   >
                     <option value="rating">Top Rated</option>
                     <option value="reviews">Most Reviewed</option>
@@ -335,7 +335,7 @@ export default function MarketplacePage() {
                   <div className="flex flex-wrap gap-2">
                     {SPECIALISMS.map(s => (
                       <button key={s.id} onClick={() => setFilterSpecialism(s.id)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${filterSpecialism === s.id ? "bg-[#E8317A] text-white border-[#E8317A]" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}>
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${filterSpecialism === s.id ? "bg-maroon-500 text-white border-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}>
                         {s.label}
                       </button>
                     ))}
@@ -357,7 +357,7 @@ export default function MarketplacePage() {
                   <Scale size={32} className="text-gray-200 mx-auto mb-3" />
                   <p className="text-sm font-semibold text-gray-500">No lawyers found for this filter</p>
                   <button onClick={() => { setFilterSpecialism("all"); setFilterState("all"); setSearchQuery(""); }}
-                    className="mt-3 text-xs text-[#E8317A] font-semibold hover:underline">
+                    className="mt-3 text-xs text-maroon-500 font-semibold hover:underline">
                     Clear filters
                   </button>
                 </div>
@@ -369,11 +369,11 @@ export default function MarketplacePage() {
 
                   {/* Request card */}
                   <div
-                    className="rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-[#E8317A]/40 hover:bg-pink-50/30 transition-all group"
+                    className="rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 text-center cursor-pointer hover:border-maroon-500/40 hover:bg-pink-50/30 transition-all group"
                     onClick={() => setModal("request")}
                   >
                     <div className="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-pink-100 flex items-center justify-center mb-3 transition-colors">
-                      <Plus size={18} className="text-gray-400 group-hover:text-[#E8317A] transition-colors" />
+                      <Plus size={18} className="text-gray-400 group-hover:text-maroon-500 transition-colors" />
                     </div>
                     <p className="text-sm font-bold text-gray-500 group-hover:text-gray-800 transition-colors">Request a Lawyer</p>
                     <p className="text-xs text-gray-400 mt-1 leading-relaxed">Describe your need and get matched with the right lawyer</p>
@@ -409,7 +409,7 @@ export default function MarketplacePage() {
                           key={pageNum}
                           onClick={() => setPage(pageNum)}
                           className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${currentPage === pageNum
-                            ? "bg-[#E8317A] text-white"
+                            ? "bg-maroon-500 text-white"
                             : "border border-gray-200 text-gray-600 hover:border-gray-400"
                             }`}
                         >

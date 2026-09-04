@@ -72,7 +72,7 @@ export function ConsultationDrawer({
                         ? "#EF4444"
                         : consult.status === "completed"
                             ? "#10B981"
-                            : "linear-gradient(90deg, #E8317A, #ff6fa8)"
+                            : "linear-gradient(90deg, #9B2E3D, #82212D)"
                 }} />
 
                 <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
@@ -302,7 +302,7 @@ export function MatchRequestCard({
                         onClick={handleAccept}
                         disabled={acting !== null}
                         className="flex-1 py-2.5 rounded-xl text-[12px] font-bold text-white flex items-center justify-center gap-1.5 hover:-translate-y-0.5 transition-all disabled:opacity-60"
-                        style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                        style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                     >
                         {acting === "accept" ? <Loader2 size={11} className="animate-spin" /> : <ThumbsUp size={11} />}
                         Accept

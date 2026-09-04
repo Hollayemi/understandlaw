@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import {
@@ -9,506 +10,520 @@ import {
   Users,
   MapPin,
   Star,
-  Zap,
   Check,
-  ArrowRight
+  Zap,
+  ArrowRight,
+  ChevronRight,
 } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+import { useGetMarketplaceLawyersQuery } from "@/redux/slices/lawyers.slice";
+import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
+import { LawyerFull, Specialism } from "@/redux/types/lawyer";
+import { LawyerCard } from "@/app/marketplace/page"
+
+/* ------------------------------ PRODUCT PREVIEW ------------------------------ */
+
+export function ProductPreviewSection() {
+  return (
+    <section className="bg-white py-16 xl:py-24 overflow-hidden relative">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
+          <p
+            className="text-xs font-semibold uppercase tracking-widest mb-2"
+            style={{ color: "var(--maroon-600)" }}
+          >
+            See It In Action
+          </p>
+          <h2
+            className="text-[clamp(20px,3vw,36px)] leading-[1.05] text-gray-900 uppercase font-black"
+            style={{ fontFamily: "var(--font-archivo-black)" }}
+          >
+            One dashboard. Every right,
+            <br />
+            tracked and understood.
+          </h2>
+          <p className="text-[15px] leading-relaxed text-gray-500 mt-5">
+            Your reading streak, certificates, and saved topics, all in one
+            place, whether you&apos;re on a laptop or your phone between
+            meetings.
+          </p>
+        </motion.div>
+
+        {/* Stacked Images */}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Desktop screenshot — floating and rotating gently */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 50, rotateX: 10 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.8,
+              delay: 0.2,
+              type: "spring",
+              stiffness: 150,
+              damping: 25,
+            }}
+            whileHover={{
+              scale: 1.02,
+              y: -8,
+              rotateX: 2,
+              transition: { duration: 0.3 },
+            }}
+            className="relative rounded-2xl border border-gray-200 shadow-2xl shadow-gray-900/10 overflow-hidden bg-white"
+          >
+            <div className="flex items-center gap-1.5 px-4 py-3 bg-gray-50 border-b border-gray-100">
+              <span className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+              <span className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+              <span className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+              <span className="ml-3 text-[11px] text-gray-400 font-medium">
+                lawticha.com/dashboard
+              </span>
+            </div>
+            <motion.img
+              src="/images/dashboard.png"
+              alt="LawTicha dashboard showing reading streak, certificates, and legal modules"
+              className="w-full h-auto block"
+              whileHover={{
+                scale: 1.01,
+                transition: { duration: 0.3 },
+              }}
+            />
+          </motion.div>
+
+          {/* Mobile screenshot — floating on top with its own animation */}
+          <motion.div
+            initial={{ opacity: 0, y: -40, rotate: -6, scale: 0.8 }}
+            whileInView={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.7,
+              delay: 0.5,
+              type: "spring",
+              stiffness: 200,
+              damping: 18,
+            }}
+            whileHover={{
+              y: -16,
+              rotate: -3,
+              scale: 1.05,
+              transition: { duration: 0.25, type: "spring", stiffness: 300 },
+            }}
+            className="absolute -top-6 -left-6 md:-top-10 md:-left-10 z-10 w-[120px] sm:w-[140px] md:w-[170px] lg:w-[200px] xl:w-[220px] drop-shadow-2xl"
+          >
+            <motion.div
+              className="rounded-[22px] border-[6px] border-gray-900 shadow-xl overflow-hidden bg-gray-900"
+              whileHover={{
+                boxShadow: "0 30px 60px rgba(0,0,0,0.3)",
+                transition: { duration: 0.2 },
+              }}
+            >
+              <motion.img
+                src="/images/mobile_dashboard.png"
+                alt="LawTicha mobile dashboard"
+                className="w-full h-auto block rounded-[16px]"
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2 },
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-3"
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <Link href="/register" className="btn-maroon px-6 py-3 text-sm">
+              Get Started for Free
+              <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+            </Link>
+          </motion.div>
+          <motion.div
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border-[1.5px] border-gray-200 text-sm font-semibold text-gray-700 hover:border-gray-400 transition-colors"
+            >
+              See How It Works
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Animated background blobs */}
+      <motion.div
+        animate={{
+          x: [0, 30, -20, 0],
+          y: [0, -20, 10, 0],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -top-40 -right-40 w-96 h-96 bg-maroon-50/30 rounded-full blur-3xl -z-10"
+      />
+      <motion.div
+        animate={{
+          x: [0, -30, 20, 0],
+          y: [0, 20, -10, 0],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-50/20 rounded-full blur-3xl -z-10"
+      />
+    </section>
+  );
+}
+
 
 const TOPICS = [
   {
-    icon: <Shield />,
-    color: "#3B82F6",
-    bg: "#EFF6FF",
-    title: "Police & Law Enforcement",
+    icon: <Shield className="w-5 h-5" strokeWidth={2} />,
+    title: "Police & Arrest in Nigeria",
     count: 8,
-    topics: [
-      "Rights during arrest",
-      "Unlawful detention",
-      "Lawful search & seizure",
-      "SARS interactions",
-    ],
+    topics: ["Police Powers in Nigeria", "Detention After Arrest", "Police Interrogation", "Your Rights During Arrest"],
+    gradient: "from-rose-50 to-red-50",
+    iconBg: "bg-rose-100",
+    iconColor: "text-rose-700",
   },
   {
-    icon: <Home />,
-    color: "#10B981",
-    bg: "#ECFDF5",
+    icon: <Home className="w-5 h-5" strokeWidth={2} />,
     title: "Landlord & Tenancy",
     count: 6,
-    topics: [
-      "Eviction rights",
-      "Rental agreements",
-      "Illegal lockouts",
-      "Deposit recovery",
-    ],
+    topics: ["Eviction rights", "Rental agreements", "Illegal lockouts", "Deposit recovery"],
+    gradient: "from-amber-50 to-orange-50",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-700",
   },
   {
-    icon: <Briefcase />,
-    color: "#8B5CF6",
-    bg: "#F5F3FF",
+    icon: <Briefcase className="w-5 h-5" strokeWidth={2} />,
     title: "Employment & Labour",
     count: 7,
-    topics: [
-      "Wrongful termination",
-      "Severance pay",
-      "Workplace harassment",
-      "NSITF rights",
-    ],
+    topics: ["Wrongful termination", "Severance pay", "Workplace harassment", "NSITF rights"],
+    gradient: "from-blue-50 to-indigo-50",
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-700",
   },
   {
-    icon: <FileText />,
-    color: "#F59E0B",
-    bg: "#FFFBEB",
+    icon: <FileText className="w-5 h-5" strokeWidth={2} />,
     title: "Contracts & Agreements",
-    count: 5,
-    topics: [
-      "Valid contracts",
-      "Consumer rights",
-      "Breach of contract",
-      "Digital agreements",
-    ],
+    count: 6,
+    topics: ["Valid contracts", "Consumer rights", "Breach of contract", "Digital agreements"],
+    gradient: "from-emerald-50 to-teal-50",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-700",
   },
   {
-    icon: <Building2 />,
-    color: "#06B6D4",
-    bg: "#ECFEFF",
+    icon: <Building2 className="w-5 h-5" strokeWidth={2} />,
     title: "Business & Commerce",
     count: 6,
-    topics: [
-      "Business registration",
-      "Tax obligations",
-      "CAC requirements",
-      "IP protection",
-    ],
+    topics: ["Business registration", "Tax obligations", "CAC requirements", "IP protection"],
+    gradient: "from-purple-50 to-violet-50",
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-700",
   },
   {
-    icon: <Users />,
-    color: "#EF4444",
-    bg: "#FEF2F2",
+    icon: <Users className="w-5 h-5" strokeWidth={2} />,
     title: "Family & Personal Rights",
     count: 6,
-    topics: [
-      "Domestic violence",
-      "Protection orders",
-      "Inheritance",
-      "Child custody",
-    ],
+    topics: ["Domestic violence", "Protection orders", "Inheritance", "Child custody"],
+    gradient: "from-pink-50 to-rose-50",
+    iconBg: "bg-pink-100",
+    iconColor: "text-pink-700",
   },
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
+      duration: 0.5,
+    },
+  },
+};
 
 export function TopicsSection() {
   return (
-    <section className="relative bg-[#111827] !py-16 xl:!py-20 overflow-hidden">
-      {/* Breathing background image */}
-      <div className="absolute inset-0 opacity-20">
-        <div
-          className="absolute inset-0 bg-cover bg-center animate-breath"
-          style={{
-            backgroundImage: 'url(/images/contract_law.jpg)',
-            filter: 'blur(2px)',
-          }}
-        />
-        {/* Dark overlay to maintain readability */}
-        <div className="absolute inset-0 bg-[#111827]/70" />
+    <section className="relative bg-gradient-to-b from-[#F8F8F8] to-[#F3F3F3] py-16 xl:py-24 overflow-hidden">
+      {/* Decorative ambient elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-maroon-50/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-50/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/30 rounded-full blur-3xl" />
       </div>
 
-      {/* Content */}
-      <div className="relative max-w-6xl mx-auto !px-6 lg:!px-8 z-10">
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14"
+        >
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#E8317A] mb-2">
+            <motion.p
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="text-xs font-semibold uppercase tracking-[0.2em] mb-3"
+              style={{ color: "var(--maroon-600)" }}
+            >
               Legal Topics
-            </p>
-            <h2 className="text-[clamp(32px,4vw,48px)] font-bold leading-[1.05] text-white tracking-tight">
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-[clamp(28px,4vw,44px)] leading-[1.05] text-gray-900 uppercase font-black"
+              style={{ fontFamily: "var(--font-archivo-black)" }}
+            >
               Know what the law
               <br />
-              <span className="text-[#E8317A]">says about you</span>
-            </h2>
-          </div>
-          <Link
-            href="/learn"
-            className="group flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors shrink-0"
-          >
-            <span>View all topics</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
-
-        {/* Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {TOPICS.map((t) => (
-            <Link
-              key={t.title}
-              href={`/learn/${t.title.toLowerCase().replace(/\s+&\s+/g, "-").replace(/\s+/g, "-")}`}
-              className="group block rounded-xl !p-5 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/5 hover:border-[#E8317A]/30 transition-all duration-300"
+              says <span className="text-maroon-600">about you</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="text-[15px] text-gray-500 mt-3 max-w-lg"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
-                  style={{ background: t.bg }}
-                >
-                  {t.icon}
-                </div>
-                <span
-                  className="text-[10px] font-medium !px-2.5 !py-1 rounded-full uppercase tracking-wider"
-                  style={{ background: t.bg, color: t.color }}
-                >
-                  {t.count}
-                </span>
-              </div>
-
-              <h3 className="font-semibold text-white text-[15px] mb-3 group-hover:text-[#E8317A] transition-colors">
-                {t.title}
-              </h3>
-
-              <ul className="space-y-1.5">
-                {t.topics.slice(0, 3).map((topic) => (
-                  <li key={topic} className="flex items-center gap-2 text-xs text-white/50">
-                    <span
-                      className="w-1 h-1 rounded-full flex-shrink-0"
-                      style={{ background: t.color }}
-                    />
-                    {topic}
-                  </li>
-                ))}
-                {t.topics.length > 3 && (
-                  <li className="text-xs text-[#E8317A] pl-3.5">
-                    +{t.topics.length - 3} more
-                  </li>
-                )}
-              </ul>
+              Explore essential legal topics that affect your daily life, with
+              clear guides and actionable insights.
+            </motion.p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <Link
+              href="/learn"
+              className="group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all duration-300 rounded-full hover:bg-white/50 backdrop-blur-sm"
+            >
+              <span>View all topics</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5 group-hover:scale-110" />
             </Link>
+          </motion.div>
+        </motion.div>
+
+        {/* Cards Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {TOPICS.map((t, index) => (
+            <motion.div
+              key={t.title}
+              variants={cardVariants}
+              whileHover={{
+                y: -6,
+                transition: { type: "spring", stiffness: 300, damping: 20 },
+              }}
+              className="group"
+            >
+              <Link
+                href={`/dashboard/learn/know-your-rights`}
+                className="relative flex flex-col h-full rounded-2xl p-6 bg-white/80 backdrop-blur-sm border border-gray-100/80 hover:border-[var(--maroon-600)]/30 hover:shadow-xl transition-all duration-500 overflow-hidden"
+              >
+                {/* Subtle gradient background on hover */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${t.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
+                />
+
+                {/* Shine effect */}
+                <div className="absolute -inset-full group-hover:inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12" />
+
+                <div className="relative z-10">
+                  {/* Icon & Count */}
+                  <div className="flex items-start justify-between mb-5">
+                    <motion.div
+                      whileHover={{ rotate: -5, scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${t.iconBg} ${t.iconColor} transition-all duration-300 group-hover:shadow-lg`}
+                    >
+                      {t.icon}
+                    </motion.div>
+                    <span className="text-xs font-medium text-gray-400 bg-gray-50/80 px-3 py-1 rounded-full backdrop-blur-sm">
+                      {t.count} guides
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-bold text-gray-900 text-[17px] mb-4 group-hover:text-[var(--maroon-700)] transition-colors duration-300">
+                    {t.title}
+                  </h3>
+
+                  {/* Topics List */}
+                  <ul className="flex flex-col gap-2.5 mb-6">
+                    {t.topics.slice(0, 3).map((topic) => (
+                      <motion.li
+                        key={topic}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 * index }}
+                        className="flex items-start gap-2.5 text-[13.5px] text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300"
+                      >
+                        <Check
+                          className="w-4 h-4 flex-shrink-0 mt-0.5 transition-all duration-300 group-hover:scale-110"
+                          style={{ color: "var(--maroon-600)" }}
+                          strokeWidth={2.5}
+                        />
+                        <span>{topic}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+
+                  {/* Explore Link */}
+                  <motion.span
+                    whileHover={{ x: 4 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold pt-4 border-t border-gray-100/80 group-hover:border-[var(--maroon-600)]/20 transition-colors duration-300"
+                    style={{ color: "var(--maroon-700)" }}
+                  >
+                    <span>Explore topic</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-all duration-300 group-hover:translate-x-1.5 group-hover:scale-110" />
+                  </motion.span>
+                </div>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Bottom Decorative Line */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="mt-16 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"
+        />
       </div>
     </section>
   );
 }
 
-//  LAWYER CARDS 
+/* -------------------------------- MARKETPLACE -------------------------------- */
+
 const LAWYERS = [
-  { name: "Adaeze Okonkwo", role: "Employment & Labour Law", city: "Lagos", rating: 4.9, reviews: 38, response: "< 1hr", consults: 124, color: "#3B82F6", initials: "AO", badges: ["Verified", "Top Rated", "Responsive"] },
-  { name: "Emeka Nwosu", role: "Property & Tenancy Law", city: "Abuja", rating: 4.8, reviews: 55, response: "< 2hrs", consults: 210, color: "#10B981", initials: "EN", badges: ["Verified", "Top Rated"] },
-  { name: "Fatimah Bello", role: "Family & Domestic Law", city: "Kano", rating: 4.7, reviews: 29, response: "< 3hrs", consults: 87, color: "#8B5CF6", initials: "FB", badges: ["Verified", "Responsive"] },
+  { name: "Adaeze Okonkwo", role: "Employment & Labour Law", city: "Lagos", rating: 4.9, reviews: 38, response: "< 1hr", initials: "AO", badges: ["Verified", "Top Rated"] },
+  { name: "Emeka Nwosu", role: "Property & Tenancy Law", city: "Abuja", rating: 4.8, reviews: 55, response: "< 2hrs", initials: "EN", badges: ["Verified", "Top Rated"] },
+  { name: "Fatimah Bello", role: "Family & Domestic Law", city: "Kano", rating: 4.7, reviews: 29, response: "< 3hrs", initials: "FB", badges: ["Verified", "Responsive"] },
 ];
+
+const VERIFICATION_STEPS = ["Registration", "Credential Check", "Platform Training", "Assessment", "Badge Assigned"];
 
 export function MarketplaceSection() {
+  const { data: response, isLoading, isFetching, error, refetch } =
+      useGetMarketplaceLawyersQuery({});
+    const { data: specialismsResponse } = useListSpecialismsQuery();
+
+    const SPECIALISMS = specialismsResponse?.data || [];
+  
+    const lawyers: LawyerFull[] = response?.data?.data || [];
   return (
-    <section className="bg-[#F3F3F3] !py-20 xl:py-28">
-      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Lawyer Marketplace</p>
-            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
-              VERIFIED LAWYERS.<br />REAL EXPERTISE.
-            </h2>
-          </div>
-          <Link href="/marketplace" className="btn-pink self-start md:self-auto text-sm">
-            Browse All Lawyers →
-          </Link>
-        </div>
-
-        {/* Verification steps */}
-        <div className="bg-white rounded-2xl border border-gray-100 !p-5 mb-8">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Verification Process</p>
-          <div className="flex flex-wrap gap-3">
-            {["Registration", "Credential Check", "Platform Training", "Assessment", "Badge Assigned"].map((step, i) => (
-              <div key={step} className="flex items-center gap-2">
-                {i > 0 && <svg className="w-4 h-4 text-gray-300 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>}
-                <div className="flex items-center gap-1.5">
-                  <div className="w-6 h-6 rounded-full bg-[#E8317A]/10 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-[#E8317A]">{i + 1}</span>
-                  </div>
-                  <span className="text-xs font-medium text-gray-700">{step}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Lawyer cards */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {LAWYERS.map((l, index) => (
-            <div
-              key={l.name}
-              className="group relative bg-white rounded-2xl border border-gray-100 hover:border-[#E8317A]/20 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col"
-              style={{ transitionDelay: `${index * 80}ms` }}
-            >
-              {/* Premium gradient accent line */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#E8317A] to-[#FF6B9D] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              {/* Subtle background pattern */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#E8317A]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-              <div className="p-7 flex-1 relative">
-                {/* Header with refined layout */}
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="relative">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-                      style={{ background: `linear-gradient(135deg, ${l.color}, ${l.color}dd)` }}
-                    >
-                      {l.initials}
-                    </div>
-                    {/* Status indicator */}
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
-                  </div>
-
-                  <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="font-semibold text-gray-900 text-sm truncate group-hover:text-[#E8317A] transition-colors">
-                      {l.name}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-0.5 font-medium">{l.role}</p>
-                    <div className="flex items-center gap-1 mt-1 text-xs text-gray-400">
-                      <MapPin className="w-3 h-3" />
-                      <span>{l.city}, Nigeria</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Badges - refined with icons */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {l.badges.map((b) => {
-                    const configs = {
-                      "Verified": { icon: Check, bg: 'bg-emerald-50', text: 'text-emerald-600' },
-                      "Top Rated": { icon: Star, bg: 'bg-amber-50', text: 'text-amber-600' },
-                      "Fast Response": { icon: Zap, bg: 'bg-blue-50', text: 'text-blue-600' }
-                    };
-                    const config = configs[b as keyof typeof configs] || configs["Verified"];
-                    const Icon = config.icon;
-
-                    return (
-                      <span
-                        key={b}
-                        className={`inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-wide !px-2.5 !py-1 rounded-full ${config.bg} ${config.text}`}
-                      >
-                        <Icon className="w-3 h-3" />
-                        {b}
-                      </span>
-                    );
-                  })}
-                </div>
-
-                {/* Stats - redesigned with better visual hierarchy */}
-                <div className="grid grid-cols-3 gap-3 !py-4 border-t border-gray-50">
-                  {[
-                    { value: `★ ${l.rating}`, label: "Rating", highlight: true },
-                    { value: l.reviews.toString(), label: "Reviews" },
-                    { value: l.response, label: "Response" },
-                  ].map((stat) => (
-                    <div key={stat.label} className="text-center">
-                      <div className={`text-sm font-bold ${stat.highlight ? 'text-[#E8317A]' : 'text-gray-900'}`}>
-                        {stat.value}
-                      </div>
-                      <div className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-0.5">
-                        {stat.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Expertise tags */}
-                {/* <div className="mt-4 flex flex-wrap gap-1.5">
-                  {l.expertise?.slice(0, 3).map((exp: string) => (
-                    <span key={exp} className="text-[10px] text-gray-500 bg-gray-50 !px-2.5 !py-1 rounded-full">
-                      {exp}
-                    </span>
-                  ))}
-                  {l.expertise?.length > 3 && (
-                    <span className="text-[10px] text-[#E8317A] font-medium !px-2.5 !py-1">
-                      +{l.expertise.length - 3}
-                    </span>
-                  )}
-                </div> */}
-              </div>
-
-              {/* Footer with refined CTA */}
-              <div className="!px-7 pb-7 pt-1 relative">
-                <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent" />
-                <Link
-                  href={`/marketplace/${l.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="group/btn relative w-full flex items-center justify-center gap-2 py-3 bg-gray-50 hover:bg-[#E8317A] text-gray-700 hover:text-white font-semibold text-sm rounded-xl transition-all duration-300 overflow-hidden"
-                >
-                  <span className="relative z-10">Book Consultation</span>
-                  <ArrowRight className="w-4 h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" />
-
-                  {/* Shimmer effect */}
-                  <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                </Link>
-              </div>
+    <section className="bg-white py-20 xl:py-28">
+     {/* Grid */}
+          {!isLoading && !error && lawyers.length > 0 && (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {lawyers.map((l) => (
+                <LawyerCard key={l._id || l.id} lawyer={l} />
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          )}
     </section>
   );
 }
 
-//  TESTIMONIALS 
-const TESTIMONIALS = [
-  { quote: "My landlord tried to evict me without notice. I read the tenancy guide on LawTicha, understood my rights, and held my ground. The eviction attempt stopped completely.", name: "Chidinma Okafor", role: "Tenant, Enugu", topic: "Tenancy Rights", color: "#3B82F6", initials: "CO" },
-  { quote: "I was retrenched without severance. After using the employment law module, I knew exactly what I was owed. I hired a verified lawyer through the platform and got every kobo.", name: "Babatunde Lawal", role: "Former Staff, Lagos", topic: "Employment Law", color: "#10B981", initials: "BL" },
-  { quote: "As a small business owner, understanding contracts was something I always feared. The plain-English guides changed that. I now read every agreement before signing.", name: "Amina Garba", role: "SME Owner, Kano", topic: "Business Law", color: "#8B5CF6", initials: "AG" },
-  { quote: "I was detained at a checkpoint without cause. Knowing my rights and quoting the law led to my immediate release. LawTicha gave me the confidence I needed.", name: "Ikechukwu Eze", role: "Graduate, Port Harcourt", topic: "Police Rights", color: "#F59E0B", initials: "IE" },
-];
-
-export function TestimonialsSection() {
-  return (
-    <section className="bg-white !py-20 xl:py-28">
-      <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
-        <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Real Stories</p>
-          <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
-            THE LAW CHANGED THEIR OUTCOME.<br />KNOWLEDGE DID TOO.
-          </h2>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-5">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="rounded-2xl border border-gray-100 !p-6 hover:shadow-md transition-all duration-300">
-              <span className="inline-block text-[11px] font-semibold !px-2.5 !py-1 rounded-full mb-4"
-                style={{ background: `${t.color}12`, color: t.color }}>
-                {t.topic}
-              </span>
-              <p className="text-sm text-gray-600 leading-relaxed mb-5">"{t.quote}"</p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ background: `linear-gradient(135deg,${t.color},${t.color}80)` }}>
-                    {t.initials}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-400">{t.role}</p>
-                  </div>
-                </div>
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-//  PRICING + FINAL CTA 
-const TIERS = [
-  {
-    name: "Free", price: "₦0", period: "forever",
-    desc: "Full legal education, at no cost.",
-    features: ["Full Legal Learning Module", "Browse Legal Library", "Full-text search", "Topic recommendations"],
-    cta: "Get Started Free", href: "/register", highlight: false,
-  },
-  {
-    name: "Marketplace", price: "Pay-per-use", period: "per consultation",
-    desc: "Access verified lawyers when you need them.",
-    features: ["Everything in Free", "Browse lawyer profiles", "Book consultations", "Transparent pricing", "Consultation history"],
-    cta: "Find a Lawyer", href: "/marketplace", highlight: true, badge: "Most Popular",
-  },
-  {
-    name: "Premium", price: "Coming Soon", period: "Phase 3",
-    desc: "Deep-dive guides, templates, AI assistant.",
-    features: ["Everything in Marketplace", "Advanced legal guides", "Document templates", "AI legal query tool", "Completion certificates"],
-    cta: "Join Waitlist", href: "/waitlist", highlight: false, badge: "Phase 3",
-  },
-];
+/* ----------------------------------- FINAL CTA ----------------------------------- */
 
 export function CTASection() {
   return (
-    <>
-      {/* Pricing */}
-      <section className="bg-[#F3F3F3] !py-20 xl:py-28">
-        <div className="max-w-6xl mx-auto !px-6 lg:!px-8">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-2">Pricing</p>
-            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1, color: "#111827", letterSpacing: "0.01em" }}>
-              START FREE. SCALE WHEN READY.
-            </h2>
-            <p className="text-sm text-gray-500 mt-3 max-w-md mx-auto">
-              Legal knowledge should be free. Start learning today, no card required.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {TIERS.map((t) => (
-              <div key={t.name}
-                className={`relative rounded-2xl !p-7 flex flex-col transition-all duration-300 ${t.highlight
-                    ? "bg-[#111827] border-2 border-[#E8317A] shadow-xl scale-[1.02]"
-                    : "bg-white border border-gray-100 hover:shadow-lg hover:-translate-y-0.5"
-                  }`}>
-                {t.badge && (
-                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 !px-3 !py-0.5 rounded-full text-[11px] font-semibold ${t.highlight ? "bg-[#E8317A] text-white" : "bg-gray-200 text-gray-600"
-                    }`}>{t.badge}</div>
-                )}
-                <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${t.highlight ? "text-[#E8317A]" : "text-gray-400"}`}>{t.name}</p>
-                <div className="flex items-baseline gap-1 mb-1">
-                  <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, color: t.highlight ? "#fff" : "#111827", lineHeight: 1 }}>{t.price}</span>
-                  <span className={`text-xs ${t.highlight ? "text-gray-400" : "text-gray-400"}`}>/ {t.period}</span>
-                </div>
-                <p className={`text-xs mb-5 ${t.highlight ? "text-gray-400" : "text-gray-500"}`}>{t.desc}</p>
-                <ul className="flex flex-col gap-2.5 mb-7 flex-1">
-                  {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#E8317A]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span className={`text-xs leading-relaxed ${t.highlight ? "text-gray-300" : "text-gray-500"}`}>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href={t.href}
-                  className={`w-full !py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${t.highlight ? "btn-pink" : "border border-gray-200 text-gray-700 hover:border-gray-400 bg-white"
-                    }`}>
-                  {t.cta}
-                  {t.highlight && <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>}
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          {/* For lawyers CTA */}
-          <div className="mt-8 bg-white rounded-2xl border border-gray-100 !px-6 !py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-gray-900 text-sm">Are you a Nigerian lawyer?</p>
-              <p className="text-xs text-gray-500 mt-0.5">Get verified, build your client base. Subscription plans from Phase 2.</p>
-            </div>
-            <Link href="/lawyers/join" className="btn-cta flex-shrink-0 text-sm">Apply as a Lawyer →</Link>
-          </div>
+    <section className="relative overflow-hidden" style={{ background: "var(--maroon-900)" }}>
+      <div className="absolute inset-y-0 left-0 w-40 dot-grid" />
+      <div className="absolute inset-y-0 right-0 w-40 dot-grid" />
+      <div className="relative max-w-3xl mx-auto px-6 py-20 xl:py-24 text-center">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-4 text-white/80">Get Started Today</p>
+        <h2
+          className="text-[clamp(32px,5vw,52px)] leading-[1.05] text-white uppercase font-black mb-5"
+          style={{ fontFamily: "var(--font-archivo-black)" }}
+        >
+          Your rights don&apos;t change.
+          <br />
+          <span style={{ color: "var(--rose-400)" }}>Your awareness should.</span>
+        </h2>
+        <p className="text-sm text-white/70 mb-8 max-w-xl mx-auto leading-relaxed">
+          Join thousands of Nigerians learning the law, protecting their rights, and making informed decisions every day.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
+          <Link
+            href="/register"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-[15px] font-semibold transition-transform hover:-translate-y-0.5"
+            style={{ color: "var(--maroon-700)" }}
+          >
+            Start Learning, It&apos;s Free
+            <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>
+          <Link
+            href="/marketplace"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-white/30 text-white text-[15px] font-semibold hover:bg-white/5 transition-colors"
+          >
+            Talk to a Lawyer
+            <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>
         </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="bg-[#111827] !py-20 xl:py-24">
-        <div className="max-w-3xl mx-auto !px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#E8317A] mb-4">Get Started Today</p>
-          <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(40px,6vw,72px)", lineHeight: 0.95, color: "#fff", letterSpacing: "0.01em" }}
-            className="mb-5">
-            YOUR RIGHTS DON'T CHANGE.<br />
-            <span style={{ color: "#E8317A" }}>YOUR AWARENESS SHOULD.</span>
-          </h2>
-          <p className="text-sm text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
-            Join thousands of Nigerians learning the law, protecting their rights, and making informed decisions every day.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
-            <Link href="/register" className="btn-pink text-[15px]">
-              Start Learning. It's Free
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-            </Link>
-            <Link href="/marketplace"
-              className="inline-flex items-center justify-center gap-2 !px-6 !py-3.5 rounded-full border border-white/20 text-white text-[15px] font-semibold hover:bg-white/5 transition-colors">
-              Talk to a Lawyer
-            </Link>
-          </div>
-          <p className="mt-4 text-xs text-gray-600">No credit card required · Free forever · Nigerian law only</p>
-        </div>
-      </section>
-    </>
+        <p className="mt-4 text-xs text-white/50">
+          No credit card required &bull; Free forever &bull; Nigerian law only
+        </p>
+      </div>
+    </section>
   );
 }

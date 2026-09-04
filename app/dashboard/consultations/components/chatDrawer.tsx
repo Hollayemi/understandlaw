@@ -25,7 +25,7 @@ function JourneyTracker({ status }: { status: string }) {
                     <div className="flex items-center gap-1.5">
                         <div
                             className={`w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all ${i <= currentIdx
-                                    ? "bg-[#E8317A] ring-2 ring-[#E8317A]/20"
+                                    ? "bg-maroon-500 ring-2 ring-maroon-500/20"
                                     : "bg-[#E5E7EB]"
                                 }`}
                         />
@@ -38,7 +38,7 @@ function JourneyTracker({ status }: { status: string }) {
                     </div>
                     {i < steps.length - 1 && (
                         <div
-                            className={`flex-1 h-[2px] transition-all ${i < currentIdx ? "bg-[#E8317A]" : "bg-[#E5E7EB]"
+                            className={`flex-1 h-[2px] transition-all ${i < currentIdx ? "bg-maroon-500" : "bg-[#E5E7EB]"
                                 }`}
                         />
                     )}
@@ -206,7 +206,7 @@ export function ConsultationDrawer({
                             consult.status === "disputed" ? "#EF4444"
                                 : consult.status === "completed" ? "#10B981"
                                     : consult.status === "cancelled" ? "#9CA3AF"
-                                        : "linear-gradient(90deg, #E8317A, #ff6fa8)",
+                                        : "linear-gradient(90deg, #9B2E3D, #82212D)",
                     }}
                 />
 
@@ -313,7 +313,7 @@ export function ConsultationDrawer({
                                                         : "The conversation will appear here once it starts."}
                                                 </p>
                                                 {consult.status === "awaiting_lawyer" && (
-                                                    <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-[#E8317A] font-semibold">
+                                                    <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-maroon-500 font-semibold">
                                                         <Loader2 size={11} className="animate-spin" />
                                                         Awaiting lawyer response…
                                                     </div>
@@ -383,7 +383,7 @@ export function ConsultationDrawer({
                             ) : isChatActive && !conversation ? (
                                 <div className="flex-shrink-0 border-t border-[#F3F4F6] px-4 py-3">
                                     <div className="flex items-center justify-center gap-2 text-[11px] text-[#9CA3AF]">
-                                        <Loader2 size={11} className="animate-spin text-[#E8317A]" />
+                                        <Loader2 size={11} className="animate-spin text-maroon-500" />
                                         Loading conversation…
                                     </div>
                                 </div>

@@ -262,7 +262,7 @@ export function LawyerProfileUpdate() {
   const isLoading = isLoadingProfile || isUpdating;
 
   const inputCls =
-    "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors disabled:bg-gray-50 disabled:text-gray-500";
+    "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors disabled:bg-gray-50 disabled:text-gray-500";
 
   const feeTypes = [
     { key: "message", label: "Written Consultation", icon: MessageSquare, desc: "Async written advice" },
@@ -273,7 +273,7 @@ export function LawyerProfileUpdate() {
   if (isLoadingProfile) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 size={32} className="animate-spin text-[#E8317A]" />
+        <Loader2 size={32} className="animate-spin text-maroon-500" />
       </div>
     );
   }
@@ -292,7 +292,7 @@ export function LawyerProfileUpdate() {
           onClick={handleSave}
           disabled={isLoading}
           className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-          style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+          style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
         >
           {isUpdating ? (
             <Loader2 size={13} className="animate-spin" />
@@ -307,16 +307,17 @@ export function LawyerProfileUpdate() {
 
       {/* Professional Identity */}
       <Section title="Professional Identity" desc="Your SCN credentials and practice details.">
-        <Field label="SCN Bar Number" desc="This cannot be changed. Contact support for corrections.">
+        <Field label="SCN Bar Number" desc="Change your SCN Number only if it was entered incorrectly.">
+          {/* This cannot be changed. Contact support for corrections. */}
           <div className="relative">
             <input
               value={form.scnNumber}
-              disabled
+              // disabled
               className={`${inputCls} pr-24`}
             />
             <button
               onClick={copySCN}
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-[#E8317A] hover:bg-pink-50 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-maroon-500 hover:bg-pink-50 transition-colors"
             >
               {copySuccess ? (
                 <Check size={14} className="text-green-500" />
@@ -347,7 +348,7 @@ export function LawyerProfileUpdate() {
           <select
             value={form.state}
             onChange={(e) => updateForm("state", e.target.value)}
-            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-[#E8317A] transition-colors bg-white"
+            className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 transition-colors bg-white"
           >
             <option value="">Select state</option>
             {NIGERIAN_STATES.map((s) => (
@@ -404,23 +405,23 @@ export function LawyerProfileUpdate() {
                     className={`flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-left transition-all group
                       ${
                         isSelected
-                          ? "border-[#E8317A] bg-pink-50 shadow-sm"
-                          : "border-[#E5E7EB] bg-white hover:border-[#E8317A]/50 hover:bg-pink-50/30"
+                          ? "border-maroon-500 bg-pink-50 shadow-sm"
+                          : "border-[#E5E7EB] bg-white hover:border-maroon-500/50 hover:bg-pink-50/30"
                       }`}
                   >
                     <div
                       className={`w-2 h-2 rounded-full transition-colors ${
-                        isSelected ? "bg-[#E8317A]" : "bg-[#D1D5DB]"
+                        isSelected ? "bg-maroon-500" : "bg-[#D1D5DB]"
                       }`}
                     />
                     <span
                       className={`text-[13px] font-medium flex-1 ${
-                        isSelected ? "text-[#E8317A]" : "text-[#374151]"
+                        isSelected ? "text-maroon-500" : "text-[#374151]"
                       }`}
                     >
                       {spec.displayName || spec.name}
                     </span>
-                    {isSelected && <Check size={14} className="text-[#E8317A]" />}
+                    {isSelected && <Check size={14} className="text-maroon-500" />}
                   </button>
                 );
               })
@@ -447,8 +448,8 @@ export function LawyerProfileUpdate() {
                   className={`flex items-center gap-2 px-4 py-2 rounded-full border text-[13px] font-medium transition-all
                     ${
                       isSelected
-                        ? "border-[#E8317A] bg-pink-50 text-[#E8317A]"
-                        : "border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50 hover:text-[#E8317A]"
+                        ? "border-maroon-500 bg-pink-50 text-maroon-500"
+                        : "border-[#E5E7EB] text-[#6B7280] hover:border-maroon-500/50 hover:text-maroon-500"
                     }`}
                 >
                   {isSelected && <Check size={12} />}
@@ -470,7 +471,7 @@ export function LawyerProfileUpdate() {
             value={form.bio}
             onChange={(e) => updateForm("bio", e.target.value)}
             placeholder={`Called to the Nigerian Bar in ${form.yearOfCall || "20XX"}, I specialise in...`}
-            className="w-full h-32 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-[#E8317A] placeholder:text-gray-400 transition-colors"
+            className="w-full h-32 px-4 py-3 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 resize-none outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors"
           />
           {errors.bio && (
             <p className="text-[11px] text-red-500 mt-1">{errors.bio}</p>
@@ -501,7 +502,7 @@ export function LawyerProfileUpdate() {
                       updateEducation(edu.id, "institution", e.target.value)
                     }
                     placeholder="Institution"
-                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-maroon-500 transition-colors"
                   />
                   <input
                     value={edu.degree}
@@ -509,7 +510,7 @@ export function LawyerProfileUpdate() {
                       updateEducation(edu.id, "degree", e.target.value)
                     }
                     placeholder="Degree"
-                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-maroon-500 transition-colors"
                   />
                   <input
                     value={edu.year}
@@ -517,7 +518,7 @@ export function LawyerProfileUpdate() {
                       updateEducation(edu.id, "year", e.target.value)
                     }
                     placeholder="Year"
-                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                    className="h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-maroon-500 transition-colors"
                   />
                 </div>
               </div>
@@ -525,7 +526,7 @@ export function LawyerProfileUpdate() {
             <button
               type="button"
               onClick={addEducation}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium text-[#E8317A] hover:bg-pink-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium text-maroon-500 hover:bg-pink-50 transition-colors"
             >
               <Plus size={14} /> Add Education
             </button>
@@ -536,12 +537,12 @@ export function LawyerProfileUpdate() {
           <div className="space-y-2">
             {form.notableWork.map((work, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Star size={14} className="text-[#E8317A] flex-shrink-0" />
+                <Star size={14} className="text-maroon-500 flex-shrink-0" />
                 <input
                   value={work}
                   onChange={(e) => updateWork(index, e.target.value)}
                   placeholder="e.g. Represented clients in landmark constitutional case (2022)"
-                  className="flex-1 h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-[#E8317A] transition-colors"
+                  className="flex-1 h-10 px-3 rounded-lg border border-[#E5E7EB] text-[13px] outline-none focus:border-maroon-500 transition-colors"
                 />
                 <button
                   type="button"
@@ -555,7 +556,7 @@ export function LawyerProfileUpdate() {
             <button
               type="button"
               onClick={addWork}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium text-[#E8317A] hover:bg-pink-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium text-maroon-500 hover:bg-pink-50 transition-colors"
             >
               <Plus size={14} /> Add Achievement
             </button>
@@ -598,7 +599,7 @@ export function LawyerProfileUpdate() {
                       }
                       placeholder="0"
                       min="0"
-                      className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-[#E8317A] transition-colors"
+                      className="w-32 h-10 px-3 rounded-xl border border-[#E5E7EB] text-[14px] text-right font-semibold outline-none focus:border-maroon-500 transition-colors"
                     />
                   </div>
                 </div>
@@ -620,8 +621,8 @@ export function LawyerProfileUpdate() {
                 className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-[13px] font-medium transition-all
                   ${
                     form.responseTime === rt.value
-                      ? "border-[#E8317A] bg-pink-50 text-[#E8317A]"
-                      : "border-[#E5E7EB] text-[#6B7280] hover:border-[#E8317A]/50"
+                      ? "border-maroon-500 bg-pink-50 text-maroon-500"
+                      : "border-[#E5E7EB] text-[#6B7280] hover:border-maroon-500/50"
                   }`}
               >
                 <Clock size={14} />

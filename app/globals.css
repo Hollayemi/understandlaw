@@ -1,21 +1,31 @@
 @import "tailwindcss";
+@theme {
+  --color-maroon-900: #4D0E1B;
+  --color-maroon-800: #5C1420;
+  --color-maroon-700: #6B1220;
+  --color-maroon-600: #82212D;
+  --color-maroon-500: #9B2E3D;
+  --color-rose-400:   #C46478;
+  --color-rose-100:   #FBEFF1;
+  --color-gold:       #C9922A;
+  --color-gold-light: #E8B04A;
+  --color-navy:       #121824;
+  --color-navy-2:     #0F1520;
+  --color-bg:         #F3F3F3;
+}
 
-/*  Design tokens  */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Brand colours */
-  --pink:       #E8317A;
-  --pink:       #E8317A;
-  --pink-hover: #d01f68;
-  --gold:       #C9922A;
-  --gold-light: #E8B04A;
-  --navy:       #0B1120;
-  --navy-2:     #0F1D35;
+  --maroon-900: var(--color-maroon-900);
+  --maroon-800: var(--color-maroon-800);
+  --maroon-700: var(--color-maroon-700);
+  --maroon-600: var(--color-maroon-600);
+  --maroon-500: var(--color-maroon-500);
 
-  /* Page background */
-  --bg: #F3F3F3;
+  --color-pink:       var(--color-maroon-700);
+  --color-pink-hover: var(--color-maroon-900);
 }
 
 @theme inline {
@@ -410,4 +420,48 @@ body {
 }
 .animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
+}
+
+/* Dot grid decoration used on the maroon CTA band */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+/* Primary maroon pill button */
+.btn-maroon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--maroon-700);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.btn-maroon:hover {
+  background: var(--maroon-900);
+  transform: translateY(-1px);
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top {
+  animation-name: slideInFromTop;
 }

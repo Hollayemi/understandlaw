@@ -274,7 +274,7 @@ export function TranscriptDrawer({ consult, onClose }: { consult: Consultation; 
             ? "#EF4444"
             : consult.status === "completed"
               ? "#10B981"
-              : "linear-gradient(90deg, #E8317A, #ff6fa8)"
+              : "linear-gradient(90deg, #9B2E3D, #82212D)"
         }} />
 
         <div className="px-6 py-5 border-b border-[#F3F4F6] flex-shrink-0">
@@ -612,7 +612,7 @@ export function MatchCard({ req, onUpdate, onOpen }: { req: MatchRequest; onUpda
 
       {req.status === "recommended" && (
         <div className="flex items-center gap-2 p-2.5 bg-[#FFF0F5] border border-[#FBCFE8] rounded-xl mb-3">
-          <Zap size={12} className="text-[#E8317A]" />
+          <Zap size={12} className="text-maroon-500" />
           <p className="text-[11px] font-semibold text-[#9D174D]">
             {req.recommendedLawyers?.length || 0} lawyer{(req.recommendedLawyers?.length || 0) === 1 ? "" : "s"} recommended, awaiting citizen's pick
           </p>
@@ -621,7 +621,7 @@ export function MatchCard({ req, onUpdate, onOpen }: { req: MatchRequest; onUpda
 
       {(req.status === "pending" || req.status === "unassigned") && (
         <div className="flex gap-2">
-          <button onClick={onOpen} className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white bg-[#E8317A] hover:bg-[#d01f68] transition-colors flex items-center justify-center gap-1">
+          <button onClick={onOpen} className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white bg-maroon-500 hover:bg-maroon-600 transition-colors flex items-center justify-center gap-1">
             <Eye size={10} /> Accept & Review
           </button>
           <button onClick={handleAutoMatch} className="flex-1 py-2 rounded-xl text-[11px] font-semibold text-[#111827] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors flex items-center justify-center gap-1">

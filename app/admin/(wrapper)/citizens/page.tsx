@@ -70,7 +70,7 @@ export default function CitizensPage() {
   console.log("Citizens data:", CITIZENS);
 
   const stats = [
-    { label: "Total Citizens", value: CITIZENS?.length, icon: Users, color: "#E8317A", bg: "#FFF0F5" },
+    { label: "Total Citizens", value: CITIZENS?.length, icon: Users, color: "#9B2E3D", bg: "#FFF0F5" },
     { label: "Active", value: CITIZENS.filter(c => c.user.status === "active").length, icon: UserCheck, color: "#10B981", bg: "#ECFDF5" },
     { label: "Inactive", value: CITIZENS.filter(c => c.user.status === "inactive").length, icon: UserX, color: "#9CA3AF", bg: "#F9FAFB" },
     { label: "Flagged", value: CITIZENS.filter(c => c.user.status === "warning").length, icon: ShieldAlert, color: "#F59E0B", bg: "#FFFBEB" },

@@ -38,7 +38,7 @@ export default function PasswordInput({
         minLength={minLength}
         aria-invalid={error}
         className={`w-full h-11 px-4 pr-11 rounded-xl border-[1.5px] text-sm text-gray-900 bg-white outline-none placeholder:text-gray-300 transition-colors ${
-          error ? "border-red-300 focus:border-red-400" : "border-gray-200 focus:border-[#E8317A]"
+          error ? "border-red-300 focus:border-red-400" : "border-gray-200 focus:border-maroon-500"
         }`}
       />
       <button

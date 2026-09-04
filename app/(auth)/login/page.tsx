@@ -9,6 +9,7 @@ import { showError, showSuccess } from "@/app/components/ui/sonner";
 import AuthCard from "../auth_components/AuthCard";
 import SocialButtons from "../auth_components/SocialButtons";
 import PasswordInput from "../auth_components/PasswordInput";
+import Logo from "@/app/components/ui/logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -71,78 +72,9 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
-          className="text-center mb-8"
-        >
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
-              style={{
-                background: "linear-gradient(135deg, #E8317A, #ff6fa8)",
-              }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-                <line
-                  x1="12"
-                  y1="3"
-                  x2="12"
-                  y2="20"
-                  stroke="white"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-                <line
-                  x1="5"
-                  y1="8"
-                  x2="19"
-                  y2="8"
-                  stroke="white"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-                <circle cx="5" cy="8" r="1" fill="white" />
-                <circle cx="19" cy="8" r="1" fill="white" />
-                <path
-                  d="M3 11 Q5 15 7 11"
-                  stroke="white"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M17 11 Q19 15 21 11"
-                  stroke="white"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <line
-                  x1="9"
-                  y1="20"
-                  x2="15"
-                  y2="20"
-                  stroke="white"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-            <span
-              className="font-bold text-xl text-gray-900"
-              style={{ fontFamily: "var(--font-dm-sans)" }}
-            >
-              Law<span style={{ color: "#E8317A" }}>Ticha</span>
-            </span>
-          </Link>
-          {/* <p className="text-sm text-gray-500 mt-2">
-            Continue learning. Your rights don&apos;t take a break.
-          </p> */}
-        </motion.div>
 
         {/* Auth Card */}
+      
         <AuthCard title="Welcome Back" subtitle="Sign in to continue your journey">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -155,7 +87,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-[#E8317A] placeholder:text-gray-300 transition-colors"
+                className="w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 bg-white outline-none focus:border-maroon-500 placeholder:text-gray-300 transition-colors"
               />
             </div>
 
@@ -166,7 +98,7 @@ export default function LoginPage() {
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-xs text-[#E8317A] hover:underline font-medium"
+                  className="text-xs text-maroon-500 hover:underline font-medium"
                 >
                   Forgot password?
                 </Link>
@@ -184,7 +116,7 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 mt-2 rounded-full bg-[#E8317A] hover:bg-[#d01f68] disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
+              className="w-full h-12 mt-2 rounded-full bg-maroon-500 hover:bg-maroon-600 disabled:opacity-60 text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-pink-200 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -216,7 +148,7 @@ export default function LoginPage() {
           </form>
 
           {/* Social Login */}
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="flex-1 h-px bg-gray-200" />
               <span className="text-xs text-gray-400 font-medium">
@@ -225,14 +157,14 @@ export default function LoginPage() {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
             <SocialButtons />
-          </div>
+          </div> */}
 
           {/* Switch to Register */}
           <p className="text-center text-xs text-gray-500 mt-6">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
-              className="text-[#E8317A] font-semibold hover:underline"
+              className="text-maroon-500 font-semibold hover:underline"
             >
               Create one free
             </Link>

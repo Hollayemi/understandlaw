@@ -47,7 +47,7 @@ function CardToggle({
     >
       <span className="text-[12.5px] font-medium text-gray-700">{label}</span>
       <span
-        className={`w-9 h-5 rounded-full flex items-center px-0.5 transition-colors flex-shrink-0 ${checked ? "bg-[#E8317A]" : "bg-gray-200"
+        className={`w-9 h-5 rounded-full flex items-center px-0.5 transition-colors flex-shrink-0 ${checked ? "bg-maroon-500" : "bg-gray-200"
           }`}
       >
         <span
@@ -76,8 +76,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
     .join("") || "L";
 
   const colorA = profile?.colorA || "#1E3A5F";
-  const colorB = profile?.colorB || "#E8317A";
-  const nbaNumber: string = profile?.nbaNumber || "—";
+  const colorB = profile?.colorB || "#9B2E3D";
+  const scnNumber: string = profile?.scnNumber || "—";
   const yearOfCall = profile?.yearOfCall || profile?.calledAt || "—";
   const title = profile?.title || "";
   const state = profile?.state || "";
@@ -88,8 +88,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
 
   const profileUrl = useMemo(() => {
     if (typeof window === "undefined") return "";
-    return `${window.location.origin}/dashboard/marketplace/${encodeURIComponent(nbaNumber)}`;
-  }, [nbaNumber]);
+    return `${window.location.origin}/${profile._id}`;
+  }, [scnNumber]);
 
   useEffect(() => {
     if (!profileUrl) return;
@@ -118,7 +118,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
         skipFonts: true,
       });
       const link = document.createElement("a");
-      link.download = `lawticha-id-${nbaNumber !== "—" ? nbaNumber.replace(/\W+/g, "-") : "card"}-${config.cardType}.png`;
+      link.download = `lawticha-id-${scnNumber !== "—" ? scnNumber.replace(/\W+/g, "-") : "card"}-${config.cardType}.png`;
       link.href = dataUrl;
       link.click();
       showSuccess("ID card downloaded", "Ready to post — or just screenshot the preview above.");
@@ -155,31 +155,31 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               className="relative w-full max-w-[300px] aspect-[3/4] rounded-[20px] overflow-hidden shadow-2xl bg-white"
             >
               {/* Decorative gradient border */}
-              <div className="absolute inset-0 p-[2px] bg-gradient-to-br from-[#E8317A] via-[#E8317A]/50 to-[#1E3A5F] rounded-[20px]">
+              <div className="absolute inset-0 p-[2px] bg-gradient-to-br from-maroon-500 via-maroon-500/50 to-[#1E3A5F] rounded-[20px]">
                 <div className="w-full h-full bg-white rounded-[19px] relative overflow-hidden">
                   {/* Subtle decorative stripe at top */}
-                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#E8317A] via-[#E8317A]/70 to-[#E8317A]" />
+                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-maroon-500 via-maroon-500/70 to-maroon-500" />
                   
                   {/* Subtle decorative corner accents */}
-                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-[#E8317A]/10 rounded-tl-lg" />
-                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#E8317A]/10 rounded-tr-lg" />
-                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#E8317A]/10 rounded-bl-lg" />
-                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-[#E8317A]/10 rounded-br-lg" />
+                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-maroon-500/10 rounded-tl-lg" />
+                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-maroon-500/10 rounded-tr-lg" />
+                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-maroon-500/10 rounded-bl-lg" />
+                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-maroon-500/10 rounded-br-lg" />
 
                   <div className="relative h-full flex flex-col p-6">
                     {/* Header with logo */}
                     <div className="flex items-center justify-between mb-5">
                       <div className="relative w-[80px] h-[32px]">
                         <Image
-                          src="/images/logo.png"
+                          src="/images/icon.jpg"
                           alt="LawTicha"
                           fill
                           className="object-contain"
                         />
                       </div>
                       {isVerified && (
-                        <span className="flex items-center gap-1 text-[8px] font-bold tracking-wider uppercase bg-[#E8317A]/10 text-[#E8317A] px-2.5 py-1 rounded-full border border-[#E8317A]/20">
-                          <BadgeCheck size={10} className="text-[#E8317A]" /> Verified
+                        <span className="flex items-center gap-1 text-[8px] font-bold tracking-wider uppercase bg-maroon-500/10 text-maroon-500 px-2.5 py-1 rounded-full border border-maroon-500/20">
+                          <BadgeCheck size={10} className="text-maroon-500" /> Verified
                         </span>
                       )}
                     </div>
@@ -189,7 +189,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                       <>
                         <div className="flex flex-col items-center flex-1 justify-center -mt-2">
                           {/* Avatar */}
-                          <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-[#E8317A]/20 shadow-lg flex items-center justify-center bg-gradient-to-br from-[#E8317A]/5 to-[#1E3A5F]/5">
+                          <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-maroon-500/20 shadow-lg flex items-center justify-center bg-gradient-to-br from-maroon-500/5 to-[#1E3A5F]/5">
                             {avatarUrl ? (
                               <img src={avatarUrl} crossOrigin="anonymous" alt="" className="w-full h-full object-cover" />
                             ) : (
@@ -200,14 +200,14 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                           <div className="text-center w-full mt-4">
                             <p className="text-[20px] font-bold text-[#1E3A5F] leading-tight truncate px-2">{fullName || "—"}</p>
                             {config.showTitle && title && (
-                              <p className="text-[13px] text-[#E8317A] font-medium truncate mt-0.5">{title}</p>
+                              <p className="text-[13px] text-maroon-500 font-medium truncate mt-0.5">{title}</p>
                             )}
                             {config.showState && state && (
                               <p className="text-[11px] text-gray-500 truncate mt-0.5">{state}</p>
                             )}
                             {config.showRating && ratingAvg > 0 && (
-                              <div className="flex items-center justify-center gap-1.5 mt-3 bg-gradient-to-r from-[#E8317A]/5 to-[#1E3A5F]/5 px-3 py-1.5 rounded-full">
-                                <Star size={14} className="fill-[#E8317A] text-[#E8317A]" />
+                              <div className="flex items-center justify-center gap-1.5 mt-3 bg-gradient-to-r from-maroon-500/5 to-[#1E3A5F]/5 px-3 py-1.5 rounded-full">
+                                <Star size={14} className="fill-maroon-500 text-maroon-500" />
                                 <span className="text-[13px] font-bold text-[#1E3A5F]">{ratingAvg.toFixed(1)}</span>
                                 <span className="text-[10px] text-gray-500">({reviewCount} reviews)</span>
                               </div>
@@ -219,7 +219,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                         <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
                           <div>
                             <p className="text-[8px] text-gray-400 uppercase tracking-wider font-semibold">ID Number</p>
-                            <p className="text-[13px] font-mono font-bold text-[#1E3A5F]">{nbaNumber}</p>
+                            <p className="text-[13px] font-mono font-bold text-[#1E3A5F]">{scnNumber}</p>
                           </div>
                           {config.showYearOfCall && (
                             <div className="text-right">
@@ -233,12 +233,12 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                       /* Back Card Content */
                       <>
                         <div className="flex-1 flex flex-col justify-center items-center text-center">
-                          <div className="w-12 h-12 mb-4 relative opacity-30">
-                            <Image
-                              src="/images/logo.png"
+                          <div className="w-full mx-auto! h-12 mb-4 relative opacity-30">
+                            <Image 
+                              src="/images/icon.jpg"
                               alt="LawTicha"
                               fill
-                              className="object-contain"
+                              className="object-contain mx-auto"
                             />
                           </div>
                           <h3 className="text-[14px] font-bold text-[#1E3A5F] mb-3">Terms & Conditions</h3>
@@ -257,7 +257,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                               </div>
                               <div>
                                 <p className="text-[8px] text-gray-400 uppercase tracking-wider font-semibold">Response Time</p>
-                                <p className="font-mono font-bold text-[#E8317A]">{profile.responseTime}</p>
+                                <p className="font-mono font-bold text-maroon-500">{profile.responseTime}</p>
                               </div>
                             </div>
                           </div>
@@ -292,7 +292,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                 <button
                   onClick={() => setCardType("front")}
                   className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${config.cardType === "front"
-                      ? "bg-[#E8317A] text-white shadow-lg shadow-[#E8317A]/20"
+                      ? "bg-maroon-500 text-white shadow-lg shadow-maroon-500/20"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
@@ -301,7 +301,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
                 <button
                   onClick={() => setCardType("back")}
                   className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${config.cardType === "back"
-                      ? "bg-[#E8317A] text-white shadow-lg shadow-[#E8317A]/20"
+                      ? "bg-maroon-500 text-white shadow-lg shadow-maroon-500/20"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
@@ -320,8 +320,8 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               <CardToggle label="QR code to full profile" checked={config.showQr} onChange={toggle("showQr")} />
             </div>
 
-            <div className="bg-gradient-to-r from-[#E8317A]/5 to-[#1E3A5F]/5 rounded-xl p-3.5 mb-5 flex items-start gap-2 border border-[#E8317A]/10">
-              <QrCode size={13} className="text-[#E8317A] shrink-0 mt-0.5" />
+            <div className="bg-gradient-to-r from-maroon-500/5 to-[#1E3A5F]/5 rounded-xl p-3.5 mb-5 flex items-start gap-2 border border-maroon-500/10">
+              <QrCode size={13} className="text-maroon-500 shrink-0 mt-0.5" />
               <p className="text-[11px] text-gray-600 leading-relaxed">
                 The QR code links to your full LawTicha profile so anyone who scans it can see your reviews, specialisms and book you directly.
               </p>
@@ -331,7 +331,7 @@ export function LawyerIdCard({ user, profile }: { user: any; profile: any }) {
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#E8317A] to-[#E8317A]/80 hover:shadow-lg hover:shadow-[#E8317A]/20 transition-all"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-maroon-500 to-maroon-500/80 hover:shadow-lg hover:shadow-maroon-500/20 transition-all"
               >
                 {downloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
                 {downloading ? "Preparing image…" : "Download as PNG"}

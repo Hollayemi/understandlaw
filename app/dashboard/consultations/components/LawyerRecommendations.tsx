@@ -204,7 +204,7 @@ function LawyerCard({
                         onClick={onSelect}
                         disabled={isSelecting}
                         className="flex-1 px-4 py-2 rounded-xl text-sm font-bold text-white disabled:opacity-50 transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-1.5"
-                        style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                        style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                     >
                         {isSelecting ? (
                             <Loader2 size={16} className="animate-spin" />
@@ -412,7 +412,7 @@ function LawyerProfileSidebar({
                             onClick={onSelect}
                             disabled={isSelecting}
                             className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white disabled:opacity-50 transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2"
-                            style={{ background: "linear-gradient(135deg, #E8317A, #ff6fa8)" }}
+                            style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}
                         >
                             {isSelecting ? (
                                 <Loader2 size={18} className="animate-spin" />

@@ -19,6 +19,7 @@ import { REQUIRED_DOCUMENTS, STEPS } from "./components"
 import { showSuccess } from "@/app/components/ui/sonner";
 import { useRouter } from "next/navigation";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
+import Logo from "@/app/components/ui/logo";
 
 
 export default function LawyerOnboardingPage() {
@@ -38,7 +39,7 @@ export default function LawyerOnboardingPage() {
     location: "",
     phone: "",
     specialisms: [],
-    languages: ["English", "French"],
+    languages: ["English"],
     bio: "",
     education: [],
     notableWork: [],
@@ -105,11 +106,11 @@ export default function LawyerOnboardingPage() {
       if (form.languages.length === 0) newErrors.languages = "Select at least one language";
     } else if (step === 2) { // Story
       if (!form.bio.trim()) newErrors.bio = "Bio is required";
-      else if (form.bio.trim().length < 100) newErrors.bio = "Bio must be at least 100 characters";
+      // else if (form.bio.trim().length < 100) newErrors.bio = "Bio must be at least 100 characters";
     } else if (step === 3) { // Consultation
-      if (!form.fees.message || form.fees.message < 500) newErrors.fees = "Minimum NGN 500 for written consultations";
-      if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";
-      if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
+      // if (!form.fees.message || form.fees.message < 500) newErrors.fees = "Minimum NGN 500 for written consultations";
+      // if (!form.fees.call || form.fees.call < 2000) newErrors.fees = "Minimum NGN 2,000 for calls";
+      // if (!form.fees.video || form.fees.video < 3000) newErrors.fees = "Minimum NGN 3,000 for video sessions";
       if (!form.responseTime) newErrors.responseTime = "Select a response time";
     } else if (step === 4) {
       // if (!form.profilePicture) newErrors.image = "Please select a profile pictured";
@@ -277,7 +278,7 @@ export default function LawyerOnboardingPage() {
       const result = await submitVerification(formData).unwrap();
       if (result.success) {
         showSuccess("Profile submitted successfully!", "We'll review your application within 48 hours.");
-        router.push("/dashboard");
+        router.push("/dashboard?welcome=lawyer");
       }
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -310,22 +311,9 @@ export default function LawyerOnboardingPage() {
 
         {/* Header */}
         <div className="text-center mb-8 md:mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E8317A] to-[#ff6fa8] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                <line x1="12" y1="3" x2="12" y2="20" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="5" y1="8" x2="19" y2="8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <circle cx="5" cy="8" r="1" fill="white" />
-                <circle cx="19" cy="8" r="1" fill="white" />
-                <path d="M3 11 Q5 15 7 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                <path d="M17 11 Q19 15 21 11" stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-[#111827]">
-              Law<span className="text-[#E8317A]">Ticha</span>
-            </span>
-          </Link>
-
+          <div className="flex items-center justify-center mb-4">
+            <Logo showText />
+          </div>
           <h1 className="text-2xl md:text-3xl font-bold text-[#111827] mb-2">Complete Your Lawyer Profile</h1>
           <p className="text-[#6B7280] text-sm md:text-base max-w-md mx-auto">
             Join Nigeria's trusted legal marketplace and connect with clients seeking expert legal counsel.
@@ -335,14 +323,14 @@ export default function LawyerOnboardingPage() {
         {/* Progress Steps */}
         <div className="mb-8 md:mb-10">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#E8317A] uppercase tracking-wide">
+            <span className="text-[11px] font-semibold text-maroon-500 uppercase tracking-wide">
               Step {currentStep + 1} of {STEPS.length}
             </span>
             <span className="text-[11px] text-[#9CA3AF]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-maroon-500 to-maroon-600 transition-all duration-500 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -360,7 +348,7 @@ export default function LawyerOnboardingPage() {
                 <div className="flex flex-col items-center gap-2 flex-1">
                   <div className="relative">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all
-                      ${isActive ? 'bg-[#E8317A] shadow-lg scale-110' :
+                      ${isActive ? 'bg-maroon-500 shadow-lg scale-110' :
                         isCompleted ? 'bg-[#10B981]' : 'bg-white border-2 border-[#E5E7EB]'}`}
                     >
                       {isCompleted ? (
@@ -370,11 +358,11 @@ export default function LawyerOnboardingPage() {
                       )}
                     </div>
                     {isActive && (
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#E8317A]" />
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-maroon-500" />
                     )}
                   </div>
                   <span className={`text-[11px] font-semibold text-center max-w-[80px]
-                    ${isActive ? 'text-[#E8317A]' : isCompleted ? 'text-[#10B981]' : 'text-[#9CA3AF]'}`}
+                    ${isActive ? 'text-maroon-500' : isCompleted ? 'text-[#10B981]' : 'text-[#9CA3AF]'}`}
                   >
                     {step.label}
                   </span>
@@ -391,7 +379,7 @@ export default function LawyerOnboardingPage() {
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-[#F3F4F6] overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-[#E8317A] to-[#ff6fa8]" />
+          <div className="h-1.5 bg-gradient-to-r from-maroon-500 to-maroon-600" />
 
           <div className="p-6 md:p-8">
             {currentStep === 0 && <ProfessionalStep form={form} updateForm={updateForm} errors={errors} />}
@@ -415,7 +403,7 @@ export default function LawyerOnboardingPage() {
             {currentStep > 0 && (
               <button
                 onClick={handleBack}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:border-[#E8317A] hover:text-[#E8317A] transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#E5E7EB] text-[13px] font-semibold text-[#6B7280] hover:border-maroon-500 hover:text-maroon-500 transition-all"
               >
                 <ChevronLeft size={14} /> Back
               </button>
@@ -426,7 +414,7 @@ export default function LawyerOnboardingPage() {
             {currentStep < STEPS.length - 1 ? (
               <button
                 onClick={handleNext}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-maroon-500 to-maroon-600 hover:shadow-lg hover:-translate-y-0.5 transition-all"
               >
                 Continue <ChevronRight size={14} />
               </button>
@@ -457,11 +445,11 @@ export default function LawyerOnboardingPage() {
         {/* Footer */}
         <p className="text-center text-[11px] text-[#9CA3AF] mt-6 leading-relaxed">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-[#E8317A] font-semibold hover:underline">
+          <Link href="/auth/login" className="text-maroon-500 font-semibold hover:underline">
             Sign in
           </Link>
           {" "}· Need help?{" "}
-          <Link href="/support" className="text-[#E8317A] font-semibold hover:underline">
+          <Link href="/support" className="text-maroon-500 font-semibold hover:underline">
             Contact support
           </Link>
         </p>

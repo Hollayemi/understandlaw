@@ -119,7 +119,7 @@ export default function PostDetailPage() {
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-8 h-8 border-2 border-[#E8317A] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-maroon-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -128,7 +128,7 @@ export default function PostDetailPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <p className="text-gray-500 mb-4">Post not found</p>
-        <Link href="/dashboard/community" className="text-[#E8317A] font-semibold">
+        <Link href="/dashboard/community" className="text-maroon-500 font-semibold">
           Back to Community
         </Link>
       </div>
@@ -221,11 +221,11 @@ export default function PostDetailPage() {
               <button
                 onClick={handleLikePost}
                 className={`flex items-center gap-1 text-sm ${post.likedBy?.includes(post.author._id)
-                  ? "text-[#E8317A]"
-                  : "text-gray-500 hover:text-[#E8317A]"
+                  ? "text-maroon-500"
+                  : "text-gray-500 hover:text-maroon-500"
                   }`}
               >
-                <Heart size={16} className={post.likedBy?.includes(post.author._id) ? "fill-[#E8317A]" : ""} />
+                <Heart size={16} className={post.likedBy?.includes(post.author._id) ? "fill-maroon-500" : ""} />
                 {post.likes}
               </button>
             </div>
@@ -281,7 +281,7 @@ export default function PostDetailPage() {
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder={replyingTo ? "Write your reply..." : "Write a comment..."}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#E8317A] resize-none"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500 resize-none"
                   />
 
                   {/* Image Previews */}
@@ -316,7 +316,7 @@ export default function PostDetailPage() {
                     <button
                       onClick={handleSubmitComment}
                       disabled={!commentText.trim() && commentImages.length === 0}
-                      className="px-4 py-1.5 bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] text-white rounded-lg text-sm font-semibold disabled:opacity-50"
+                      className="px-4 py-1.5 bg-gradient-to-r from-maroon-500 to-maroon-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50"
                     >
                       <Send size={14} />
                     </button>
@@ -417,10 +417,10 @@ const CommentItem = ({
 
           {/* Actions */}
           <div className="flex items-center gap-4 text-xs text-gray-400">
-            <button onClick={onLike} className="flex items-center gap-1 hover:text-[#E8317A]">
+            <button onClick={onLike} className="flex items-center gap-1 hover:text-maroon-500">
               <Heart size={12} /> {comment.likes}
             </button>
-            <button onClick={() => setShowReply(!showReply)} className="hover:text-[#E8317A]">
+            <button onClick={() => setShowReply(!showReply)} className="hover:text-maroon-500">
               Reply
             </button>
             {isLawyer && !isPostResolved && (
@@ -438,9 +438,9 @@ const CommentItem = ({
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Write a reply..."
-                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#E8317A]"
+                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-maroon-500"
               />
-              <button className="px-3 py-2 bg-[#E8317A] text-white rounded-lg">
+              <button className="px-3 py-2 bg-maroon-500 text-white rounded-lg">
                 <Send size={14} />
               </button>
             </div>

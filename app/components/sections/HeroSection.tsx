@@ -1,76 +1,94 @@
 import React from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useUserData } from "@/hook/useData";
+import { ArrowRight, Star } from "lucide-react";
+import CardStrip from "./CardStrip";
+
+const AVATAR_COLORS = ["#6B1220", "#3B6FC4", "#0F9D58", "#E8A82A"];
 
 export default function HeroSection() {
+  const [email, setEmail] = React.useState("");
+  const { status } = useSession();
+  const { userInfo } = useUserData() as any;
+  const authed = status === "authenticated";
+  const user = userInfo?.user || {};
   return (
-    <section className="bg-white">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-14 pb-20">
-        <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
+    <section className="bg-white overflow-hidden max-w-7xl mx-auto px-1 lg:px-8">
+      <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 pt-12 pb-16 lg:pt-14 pl-4 sm:pl-8 lg:pl-[max(1.5rem,calc((100vw-1152px)/2+1.5rem))] overflow-hidden!">
+        {/* LEFT, headline + form */}
+        <div className="w-full lg:w-[400px] xl:w-[430px] flex-shrink-0 pr-6 lg:pr-0 animate-fade-up">
+          <h1
+            className="text-[30px] sm:text-[36px] leading-[1.06] tracking-tight uppercase text-gray-900 font-black"
+            style={{ fontFamily: "var(--font-archivo-black)" }}
+          >
+            Know your rights.
+            <br />
+            Own your <span className="text-maroon-500">future.</span>
+          </h1>
 
-          {/* LEFT,  headline + social proof */}
-          <div className="animate-fade-up">
-            <h1
-              className="text-[clamp(52px,6vw,40px)] md:text-[clamp(62px,8vw,76px)] leading-[0.93] tracking-[0.01em] uppercase text-gray-900 font-normal"
-              style={{ fontFamily: "var(--font-bebas)" }}
-            >
-              KNOW YOUR
-              RIGHTS.<br />
-              OWN YOUR{" "}<br className="hidden md:block" />
-              FUTURE.
-            </h1>
-
-            {/* Stars + avatars */}
-            <div className="flex items-center gap-3 mt-7">
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
-                ))}
-              </div>
-              <div className="flex items-center -space-x-2">
-                {["#E8317A","#3B82F6","#10B981","#F59E0B"].map((color, i) => (
-                  <div key={i} className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
-                    style={{ background: color, zIndex: 4 - i }}>
-                    {["A","B","C","D"][i]}
-                  </div>
-                ))}
-              </div>
-              <span className="text-sm font-medium text-gray-600">4.9/5 from 1.2K+ Users</span>
+          {/* Stars + avatars */}
+          <div className="flex items-center gap-3 mt-6 flex-wrap">
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-amber-400" fill="currentColor" strokeWidth={0} />
+              ))}
             </div>
+            <div className="flex items-center -space-x-2">
+              {AVATAR_COLORS.map((color, i) => (
+                <div
+                  key={i}
+                  className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white text-[9px] font-bold"
+                  style={{ background: color, zIndex: 4 - i }}
+                >
+                  {["A", "B", "C", "D"][i]}
+                </div>
+              ))}
+            </div>
+            <span className="text-sm font-medium text-gray-600">4.9/5 from 1.2K+ Users</span>
           </div>
 
-          {/* RIGHT,  description + form */}
-          <div className="animate-fade-up delay-200 flex flex-col gap-6 lg:pt-3">
-            <p className="text-[15px] leading-relaxed text-gray-500 max-w-md">
-              From Plain-English Legal Guides To Verified Lawyer Consultations,
-              LawTicha Gives Every Nigerian Everything They Need To Know Their
-              Rights, Navigate The Law, And Get Professional Help. All In One Place.
-            </p>
+          <p className="text-[15px] leading-relaxed text-gray-500 mt-6 max-w-md">
+            From plain-English legal guides to verified lawyer consultations,
+            LawTicha gives every Nigerian everything they need to know their
+            rights, navigate the law, and get professional help. All in one place.
+          </p>
 
-            {/* Email + CTA */}
-            <div className="flex flex-col sm:flex-row gap-3">
+          {/* Email + CTA */}
+          {!authed ? (
+            <div className="flex flex-col sm:flex-row gap-3 mt-7">
               <input
                 type="email"
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email Address"
-                className="md:flex-1 min-w-0 h-[52px] !px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
+                className="sm:flex-1 min-w-0 h-[52px] px-5 border-[1.5px] border-gray-200 rounded-xl text-sm text-gray-900 bg-white outline-none focus:border-gray-900 placeholder:text-gray-400 transition-colors"
               />
-              <Link href="/dashboard"
-                className="flex-shrink-0 flex items-center justify-center gap-2 h-[52px] px-6 bg-[#E8317A] hover:bg-[#d01f68] text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-200 whitespace-nowrap">
+              <Link href={`/register?email=${email}`} className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
                 Get Started for Free
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                </svg>
+                <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
             </div>
+          ) : <Link href="/dashboard" className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
+            Continue to Dashboard
+            <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>}
 
-            <p className="text-xs text-gray-400">
-              By proceeding you agree to our{" "}
-              <Link href="/legal/terms" className="underline hover:text-gray-600 transition-colors">Platform Terms</Link>
-              {" "}&{" "}
-              <Link href="/legal/privacy" className="underline hover:text-gray-600 transition-colors">Privacy Notice</Link>.
-            </p>
-          </div>
+          <p className="text-xs text-gray-400 mt-4">
+            By proceeding you agree to our{" "}
+            <Link href="/legal/terms" className="underline hover:text-gray-600 transition-colors">
+              Platform Terms
+            </Link>{" "}
+            &amp;{" "}
+            <Link href="/legal/privacy" className="underline hover:text-gray-600 transition-colors">
+              Privacy Notice
+            </Link>
+            .
+          </p>
+        </div>
+
+        {/* RIGHT, card strip bleeding to the viewport edge */}
+        <div className="flex-1 min-w-0 animate-fade-up delay-200">
+          <CardStrip />
         </div>
       </div>
     </section>

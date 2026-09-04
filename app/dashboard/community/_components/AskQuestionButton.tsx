@@ -56,9 +56,9 @@ export default function AskQuestionButton({
     };
     
     const variantStyles = {
-      primary: "bg-gradient-to-r from-[#E8317A] to-[#ff6fa8] text-white shadow-md hover:shadow-lg",
+      primary: "bg-gradient-to-r from-maroon-500 to-maroon-600 text-white shadow-md hover:shadow-lg",
       secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200",
-      outline: "border-2 border-[#E8317A] text-[#E8317A] hover:bg-[#E8317A]/5",
+      outline: "border-2 border-maroon-500 text-maroon-500 hover:bg-maroon-500/5",
     };
     
     return `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`;
