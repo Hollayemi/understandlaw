@@ -252,8 +252,8 @@ export function LawyerProfileUpdate() {
         await refetch();
         setSaved(true);
         showSuccess("Profile updated successfully!");
-        setTimeout(() => setSaved(false), 3000);
       }
+      showError(result.message || "Failed to update profile. Please try again.");
     } catch (error: any) {
       showError(error?.data?.message || error?.message || "Failed to update profile");
     }

@@ -68,7 +68,7 @@ export default function HeroSection() {
                 <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
               </Link>
             </div>
-          ) : <Link href="/dashboard" className="btn-maroon flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
+          ) : <Link href="/dashboard" className="btn-maroon mt-5 flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
             Continue to Dashboard
             <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
           </Link>}

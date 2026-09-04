@@ -39,31 +39,33 @@ import {
 import { showError, showSuccess } from "@/app/components/ui/sonner";
 import { useResendVerificationMutation, useUpdatePasswordMutation } from "@/redux/authService/authSlice";
 
-
+// Responsive Section component
 export function Section({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-5">
-      <div className="px-6 py-5 border-b border-gray-50">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 md:mb-5">
+      <div className="px-4 py-4 md:px-6 md:py-5 border-b border-gray-50">
         <h3 className="text-sm font-bold text-gray-900">{title}</h3>
         {desc && <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{desc}</p>}
       </div>
-      <div className="px-6 py-5">{children}</div>
+      <div className="px-4 py-4 md:px-6 md:py-5">{children}</div>
     </div>
   );
 }
 
+// Responsive Field component
 export function Field({ label, desc, children }: { label: string; desc?: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start gap-3 py-4 border-b border-gray-50 last:border-0">
-      <div className="sm:w-44 flex-shrink-0">
+    <div className="flex flex-col gap-2 py-3 border-b border-gray-50 last:border-0 md:flex-row md:items-start md:gap-3 md:py-4">
+      <div className="flex-shrink-0 md:w-44">
         <p className="text-xs font-semibold text-gray-700">{label}</p>
         {desc && <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{desc}</p>}
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 w-full">{children}</div>
     </div>
   );
 }
 
+// Responsive ToggleSwitch
 export function ToggleSwitch({
   value,
   onChange,
@@ -73,42 +75,44 @@ export function ToggleSwitch({
     <button
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
-      className={`relative w-11 h-6 rounded-full transition-all duration-200 flex-shrink-0 ${value ? "bg-maroon-500" : "bg-gray-200"
-        } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      className={`relative w-11 !h-6 rounded-full transition-all duration-200 shrink-0 ${
+        value ? "bg-maroon-500" : "bg-gray-200"
+      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
-      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${value ? "translate-x-5" : "translate-x-0"
-        }`} />
+      <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
+        value ? "translate-x-5" : "translate-x-0"
+      }`} />
     </button>
   );
 }
 
+// Responsive ToggleRow
 export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: string, v: boolean) => void }) {
   const [updateProfile, { isLoading }] = useUpdateMyProfileMutation();
   const [localValue, setLocalValue] = useState(item.value);
 
-  // Sync local value when prop changes
   useEffect(() => {
     setLocalValue(item.value);
   }, [item.value]);
 
   const handleToggle = async (newValue: boolean) => {
-    setLocalValue(newValue); // Optimistic update
+    setLocalValue(newValue);
     try {
       await updateProfile({ [item.key]: newValue }).unwrap();
       onChange(item.id, newValue);
     } catch (error) {
-      setLocalValue(!newValue); // Rollback on error
+      setLocalValue(!newValue);
       console.error("Failed to update:", error);
     }
   };
 
   return (
-    <div className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
-      <div className="flex-1 pr-4">
+    <div className="flex flex-col gap-2 py-3 border-b border-gray-50 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:py-3.5">
+      <div className="flex-1 pr-0 sm:pr-4">
         <p className="text-xs font-semibold text-gray-800">{item.label}</p>
         <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 self-start sm:self-auto">
         {isLoading && <Loader2 size={14} className="animate-spin text-gray-400" />}
         <ToggleSwitch
           value={localValue}
@@ -120,11 +124,10 @@ export function ToggleRow({ item, onChange }: { item: Toggle; onChange: (id: str
   );
 }
 
-// Profile tab 
+// Responsive Profile Settings
 export function ProfileSettings({ user, profile }: { user: CitizenUser, profile: CitizenProfile }) {
   const { userInfo, refetch } = useUserData();
   const [saved, setSaved] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [form, setForm] = useState({
     firstName: user.firstName || "",
@@ -149,21 +152,17 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
 
   const handleUpdate = async () => {
     try {
-      setSaving(true);
       const result = await updateProfile({
         ...form,
         avatarUrl: images[0]?.base64 || undefined
       }).unwrap();
 
-      // Refetch user data to get updated avatar
+      if (!result.success) {
+        showError("Profile Update Failed", result.message || "Please try again later.");
+      }
       await refetch();
-
-      setSaving(true);
-
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
 
-      // Clear images after successful upload
       if (images.length > 0) {
         setImages([]);
       }
@@ -186,28 +185,31 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const inputCls = "w-full h-11! px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
+  const inputCls = "w-full !h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
 
   const STATES = ["Lagos", "Abuja", "Rivers", "Kano", "Kaduna", "Oyo", "Anambra", "Enugu", "Delta", "Kwara", "Ondo", "Ogun", "Edo", "Cross River", "Akwa Ibom"];
 
   return (
     <div>
-      {/* Avatar section */}
       <Section title="Profile Photo">
-        <div className="flex items-start gap-5">
-          <div className="relative">
-            {user.avatarUrl ? <img src={user.avatarUrl} alt="image" className="w-16 h-16 rounded-2xl" /> : <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-maroon-500 to-maroon-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-              AO
-            </div>}
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-5">
+          <div className="flex flex-col items-center gap-2 sm:items-start">
+            {user.avatarUrl ? (
+              <img src={user.avatarUrl} alt="image" className="w-20 h-20 rounded-2xl sm:w-16 sm:h-16" />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-maroon-500 to-maroon-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0 sm:w-16 sm:h-16 sm:text-xl">
+                AO
+              </div>
+            )}
             <button className="px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors">
               Remove
             </button>
           </div>
-          <div>
+          <div className="flex-1 text-center sm:text-left">
             <p className="text-sm font-semibold text-gray-900 mb-1">Profile picture</p>
             <p className="text-xs text-gray-500 mb-3">JPG or PNG, max 2MB.</p>
             <ThumbnailUpload images={images} title=" " setImages={setImages} maxImages={1}>
-              <div className="flex gap-2 -mt-2">
+              <div className="flex justify-center sm:justify-start">
                 <div className="px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all">
                   Upload photo
                 </div>
@@ -215,7 +217,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
             </ThumbnailUpload>
             {images.length > 0 && (
               <button onClick={handleUpdate} disabled={isLoading}
-                className="mt-2 flex-1 py-2.5 px-5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
+                className="mt-3 w-full sm:w-auto px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#111827] hover:bg-[#1F2937] disabled:opacity-40 transition-colors">
                 {isLoading ? "Saving..." : "Save Changes"}
               </button>
             )}
@@ -231,16 +233,16 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
           <input value={form.lastName} onChange={set("lastName")} className={inputCls} />
         </Field>
         <Field label="Email Address" desc="Used for login and notifications">
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
             <input
               value={form.email}
               onChange={set("email")}
               type="email"
-              className={`${inputCls} flex-1`}
+              className={`${inputCls} !h-11 flex-1`}
             />
             <div className="flex-shrink-0">
               {user.isVerified ? (
-                <div className="flex items-center gap-1.5 h-10 px-3 rounded-lg bg-green-50 border border-green-100 text-green-700">
+                <div className="flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg bg-green-50 border border-green-100 text-green-700 w-full sm:w-auto">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-xs font-medium">Verified</span>
                   <Check size={14} className="text-green-600" />
@@ -249,7 +251,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
                 <button
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="flex items-center gap-2 h-10 px-4 rounded-lg bg-maroon-500 hover:bg-maroon-600 disabled:opacity-60 text-white text-xs font-semibold transition-all hover:shadow-lg hover:shadow-pink-200"
+                  className="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-maroon-500 hover:bg-maroon-600 disabled:opacity-60 text-white text-xs font-semibold transition-all hover:shadow-lg hover:shadow-pink-200 w-full sm:w-auto"
                 >
                   {isResending ? (
                     <>
@@ -272,17 +274,17 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
           {!user.isVerified && (
             <div className="flex items-center gap-2 mt-1.5 text-xs text-amber-600">
               <AlertCircle size={14} />
-              <span>Email not verified. Check your inbox for the verification link.</span>
+              <span className="text-left">Email not verified. Check your inbox for the verification link.</span>
             </div>
           )}
         </Field>
 
         <Field label="Phone Number" desc="Optional. Used for SMS notifications">
-          <div className="flex gap-2">
-            <div className="h-11 px-3 bg-gray-50 border-[1.5px] border-gray-200 rounded-xl flex items-center text-sm text-gray-600 flex-shrink-0">
+          <div className="flex  gap-2">
+            <div className="h-11 px-3 bg-gray-50 border-[1.5px] border-gray-200 rounded-xl flex items-center text-sm text-gray-600 shrink-0 w-14 sm:w-auto">
               +234
             </div>
-            <input value={form.phone} onChange={set("phone")} type="tel" className={`${inputCls} flex-1`} placeholder="080 0000 0000" />
+            <input value={form.phone} onChange={set("phone")} type="tel" className={`${inputCls}  !h-11 flex-1`} placeholder="080 0000 0000" />
           </div>
         </Field>
         <Field label="State" desc="Used to surface relevant lawyers near you">
@@ -298,12 +300,12 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
         </Field>
       </Section>
 
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-gray-400">Changes take effect immediately after saving.</p>
-        <button onClick={handleUpdate} disabled={saving}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <p className="text-xs text-gray-400 text-center md:text-left">Changes take effect immediately after saving.</p>
+        <button onClick={handleUpdate} disabled={isLoading}
+          className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 w-full md:w-fit"
           style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
-          {saving ? <><Loader2 size={13} className="animate-spin" /> Saving...</>
+          {isLoading ? <><Loader2 size={13} className="animate-spin sh" /> Saving...</>
             : saved ? <><Check size={13} /> Saved</>
               : <><Save size={13} /> Save Changes</>}
         </button>
@@ -312,7 +314,7 @@ export function ProfileSettings({ user, profile }: { user: CitizenUser, profile:
   );
 }
 
-// Notifications tab 
+// Responsive Notification Settings
 export function NotificationSettings({ user }: { user: CitizenUser }) {
   const [items, setItems] = useState<Toggle[]>([
     { id: "n1", label: "Lawyer response notifications", key: "notifLawyerResponse", desc: "Get notified when a lawyer accepts or declines your consultation request.", value: user.notifLawyerResponse },
@@ -354,7 +356,7 @@ export function NotificationSettings({ user }: { user: CitizenUser }) {
   );
 }
 
-// Privacy tab 
+// Responsive Privacy Settings
 export function PrivacySettings({ user }: { user: CitizenUser }) {
   const [items, setItems] = useState<Toggle[]>([
     { id: "p1", label: "Show my reading activity to the community", key: "showActivityPublic", desc: "Let others see which legal topics you have studied (anonymous unless you opt in).", value: user.showActivityPublic },
@@ -372,33 +374,33 @@ export function PrivacySettings({ user }: { user: CitizenUser }) {
       </Section>
 
       <Section title="Data Export">
-        <div className="flex items-start gap-4 py-2">
+        <div className="flex flex-col gap-4 py-2 sm:flex-row sm:items-start sm:gap-4">
           <div className="flex-1">
             <p className="text-xs font-semibold text-gray-900 mb-1">Download your data</p>
             <p className="text-[11px] text-gray-500 leading-relaxed">Export a copy of your profile, reading history, consultation requests, and highlights. Delivered to your email within 24 hours.</p>
           </div>
-          <button className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all">
+          <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all w-full sm:w-auto">
             <Download size={12} /> Request Export
           </button>
         </div>
       </Section>
 
       <Section title="Danger Zone">
-        <div className="flex items-start gap-4 py-2 pb-5 border-b border-gray-50">
+        <div className="flex flex-col gap-4 py-2 pb-5 border-b border-gray-50 sm:flex-row sm:items-start sm:gap-4">
           <div className="flex-1">
             <p className="text-xs font-semibold text-gray-900 mb-1">Clear reading history</p>
             <p className="text-[11px] text-gray-500 leading-relaxed">Remove all records of topics you have read. Your certificates and highlights are kept.</p>
           </div>
-          <button className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition-colors">
+          <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition-colors w-full sm:w-auto">
             <Trash2 size={12} /> Clear History
           </button>
         </div>
-        <div className="flex items-start gap-4 pt-5">
+        <div className="flex flex-col gap-4 pt-5 sm:flex-row sm:items-start sm:gap-4">
           <div className="flex-1">
             <p className="text-xs font-semibold text-red-700 mb-1">Delete account</p>
             <p className="text-[11px] text-gray-500 leading-relaxed">Permanently delete your account, profile, and all associated data. This cannot be undone. Active consultations must be closed first.</p>
           </div>
-          <button className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-red-200 bg-red-50 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors">
+          <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-red-200 bg-red-50 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors w-full sm:w-auto">
             <Trash2 size={12} /> Delete Account
           </button>
         </div>
@@ -407,7 +409,7 @@ export function PrivacySettings({ user }: { user: CitizenUser }) {
   );
 }
 
-// Security tab 
+// Responsive Security Settings
 export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation()
   const [showCurrent, setShowCurrent] = useState(false);
@@ -431,12 +433,6 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
   };
 
   const inputCls = "w-full h-11 px-4 rounded-xl border-[1.5px] border-gray-200 text-sm text-gray-900 outline-none focus:border-maroon-500 placeholder:text-gray-400 transition-colors";
-
-  const SESSIONS = [
-    { device: "Chrome on Windows", location: "Lagos, Nigeria", time: "Active now", current: true },
-    { device: "Safari on iPhone", location: "Lagos, Nigeria", time: "2 hours ago", current: false },
-    { device: "Chrome on Android", location: "Abuja, Nigeria", time: "3 days ago", current: false },
-  ];
 
   return (
     <div>
@@ -468,7 +464,7 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
         </Field>
         <div className="pt-4 flex justify-end">
           <button onClick={save} disabled={isLoading}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white disabled:opacity-60 hover:-translate-y-0.5 transition-all"
+            className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-white disabled:opacity-60 hover:-translate-y-0.5 transition-all w-full sm:w-auto"
             style={{ background: "linear-gradient(135deg, #9B2E3D, #82212D)" }}>
             {isLoading ? <><Loader2 size={13} className="animate-spin" /> Updating...</>
               : saved ? <><Check size={13} /> Updated</>
@@ -478,8 +474,8 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
       </Section>
 
       <Section title="Two-Factor Authentication" desc="Add an extra layer of security to your account.">
-        <div className="flex items-center justify-between py-2">
-          <div className="flex-1 pr-5">
+        <div className="flex flex-col gap-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex-1 pr-0 sm:pr-5">
             <div className="flex items-center gap-2 mb-1">
               <Smartphone size={14} className="text-gray-500" />
               <p className="text-xs font-semibold text-gray-900">Authenticator App (TOTP)</p>
@@ -492,8 +488,8 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
           <ToggleSwitch value={twoFAEnabled} onChange={setTwoFAEnabled} />
         </div>
         {twoFAEnabled && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3">
-            <Shield size={14} className="text-green-600 flex-shrink-0 mt-0.5" />
+          <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-xl flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
+            <Shield size={14} className="text-green-600 flex-shrink-0" />
             <div>
               <p className="text-xs font-semibold text-green-800">Your account is secured</p>
               <p className="text-[11px] text-green-700 mt-0.5">Login requires both your password and a 6-digit code from your authenticator app.</p>
@@ -501,42 +497,11 @@ export function SecuritySettings({ profile }: { profile: CitizenProfile }) {
           </div>
         )}
       </Section>
-
-      {/* <Section  title="Active Sessions" desc="These devices are currently signed in to your account.">
-        <div className="flex flex-col gap-0">
-          {SESSIONS.map((s, i) => (
-            <div key={i} className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                  <Monitor size={14} className="text-gray-500" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-semibold text-gray-900">{s.device}</p>
-                    {s.current && <span className="text-[9px] bg-green-50 text-green-700 border border-green-100 px-1.5 py-0.5 rounded-full font-bold">Current</span>}
-                  </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{s.location} &middot; {s.time}</p>
-                </div>
-              </div>
-              {!s.current && (
-                <button className="text-[11px] font-semibold text-red-500 hover:text-red-700 transition-colors">
-                  Revoke
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="pt-4 flex justify-end">
-          <button className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors">
-            <LogOut size={12} /> Sign out of all other sessions
-          </button>
-        </div>
-      </Section> */}
     </div>
   );
 }
 
-// Appearance tab 
+// Responsive Appearance Settings
 export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [fontSize, setFontSize] = useState<"small" | "medium" | "large">("medium");
@@ -556,15 +521,19 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   return (
     <div>
       <Section title="Theme">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {themes.map(t => {
             const Icon = t.icon;
             const active = theme === t.id;
             return (
               <button key={t.id} onClick={() => setTheme(t.id)}
-                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-[1.5px] transition-all ${active ? "border-maroon-500 bg-pink-50/50" : "border-gray-200 hover:border-gray-300"}`}>
-                <Icon size={18} className={active ? "text-maroon-500" : "text-gray-400"} />
-                <span className={`text-xs font-semibold ${active ? "text-maroon-500" : "text-gray-600"}`}>{t.label}</span>
+                className={`flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl border-[1.5px] transition-all ${
+                  active ? "border-maroon-500 bg-pink-50/50" : "border-gray-200 hover:border-gray-300"
+                }`}>
+                <Icon size={16} className={active ? "text-maroon-500" : "text-gray-400"} />
+                <span className={`text-[10px] sm:text-xs font-semibold ${
+                  active ? "text-maroon-500" : "text-gray-600"
+                }`}>{t.label}</span>
               </button>
             );
           })}
@@ -573,17 +542,19 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
 
       <Section title="Reading Preferences" desc="These settings affect how legal content is displayed in the learn module.">
         <Field label="Font Size">
-          <div className="flex gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {(["small", "medium", "large"] as const).map(s => (
               <button key={s} onClick={() => setFontSize(s)}
-                className={`flex-1 py-2.5 rounded-xl border-[1.5px] text-xs font-semibold capitalize transition-all ${fontSize === s ? "border-maroon-500 bg-pink-50/50 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+                className={`py-2.5 rounded-xl border-[1.5px] text-xs font-semibold capitalize transition-all ${
+                  fontSize === s ? "border-maroon-500 bg-pink-50/50 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}>
                 {s}
               </button>
             ))}
           </div>
         </Field>
         <Field label="Accent Colour" desc="Used for highlights, buttons, and progress indicators">
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {accents.map(c => (
               <button key={c} onClick={() => setAccentColor(c)}
                 className="w-7 h-7 rounded-full border-2 hover:scale-110 transition-transform flex items-center justify-center"
@@ -601,8 +572,8 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
           { label: "High contrast mode", desc: "Increase contrast for text and interactive elements.", v: highContrast, s: setHighContrast },
           { label: "Dyslexia-friendly font", desc: "Use an OpenDyslexic-style font in the reading module.", v: dyslexicFont, s: setDyslexicFont },
         ].map(a => (
-          <div key={a.label} className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
-            <div className="flex-1 pr-5">
+          <div key={a.label} className="flex flex-col gap-2 py-3 border-b border-gray-50 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:py-3.5">
+            <div className="flex-1 pr-0 sm:pr-5">
               <p className="text-xs font-semibold text-gray-900">{a.label}</p>
               <p className="text-[11px] text-gray-500 mt-0.5">{a.desc}</p>
             </div>
@@ -614,7 +585,7 @@ export function AppearanceSettings({ profile }: { profile: CitizenProfile }) {
   );
 }
 
-// Legal Preferences tab 
+// Responsive Legal Settings
 export function LegalSettings({ profile, user }: { profile: CitizenProfile, user: any }) {
   const [interests, setInterests] = useState<string[]>(["criminal", "employment", "tenancy"]);
   const [lang, setLang] = useState("en");
@@ -638,12 +609,14 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
   return (
     <div>
       {user?.role !== "lawyer" && <Section title="Areas of Interest" desc="We use these to personalise your content feed, topic recommendations, and lawyer suggestions.">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {AREAS.map(a => {
             const on = interests.includes(a.id);
             return (
               <button key={a.id} onClick={() => toggle(a.id)}
-                className={`relative flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${on ? "border-maroon-500 bg-pink-50/60 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+                className={`relative flex items-center gap-2 p-3 rounded-xl border-[1.5px] text-xs font-medium transition-all text-left ${
+                  on ? "border-maroon-500 bg-pink-50/60 text-maroon-500" : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}>
                 {on && <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-maroon-500 flex items-center justify-center">
                   <Check size={9} className="text-white" strokeWidth={3} />
                 </div>}
@@ -679,8 +652,8 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
       </Section>
 
       <Section title="Legal Disclaimer">
-        <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-100 rounded-xl">
-          <AlertTriangle size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="flex flex-col gap-3 p-4 bg-amber-50 border border-amber-100 rounded-xl sm:flex-row sm:items-start sm:gap-3">
+          <AlertTriangle size={14} className="text-amber-600 flex-shrink-0" />
           <div>
             <p className="text-xs font-semibold text-amber-900 mb-1">Educational Content Notice</p>
             <p className="text-[11px] text-amber-700 leading-relaxed">
@@ -698,9 +671,8 @@ export function LegalSettings({ profile, user }: { profile: CitizenProfile, user
   );
 }
 
-// Update the SubscriptionSettings component
+// Responsive Subscription Settings
 export function SubscriptionSettings({ user }: { user: any }) {
-  // Use the new subscription hooks
   const { data: subscriptionData, refetch: refetchSubscription } = useGetMySubscriptionQuery(undefined, {
     skip: user?.role !== "lawyer",
   });
@@ -719,7 +691,6 @@ export function SubscriptionSettings({ user }: { user: any }) {
     }
   );
 
-  // Use the new mutation hooks
   const [subscribe] = useSubscribeMutation();
   const [changePlan] = useChangePlanMutation();
   const [cancelSubscription] = useCancelSubscriptionMutation();
@@ -750,13 +721,11 @@ export function SubscriptionSettings({ user }: { user: any }) {
 
       setSuccess("Subscription initiated! Redirecting to payment...");
 
-      // Check if payment URL is returned
       if (result.data?.payment?.authorization_url) {
         window.location.href = result.data.payment.authorization_url;
       } else if (result.data?.payment?.authorization_url) {
         window.location.href = result.data.payment.authorization_url;
       } else {
-        // If no payment URL, subscription was successful without payment
         setSuccess("Subscription successful!");
         await refetchSubscription();
         await refetchBilling();
@@ -806,7 +775,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
     try {
       await cancelSubscription({
         reason: "Cancelled by user",
-        immediate: false // Cancel at period end
+        immediate: false
       }).unwrap();
       setSuccess("Subscription cancelled successfully. You'll have access until the end of your billing period.");
       await refetchSubscription();
@@ -888,38 +857,35 @@ export function SubscriptionSettings({ user }: { user: any }) {
     if (subs.data?.payment?.authorization_url) {
       window.location.href = subs.data.payment.authorization_url;
     }
-
   }
 
   return (
     <div>
-      {/* Error/Success Messages */}
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <AlertCircle size={16} className="text-red-600 flex-shrink-0" />
-          <p className="text-sm text-red-700">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">
+          <p className="text-sm text-red-700 flex-1">{error}</p>
+          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600 self-end sm:self-auto">
             <X size={16} />
           </button>
         </div>
       )}
       {success && (
-        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <CheckCircle size={16} className="text-green-600 flex-shrink-0" />
-          <p className="text-sm text-green-700">{success}</p>
-          <button onClick={() => setSuccess(null)} className="ml-auto text-green-400 hover:text-green-600">
+          <p className="text-sm text-green-700 flex-1">{success}</p>
+          <button onClick={() => setSuccess(null)} className="text-green-400 hover:text-green-600 self-end sm:self-auto">
             <X size={16} />
           </button>
         </div>
       )}
 
-      {/* Active Subscription Section */}
       <Section title="Current Subscription" desc="Manage your subscription plan and billing details.">
         {subscription ? (
           <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+            <div className="flex flex-col gap-4 p-4 bg-gray-50/50 rounded-xl border border-gray-100 sm:flex-row sm:items-start sm:gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex flex-wrap items-center gap-2">
                   <h4 className="text-sm font-bold text-gray-900">{subscription.planName}</h4>
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${getStatusColor(subscription.status)}`}>
                     {subscription.status?.toUpperCase() || 'UNKNOWN'}
@@ -932,13 +898,13 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   {subscription.status === 'pending' && (
                     <button
                       onClick={() => handleCompletePayment(subscription.id)}
-                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-semibold hover:bg-green-100 transition-all"
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-semibold hover:bg-green-100 transition-all w-full sm:w-auto justify-center"
                     >
                       Complete Payment
                     </button>
                   )}
                 </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                <div className="mt-3 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
                   <div className="flex items-center gap-1.5 text-gray-600">
                     <Calendar size={12} />
                     <span>Started: {formatDate(subscription.startDate)}</span>
@@ -961,13 +927,13 @@ export function SubscriptionSettings({ user }: { user: any }) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-2 pt-2">
               {subscription.status === 'active' && (
                 <>
                   <button
                     onClick={() => setShowChangePlan(!showChangePlan)}
                     disabled={processing}
-                    className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50 flex-1 sm:flex-none"
                   >
                     <RefreshCw size={13} />
                     Change Plan
@@ -975,7 +941,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   <button
                     onClick={handleToggleAutoRenew}
                     disabled={processing}
-                    className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50 flex-1 sm:flex-none"
                   >
                     <RefreshCw size={13} className={processing ? "animate-spin" : ""} />
                     {subscription.autoRenew ? "Disable Auto-Renew" : "Enable Auto-Renew"}
@@ -983,7 +949,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   <button
                     onClick={handleCancelSubscription}
                     disabled={processing}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-[1.5px] border-red-200 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all disabled:opacity-50"
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border-[1.5px] border-red-200 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all disabled:opacity-50 flex-1 sm:flex-none"
                   >
                     Cancel Subscription
                   </button>
@@ -993,7 +959,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                 <button
                   onClick={handleReactivate}
                   disabled={processing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-maroon-500 text-xs font-semibold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-maroon-500 text-xs font-semibold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50 w-full sm:w-auto"
                 >
                   <RefreshCw size={13} className={processing ? "animate-spin" : ""} />
                   Reactivate Subscription
@@ -1001,32 +967,32 @@ export function SubscriptionSettings({ user }: { user: any }) {
               )}
             </div>
 
-            {/* Change Plan Section */}
             {showChangePlan && (
               <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <h5 className="text-sm font-semibold text-gray-900 mb-3">Change Plan</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {plans
                     .filter(p => p.id !== subscription.planId.id)
                     .map((plan) => (
                       <div
                         key={plan.id}
-                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPlan === plan.id
-                          ? "border-maroon-500 bg-pink-50/30"
-                          : "border-gray-200 hover:border-gray-300"
-                          }`}
+                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                          selectedPlan === plan.id
+                            ? "border-maroon-500 bg-pink-50/30"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
                         onClick={() => setSelectedPlan(plan.id)}
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:items-start sm:justify-between">
                           <div>
                             <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
                             {plan.isPopular && (
-                              <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full inline-block mt-1">
                                 Popular
                               </span>
                             )}
                           </div>
-                          <div className="text-right">
+                          <div className="text-left sm:text-right">
                             <p className="text-sm font-bold text-gray-900">₦{plan.price}</p>
                             <p className="text-[10px] text-gray-500">/{plan.interval}</p>
                           </div>
@@ -1035,7 +1001,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                           {plan.features?.slice(0, 3).map((feature, idx) => (
                             <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
                               <CheckCircle size={11} className="text-green-500 flex-shrink-0" />
-                              {feature}
+                              <span className="truncate">{feature}</span>
                             </li>
                           ))}
                           {plan.features?.length > 3 && (
@@ -1046,11 +1012,11 @@ export function SubscriptionSettings({ user }: { user: any }) {
                     ))}
                 </div>
                 {selectedPlan && (
-                  <div className="mt-4 flex shadow gap-3">
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:shadow">
                     <button
                       onClick={() => handleChangePlan(selectedPlan)}
                       disabled={processing}
-                      className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                      className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50 w-full sm:w-auto"
                     >
                       {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Confirm Change"}
                     </button>
@@ -1059,7 +1025,7 @@ export function SubscriptionSettings({ user }: { user: any }) {
                         setShowChangePlan(false);
                         setSelectedPlan(null);
                       }}
-                      className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all"
+                      className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all w-full sm:w-auto"
                     >
                       Cancel
                     </button>
@@ -1077,28 +1043,28 @@ export function SubscriptionSettings({ user }: { user: any }) {
         )}
       </Section>
 
-      {/* Subscription Plans - Only show if no subscription or cancelled/expired */}
       {(!subscription || subscription.status === 'cancelled' || subscription.status === 'expired' || subscription.status === 'inactive') && (
         <Section title="Choose a Plan" desc="Select the plan that works best for you.">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className={`p-4 rounded-xl border-2 transition-all ${selectedPlan === plan.id
-                  ? "border-maroon-500 bg-pink-50/30"
-                  : "border-gray-200 hover:border-gray-300"
-                  }`}
+                className={`p-4 rounded-xl border-2 transition-all ${
+                  selectedPlan === plan.id
+                    ? "border-maroon-500 bg-pink-50/30"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h4 className="text-sm font-bold text-gray-900">{plan.name}</h4>
                     {plan.isPopular && (
-                      <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-maroon-500 bg-pink-50 px-2 py-0.5 rounded-full inline-block mt-1">
                         Popular
                       </span>
                     )}
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <p className="text-sm font-bold text-gray-900">₦{plan.price?.toLocaleString() || 0}</p>
                     <p className="text-[10px] text-gray-500">/{plan.interval}</p>
                   </div>
@@ -1108,17 +1074,18 @@ export function SubscriptionSettings({ user }: { user: any }) {
                   {plan.features?.map((feature, idx) => (
                     <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
                       <CheckCircle size={11} className="text-green-500 flex-shrink-0" />
-                      {feature}
+                      <span className="truncate">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <button
                   onClick={() => setSelectedPlan(plan.id)}
                   disabled={processing}
-                  className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${selectedPlan === plan.id
-                    ? "bg-maroon-500 text-white hover:bg-[#d02a6e]"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    } disabled:opacity-50`}
+                  className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all ${
+                    selectedPlan === plan.id
+                      ? "bg-maroon-500 text-white hover:bg-[#d02a6e]"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  } disabled:opacity-50`}
                 >
                   {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Select Plan"}
                 </button>
@@ -1131,17 +1098,17 @@ export function SubscriptionSettings({ user }: { user: any }) {
               <p className="text-xs text-gray-600 mb-3">
                 Selected plan: <span className="font-semibold">{plans.find(p => p.id === selectedPlan)?.name}</span>
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <button
                   onClick={() => handleSubscribe(selectedPlan)}
                   disabled={processing}
-                  className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-lg bg-maroon-500 text-xs font-bold text-white hover:bg-[#d02a6e] transition-all disabled:opacity-50 w-full sm:w-auto"
                 >
                   {processing ? <Loader2 size={13} className="animate-spin mx-auto" /> : "Subscribe Now"}
                 </button>
                 <button
                   onClick={() => setSelectedPlan(null)}
-                  className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all"
+                  className="px-4 py-2.5 rounded-lg border-[1.5px] border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-300 transition-all w-full sm:w-auto"
                 >
                   Cancel
                 </button>
@@ -1151,34 +1118,33 @@ export function SubscriptionSettings({ user }: { user: any }) {
         </Section>
       )}
 
-      {/* Billing History */}
       <Section title="Billing History" desc="View your payment history and download invoices.">
         {billingHistory.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-xs min-w-[600px]">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Date</th>
-                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Description</th>
-                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Amount</th>
-                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Status</th>
-                  <th className="text-left py-2.5 px-3 font-semibold text-gray-500">Method</th>
-                  <th className="text-right py-2.5 px-3 font-semibold text-gray-500">Invoice</th>
+                  <th className="text-left py-2.5 px-2 md:px-3 font-semibold text-gray-500">Date</th>
+                  <th className="text-left py-2.5 px-2 md:px-3 font-semibold text-gray-500">Description</th>
+                  <th className="text-left py-2.5 px-2 md:px-3 font-semibold text-gray-500">Amount</th>
+                  <th className="text-left py-2.5 px-2 md:px-3 font-semibold text-gray-500">Status</th>
+                  <th className="hidden sm:table-cell text-left py-2.5 px-2 md:px-3 font-semibold text-gray-500">Method</th>
+                  <th className="text-right py-2.5 px-2 md:px-3 font-semibold text-gray-500">Invoice</th>
                 </tr>
               </thead>
               <tbody>
                 {billingHistory.map((item) => (
                   <tr key={item.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
-                    <td className="py-2.5 px-3 text-gray-600">{formatDate(item.date)}</td>
-                    <td className="py-2.5 px-3 text-gray-700">{item.description}</td>
-                    <td className="py-2.5 px-3 font-semibold text-gray-900">₦{item.amount?.toLocaleString() || 0}</td>
-                    <td className="py-2.5 px-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getBillingStatusColor(item.status)}`}>
+                    <td className="py-2.5 px-2 md:px-3 text-gray-600">{formatDate(item.date)}</td>
+                    <td className="py-2.5 px-2 md:px-3 text-gray-700 max-w-[100px] truncate">{item.description}</td>
+                    <td className="py-2.5 px-2 md:px-3 font-semibold text-gray-900">₦{item.amount?.toLocaleString() || 0}</td>
+                    <td className="py-2.5 px-2 md:px-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap ${getBillingStatusColor(item.status)}`}>
                         {item.status?.toUpperCase() || 'UNKNOWN'}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-gray-600">{item.paymentMethod || 'N/A'}</td>
-                    <td className="py-2.5 px-3 text-right">
+                    <td className="hidden sm:table-cell py-2.5 px-2 md:px-3 text-gray-600">{item.paymentMethod || 'N/A'}</td>
+                    <td className="py-2.5 px-2 md:px-3 text-right">
                       {item.invoiceUrl ? (
                         <a href={item.invoiceUrl} target="_blank" rel="noopener noreferrer"
                           className="text-maroon-500 hover:text-[#d02a6e] font-semibold transition-colors">

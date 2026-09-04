@@ -20,10 +20,14 @@ import { useGetMarketplaceLawyersQuery } from "@/redux/slices/lawyers.slice";
 import { useListSpecialismsQuery } from "@/redux/slices/others.slice";
 import { LawyerFull, Specialism } from "@/redux/types/lawyer";
 import { LawyerCard } from "@/app/marketplace/page"
+import { useSession } from "next-auth/react";
 
 /* ------------------------------ PRODUCT PREVIEW ------------------------------ */
 
 export function ProductPreviewSection() {
+  const { status } = useSession();
+  const authed = status === "authenticated";
+
   return (
     <section className="bg-white py-16 xl:py-24 overflow-hidden relative">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -150,10 +154,15 @@ export function ProductPreviewSection() {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <Link href="/register" className="btn-maroon px-6 py-3 text-sm">
-              Get Started for Free
+            {!authed ? (
+              <Link href="/register" className="btn-maroon px-6 py-3 text-sm">
+                Get Started for Free
+                <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+              </Link>
+            ) : <Link href="/dashboard" className="btn-maroon mt-5 flex-shrink-0 h-[52px] px-6 text-sm whitespace-nowrap">
+              Continue to Dashboard
               <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-            </Link>
+            </Link>}
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -2 }}
@@ -463,22 +472,22 @@ const VERIFICATION_STEPS = ["Registration", "Credential Check", "Platform Traini
 
 export function MarketplaceSection() {
   const { data: response, isLoading, isFetching, error, refetch } =
-      useGetMarketplaceLawyersQuery({});
-    const { data: specialismsResponse } = useListSpecialismsQuery();
+    useGetMarketplaceLawyersQuery({});
+  const { data: specialismsResponse } = useListSpecialismsQuery();
 
-    const SPECIALISMS = specialismsResponse?.data || [];
-  
-    const lawyers: LawyerFull[] = response?.data?.data || [];
+  const SPECIALISMS = specialismsResponse?.data || [];
+
+  const lawyers: LawyerFull[] = response?.data?.data || [];
   return (
     <section className="bg-white py-20 xl:py-28">
-     {/* Grid */}
-          {!isLoading && !error && lawyers.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {lawyers.map((l) => (
-                <LawyerCard key={l._id || l.id} lawyer={l} />
-              ))}
-            </div>
-          )}
+      {/* Grid */}
+      {!isLoading && !error && lawyers.length > 0 && (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {lawyers.map((l) => (
+            <LawyerCard key={l._id || l.id} lawyer={l} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
